@@ -1,0 +1,304 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+c# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results=FALSE>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+
+
+\section{Data preprocessing}
+\label{sec:dataPreporcessing}
+Load packages.
+<<>>=
+pkgs <- c('xlsx','caret','leaps','glmnet','lattice','latticeExtra','pvclust','gplots')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+\section{Load data}
+\label{sec:data}
+Load data.
+<<load1>>=
+sugars <- read.xlsx("./algae.xlsx", header =TRUE, sheetName = "Cluster")
+experiments <- read.xlsx("./algae.xlsx", header = TRUE, sheetName = "Logit")
+@
+
+Head of sugars data.
+<<head1>>=
+head(sugars)
+sugars <- sugars[, 1:11]
+@
+
+Head of experiment data.
+<<head2>>=
+head(experiments)
+@ 
+
+\section{Change rownames}
+\label{sec:rownames}
+Since every 3 samples have the same algae, im keeping the name but adding a numerical suffix to it.
+<<suffix1>>=
+rownames(sugars) <- paste(sugars[, 1], rep(1:3, nrow(sugars)/3), sep = "")
+head(sugars)
+sugars <- sugars[, -1]
+@ 
+\section{Hierarchical clustering}
+\label{sec:hierarchincal}
+
+Remove missing data.
+<<missing>>=
+sugars.full <- na.omit(sugars)
+dim(sugars)
+dim(sugars.full)
+@ 
+
+Scale the data.
+<<scale1>>=
+sugars.sc <- scale(sugars.full)
+@ 
+
+Transpose the data.
+<<transpose1>>=
+sugars.sc.tp <- t(sugars.sc)
+sugars.sc.tp[1:3, 1:3]
+@ 
+
+Get some compiled fancy colours.
+<<colours1>>=
+source("http://faculty.ucr.edu/~tgirke/Documents/R_BioCond/My_R_Scripts/my.colorFct.R")
+@ 
+
+
+Cluster ROWS (sugar classes)
+<<cluster1>>=
+sugars.clust <- hclust(as.dist(1-cor((sugars.sc), 
+                                     method="pearson")), 
+                       method="complete")
+@ 
+
+Cluster COLUMNS (algae species)
+<<cluster2>>=
+algae.clust <- hclust(as.dist(1-cor(sugars.sc.tp, 
+                            method="pearson")), 
+              method="complete")
+@ 
+
+Draw heatmap.
+<<heatmap1>>=
+heatmap(sugars.sc.tp,
+        Rowv=as.dendrogram(sugars.clust), 
+        Colv=as.dendrogram(algae.clust), 
+        col=my.colorFct(), scale="row")
+@ 
+
+\section{Cut the tree to extract special patterns of clusterization}
+\label{sec:cutting}
+Cutting the tree is subjective to ones view of the heatmap.
+<<cut1>>=
+sugars.cut <- cutree(sugars.clust, h = max(sugars.clust$height)/2)
+@ 
+
+Prepare some colors.
+<<colouring2>>=
+custom.colors <- sample(rainbow(256))
+custom.colors <- custom.colors[as.vector(sugars.cut)]
+@ 
+
+Draw another heatmap with identified clusters.
+<<clustering2>>=
+heatmap(sugars.sc.tp,
+        Rowv=as.dendrogram(sugars.clust), 
+        Colv=as.dendrogram(algae.clust), 
+        col=my.colorFct(), scale="row", 
+        RowSideColors=custom.colors)
+@ 
+
+\section{Bootstrapping}
+\label{sec:bootstrapping}
+Bootstrapping is a resampling technique. One of my favorites. Because it works. Basically the model draws from all the samples a subset of samples. Then it fits a model to that small subset. The model does that many times, eg. 1000-5000 times. Finally, the model will calculate an error for all the fitted subsets. The estimated significance gives the reader an understanding of why the clustering is correct.
+
+Resampling is done because our main samples came from a small population. Bootstrap considers that all samples are the whole population.
+<<bootstrap>>=
+sugars.boot <- pvclust(sugars.sc, 
+#                       t(sugars.sc), # cluster algae
+                       method.dist = "correlation",
+                       method.hclust = "complete",
+                       nboot = 5000)
+@ 
+
+Plot the booststrap results. See significance over 90\% in Red. And its like there is 1 significant cluster, To be verified. 
+\marginnote{\small\color{blue}$\Lsh$I also bootstraped the samples they are all significant with percentages over 95.}[1cm]
+<<bootstrap2>>=
+#setEPS()
+#postscript("cluster.sugar.eps")
+plot(sugars.boot, hang = 1)
+pvrect(sugars.boot, alpha = .90)
+#dev.off()
+@ 
+
+Get more colours.
+<<colors3>>=
+source("http://faculty.ucr.edu/~tgirke/Documents/R_BioCond/My_R_Scripts/dendroCol.R")
+@ 
+
+Retrieve the significant clusters.
+<<clusteres3>>=
+clsig <- unlist(pvpick(sugars.boot, 
+                       alpha=0.95, 
+                       pv="au", 
+                       type="geq", 
+                       max.only=TRUE)$clusters)
+
+dend.colored <- dendrapply(as.dendrogram(sugars.boot$hclust), 
+                           dendroCol, 
+                           keys=clsig, 
+                           xPar="edgePar", 
+                           bgr="black", 
+                           fgr="red", pch=20)
+
+@ 
+
+Draw heatmap with significance.
+<<heatmap4>>=
+heatmap(sugars.sc.tp, 
+        Rowv=dend.colored, 
+        Colv=as.dendrogram(algae.clust), 
+        col=my.colorFct(), 
+        scale="row", 
+        RowSideColors= custom.colors)
+@ 
+
+Draw a better heatmap.
+<<heatmap5>>=
+heatmap.2(sugars.sc.tp, 
+          Rowv=dend.colored, 
+          Colv=as.dendrogram(algae.clust), 
+          col=my.colorFct(), 
+          scale="row", 
+          trace="none", 
+          RowSideColors=custom.colors,
+          margins=c(20,7))
+
+@ 
+
+
+\section{Logisitc regression}
+\label{sec:logit}
+I need a two classes variable.
+
+\subsection{Load data}
+\label{subsec:load2}
+DATA a re in the feeding.xlsx file.
+I changed the structure of the data.
+First, algae are either selected (1) or rejected (0).
+Second, 2 algae used in the same experiment share the same experiment (E)$_n$. \textit{n} is a subscript that design the number of experiments done.
+<<load2>>=
+feeding <- read.xlsx("./feeding.xlsx", header= TRUE, sheetName = "feeding")
+feeding <- feeding[-c(163:165), ]
+@ 
+
+Change rownames and samples.
+<<samples4>>=
+head(feeding)
+rownames(feeding) <- paste(feeding[, 1],
+                           "sp",
+                           gl(nrow(feeding)/3, 3, nrow(feeding)),
+                           ".",
+                           gl(nrow(feeding)/6, 6,nrow(feeding), labels = c(letters, "xx")),
+                           ".",
+                           seq(1:162),
+                           sep = "")
+
+feeding <- feeding[, -1]
+head(feeding)
+@ 
+
+Add 2 more columns.
+By using \textit{gl} both columns are factors, which is good, for the \textit{glmnet} package.
+<<add1>>=
+selected <- gl(2, 3, nrow(feeding), labels = c("1", "0"))
+#exp <- paste("E", gl(nrow(feeding)/6, 6, nrow(feeding)), sep = "")
+exp <- paste(gl(nrow(feeding)/6, 6, nrow(feeding)))
+feeding <- data.frame(feeding, selected = selected, experiments = exp)
+feeding[1:6, ]
+@ 
+
+\section{Logit}
+\label{sec:logit}
+Run a logistic regression on the numerical data.
+<<logit>>=
+fit <- glm(selected ~ ., 
+           data = feeding, 
+           #data = feeding[, -ncol(feeding)],
+           family = "binomial")
+@ 
+
+Show a summary of the fit with coefficients and p-values.
+<<summary1>>=
+summary(fit)
+@ 
+
+Calculate the confidence intervals using the log-likelihood from the logit model.
+<<ci>>=
+confint(fit)
+@ 
+
+Another way is to get the CIs from the standard errors. Same as above.
+<<ci2>>=
+confint.default(fit)
+@ 
+
+Plot the logit.
+<<plopt,fig.width=3, fig.height=2.5, out.width='.49\\linewidth', fig.show='hold'>>=
+par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)
+plot(fit, cex = .5)
+@ 
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}

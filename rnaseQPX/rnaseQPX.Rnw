@@ -1,0 +1,1763 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results=FALSE>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+\section{Load R packages}
+\label{sec:dataPreporcessing}
+Load packages.
+<<>>=
+pkgs <- c('xlsx','lattice','latticeExtra',
+          'ggplot2', 'dplyr', 'vegan', 'tidyr',
+          'ggbiplot')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+\subsection{Load gff3 sequence length data for all mapped libraries and references}
+\label{subsec:count}
+GFF3 files contains the sequence length of each contig. These contigs belong to Steve Roberts genome v017 and transcriptome v22 of QPX. GFF3 were generated with an in-house perl script.
+<<load>>=
+genome <- read.table("./QPX_Genome_v017.gff3")
+head(genome)
+transcriptome <- read.table("./QPX_transcriptome_v2orf.gff3")
+head(transcriptome)
+@ 
+
+GFF3 counts of MME transcriptomes \textbf{MMETSP0098} and \textbf{MMETSP00992}, and the custom assembly that \textit{I} did for MMETSP0098.
+<<load2>>=
+mme98 <- read.table("./MMETSP0098.gff3")
+mme99 <- read.table("./MMETSP0099_2.gff3")
+mme98c <- read.table("./mme98cust.gff3")
+genomv015 <- read.table("./QPX_v015.gff3")
+@ 
+
+\subsection{Distribution of contig length for libraries per reference}
+\label{subsec:length}
+The number of bases has been counted and published elsewhere by the authors who assembled the references and sequenced the libraries. Working through their data, we provide a distribution of contig length for genome of Steve's QPX. The purpose of this analysis is to identify 2 things:
+\begin{itemize}
+\item Biases in contig length
+\item Comparison of parameters used for assembling the references
+\end{itemize}
+<<distribution>>=
+histogram(~ (genome$V5), 
+          type= 'count',
+          nint = 75,
+          data = genome,
+          xlab = 'Sequence length (bp)',
+          ylab = 'Nb of contigs (555 total)',
+          col = 'red')
+@ 
+
+Distribution of Steve's QPX transcriptome.
+<<distribution2>>=
+histogram(~ transcriptome$V5,
+          type = 'count',
+          col = 'red',
+          data = transcriptome,
+          nint = 75,
+          xlab = 'Sequence length (bp)',
+          ylab = 'Nb of contigs (11774 total)')
+@ 
+
+Distribution of length of MMETSP0098.
+<<distrinutiuon3>>=
+histogram(~ mme98$V5,
+          type = 'count',
+          nint = 75,
+          data = mme98,
+          xlab = 'Sequence length (bp)',
+          ylab = 'Nb of contigs (11774 total)')
+@ 
+
+Superpose length of contigs in:
+\begin{itemize}
+\item Steve's genome v017 (555 contigs)
+\item Steve's transcriptome
+\item MMEtsp0098 transcriptome
+\item MMEtsp00992 transcriptome
+\item MMEtsp0098 custom transcriptome
+\item Steve's Genome v015 (approx 22,000 contigs)
+\end{itemize}
+Merge datasets. Then add new column that designs the nature of each contig.
+<<data3>>=
+lsos()
+grouping <- rbind(genome[, c(1,5)],
+                  transcriptome[, c(1, 5)],
+                  mme98[, c(1,5)],
+                  mme99[, c(1,5)],
+                  mme98c[, c(1,5)],
+                  genomv015[, c(1,5)])
+grouping <- data.frame(grouping,
+                       y = c(rep("GenomeV17", nrow(genome)),
+                           rep("TrxV22", nrow(transcriptome)),
+                           rep("MME98", nrow(mme98)),
+                           rep("MME99", nrow(mme99)),
+                           rep("MME98custom", nrow(mme98c)),
+                             rep("(GenomeV15)", nrow(genomv015))))
+
+dim(grouping)
+colnames(grouping)
+@ 
+
+Plot length of the5 assembly including one genome.
+<<summaryPlot1>>=
+custom.colors <- c(col1 = "#762a83", 
+                   col2 = "#1b7837", 
+                   col3 = "#ef8a62",
+                   col4 = "#2166ac",
+                   col5 = "#8c510a",
+                   col6 = "#e6ab02")
+
+histogram( V1 ~ V5,
+     data = grouping,
+     nint = 55,
+     scales = list(log = 10),
+     type = "p",
+     #breaks = seq(4,8,by=0.2),
+     ylim = c(0,28),
+     groups = grouping$y,
+     panel = function(...) panel.superpose(..., 
+         panel.groups = panel.histogram,
+         col = custom.colors, 
+         alpha = 1),
+     auto.key=list(columns=3,
+         rectangles = FALSE,
+         col = custom.colors),
+     main = 'Different QPX assemblies and the length of their contigs',
+     xlab = 'Length of all contigs',
+     ylab = 'Percentage of the total assembly (count)'
+     )
+
+@ 
+
+\section{Quality controls after trimming bad regions in contigs}
+\label{subsec:trim}
+Many different options are available while trimming the contigs which have been already assembled.
+\begin{itemize}
+\item Nature of PCR adapters (trueSeq2 or trueSeq3)
+\item Sliding window while reading contigs
+\item Crop less than a desired contig length
+\item Minimum length for contigs
+\item Trailing is to remove ends of contigs with bad quality
+\end{itemize}
+
+<<trim>>=
+lsos()
+trim <- read.xlsx("./Classeur1.xlsx", header = T, sheetName = "Feuil1")
+trim <- trim[1:3, ]
+trim
+@ 
+
+Plot the differences between nature off adapters (colors) and the combination of the other parameters (shapes).
+<<chartrim>>=
+key.variety <- list(space = "right", 
+                    text = list(colnames(trim[, -c(1:2)])), 
+                    points = list(pch = c(15:18,25,4)))
+
+dotplot(c(trim$Total-trim$default)/100000 +
+           c(trim$Total-trim$slide)/100000 + 
+               c(trim$Total-trim$crop)/100000 +
+                   c(trim$Total-trim$slcrop)/100000 +
+                       c(trim$Total-trim$default2)/100000 +
+                           c(trim$Total-trim$slide2)/100000
+       ~ trim$Sample,
+       data = trim,
+       type = 'o',
+        pch = c(15:18,25,4),
+        key = key.variety,
+        lty = 1, cex = 1.5, 
+       xlab = 'Nodule samples',
+       ylab = 'Discarded reads x 100,000')
+
+@ 
+
+Another way to visualize the discarded reads.
+<<trim2>>=
+custom.colors <- c(col1 = "#ffeda0", col2 = "#feb24c", col3 = "#f03b20")
+
+barplot(as.matrix((trim$Total-trim[, -c(1:2)])/100000),
+        horiz = TRUE,
+        col = custom.colors,
+        xlab = 'Discarded reads x 100,000',
+        ylab = 'Protocols for trimming',
+        las = 2)
+@ 
+
+
+\section{Aligning contigs to reference}
+\label{subsec:align}
+Two sets of reads were mapped to 2 references.
+First batch from the trimmed reads with the default parameters (adapters clipping, trailing, and minimum length) and TrueSeq3 adapters (ones Bassem supplied).
+Second batch were also trimmed with default settings but using TrueSeq2 adapters (ones that sleiman supplied).
+With the second batch of adapters, more reads were trimmed and discarded. This analysis will try to show why by regressing the number of mapped reads over the length of each reference.
+<<map>>=
+ref.genome1 <- read.table("./refGenome/A1.htseq.counts.txt")
+ref.genome2 <- read.table("./refGenome/A2.htseq.counts.txt")
+ref.genome3 <- read.table("./refGenome/A3.htseq.counts.txt")
+ref.genome4 <- read.table("./refGenome/A1-4.htseq.counts.txt")
+ref.genome5 <- read.table("./refGenome/A2-4.htseq.counts.txt")
+ref.genome6 <- read.table("./refGenome/A3-4.htseq.counts.txt")
+@ 
+
+Merge all mapped reads on the genome
+<<mapx2>>=
+ref.genome <- data.frame(
+    A1 = ref.genome1[-c(556:560), 2],
+    A2 = ref.genome2[-c(556:560), 2],
+    A3 = ref.genome3[-c(556:560), 2],
+    A1.4 = ref.genome4[-c(556:560), 2],
+    A2.4 = ref.genome5[-c(556:560), 2],
+    A3.4 = ref.genome6[-c(556:560), 2],
+    contigs = ref.genome1[-c(556:560), 1])
+dim(ref.genome)
+# just because im lazy
+genome1 <- data.frame(contigs= genome[,1], length = genome$V5)
+@
+
+Merge length and number of mapped reads
+<<mapx3>>=
+ref.genome.mix <- merge(genome1, ref.genome)
+head(ref.genome.mix)
+@ 
+
+Plot the correlation between read length and number of mapped reads on the genome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
+<<map2>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 3:5])),
+                    col = custom.colors)
+xyplot(A1 + A2 + A3 ~ length, 
+       data = ref.genome.mix,
+       xlab = 'Length of contigs in reference Genome (total 555)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+      
+@ 
+
+
+Regression between reads and length of contigs in reference genome with adapters TrueSeq2 under default trimming settings.
+<<map3>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 6:8])),
+                    col = custom.colors)
+xyplot(A1.4 + A2.4 + A3.4 ~ length, 
+#                   alpha = .5,
+       data = ref.genome.mix,
+       xlab = 'Length of contigs in reference Genome (total 555)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+      
+@ 
+
+Previously i regressed the number of mapped reads of nodule samples over the reference genome of QPX.
+Now its time to do the same thing over the reference transcriptome of QPX.
+Both references belong the Steve Roberts.
+<<trans>>=
+ref.transcriptome1 <- read.table("./refTranscriptome/A1.htseq.counts.txt")
+ref.transcriptome2 <- read.table("./refTranscriptome/A2.htseq.counts.txt")
+ref.transcriptome3 <- read.table("./refTranscriptome/A3.htseq.counts.txt")
+ref.transcriptome4 <- read.table("./refTranscriptome/A1-4.htseq.counts.txt")
+ref.transcriptome5 <- read.table("./refTranscriptome/A2-4.htseq.counts.txt")
+ref.transcriptome6 <- read.table("./refTranscriptome/A3-4.htseq.counts.txt")
+dim(ref.transcriptome1)
+tail(ref.transcriptome1)
+@ 
+
+Merge all mapped reads on the transcriptome
+<<trans2>>=
+ref.transcriptome <- data.frame(
+    A1 = ref.transcriptome1[-c(11775:11779), 2],
+    A2 = ref.transcriptome2[-c(11775:11779), 2],
+    A3 = ref.transcriptome3[-c(11775:11779), 2],
+    A1.4 = ref.transcriptome4[-c(11775:11779), 2],
+    A2.4 = ref.transcriptome5[-c(11775:11779), 2],
+    A3.4 = ref.transcriptome6[-c(11775:11779), 2],
+    contigs = ref.transcriptome1[-c(11775:11779), 1])
+dim(ref.transcriptome)
+head(ref.transcriptome)
+# just because im lazy
+transcriptome1 <- data.frame(contigs= transcriptome[,1], length = transcriptome$V5)
+@ 
+
+Merge length and number of mapped reads
+<<trans3>>=
+ref.transcriptome.mix <- merge(transcriptome1, ref.transcriptome)
+head(ref.transcriptome.mix)
+@ 
+ 
+\subsection{Concentration of contigs in different libraries}
+\label{subsec:density}
+Plot correlation between transcriptome contigs and assembled reads of nodule samples. Trimming parameters are of default with TrueSeq3 adapters.
+<<trans1>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 3:5])),
+                    col = custom.colors)
+densityplot(A1 + A2 + A3 ~ length, 
+       data = ref.transcriptome.mix,
+#            alpha = .7,
+            xlab = 'Length of contigs in reference Genome (total 11774)',
+       ylab = 'Nb of mapped reads from nodule samples',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+#       scales = list(log = 10),
+       key = key.variety)
+
+@ 
+
+Plot correlation same as above but with TrueSeq2 adapters with default parameters.
+<<trans2x>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 6:8])),
+                    col = custom.colors)
+densityplot(A1.4 + A2.4 + A3.4 ~ length, 
+       data = ref.transcriptome.mix,
+#            alpha = .9,
+       xlab = 'Length of contigs in reference Genome (total 11774)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+@ 
+
+
+Load the number of mapped reads to the MMETSP0098 transcriptome before discarding duplicates.
+<<prediscardR3>>=
+ref.dupA1R3 <- read.table("./refMME98/A1.htseq.counts.txt")
+ref.dupA2R3 <- read.table("./refMME98/A2.htseq.counts.txt")
+ref.dupA3R3 <- read.table("./refMME98/A3.htseq.counts.txt")
+@ 
+
+Merge all mapped reads to MMETSP0098 reference transcriptome before discarding duplicates (ie, raw counts).
+<<prediscardR31>>=
+ref.mme98 <- data.frame(A1 = ref.dupA1R3$V2,
+                        A2 = ref.dupA2R3$V2,
+                        A3 = ref.dupA3R3$V2,
+                        contigs = ref.dupA1R3$V1)
+@ 
+
+Add the length values to each contig mapped to MMETsp0098. But first remove extra rows.
+<<mappedx23>>=
+nr <- nrow(ref.mme98)
+ref.mme98 <- ref.mme98[1:(nr-5), ]
+tail(ref.mme98)
+@
+
+Merge length and counts.
+<<predis34>>=
+
+#ref.mme98.mix <- merge(ref.mme98, mme98[, c(1,5)])
+@
+
+Load the number of mapped reads to the MMETSP0099\_2 transcriptome before discarding duplicates.
+<<prediscardR34>>=
+ref.dupA1R4 <- read.table("./refMME992/A1.htseq.counts.txt")
+ref.dupA2R4 <- read.table("./refMME992/A2.htseq.counts.txt")
+ref.dupA3R4 <- read.table("./refMME992/A3.htseq.counts.txt")
+@
+Merge all mapped reads to MMETSP0099\_2 reference transcriptome before discarding duplicates (ie, raw counts).
+<<prediscardR314>>=
+ref.mme992 <- data.frame(A1 = ref.dupA1R4$V2,
+                        A2 = ref.dupA2R4$V2,
+                        A3 = ref.dupA3R4$V2,
+                        contigs = ref.dupA1R4$V1)
+@ 
+
+Add the length values to each contig mapped to MMETsp0099\_2. But first remove extra rows.
+<<mappedx234>>=
+nr <- nrow(ref.mme992)
+ref.mme992 <- ref.mme992[1:(nr-5), ]
+tail(ref.mme992)
+@ 
+
+Load the number of mapped reads to SR v015 genome before discarding duplicates.
+<<prediscardR345>>=
+ref.dupA1R5 <- read.table("./refGenomV015/A1.htseq.counts.txt")
+ref.dupA2R5 <- read.table("./refGenomV015/A2.htseq.counts.txt")
+ref.dupA3R5 <- read.table("./refGenomV015/A3.htseq.counts.txt")
+@
+
+Merge all mapped reads to SR v015 reference genome before discarding duplicates (ie, raw counts).
+<<prediscardR3145>>=
+ref.genomv015 <- data.frame(A1 = ref.dupA1R5$V2,
+                        A2 = ref.dupA2R5$V2,
+                        A3 = ref.dupA3R5$V2,
+                        contigs = ref.dupA1R5$V1)
+@ 
+
+Add the length values to each contig mapped to SR v015 reference genome. But first remove extra rows.
+<<mappedx2345>>=
+nr <- nrow(ref.genomv015)
+ref.genomv015 <- ref.genomv015[1:(nr-5), ]
+tail(ref.genomv015)
+@ 
+
+
+\section{Removing the duplicate reads and reducing bias for better coverage}
+\label{sec:duplicates}
+After aligning the reads to a reference duplicates must be removed.
+
+First load the sample reads mapped to reference genome (without duplication) of Steve Roberts.
+<<dupl1>>=
+nodupA1R1 <- read.table("./nodupR1/A1.htseq.nodup.counts.txt")
+nodupA2R1 <- read.table("./nodupR1/A2.htseq.nodup.counts.txt")
+nodupA3R1 <- read.table("./nodupR1/A3.htseq.nodup.counts.txt")
+@ 
+
+Second load the sample reads mapped to reference transcriptome (withtout duplication) of Steve Roberts.
+<<dupl2>>=
+nodupA1R2 <- read.table("./nodupR2/A1.htseq.nodup.counts.txt")
+nodupA2R2 <- read.table("./nodupR2/A2.htseq.nodup.counts.txt")
+nodupA3R2 <- read.table("./nodupR2/A3.htseq.nodup.counts.txt")
+@ 
+
+Third load the sample reads mapped to reference transcriptome (without duplication) of MMESTO0098.
+<<dupl3>>=
+nodupA1R3 <- read.table("./nodupR3/A1.htseq.counts.nodup.txt")
+nodupA2R3 <- read.table("./nodupR3/A2.htseq.counts.nodup.txt")
+nodupA3R3 <- read.table("./nodupR3/A3.htseq.counts.nodup.txt")
+@ 
+
+Forth load of sample reads mapped to reference transcriptome MMETSP0099\_2.
+<<dupl4>>=
+nodupA1R4 <- read.table("./nodupR4/A1.htseq.counts.nodup.txt")
+nodupA2R4 <- read.table("./nodupR4/A2.htseq.counts.nodup.txt")
+nodupA3R4 <- read.table("./nodupR4/A3.htseq.counts.nodup.txt")
+@ 
+
+Forth load of sample reads mapped to reference SR genome v015 with approximately 21,000 contigs.
+<<dupl44>>=
+nodupA1R5 <- read.table("./nodupR5/A1.htseq.counts.nodup.txt")
+nodupA2R5 <- read.table("./nodupR5/A2.htseq.counts.nodup.txt")
+nodupA3R5 <- read.table("./nodupR5/A3.htseq.counts.nodup.txt")
+@ 
+
+Merge mapped samples relative to the reference.
+\begin{itemize}
+\item R1 = genome of QPX (steve roberts, 555 contigs)
+\item R2 = transcriptome of QPX (steve roberts)
+\item R3 = transcriptome of QPX MMETSP0098
+\item R4 = transcriptome of QPX MMETSP0099\_2
+\item R5 = genome of QPX (steve roberts v015, approx. 21,000 contigs)
+\end{itemize}
+<<>>=
+allR1 <- data.frame(A1n = nodupA1R1$V2,
+                  A2n = nodupA2R1$V2,
+                  A3n = nodupA3R1$V2,
+                  reference = rep("genomSRv017", nrow(nodupA1R1)),
+                    contigs = nodupA1R1$V1)
+allR1 <- allR1[1:555, ]
+
+allR2 <- data.frame(A1n = nodupA1R2$V2,
+                  A2n = nodupA2R2$V2,
+                  A3n = nodupA3R2$V2,
+                  reference = rep("trxSRv022", nrow(nodupA1R2)),
+                    contigs = nodupA1R2$V1)
+allR2 <- allR2[1:11774, ]
+
+allR3 <- data.frame(A1n = nodupA1R3$V2,
+                  A2n = nodupA2R3$V2,
+                  A3n = nodupA3R3$V2,
+                  reference = rep("trxMME98", nrow(nodupA1R3)),
+                    contigs = nodupA1R3$V1)
+allR3 <- allR3[1:15489, ]
+
+allR4 <- data.frame(A1n = nodupA1R4$V2,
+                  A2n = nodupA2R4$V2,
+                  A3n = nodupA3R4$V2,
+                  reference = rep("trxMME992", nrow(nodupA1R4)),
+                    contigs = nodupA1R4$V1)
+allR4 <- allR4[1:c(nrow(nodupA1R4)-5), ]
+
+allR5 <- data.frame(A1n = nodupA1R5$V2,
+                  A2n = nodupA2R5$V2,
+                  A3n = nodupA3R5$V2,
+                  reference = rep("genomSRv015", nrow(nodupA1R5)),
+                    contigs = nodupA1R5$V1)
+allR5 <- allR5[1:c(nrow(nodupA1R5)-5), ]
+
+
+ 
+@ 
+
+Put before /after duplicates removal in one dataset for genome of Steve Roberts.
+<<genomexxc>>=
+genomeSR <- merge(ref.genome.mix[, 1:5], allR1)
+head(genomeSR)
+rownames(genomeSR) <- genomeSR$contigs
+genomeSR <- t(genomeSR[, -c(1,9)])
+genomeSR[, 1:3]
+genomeSR <- data.frame(genomeSR,
+                       y = c(2, rep(0,3), rep(1,3)))
+@
+
+Put the before /after duplicates removal in one datasetfor transcriptome of SR.
+<<transcriptomexcc>>=
+transcriptomeSR <- merge(ref.transcriptome.mix[, 1:5], allR2)
+head(transcriptomeSR)
+@ 
+
+
+Present difference for each sample mapped to the references. First merge all samples before /after duplicates were removed.
+<<ref123>>=
+allRefs <- rbind(allR1, allR2, allR3, allR4, allR5)
+dim(allRefs)
+summary(allRefs$reference)
+
+allRefs.raw <- rbind(ref.genome.mix[, 3:5],
+                     ref.transcriptome.mix[, 3:5],
+                     ref.mme98[, 1:3],
+                     ref.mme992[, 1:3],
+                     ref.genomv015[, 1:3])
+dim(allRefs.raw)
+
+allDF <- cbind(allRefs, allRefs.raw)
+allDF[sample(1:20000, 5), ]
+@ 
+
+Plot the difference before and after duplicates were discarded. The number of mapped reads to the reference contigs is descriptive for any bias in contig assembly. For example in the case of SR genome v017, more than 20 \% of A1, A2, A3 reads align to a small set of contigs. We have to imagine that each vertical bar is a different reference contig. The best distribution is a constant one.
+
+Even though we did not plot length of contigs, the analyzes above demonstrate that length is linearly correlated to the number of mapped reads. Therefore, peaks indicate a specific preference that reads have to map to the assembled reference.
+<<summaryPlot2>>=
+custom.colors <- c(col1 = "#762a83", 
+                   col2 = "#1b7837", 
+                   col3 = "#ef8a62",
+                   col4 = "#2166ac",
+                   col5 = "#8c510a",
+                   col6 = "#e6ab02")
+
+histogram( ~ A1 + A2 + A3 | c('A1n', 'A2n', 'A3n'),
+     data = allDF,
+     nint = 50,
+     scales = list(log = 2),
+     type = "p",
+     ylim = c(0,25),
+     groups = allDF$reference,
+     panel = function(...) panel.superpose(..., 
+         panel.groups = panel.histogram,
+         col = custom.colors, 
+         alpha = 1),
+     auto.key=list(columns=3,
+         rectangles = FALSE,
+         col = custom.colors),
+          main = 'Peaks indicate bias mapping to one contig length',
+          ylab = 'Percent of total number of mapped reads to the reference (%)',
+          xlab = 'Number of mapped reads for each reference contig (log10)'
+     )
+
+@ 
+
+\section{Calling SNPs: Testing tools, parameters, and filters}
+\label{sec:snps}
+SNPs were called either with samtools \textit{mpileup} function and the highest significant were selected with bcftools or they have been called with GATK. Either way SNP calling was done on each library separately. Libraries were:
+\begin{itemize}
+\item mmetsp0098
+\item mmetsp001433
+\item mmetsp00992
+\item mmetsp001002
+\item mmetsp0099
+\item mmetsp00100
+\end{itemize}
+
+\subsection{Load data}
+\label{subsec:loding3}
+Number of SNPs called with either package were counted. Calls were done after read duplicates removal with Picard.
+<<loadcc32>>=
+counts.SNP <- read.xlsx("./snp.counts.xlsx", sheetIndex = 1)
+glimpse(counts.SNP)
+@ 
+
+Histogram grouped by library showing difference in SNPs called relative to the reference used for mapping and the number of times GATK has been used to recalibrate calls.
+<<hist1234>>=
+xyplot( factor(reference) ~ as.matrix(counts) | factor(sample),
+       data = counts.SNP[-c(1:24), ],
+       groups = counts.SNP$reference,
+       pch = 21,
+       cex = 1,
+       type = c("p"),
+       xlab = 'Number of SNPs called',
+       ylab = 'References & GATK filters')
+@ 
+
+Plot the difference between libraries and packages for the number of called SNPs.
+<<called123>>=
+ggplot(counts.SNP,
+       aes(x = factor(sample),
+           y = counts,
+           fill = factor(reference))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+@ 
+
+Another plot for cluster analysis between references and SNPs called. I find this useful for a fast check of outliers and errors in importing data.
+<<barplot11>>=
+dat <- read.xlsx("./snp.counts.xlsx", sheetIndex = 4)
+custom.colors <- c(col1 = "#b2182b",
+                   col2 = "#ef8a62",
+                   col3 = "#fddbc7",
+                   col4 = "#e0e0e0",
+                   col5 = "#999999",
+                   col6 = "#4d4d4d")
+barplot((as.matrix(dat[, -c(1:5)])),
+        col = custom.colors,
+        horiz = TRUE,
+        las = 2,
+        beside = T,
+        legend.text = factor(dat[, 1]),
+        cex.names = .7,
+        ylab = '(log10) Number of SNPs called',
+        xlab = 'References')
+@ 
+
+
+
+Plotting only the GATK called SNPs.
+<<gatk12>>=
+counts.SNP <- counts.SNP[-c(1:24), ]
+ggplot(counts.SNP,
+       aes(x = factor(sample),
+           y = counts,
+           fill = factor(reference))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+@ 
+
+
+Plot the difference between the number of SNPs called on the 6 libraries using either the assembled or custom assembled mmetsp0098 reference. Also show the variation pattern with the number of reads used for calling SNPs. First, prepare SNP data.
+<<diffreferences98>>=
+x1 <- counts.SNP[counts.SNP$reference %in% "mmetsp0098GATKx1", ]
+x2 <- counts.SNP[counts.SNP$reference %in% "mmetsp0098CustGATKx1", ]
+@ 
+
+Next, add the number of reads per library. This is the count of non duplicate reads that mapped to each of all the references used.
+
+<<refreads>>=
+ref.reads <- read.xlsx("./refreads.xlsx", sheetIndex = 1)
+head(ref.reads)
+y <- ref.reads[1:12, ]
+@ 
+
+Plot difference.
+<<differenceplotting, out.width='.49\\linewidth', fig.show='hold'>>=
+dat <- data.frame(rbind(x1, x2), reads = y$counts)
+
+ggplot(dat,
+       aes(x = factor(sample),
+           y = counts,
+           fill = factor(reference))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+
+ggplot(dat,
+       aes(x = factor(sample),
+           y = reads,
+           group = factor(reference))) +
+    geom_line(size = .2)+
+        geom_point(data = dat,
+                   aes(x = factor(sample),
+                       y = reads,
+                       colour = factor(reference),
+                       size = counts)) +
+        theme_bw()
+@ 
+
+Plot number of all mapped reads for each library and for all 4 references.
+<<readsprecall>>=
+ggplot(ref.reads,
+       aes(x = factor(sample),
+           y = counts, 
+           group = factor(reference))) + 
+    geom_line(size = .2) + 
+        geom_point(aes(shape = factor(reference))) + 
+            theme_bw()
+@ 
+
+Difference in SNPs called between the already assembled and the custom assembled \textit{mmetsp0098} reference.
+<<mmetsp0098ref>>=
+dat <- read.xlsx("./snp.counts.xlsx", sheetIndex = 2)
+ggplot(dat,
+       aes(x = factor(sample),
+           y = counts,
+           fill = factor(reference))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+@ 
+
+Another way to show difference between GATK recalibration protocols decreasing the number of SNPs called after readjusting of nucleotide probabilities for each read.
+<<barplotGATK>>=
+dat <- read.xlsx("./snp.counts.xlsx", sheetIndex = 3)
+custom.colors <- c(col1 = "#b2182b",
+                   col2 = "#ef8a62",
+                   col3 = "#fddbc7",
+                   col4 = "#e0e0e0",
+                   col5 = "#999999",
+                   col6 = "#4d4d4d")
+
+barplot(as.matrix(dat[, -1]),
+        horiz = TRUE,
+        col = custom.colors,
+        xlab = "Difference in number of alled SNPs between references",
+        ylab = 'Difference in GATK filtering protocols',
+        las = 2,
+        legend = dat$sample)
+@ 
+
+\subsection{Final filtering}
+\label{subsec:ffilter}
+GATK hard filtering removes SNPs with low quality or confidence. This is calculated relatively to the depth of coverage. Using 3 three different thresholds for \textit{QD} we get the number of SNPs that pass the filters. 
+
+\begin{equation}
+  \label{eq:1}
+  QD = \frac{Confidence}{DepthCoverage}
+\end{equation}
+
+\begin{equation}
+  \label{eq:2}
+  DepthOfCoverage = \frac{NbOfReads \times ReadLength}{AssemblySize}
+\end{equation}
+
+Only one reference was used here, that is Steve Roberts' genome v15. 
+<<snphardfilter>>=
+dat <- read.xlsx("./hard.snps.xlsx", sheetIndex = 1)
+ggplot(dat,
+       aes(x = factor(sample),
+           y = snps,
+           fill = factor(qd)
+#           group = factor(reference)
+           )) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw() + 
+            geom_text(aes(x = factor(sample), 
+                          y = snps, 
+                          ymax = snps, 
+                          label = snps,
+                          size = 2,
+                          hjust = 1),
+                      position = position_dodge(width=1)) +
+                    coord_flip() + 
+                        scale_fill_brewer()
+@ 
+
+Number of SNPs per strain at \textit{QD = 5}. SNPs called against \textit{SR genome v15}. The number of reads (approx 100 nt) per library has been counted and plotted above, the data is in \textit{refreads.xlsx}.
+<<snphardfilter2>>=
+dat <- read.xlsx("./hard.snps.xlsx", sheetIndex = 1)
+dat <- dat[7:10, 1:2]
+dat$Treads <- ref.reads[c(19, 22, 20, 21), 2]
+dat$norm <- with(dat, (snps/Treads)*1000)
+
+ggplot(dat,
+       aes(x = as.factor(sample),
+           y = norm)) +
+    geom_bar(stat = "identity") + 
+        geom_text(aes(x = as.factor(sample),
+                      y = norm,
+                      ymax = norm,
+                      label = round(norm, digits = 2),
+                      color = "white",
+                      vjust = 2,
+                      size = 3))
+@ 
+
+
+We can also do the same thing with indels.
+<<indelhardfilter>>=
+dat <- read.xlsx("./hard.snps.xlsx", sheetIndex = 1)
+ggplot(dat,
+       aes(x = factor(sample),
+           y = indels,
+           fill = factor(qd))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw() + 
+            geom_text(aes(x = factor(sample), 
+                          y = indels, 
+                          ymax = indels, 
+                          label = indels,
+                          size = 2,
+                          hjust = 1),
+                      position = position_dodge(width=1)) +
+                    coord_flip() + 
+                        scale_fill_hue(c = 40, l = 60)
+@ 
+
+\section{Working with a combined assembly}
+\label{sec:combined}
+The combined assembly is already published. It is added here with the other references because it is heavily annotated and their contigs are extensively mapped. Future analysis of SNPs and QPX genome structure depends on good annotation data.
+Load in new mapped data to the combined reference:
+<<combined.loaded>>=
+combined <- read.xlsx("./snp.counts.xlsx", sheetIndex = 1)
+glimpse(combined)
+@ 
+
+Difference in SNPs called between the genome v15 of S. Roberts and the official combined assembly. First extract relative rows.
+<<combined>>=
+dev <- paste("genomSRv15GATKx", seq(1,3,1), sep = "")
+ser <- paste("combinedGATKx", seq(1,3,1), sep = "")
+difference <- rbind(combined[combined$reference %in% dev, ],
+               combined[combined$reference %in% ser, ])
+
+d.ref <- ref.reads[c(19:30), ]
+@ 
+
+Plot difference.
+<<combined_diff1, out.width='.49\\linewidth', fig.show='hold'>>=
+ggplot(difference,
+       aes(x = factor(sample),
+           y = counts,
+           fill = factor(reference))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+
+ggplot(d.ref,
+       aes(x = factor(sample),
+           y = counts,
+           group = factor(reference))) +
+    geom_line(size = .2)+
+        geom_point(data = d.ref,
+                   aes(x = factor(sample),
+                       y = counts,
+                       colour = factor(reference),
+                       size = counts)) +
+        theme_bw()
+@ 
+
+
+\section{Descriptive stats of all processed libraries}
+\label{sec:descriptive}
+This following section shows the mean length of all sequences assembled from each library, the number of base pairs per library, the identified protein features from these sequences, and the number of functional enzymes identified by mapping to public libraries.
+It is to note the number of predicted and identified rRNA features in each of these libraries is significantly low.
+Regress different variables on each others for visualization purposes.
+<<descriptive1>>=
+stats <- read.xlsx("./libraries.xlsx", sheetIndex = 1)
+rstats <- stats[complete.cases(stats), ]
+#rownames(rstats) <-  stats[, 1]
+
+# The whole new magical script
+# job: order columns
+# dependecies: dplyr
+rstats <- within(rstats, 
+                 libraries <- factor(libraries, 
+                                     levels = arrange(rstats, 
+                                         bp)$libraries))
+
+ggplot(rstats,
+       aes(x = libraries,
+           y = bp)) + 
+    geom_bar(stat = "identity") +
+        theme_bw() + 
+            coord_flip() +
+                geom_text(aes(x = libraries,
+                              y = bp,
+                              ymax = bp,
+                              label = bp,
+                              size = 5,
+                              color = "white",
+                              hjust = 1.2))
+@ 
+
+Difference between libraries in the number of base pair (bp), which must be multiplied by 1000 bp, identified protein features inside assembled sequences (feature), functional sequences in the contigs (function), the mean length in each library, and the number of contigs (sequence) assembled from raw reads after trimming and duplicate removal (all basic quality controls).
+<<descriptive3>>=
+stats <- read.xlsx("./libraries.xlsx", sheetIndex = 1)
+rstats <- stats[complete.cases(stats), ]
+rstats$bp <- rstats$bp/1000
+#rstats <- rename(rstats, bpx1000 = bp)
+rstats <- gather(rstats, "feature", "count", c(2:4, 7:8))
+ggplot(rstats, 
+       aes(x = libraries,
+           y = count,
+           group = factor(feature))) + 
+    geom_line(size = .2) +
+        geom_point(aes(shape = factor(feature),
+                       size = 1.5)) +
+                       theme_bw() +
+                           geom_text(aes(x = libraries,
+                                         y = count,
+                                         ymax = count,
+                                         label = count,
+                                         size = 1.5,
+                                         hjust = ifelse(sign(count)>1, .5, 0)),
+                                     position = position_dodge(width = 1))
+@ 
+
+Principal component analysis and diagnostics.
+<<pca1>>=
+stats <- read.xlsx("./libraries.xlsx", sheetIndex = 1)
+rownames(stats) <- stats$libraries
+rstats <- stats[complete.cases(stats), -1]
+rstats <- decostand(rstats, method = "range")
+p = princomp(~bp + mlength + sequence + rna
+   , data= rstats)
+summary(p)
+biplot(p)
+@ 
+Finally a summary of all sequence data.
+<<table_descriptive>>=
+stats[, -1]
+@ 
+
+
+\section{Applied annotations, subsytem predictions, and taxonomic distribution}
+\label{sec:applied}
+Like the title implies, identified and predicted annotations and protein features are mapped to public sequence libraries.
+Reshape data, transform columns into rows.
+<<predicted1>>=
+predicted <- read.xlsx("./libraries.xlsx", sheetIndex = 3)
+predicted <- gather(predicted, "ko", "count", 3:8, na.rm = TRUE)
+summary(predicted)
+@ 
+
+Plot difference in identified protein features between libraries.
+<<predicted2>>=
+ggplot(predicted,
+       aes(x = lib,
+           y = count,
+           group = factor(ko))) + 
+    geom_line(size = .2) +
+        geom_point(aes(shape = factor(ko),
+                       size = 1.5)) +
+                       theme_bw() +
+                           geom_text(aes(x = lib,
+                                         y = count,
+                                         ymax = count,
+                                         label = count,
+                                         size = 1.5,
+                                         hjust = ifelse(sign(count)>1, .5, 0)),
+                                     position = position_dodge(width = 1))
+@ 
+
+In this next snippet subsystems are discussed. \href{http://www.nmpdr.org/FIG/wiki/view.cgi/FIG/FunctionalCoupling}{Functional coupling and chromosomal clusters} are shown for \textit{clustering-based subsytems} among other subsytems.
+<<predicted3>>=
+predicted <- read.xlsx("./libraries.xlsx", sheetIndex = 4)
+predicted <- gather(predicted, "subsystems", "count", 3:8, na.rm= TRUE)
+ggplot(predicted,
+       aes(x = lib,
+           y = count,
+           group = factor(subsystems))) + 
+    geom_line(size = .2) +
+        geom_point(aes(shape = factor(subsystems),
+                       size = 1.5)) +
+                       theme_bw() +
+                           geom_text(aes(x = lib,
+                                         y = count,
+                                         ymax = count,
+                                         label = count,
+                                         size = 1.5,
+                                         hjust = ifelse(sign(count)>1, .5, 0)),
+                                     position = position_dodge(width = 1))
+@ 
+
+Finally, a taxonomic classification on sequence similarities gives insights on sequence relatedness or sample contamination. Five classes were selected, bacteria, fungi, algae, parasite, and bivalvia.
+<<predicted4>>=
+predicted <- read.xlsx("./libraries.xlsx", sheetIndex = 5)
+predicted <- gather(predicted, "class", "count", c(3,5:9), na.rm = TRUE)
+ggplot(predicted,
+       aes(x = lib,
+           y = count,
+           group = factor(class))) + 
+    geom_line(size = .2) +
+        geom_point(aes(shape = factor(class),
+                       size = 1.5)) +
+                       theme_bw() +
+                           geom_text(aes(x = lib,
+                                         y = count,
+                                         ymax = count,
+                                         label = count,
+                                         size = 1.5,
+                                         hjust = ifelse(sign(count)>1, .5, 0)),
+                                     position = position_dodge(width = 1))
+@ 
+
+
+\section{Shared SNPs between libraries}
+\label{sec:shared}
+Shared SNPs between libraries mapped to SR genome v15.
+<<shared1>>=
+shared.snps <- read.table("./shared.snps.txt", fill =TRUE)
+shared.snps
+@ 
+
+Shared indels between libraries mapped to SR genome v15.
+<<shared2>>=
+shared.indels <- read.table("./shared.indels.txt", fill = TRUE)
+shared.indels
+@ 
+
+\section{Component analysis and sequence closeness}
+\label{sec:closeness}
+Import annotated data.
+<<closeness1>>=
+closeness <- read.csv("./pca.csv", sep = "\t")
+summary(closeness)
+closeness <- closeness[, c(1, 7:10)]
+@ 
+
+Principal component analysis on 5 libraries, 4 strains and the genome (v15), using an \textit{identity score} for annotating a sequence and an \textit{alignment length score} for similarities with a functional feature, an \textit{e-value score} for functional similarities, and the \textit{number of hits}, ie., the number of times a function is identified in a library.
+<<closeness3>>=
+rownames(closeness) <- paste(closeness[, 1], 1:nrow(closeness), sep = ".")
+x=closeness[, -1]
+head(x)
+results <- decostand(x, method = "range")
+head(results)
+p = princomp(~ avg...ident + avg.align.len
+   , data= results)
+summary(p)
+#plot(p, type = "l")
+#biplot(p, cex = .4)
+@ 
+
+Clustering and visualization of all sequences without applying any filters.
+<<closeness4>>=
+ggbiplot(p, obs.scale = 1, 
+         var.scale = 1, 
+         groups = closeness$metagenome,
+         ellipse = TRUE, 
+         circle = FALSE) +
+        geom_point(aes(size = closeness$X..hits)) +
+        theme_bw() +
+            theme(legend.direction = 'horizontal', 
+                  legend.position = 'top')
+@ 
+
+Build a custom PCA function for repettive iterations.
+<<function1>>=
+customBiplot <- function(data, method){
+x=data[, -1]
+results <- decostand(x, method = method)
+p = princomp(~ results[, 2] + results[, 3]
+   , data= results)
+ggbiplot(p, obs.scale = 1, 
+         var.scale = 1, 
+         groups = data$metagenome,
+         ellipse = TRUE, 
+         circle = FALSE) +
+        theme_bw() +
+            theme(legend.direction = 'horizontal', 
+                  legend.position = 'top')
+}
+@
+
+Filter sequences depending on their alignment length and the abundance of a function. 
+\marginnote{\small\color{blue}$\Lsh$ results[,2] = identity and results[,3] = alignment length}[.5cm]
+<<closeness5>>=
+closenessX <- filter(closeness, avg.align.len < 50, X..hits > 2)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select higher alignment similarities.
+<<closeness6>>=
+closenessX <- filter(closeness, avg.align.len < 60, X..hits > 2)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select even higher alignment similarities.
+<<closeness7>>=
+closenessX <- filter(closeness, avg.align.len < 100, X..hits > 4)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select on the criteria of e-Value and abundance of a functional sequence.
+<<closeness8>>=
+closenessX <- filter(closeness, avg.eValue < -40, X..hits > 2)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select on the criteria of e-Value and abundance of a functional sequence.
+<<closeness9>>=
+closenessX <- filter(closeness, avg.eValue < -40, X..hits > 3)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select on the criteria of e-Value and abundance of a functional sequence.
+<<closeness10>>=
+closenessX <- filter(closeness, avg.eValue < -50, X..hits > 2)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+Select on the criteria of alignment length. Since SNP aggregation tests are the next step in this analysis, the length of a correct alignment is technically helpful in differentiating SNP position. And abundance will be more than 2 to increase probabilities of correct functional annotation.
+<<closeness11>>=
+closenessX <- filter(closeness, avg.align.len > 200, X..hits >= 2)
+dim(closenessX)[1]
+customBiplot(closenessX, method = "range")
+@ 
+
+
+\section{Aggregation analysis of SNPS}
+\label{sec:aggregations}
+MMETSP libraries are already been annotated. How many contigs, peptide and cds elements are indexed?
+<<aggregation1>>=
+contigs <- read.xlsx("./annot.stats.xlsx", sheetIndex = 1)
+contigs <- gather(contigs, "elements", "counts", 2:4)
+ggplot(contigs,
+       aes(x = factor(library),
+           y = counts,
+           fill = factor(elements))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw() +
+            theme(legend.direction = 'horizontal', 
+                  legend.position = 'top') + 
+                coord_flip() +
+                    geom_text(aes(x = factor(library),
+                                  y = counts,
+                                  ymax = counts,
+                                  label = counts,
+                                  hjusts = ifelse(sign(counts)> 0,1,0)),
+                              position = position_dodge(width = 1))
+@ 
+
+\subsection{Preferential substitution}
+\label{sec:preferential}
+Preferential substitution of nucleotides. It should be noted that \textit{mmetsp0098} and \textit{mmetsp1433} are both bigger in library size than the others. Therefore comparison of SNPs should be done for each library separately. However there is a resemblance in substitution between libraries since the pattern is quite similar for all nucleotides.
+<<preferential1>>=
+prefs <- read.table("./all.stats.txt")
+prefs$V3 <- c(rep("m1002", 12),
+              rep("m98", 12),
+              rep("m992", 12),
+              rep("m1433", 12))
+ggplot(prefs,
+       aes(x = factor(V1),
+           y = V2,
+           fill = factor(V3))) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw()
+@ 
+
+After hard filtering SNPs to the minimum from all 4 libraries, \textit{DISCARD}-labelled SNPs were removed. The remaining were imported into data frames with the following columns.
+\begin{enumerate}
+\item CHROM: number of contig
+\item POS: SNP position on that contig
+\item ALT: alternative SNP to the reference
+\item AD: allelic depth for the reference and ALT alleles
+\item DP: approximate read depth
+\item GQ: genotype quality
+\item PL: normalized phred scaled likelihoods
+\end{enumerate}
+The structure of the data frame is similar to the \textit{iris} data. 
+\marginnote{\small\color{blue}$\Lsh$ With low number of sample it is impossible to create a f(SNP)=strain machine learning framework. To make a binary table of SNPs at least 100 samples must be used.}[0.1cm]
+<<SNPspred1>>=
+x <- c('m98', 'm1433', 'm1002', 'm992')
+y <- c(16729, 15267, 9716, 6965)
+dat <- data.frame(lib = x, SNPs = y)
+ggplot(dat,
+       aes(x = lib,
+           y = SNPs)) + 
+    geom_bar(stat = "identity") +
+        theme_bw() + 
+            coord_flip() +
+                geom_text(aes(x = lib,
+                              y = SNPs,
+                              ymax = SNPs,
+                              label = SNPs,
+                              size = 5,
+                              col = "white",
+                              hjust = 2))
+@ 
+
+Import SNP data: data manipulation process of removing NAs and getting the same number of SNPs across all samples.
+<<snps12>>=
+m98 <- read.table("./m98.ml.txt", fill = NA)
+m1433 <- read.table("./m1433.ml.txt", fill = NA)
+m992 <- read.table("./m992.ml.txt", fill = NA)
+m1002 <- read.table("./m1002.ml.txt", fill = NA)
+
+colnames(m98) <- c('contigs', 'pos', 'ad1', 'ad2',
+                   'dp', 'gq', 'pl1', 'pl2', 'pl3', 'lib')
+colnames(m1433) <- c('contigs', 'pos', 'ad1', 'ad2',
+                   'dp', 'gq', 'pl1', 'pl2', 'pl3', 'lib')
+colnames(m992) <- c('contigs', 'pos', 'ad1', 'ad2',
+                   'dp', 'gq', 'pl1', 'pl2', 'pl3', 'lib')
+colnames(m1002) <- c('contigs', 'pos', 'ad1', 'ad2',
+                   'dp', 'gq', 'pl1', 'pl2', 'pl3', 'lib')
+
+m98 <- m98[complete.cases(m98), ]
+m1433 <- m1433[complete.cases(m1433), ]
+m992 <- m992[complete.cases(m992), ]
+m1002 <- m1002[complete.cases(m1002), ]
+
+m98 <- m98[! m98$lib != 'm98', ]
+m1433 <- m1433[! m1433$lib != 'm1433', ]
+m992 <- m992[! m992$lib != 'm992', ]
+m1002 <- m1002[! m1002$lib != 'm1002', ]
+
+m1433$pl3 <- as.numeric(m1433$pl3)
+
+m98$lib <- factor(m98$lib, "m98")
+m992$lib <- factor(m992$lib, "m992")
+m1433$lib <- factor(m1433$lib, "m1433")
+m1002$lib <- factor(m1002$lib, "m1002")
+
+index <- min(dim(m98)[1], dim(m1433)[1],
+             dim(m992)[1], dim(m1002)[1])
+set.seed(123)
+mall <- rbind(m98[sample(nrow(m98), index), ],
+              m1433[sample(nrow(m1433), index), ],
+              m992[sample(nrow(m992), index), ],
+              m1002[sample(nrow(m1002), index), ])
+dim(mall)
+@ 
+
+\subsection{Available data}
+\label{subsec:available data}
+Regressing the genome quality of SNPs on the position of the SNPs inside a contig. This shows that SNPs are concentrated in the first 10 Kb.
+<<snpPredict123>>=
+head(mall)
+with(mall, plot(pos, gq, cex = .5))
+@ 
+
+Regression of contigs and the read depth for each SNPs in those contigs. When using libraries mapped to the combined assembly (as a reference transcriptome) the plot shows that the depth of coverage distinguishes between 2 different subsets of contigs. However the regression is constant when using the genome of SR v15 as a reference for mapping the libraries (as shown below).
+<<snpPredict13, out.width='.49\\linewidth', fig.show='hold'>>=
+with(mall, plot(contigs, dp, cex = .5))
+submall <- filter(mall, dp > 50, pos <= 10000)
+@ 
+
+This plot shows that \Sexpr{(nrow(submall)/nrow(mall))*100} \% of the SNPs have a depth over 50 for the first 10 Kb.
+<<snpPredict15>>=
+with(mall, plot(pos, dp, cex = .5))
+## percentage of SNPs with read depth higher than 35
+(nrow(submall)/nrow(mall))*100
+@ 
+
+Plotting only SNPs with DP > 50 and in contigs which length <= 10 Kb, and regressing toward a phred-scaled adjusted likelihood for each variant or genotype likelihood.
+<<snpPredict16>>=
+with(submall, plot(pos, pl1, cex = .5))
+summary(submall$lib)
+@ 
+
+Linear regression between position of the SNP and the normalized phred scaled likelihood, which on its own is an accuracy determination score. Phred likelihoods (PL) are computed for the REF/REF, REF/ALT, and ALT/ALT variants.
+To convert a PL to a raw likelihood L:
+\begin{equation}
+  \label{eq:3}
+  P(L | AA) = 10^{-P_{AA}/10}
+\end{equation}
+These probabilities are adjusted with phred scores. They determine the probability of a base observed given a reference genotype, an heterozygous genotype or a non-reference genotype respectively (pl1, pl2, and pl3).\\
+Accordingly, REF/REF (pl1) is significant. Meaning the genotype we have is homozygous for the reference nucleotide (not the variant), but if a variant exists, thus it represents a rare mutation (\textit{reference needed}). Therefore, the raw likelihoods must be calculated with the equation above for the picked variants and the genotype with \textit{P=1} is the most significant genotype at that nucleotide.
+<<nspPredict17, out.width='.49\\linewidth', fig.show='hold'>>=
+fit <- lm(pos~pl1, data = submall)
+summary(fit)
+@ 
+
+Lets get the variants with the highest probability that a genotype has been identified. \textit{PL=1} determines the genotype, either homozygous for REF (pl1) or ALT (pl3) or heterozygous REF/ALT (pl2).
+<<snpPredict18>>=
+submall[, 7:9] <- apply(submall[, 7:9], 2, function(x) 10^(-x/1000))
+head(submall)
+@ 
+
+Lets extract all heterozygous alleles with at least 90 \% confidence.
+<<snpPredict185>>=
+heteromall <- filter(submall, pl2 >= .9)
+@ 
+
+The original number of SNPs was \Sexpr{dim(submall)[1]} among which the number of variants with heterozygous genotype is \Sexpr{dim(heteromall)[1]}.
+<<snpPredict19>>=
+dat <- as.data.frame(summary(heteromall$lib))
+ggplot(dat,
+       aes(x = rownames(dat),
+           y = dat[, 1])) +
+    theme_bw() +
+        geom_bar(stat = "identity") +
+            coord_flip() +
+                geom_text(aes(x = rownames(dat),
+                              y = dat[, 1],
+                              ymax = dat[, 1],
+                              size = 5,
+                              label = dat[, 1],
+                              col = "white",
+                              hjust = 2))
+@ 
+
+Now lets get the homozygous variants with genotype ALT/ALT with 90 \%.
+<<snpPredict20>>=
+altmall <- filter(submall, pl3 >= .9)
+@ 
+
+The number of variants ALT/ALT is \Sexpr{dim(altmall)[1]}. Interesting thing is that using the combined assembly as a reference, m1433 had also the highest number of homozygous alleles while  m98 had half the number shown below.
+<<snpPredict21>>=
+dat <- as.data.frame(summary(altmall$lib))
+ggplot(dat,
+       aes(x = rownames(dat), 
+           y = dat[, 1])) +
+    theme_bw() +
+        coord_flip() +
+            geom_bar(stat = "identity") +
+                geom_text(aes(x = rownames(dat),
+                              y = dat[, 1],
+                              ymax = dat[, 1],
+                              label = dat[, 1],
+                              size = 5,
+                              color = "white",
+                              hjust = 2))
+@ 
+
+\section{Protein domain annotation}
+\label{sec:protein}
+Get the number of protein domains from the MMETSP strains. First, contigs must be translated into peptides. HMMER3.2b was used for annotation. Hidden Markov Models were generated on Pfam database. The table below lists old and new annotations against old and new Pfam v26 and v28 libraries. (> 2 years interval between versions).
+<<pfam1>>=
+pfam <- read.xlsx("./pfam.xlsx", sheetIndex = 1)
+pfam
+@ 
+
+Number of domains found in Pfam v28 for :
+\begin{itemize}
+\item Virulence
+\item Temperature
+\item Salinity
+\item Salt tolerance
+\end{itemize}
+<<pfam2>>=
+ggplot(pfam[1:4, ],
+       aes(x = domain,
+           y = pfam)) +
+    coord_flip() +
+        theme_bw() +
+            geom_bar(stat = "identity") +
+                geom_text(aes(x = domain,
+                              y = pfam,
+                              ymax = pfam,
+                              label = pfam,
+                              size = 5,
+                              color = "white",
+                              hjust = 2))
+@ 
+
+All domains of the above proteins found in the 4 strain libraries.
+<<pfam3>>=
+allpfam <- select(pfam, contains("a"))
+allpfam <- filter(allpfam, annot == "new")
+allpfam
+allpfam <- gather(allpfam[, -2], "lib", "count", 2:5)
+ggplot(allpfam,
+       aes(x = lib,
+           y = count,
+           fill = domain)) +
+    theme_bw() +
+        coord_flip() +
+            geom_bar(stat = "identity",
+                     position = "dodge") +
+                geom_text(aes(x = lib,
+                             y = count,
+                             ymax = count,
+                             label = count,
+                             size = 5,
+                             hjust = 1),
+                              position = position_dodge(width = 1))
+@ 
+
+How many possible proteins can be found among the 4 strains.
+<<pfam4>>=
+singlepfam <- select(pfam, contains("s"))
+singlepfam <- cbind(singlepfam, X = pfam$domain, Y = pfam$annot)
+singlepfam <- filter(singlepfam, Y == "new")
+singlepfam
+singlepfam <- gather(singlepfam, "lib", "count", 1:4)
+ggplot(singlepfam,
+       aes(x = X,
+           y = count,
+           fill = lib)) +
+    theme_bw() +
+        coord_flip() +
+            geom_bar(stat = "identity",
+                     position = "dodge") +
+                geom_text(aes(x = X,
+                              y = count,
+                              ymax = count,
+                              label = count,
+                              size = 5,
+                              hjust = 1),
+                          position = position_dodge(width = 1))
+@ 
+
+Difference between old and new annotations against pfam database.
+<<pfam5>>=
+newpfam <- select(pfam, contains("s"))
+newpfam <- cbind(newpfam, annot = pfam$annot, domain = pfam$domain)
+newpfam <- gather(newpfam, "lib", "count", 1:4)
+ggplot(newpfam,
+       aes(x = domain,
+           y = count,
+           fill = annot,
+           group = lib)) +
+    theme_bw() +
+        coord_flip() +
+            geom_bar(stat = "identity",
+                     position = "dodge") +
+                geom_text(aes(x = domain,
+                              y = count,
+                              ymax = count,
+                              label = count,
+                              size = 5,
+                              hjust = 1),
+                          position = position_dodge(width = 1))
+@ 
+
+Get the number of contigs that match a significant e-value domain.
+<<pfam6>>=
+pfam2 <- read.xlsx("./pfam.xlsx", sheetIndex = 2)
+pfam2
+pfam2 <- filter(pfam2, annot == "contig")
+pfam2 <- gather(pfam2, "evalue", "count", 2:5)
+ggplot(pfam2,
+       aes(x = pfam,
+           y = count,
+           fill = evalue,
+           group = lib)) +
+    theme_bw() +
+        geom_bar(stat = "identity",
+                 position = "dodge") +
+            scale_fill_brewer() +
+                coord_flip() +
+                    geom_text(aes(x = pfam,
+                                  y = count,
+                                  ymax = count,
+                                  label = count,
+                                  size = 4,
+                                  hjust = 1),
+                              position = position_dodge(width = 1))
+@ 
+
+How many protein domains were found at different evalue significance.
+<<pfam7>>=
+pfam2 <- read.xlsx("./pfam.xlsx", sheetIndex = 2)
+pfam2 <- filter(pfam2, annot == "domain")
+pfam2 <- gather(pfam2, "evalue", "count", 2:5)
+ggplot(pfam2,
+       aes(x = pfam,
+           y = count,
+           fill = evalue,
+           group = lib)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        scale_fill_brewer() +
+            coord_flip() +
+                theme_bw() +
+                    geom_text(aes(x = pfam,
+                                  y = count,
+                                  ymax = count,
+                                  size = 4,
+                                  label = count,
+                                  hjust = 1),
+                              position = position_dodge(width = 1))
+
+@ 
+
+\section{Map RNA contigs to Genome (v15) contigs}
+\label{sec:overallstats}
+Here is the overall stats of the BLAT of the 4 strains RNA sequenced contigs against SR. genome v15. Until now the RNA contigs have been annotated with pfam, then reverse translated into DNA contigs then aligned on the reference genome for SNP localization. 
+<<blat1>>=
+blat <- read.table("./pfam.stats.genomics.txt", header = T)
+x <- c("m98", "m992", "m1002", "m1433")
+y <- gl(4, 4, 16, labels = c("virulence", "temperature", "salinity", "salt tolerance"))
+blat <- data.frame(blat, lib = c(rep(x, 4)), pfam = y)
+ggplot(blat,
+       aes(x = pfam,
+           y = queryCnt,
+           fill = lib)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw() + 
+            coord_flip() +
+                scale_fill_brewer() +
+                    geom_text(aes(x = pfam,
+                                  y = queryCnt,
+                                  ymax = queryCnt,
+                                  label = queryCnt,
+                                  size = 4,
+                                  hjust = 1),
+                              position = position_dodge(width = 1))
+@ 
+From the table data above the minimum identity of all contigs aligned is \Sexpr{min(blat$minIdent)}. The mean query is necessary to choose the number of contigs mapped. Since each contig can be found multiple times in the genome (at different alignment lengths of course) it is best if we choose the best contigs those that have a maximum alignment length. For those contigs must be mapped/aligned once and thus, no duplicate entries should be selected for whatever contig. For this reason choosing an alignment length equal to the half of the mean of the alignment length gives the minimum number of duplicate contigs.
+<<blat2>>=
+ggplot(blat,
+       aes(x = pfam,
+           y = meanQSize,
+           fill = lib)) + 
+    coord_flip() +
+        theme_bw() +
+            geom_bar(stat = "identity",
+                     position = "dodge") +
+                geom_text(aes(x = pfam,
+                              y = meanQSize,
+                              ymax = meanQSize,
+                              label = meanQSize, 
+                              size = 4,
+                              hjust = 2),
+                          position = position_dodge(width = 1))
+@ 
+
+\section{Assessing SNP hotspots in 4 QPX strains}
+\label{sec:hotspots}
+QPX assemblies by MMETSP team were used for pfam annotation (with HMMER). SNP calling on the 4 strains used Steve Roberts reference genome v15 (called with GATK). Location of SNPs in the pfam domains was inferred after alignment of the QPX contigs on the reference genome (with BLAT). Finally all data were merged in one file grouped by 4 QPX strains (2 from NY, one from each VA and MA) and 3 pfam subset pathways (Virulence, salinity/salt-tolerance, temperature).
+<<hotspots1>>=
+hotspots.raw <- read.table("./hotspots/all.pfam.snp.txt", header = TRUE)
+head(hotspots.raw)
+@ 
+
+What is the correlation between a SNP position and the first reference nucleotide that align to contig containing domain?
+<<interaction01>>=
+ggplot(hotspots.raw,
+       aes(x = Position,
+           y = Tstart)) +
+    theme_bw() +
+        geom_point(aes(color = lib,
+                       size = Tsize)) +
+            facet_wrap( ~ lib, ncol = 2)
+
+@ 
+
+How many SNPs can be found inside and outside of protein domains?
+<<hotspots2>>=
+count <- c(264, 749, 295)
+position <- c("head", "inside", "tail")
+dat <- data.frame(position, count)
+dat$per <- round((dat$count/sum(dat[, 2]))*100, digits = 2)
+ggplot(dat,
+       aes(x = position,
+           y = count)) +
+    theme_bw() +
+        geom_bar(stat = "identity") +
+            coord_flip() +
+                geom_text(aes(x = position,
+                              y = count,
+                              ymax = count,
+                              label = per,
+                              size = 4,
+                              hjust = 2,
+                              color = "white"))
+@ 
+
+How are SNPs distributed between pfam domains? The between parenthesis score is an identifier for the highest SNP concentration. It has no units. It is just a score of normalized counts. The counts is relative to the position of SNPs inside the protein domains.
+<<hotspots3>>=
+domain <- c("virulence", "temperature", "salinity", "salt tolerance")
+count <- c(467, 306, 64, 347)
+dat <- data.frame(domain, count)
+dat$norm <- round(dat$count/pfam[1:4, 2], digits = 2)
+ggplot(dat,
+       aes(x = domain,
+           y = count)) +
+    theme_bw() +
+        coord_flip() +
+            geom_bar(stat = "identity") +
+                geom_text(aes(x = domain,
+                              y = count,
+                              ymax = count,
+                              label = paste(count, "(x", norm, ")"),
+                              size = 3,
+                              hjust= .5,
+                              color = "white"))
+
+@ 
+
+How many SNPs can be found outside of each domain? Separate analysis. The SNP position outside the domains is dependent on the Reference contig length, which was selected through alignment.
+<<hotspots4>>=
+before <- c(155, 160, 11, 126)
+after <- c(201, 89, 4, 163)
+dat <- data.frame(domain, before, after)
+dat <- gather(dat, "location", "count", 2:3)
+ggplot(dat,
+       aes(x = domain,
+           y = count,
+           fill = location)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") + 
+        theme_bw() + 
+            coord_flip() + 
+                geom_text(aes(x = domain,
+                              y = count,
+                              ymax = count,
+                              label = count,
+                              size = 3,
+                              hjust = 2),
+                          position = position_dodge(width = 1))
+@
+
+How many SNPs can be found inside and outside protein domains between strains?
+<<hotspots5>>=
+before <- c(178, 21, 74, 133)
+after <- c(177, 15, 69, 189)
+inside <- c(593, 73, 216, 448)
+strain <- c("m98", "m992", "m1002", "m1433")
+dat <- data.frame(strain, before, inside, after)
+dat <- gather(dat, "region", "count", 2:4)
+ggplot(dat,
+       aes(x = strain,
+           y = count,
+           fill = region)) +
+    geom_bar(stat = "identity") +
+        geom_text(aes(x = strain,
+                      y = count,
+                      ymax = count,
+                      label = count,
+                      vjust = 1,
+                      size = 2),
+                  position = "stack") +
+            theme_bw()
+@ 
+
+How many SNPs can be found inside and outside domains between virulence, temperature, salinity and within strain?
+<<hotspots6>>=
+dat <- read.xlsx("./hotspots/snps.all.pfam.xlsx", sheetIndex = 1)
+dat <- gather(dat, "region", "count", 3:5)
+ggplot(dat,
+       aes(x = lib,
+           y = count,
+           fill = region)) + 
+    geom_bar(stat = "identity") +
+        geom_text(aes(x = lib,
+                      y = count,
+                      ymax = count,
+                      label = count,
+                      size = 1,
+                      hjust = .5),
+                  position = "stack") +
+            facet_wrap( ~ pfam, ncol = 2) + 
+                theme_bw() + 
+                    scale_fill_hue(c = 40, l = 60)
+
+@ 
+
+Preferential substitution inside/outside domains per pfam subset for each strain.
+<<hotspots7, out.width='1.2\\linewidth'>>=
+dat <- read.xlsx("./hotspots/snps.all.pfam.xlsx", sheetIndex = 2)
+dat <- gather(dat, "mutation", "count", 3:14)
+dat$mutation <- gsub(".", ">", dat$mutation, fixed = TRUE)
+dat$pfam <- factor(dat$pfam, levels = c("virulence",
+                                        "temperature",
+                                        "salt.tolerance",
+                                        "salinity"))
+dat$lib <- factor(dat$lib, levels = c("m98",
+                                      "m1002", "m1433", "m992"))
+ggplot(dat,
+       aes(x = mutation,
+           y = count,
+           fill = region)) +
+    geom_bar(stat = "identity") +
+            theme_bw() +
+                facet_wrap(lib ~ pfam, ncol = 4) +
+                    scale_fill_hue(c = 40,  l = 60)
+@ 
+
+
+How many SNPs can be found inside protein domains between strains, per 1 kb? The number showing has been normalized with the total sum of sizes of contigs containing those SNPs.
+<<hotspots8>>=
+inside <- c(593, 73, 216, 448)
+sizen <- c(425098, 46409, 242136, 337206)
+strain <- c("m98", "m992", "m1002", "m1433")
+dat <- data.frame(strain, inside, sizen)
+dat$norm <- with(dat, (inside/sizen)*1000)
+
+ggplot(dat,
+       aes(x = strain,
+           y = norm)) + 
+    coord_flip() +
+    geom_bar(stat = "identity") +
+        geom_text(aes(x = strain,
+                      y = norm,
+                      ymax =norm,
+                      label = round(norm, digits = 2),
+                      hjust = 1.5,
+                      color = "white",
+                      size = 2)) +
+            theme_bw()
+@ 
+
+Frequency of SNPs inside pfam domains for each strain, per 1 Kb. Normalized by the total size of contigs for each strain.
+<<hotspots9>>=
+dat <- read.xlsx("./hotspots/snps.all.pfam.xlsx", sheetIndex = 1)
+dat$inside <- with(dat, (inside/tsum)*1000)
+ggplot(dat,
+       aes(x = lib,
+           y = inside)) + 
+    geom_bar(stat = "identity") +
+        geom_text(aes(x = lib,
+                      y = inside,
+                      ymax = inside,
+                      label = round(inside, digits = 2),
+                      size = 1,
+                      color = "white",
+                      vjust = 1.5)) +
+            facet_wrap( ~ pfam, ncol = 2) + 
+                theme_bw()
+
+@ 
+
+
+\section{Machine learning on 4 QPX strains}
+\label{subsec:mlqpx}
+Lets try a support vector machine classifier to differentiate between the QPX strains using quality data (above) of the variants.
+
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+
+\end{document}
