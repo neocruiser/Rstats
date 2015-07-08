@@ -138,7 +138,6 @@ libgl1-mesa-dev-lts-trusty
 Login and connect through secure network.
 #+BEGIN_SRC shell
 ssh -l bassem gordon.sdsc.xsede.org
-Monxsede#14
 #+END_SRC
 Transfer files
 #+BEGIN_SRC shell
