@@ -1,0 +1,1874 @@
+#+TITLE: Framework (2015): Sequence analysis, gene discovery, and molecular interactions
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+* Postdoc experience
+** Postdoc II
+*** Goals
+A) The first set are 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains.
+
+**** Project I
+1. comparer plusieurs transcriptomes
+2. un meme protiste (QPX en l'occurence)
+3. derivant de souches geographiques differentes
+4. evaluer la "relatedness" entre les differentes souches.
+
+**** Project II
+B) The second set of data includes transcriptomic data generated on infectious nodules (QPX + hard clam tissue) from diseased clams and I am interested in screening rare QPX transcripts in those samples to identify parasite transcripts produced in clam tissue during infection and possible crosstalk with the host (clam transcripts responding to parasite factors). The graduate student who did the experiment focused her analysis on most abundant transcripts in the nodules (e.g. clam transcripts) and discarded the rare QPX transcripts.
+
+**** Project III
+C) The third project will be use RNAseq data to infer functional networks and used machine learning to confirm association vs multifunctinality vs guilt-by-association (GBA)
+
+1. Is there any preference in exon expression in genes between 2 conditions (count exon-exon junctions and use a GLM model from DEXSeq to analyze significance and edge R. see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]])
+2. Use R BitSeq to estimate the number of actual transcribed genes
+
+**** Project IV
+Machine learning on hemocyte morphology using flow cytometry data (FCS: flow cytometry standard file format).
+1. Use GPU accelerated R package for faster computing [[http://www.r-tutor.com/gpu-computing][rpud]] package
+*** DATA
+1. BWA seqtk FastQC are found in "~/data/"
+2. Original data can be found at "~/data/QPX"
+3. Sampling from original data can be found at "~/data/QPX/Align"
+4. [[http://www.marinemicroeukaryotes.org/project_organisms][Marine Mirobial Eukayote Transcriptome Project]]
+5. [[http://data.imicrobe.us/project/view/104][iMicrobe]] hosted data: description of the project and fasta files + ftp
+6. [[http://data.imicrobe.us/project/view/104][NCBI]] metadata entries for the project
+7. [[http://jcvi.org/metarep/][JCVI METAREP]] annotation protocol for the project 
+*** Bibliography
+**** First set
+1. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][Xiong 2014]] =science=
+2. Difference in genome annotation (RefSeq, UCSC, Ensembl) is responsible for differences in read mapping to genes and transcription quantification [[http://www.biomedcentral.com/1471-2164/16/97][Zhao 2015]] =gene model=
+3. Non-parametric approach to detect DETs from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv119.abstract][Shi 2015]] =r friendly=
+4. Co-expression analysis require high number of samples [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv118.full.pdf%2Bhtml][Ballouz 2015]] =metanalysis networks=
+5. Co-expression and network construction from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/28/12/1592.short][Iancu 2012]]
+6. Multifunctionality is better than association for network inference [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0017258][Gillis 2011]] =Pavlidis amd machine learning + pleiotropy=
+7. SimSeq non parametric simulation engine for real rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/26/bioinformatics.btv124.abstract][Benidt 2015]]
+8. Overlapping genes and analysis of rnaseq data [[http://www.biomedcentral.com/1471-2105/16/S1/S3][Sun 2015]]
+9. Phylogenetic analysis of the marine microbial transcriptome [[http://journals.plos.org/plosbiology/article?id%3D10.1371/journal.pbio.1001889][Keeling 2014]] =metagenomics=
+10. Detect rna editing events fron rnaseq data [[http://onlinelibrary.wiley.com/doi/10.1002/0471250953.bi1212s49/abstract][Picardi 2015]] =python=
+11. Orthologs from related species w/ rnaseq data [[http://www.biomedcentral.com/1471-2164/15/343?utm_source%3Ddlvr.it&utm_medium%3Dtumblr][Zhu 2014]] =vertebrates=
+12. Orthologs from rnaseq expression data clustering analysis [[http://www.biomedcentral.com/content/pdf/gb-2014-15-8-r100.pdf][Yan 2014]] =networks=
+13. Analysis of rnaseq expression data in Nature Protocols w/ R [[http://www.nature.com/nprot/journal/v8/n9/abs/nprot.2013.099.html][Anders 2013]] and [[http://link.springer.com/protocol/10.1007/978-1-4939-2444-8_24][Loraine 2015]] [[http://www.nature.com/nprot/journal/v7/n3/full/nprot.2012.016.html#ref12][Trapnell 2012]]=protocol=
+14. edgeR paper [[http://bioinformatics.oxfordjournals.org/content/26/1/139.short][Robinson 2009]] =R=
+15. Comparative paper of rnaseq packages [[http://www.nature.com/nmeth/journal/v8/n6/abs/nmeth.1613.html][Garber 2011]] =tools=
+16. Machine learning for predicting gene expression from epigenetic data [[http://lungcancernewstoday.com/2015/03/23/new-prediction-model-for-gene-expression-in-lung-cancer-based-on-epigenetics/][Li 2015]]
+17. Look for dsRNAs from rnaseq data after genome alignment [[http://rnajournal.cshlp.org/content/early/2015/03/24/rna.048801.114.full.pdf%2Bhtml][Whipple 2015]]
+18. Gene expression of virulence, metabolism, and growth of QPX are temperature dependent [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0074196][Vedrenne 2013]] =bad paper=
+19. Retrotransposons as effectors and transmittors of immune cancer cells in clam [[http://www.sciencemag.org/content/348/6231/170.full][Metzger 2015]]
+20. 
+
+**** Second set
+1. How to characterize SNPs affected by the reference bias? Align reads to personalized genomes [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0126911][Wood 2015]] =also ref. 26 and 28 inside=
+2. Genome and transcriptome sequencing of single cell [[http://www.nature.com/nmeth/journal/v12/n6/full/nmeth.3370.html][Macaulay 2015]]
+3. the next 20 years in genome research [[http://biorxiv.org/content/early/2015/06/02/020289.large.jpg?rss%3D1][Schatz 2015]]
+4. Basic strategy on annotating a genome [[http://www.nature.com/nrg/journal/v13/n5/full/nrg3174.html#B22][Yandall 2012]] =review=
+5. Terraformation of mars: importance of genome annotation and visualization [[http://motherboard.vice.com/read/darpa-we-are-engineering-the-organisms-that-will-terraform-mars][Jacksons lab]] =DARPA are engineering organisms=
+6. Reference transcriptome and database used for gene annotation both influence variant caling [[http://www.biomedcentral.com/1471-2164/16/S8/S2][Franckish 2015]]
+7. Cross sample contamination, viral, and pathogenic database contamination are real threat to sequencing data analysis [[http://jvi.asm.org/content/early/2015/06/11/JVI.00822-15.abstract][Kazemian 2015]]
+8. 5-formylCytosine a DNA modified sugar that regulates genes [[http://www.nature.com/nchembio/journal/vaop/ncurrent/full/nchembio.1848.html][Backman 2015]]
+**** Generalities
+Lectins
+1. Interaction with the complement
+2. Key role in innate immune defense
+3. Central role in filter feeding processes
+4. Association with neurone morphology
+5. Reduce functionality or absence cause diesease
+
+Transposons
+miRNAs
+Virus
+*** Software
+I need applications that load rna-seq data. 
+
+1. [[https://trinityrnaseq.github.io/][Trinity]]
+2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
+3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
+4. RSEM IsoEM (DEF on de novo transcriptome)
+5. R/Bioconductor packages (ShortRead edgeR DESeq GenomicRanges GenomicFeatures DEXSeq BaySeq BBSeq NOISeq QuasiSeq BitSeq ShrinkSeq)
+6. SAM tools [[http://samtools.sourceforge.net/][sourceforge.net]]
+7. Count map reads [[http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html][HTSeq]]
+8. MEGA-CC (command line) and MEGA-PRO (GUI) -- [[http://megasoftware.net/MEGA7-CC-Quick-Start-Tutorial.pdf][Intro]]
+9. BLASTX =command line=
+10. CLC Genomics =Xeon Desktop= [[http://www.clcsupport.com/clcgenomicsworkbench/current/index.php?manual%3DIntroduction_CLC_Genomics_Workbench.html][tutorial]]
+11. MG-RAST [[http://metagenomics.anl.gov/metagenomics.cgi?page%3DHome][homepage]]
+12. [[http://bioconductor.org/][Bioconductor]]
+13. Gene Ontology Packages: GOseq topGO GOstat Ontologizer DAVID ontoCAT([[http://www.ontocat.org/browser/trunk/ontoCAT/src/uk/ac/ebi/ontocat/examples/R/Example1.R][help]]) biomaRT
+14. Draft genome assemblers: Velvet Oasis ABySS SOAPdenovo (reads to contigs) or hybrid methods: celera MIRA ALLPATHS-LG
+15. Genome Finishing Tools: AHA SSPACE-LongRead (reduce contiguous assembled pair-ends) =scaffolding routine= [[http://www.biomedcentral.com/1471-2105/15/211][Boetzer 2014]]
+16. Proteogenomics (w/ circos and D3) [[http://qcmg.org/bioinformatics/PGTools][PGTools]]
+17. Integrated Genome Viewer [[https://www.broadinstitute.org/igv/][BroadInstitute]] [[http://www.broadinstitute.org/igv/projects/downloads/IGV_2.3.46.zip][IGV]]
+18. Aliners of reads to transriptome (tophat2 GSNAP SpliceMap Subread STAR)
+19. Burrows-Wheeler Aligner (BWA) [[http://sourceforge.net/projects/bio-bwa/files/][sourceforge.net]] or on [[https://github.com/lh3/bwa][github]]
+20. MAUVE [[http://genome.cshlp.org/content/14/7/1394.short][paper]] for genomic alignment & identification of recombination and horizontal transfer.
+21. QIIME for bacterial rna seq data processing [[http://qiime.org/][main site]]
+22. [[http://www.scfbm.org/content/10/1/8/abstract][PrimerView]] CPAN module for primer design on multiple sequences
+23. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
+24. Bpipe [[http://docs.bpipe.org/][documentation]]
+
+#+BEGIN_SRC shell
+sudo apt-get install libx11-dev libpulse-dev libxcomposite-dev \
+libxinerama-dev libv4l-dev libudev-dev libfreetype6-dev \
+libfontconfig-dev libx264-dev \
+libxcb-xinerama0-dev libxcb-shm0-dev libjack-jackd2-dev
+
+libdbus-1-dev libglib2.0-dev libavahi-client-dev libxcb-xinerama0
+
+libgl1-mesa-dev-lts-trusty
+#+END_SRC
+
+*** XSEDE
+**** SDSC Gordon
+Login and connect through secure network.
+#+BEGIN_SRC shell
+ssh -l bassem gordon.sdsc.xsede.org
+Monxsede#14
+#+END_SRC
+Transfer files
+#+BEGIN_SRC shell
+scp file1 bassem@gordon.sdsc.xsede.org:~/
+find . -name "*.NY.fastq.gz" -exec scp {} bassem@gordon.sdsc.xsede.org:/home/bassem/original \;
+#+END_SRC
+
+Download files. (no need to create the destination folder)
+#+BEGIN_SRC shell
+rsync -auv bassem@gordon.sdsc.xsede.org:~/folder/ ./destination
+#+END_SRC
+
+Show remaining allocations
+#+BEGIN_SRC shell
+xdusage
+#+END_SRC
+*** Procedure
+**** Short introduction
+=fastq.gz= are zipped files that contain paired end sequences. We have 2 files for each sample and we know that the illumina rna-seq was longer than 70 bp per read. fastq files can be extracted from the zipped archive or can be loaded directly into a mapping package (aligner software). fastq.gz are data from illumina prior to alignment to a reference genome.
+
+*Documentation* [[http://angus.readthedocs.org/en/2014/drosophila_rnaseq_bwa_htseq.html][Angus 5.0]] [[http://ged.msu.edu/angus/tutorials-2011/bwa_tutorial.html][Angus 2.0]]
+
+**** Quality controls
+1. Download FastQC =on linux= (sorry)
+2. Windows users download from [[http://www.bioinformatics.bbsrc.ac.uk/projects/fastqc/][here]]
+3. Java simulation of Q/C
+#+BEGIN_SRC shell
+curl -O http://www.bioinformatics.bbsrc.ac.uk/projects/fastqc/fastqc_v0.11.2.zip
+7z x fastqc_v0.11.2.zip
+cd FastQC
+chmod 755 fastqc
+sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
+#+END_SRC
+
+Load =FastQC= directly or in the shell. (every line is an option)
+#+BEGIN_SRC shell
+fastqc & # open a GUI
+fastqc <file>.txt
+zcat file1.fastq.gz | fastqc file1.fastq.gz # stream the content of gz files
+#+END_SRC
+
+Have a fastq.gz of the sequences. Run fastqc. Results are outputed in html format.
+#+BEGIN_SRC shell
+./fastqc <file.fasta>
+Firefox report.html
+#+END_SRC
+
+Run quality controls on A1 A2 A3 samples
+#+BEGIN_SRC shell
+zcat 1_Index_1.A1_R1.fastq.gz | fastqc 1_Index_1.A1_R1.fastq.gz && \
+zcat 1_Index_2.A2_R1.fastq.gz | fastqc 1_Index_2.A2_R1.fastq.gz && \
+zcat 2_Index_8.A3_R1.fastq.gz | fastqc 2_Index_8.A3_R1.fastq.gz && \
+zcat HI.0615.001.Index_1.A1_R2.fastq.gz | fastqc HI.0615.001.Index_1.A1_R2.fastq.gz && \
+zcat HI.0615.001.Index_2.A2_R2.fastq.gz | fastqc HI.0615.001.Index_2.A2_R2.fastq.gz && \
+zcat HI.0615.002.Index_8.A3_R2.fastq.gz | fastqc HI.0615.002.Index_8.A3_R2.fastq.gz
+#+END_SRC
+
+**** Sampling
+It is costumed fist to work on a small subset of the original data. When testing code its not smart to load all big data just for testing and optimizing the procedure. 
+
+Some option to sampling from fastq.gz [[https://www.biostars.org/p/6544/][biostars link]]
+
+Clone =seqtk= and compile it.
+#+BEGIN_SRC shell
+git clone https://github.com/neocruiser/seqtk.git
+cd seqtk
+make
+sudo ln -s /path/to/seqtk/seqtk /usr/local/bin/seqtk
+#+END_SRC
+
+Sample from *fastq.gz file
+#+BEGIN_SRC shell
+seqtk sample -s123 *1.fastq.gz 250 > sample1.fq
+seqtk sample -s123 *2.fastq.gz 250 > sample2.fq
+#+END_SRC
+
+Sampling from each of the A1, A2, and A3 Hardclam nodules. Additional cool jobs that can be done using =seqtk= [[http://ged.msu.edu/angus/tutorials-2013/seqtk_tools.html][here]].
+#+BEGIN_SRC shell
+seqtk sample -s123 1_Index_1.A1_R1.fastq.gz 1000 > sampleA1R1.fq && \
+seqtk sample -s123 1_Index_2.A2_R1.fastq.gz 1000 > sampleA2R1.fq && \
+seqtk sample -s123 2_Index_8.A3_R1.fastq.gz 1000 > sampleA3R1.fq && \
+seqtk sample -s123 HI.0615.001.Index_1.A1_R2.fastq.gz 1000 > sampleA1R2.fq && \
+seqtk sample -s123 HI.0615.001.Index_2.A2_R2.fastq.gz 1000 > sampleA2R2.fq && \
+seqtk sample -s123 HI.0615.002.Index_8.A3_R2.fastq.gz 1000 > sampleA3R2.fq
+#+END_SRC
+
+#+CAPTION: Per base sequence quality
+| Sample | Mean QC | Trim@ |
+|--------+---------+-------|
+| A1R1   |      34 |    97 |
+| A2R1   |      34 |    97 |
+| A3R1   |      34 |    97 |
+| A1R2   |      34 |    97 |
+| A2R2   |      34 |    97 |
+| A3R2   |      34 |    97 |
+**** Aligners and useful packages (to be installed on Linux)
+Of many there is =bowtie= fast but does not handle gaps (indels) correctly and there is =bwa= (Burrows-Wheeler aligner) which can handle different sizes of reads.
+
+Download and set up BWA
+#+BEGIN_SRC shell
+curl -O -L http://sourceforge.net/projects/bio-bwa/files/bwa-0.7.12.tar.bz2
+tar xjvf bwa
+cd bwa
+make
+sudo ln -s ~/data/bwa-0.7.12/bwa /usr/local/bin/bwa
+#+END_SRC
+
+Update packages and install pysam (wrapper of samtools) Samtools and bcftools and HTSeq (python)
+#+BEGIN_SRC shell
+sudo apt-get -y install git curl gcc make g++ python-dev pkg-config libncurses5-dev python-pip
+sudo pip install pysam 
+curl -O -L http://sourceforge.net/projects/samtools/files/samtools/1.2/samtools-1.2.tar.bz2 # make then ln -s
+curl -O -L http://sourceforge.net/projects/samtools/files/samtools/1.2/bcftools-1.2.tar.bz2 # make then ln -s
+cd samtools
+sudo cp *.pl maq2sam-long maq2sam-short md5fa md5sum-lite wgsim /usr/local/bin/
+curl -O -L https://pypi.python.org/packages/source/H/HTSeq/HTSeq-0.6.1p1.tar.gz
+tar xzvf HTSeq
+cd
+sudo python setup.py build
+sudo python setup.py install
+sudo chmod +x ./scripts/htseq-count
+#+END_SRC
+
+Install Bio::Perl. if problems occur visit [[http://bioperl.org/wiki/Installing_BioPerl_on_Unix][here]]
+#+BEGIN_SRC shell
+perl -MCPAN -e shell
+sudo cpan
+cpan>install Bundle::CPAN
+cpan>install Module::Build
+cpan>o conf prefer_installer MB
+cpan>o conf commit
+cpan>q
+wget http://sourceforge.net/projects/expat/files/expat/2.0.1/expat-2.0.1.tar.gz
+tar xzvf expat-2.0.1.tar.gz
+./configure
+make
+sudo make install
+sudo cpan
+cpan>d /bioperl/
+cpan>install CJFIELDS/BioPerl-1.6.924.tar.gz
+#+END_SRC
+
+Download additional tools from github for sequence counting.
+#+BEGIN_SRC shell
+git clone https://github.com/scottcain/chado_test.git
+#+END_SRC
+
+Install GATK. Downlaod then =make=. Must register first.
+
+**** Reference QPX: the assembly
+Two options: either the reference I assembled following the steps above or the one already done (but I know nothing about the parameters used to assemble it). 
+***** Count and index the reference genomes/transcriptomes
+Generate counts of the reference transcriptome using a perl script for HTSeq. this will generate a file with gff3 format
+#+BEGIN_SRC shell
+~/data/gmod_fasta2gff3.pl --fasta_dir QPX_Genome_v017.fasta --gfffilename QPX_Genome_v017.gff3 --type CDS --nosequence
+#+END_SRC
+
+Index with =bwa=.
+#+BEGIN_SRC shell
+bwa index <file.fa>
+#+END_SRC
+***** QPX already assembled transcriptome and genome of Steve Roberts
+Count the number of sequences in the fasta file
+#+BEGIN_SRC shell
+cd ~/data/QPX
+grep '>' QPX_Genome_v017.fasta | wc -l
+#+END_SRC
+
+Index the genome with =bwa= for mapping and to be used as a reference.
+#+BEGIN_SRC shell
+bwa index QPX_Genome_v017.fasta
+bwa index QPX_transcriptome_v2orf.fasta
+#+END_SRC
+
+Or index the reference with samtools
+#+BEGIN_SRC shell
+samtools faidx QPX_Genome_v017.fasta
+#+END_SRC
+***** QPX Trinity assembled transcriptome
+We assemble a transcriptome to later annotate it.
+Using =trinity= I assemble the transcriptome with sequencing reads in =MMETSP0098=. Trimmomatic is integrated in trinity, so I use same default parameters used for the reference genome and transcriptome of Steve Roberts.
+#+BEGIN_SRC shell
+../trinityrnaseq/Trinity --seqType fq \
+--left /media/Passport/MADL/QPX-RNA-Seq/MMETSP0098/MMETSP0098-Undescribed-sp--isolateNY0313808BC1.1.fastq.gz \
+--right /media/Passport/MADL/QPX-RNA-Seq/MMETSP0098/MMETSP0098-Undescribed-sp--isolateNY0313808BC1.2.fastq.gz \
+--quality_trimming_params "ILLUMINACLIP:~/data/Trimmomatic-0.33/adapters/TrueSeq3-PE-3.fa:2:30:10 TRAILING:3 MINLEN:36" \
+--normalize_max_read_cov 50 \
+--min_contig_length 200 \
+--output ./trinity/ \
+--max_memory 35G \
+--CPU 10 \
+#+END_SRC
+
+As of today =April-2015= Trinity uses java version 1.7. So must downgrade system to that version. I can comment out in =trinity.pl= java version check but under java v.1.8 trinity can introduce some errors.
+
+With the code above I generated =39946= contigs.
+#+BEGIN_SRC shell
+grep ">TR" Triniti.fasta | wc -l
+39946
+#+END_SRC
+
+Calculate the N50 (1) and L50 (2) in bp.
+#+BEGIN_SRC shell
+cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | sort -rn | awk '{sum += $0; print "N50:" $0"\t", sum}' | tac | awk 'NR==1 {halftot=$2/2} lastsize>halftot && $2<halftot {print} {lastsize=$2}'
+#+END_SRC
+
+Calculate the total size of contigs in bp.
+#+BEGIN_SRC shell
+cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | head | awk '{sum+=$1}END{print "Total:", sum}out'
+#+END_SRC
+
+**** Trimming
+Trimmomatic can be installed separately or used inside Trinity as a plugin.
+Download trimmomatic
+
+#+BEGIN_SRC shell
+$ curl -O -L http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.33.zip
+#+END_SRC
+
+The trimming is based based on FastQC quality control reports. The reports can be found under the dir "~/data/QPX/Align/"
+
+Trimming is done on paired ends on sequences sampled from the A1 A2 A3 data. Sequencer is Illumina HiSEQ. Very important to choose the adapter sequences. The adapters that have been used here are saved under "~/data/Trimmomatic-0.33/adapters/TrueSeq3-PE-3.fa".
+
+For an in depth review of the parameters of trimmomatic visit [[http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf][here]]. The script below is saved in an executable file named =trim.sh=.
+
+#+BEGIN_SRC shell
+java -jar ~/data/Trimmomatic-0.33/trimmomatic-0.33.jar PE \
+~/data/QPX/nodules/sampling/sampleA1R1.fq \
+~/data/QPX/nodules/sampling/sampleA1R2.fq \
+sA1R1.P.fq sA1R1.U.fq sA1R2.P.fq sA1R2.U.fq \
+ILLUMINACLIP:~/data/Trimmomatic-0.33/adapters/TrueSeq3-PE-3.fa:2:30:10 \
+TRAILING:3 \
+SLIDINGWINDOW:4:15 \
+CROP:90 \
+MINLEN:36
+#+END_SRC
+
+Count the number of reads.
+#+BEGIN_SRC shell
+zcat <filename>.fastq.gz | grep '@HWI' | wc -l
+#+END_SRC
+Move/rename files in batch.
+#+BEGIN_SRC shell
+find . -name "pattern" -exec mv {} /to/path \;
+#+END_SRC
+Delete files in batch.
+#+BEGIN_SRC shell
+ls "pattern" | xargs rm
+#+END_SRC
+
+#+CAPTION: Number of reads that survived the trimming filters
+
+| N | Sample |    Total |   Remain |    Clip | Trail | Size | Slide | Crop | Adapters    |
+|---+--------+----------+----------+---------+-------+------+-------+------+-------------|
+| 0 | A1     | 30491569 | 30176618 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq3.PE |
+|   | A2     | 34515597 | 34136650 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq3.PE |
+|   | A3     | 46861893 | 46430064 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq3.PE |
+| 1 | A1     |          | 29790935 |         |       |      | 4:15  | no   | TrueSeq3.PE |
+|   | A2     |          | 33698155 |         |       |      | 4:15  | no   | TrueSeq3.PE |
+|   | A3     |          | 45802956 |         |       |      | 4:15  | no   | TrueSeq3.PE |
+| 2 | A1     |          | 30370029 |         | no    |      | no    | 10   | TrueSeq3.PE |
+|   | A2     |          | 34362754 |         | no    |      | no    | 10   | TrueSeq3.PE |
+|   | A3     |          | 46682292 |         | no    |      | no    | 10   | TrueSeq3.PE |
+| 3 | A1     |          | 30300807 |         |       |      | 4:15  | 10   | TrueSeq3.PE |
+|   | A2     |          | 34282437 |         |       |      | 4:15  | 10   | TrueSeq3.PE |
+|   | A3     |          | 46600781 |         |       |      | 4:15  | 10   | TrueSeq3.PE |
+| 4 | A1     |          | 30175710 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq2.SE |
+|   | A2     |          | 34135918 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq2.SE |
+|   | A3     |          | 46428610 | 2:30:10 | t3    | s36  | no    | no   | TrueSeq2.SE |
+| 5 | A1     |          | 29790528 |         |       |      | 4:15  | no   | TrueSeq2.SE |
+|   | A2     |          | 33697784 |         |       |      | 4:15  | no   | TrueSeq2.SE |
+|   | A3     |          | 45802292 |         |       |      | 4:15  | no   | TrueSeq2.SE |
+| 6 | A6     |          | 30223128 |      no | t3    | s36  | no    | no   | no          |
+
+**** Align to K-mer content from fastQC report
+TATGCCG
+CGATCTC
+CGTATGC
+CACGATC
+GCCGTCT
+CCGTCTT
+TGCCGTC
+ATGCCGT
+GCCCGGG
+GGCCCGG
+CTCGTAT
+ATCTCGT
+GATCTCG
+TCTCGTA
+ACGATCT
+ACTAGCC
+TGGCCCG
+CCGGGGG
+TCGTATG
+
+TATGCCG
+CGTATGC
+TGCCGTC
+CCGTCTT
+CTCGTAT
+ATCTCGT
+GCCGTCT
+CGATGTA
+ATGCCGT
+CTTCTGC
+ACCGATG
+TGCTTGA
+TCTCGTA
+TCTCGTA
+TATCTCG
+CCCGGTT
+ACTAGCC
+TCGTATG
+TCTGCTT
+
+TATGCCG
+CGTATGC
+TGCCGTC
+CCGTCTT
+CTCGTAT
+GCCGTCT
+ATCTCGT
+ATGCCGT
+GAATCTC
+ACTAGCC
+CTTCTGC
+TGCTTGA
+TCTCGTA
+AATCTCG
+CGCGGCT
+CCCGGTT
+TCGTATG
+GGCCCGG
+CGGGGTT
+CCCCAAT
+
+CGCCGTA
+GTCGCCG
+CCGTATC
+GGTCGCC
+GGCCCGG
+TCGGTGG
+TGGCCCG
+TCGCCGT
+GCCCGGG
+GATCTCG
+ACTAGCC
+TCTCGGT
+TGGTCGC
+CCGGGGG
+GCCGTAT
+TCGGGGG
+GGGCGCC
+CTCGGTG
+GTGGTCG
+ATCTCGG
+
+CGCCGTA
+GTCGCCG
+CCGTATC
+TCGGTGG
+TGGTCGC
+TCTCGGT
+GATCTCG
+GGGCGCC
+TCGGGGG
+GGTCGCC
+TCGCCGT
+ACTAGCC
+CCCCAAT
+GGTGGTC
+GGGGCGC
+GCCGTAT
+CCCCGAT
+CCGGGAT
+CGCAAAC
+CCCGGTT
+
+CGCCGTA
+CCGTATC
+GTCGCCG
+TGGTCGC
+TCGGTGG
+TCTCGGT
+GGTCGCC
+GATCTCG
+TCGCCGT
+ACTAGCC
+CCCGGTT
+GGCCCGG
+GGTGGTC
+GGGCGCC
+CCCCAAT
+CCCCGAT
+GCCCGGG
+TGGCCCG
+GCCGTAT
+
+**** Quality Control on trimmed remains
+Batch quality control testing on 0, 4, and 5 trimmed data. Shell scripts are saved in file =qcheck.sh=.
+
+All trimmed data is deleted after this step except the first dataset of option 0. cf table above. 
+Quality control reports are saved in =fastQC= directory. All the unmapped reads, meaning those reads that were trimmed out are saved in =unmappedReads= directory. The original eaw files of the samples are saved in =original= directory and QPX transcriptome in =MMETSP0098= directory. The reference transcriptome was referenced and sequences were counted and both batch of reports are saved in =Align=. Good quality remaining trimmed reads are saved in =trimmed=. The mapping of samples to QPX transcriptome (below) will be saved in =mapping= directory.
+
+#+CAPTION: Different tests
+| Adapters | Reference              |
+|----------+------------------------|
+| TrueSeq2 | Genome (555 c)         |
+| TrueSeq3 | Transcriptome (1152 c) |
+|          |                        |
+
+See also the N50 score calculation.
+**** Mapping to reference Sort, then count mapped reads
+We map reads to a reference for later calling SNPs.
+Download and install =bwa= if not done yet.
+#+BEGIN_SRC shell
+git clone https://github.com/lh3/bwa.git
+cd bwa && make
+sudo ln -s /path/to/bwa /usr/local/bin/bwa
+#+END_SRC
+
+Run bwa over reference genome of QPX for every paired samples (A1 A2 A3). Scripts are saved in =mapping.sh=.
+
+dont forget to index the reference with =bwa index= before mapping.
+
+Additional tools needed are HTSeq for sequence count (for reference) and samtools for conversion of sam bam files, indexing, removing duplications, and sorting reads (for samples).
+
+This [[https://www.biostars.org/p/43677/][biostars tutorial ]] is a short introduction to pipelining. [[http://statisticalrecipes.blogspot.com/2013/06/getting-started-with-samtools-and.html][This intro]] is testing basic samtools commends. [[http://zlib.net/pigz/][This tool]] is a modified version of gzip for parallel zipping of big sam files. [[https://github.com/neocruiser/bwa][BWA website ]]on github for introduction and description of some functions.
+
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+sample[1]=A1
+sample[2]=A2
+sample[3]=A3
+
+ir=./trimmed/
+dir=mapping5
+ddir=rmdup5
+
+extension=.trimmed.P.fastq.gz
+reference=./genomeSRv015/QPX_v015.fasta
+count=./genomeSRv015/QPX_v015.gff3
+
+for i in 1 2 3
+do
+    sample=${sample[${i}]}
+    bwa mem ${reference} \
+        ${ir}${sample}R1${extension} \
+        ${ir}${sample}R2${extension} | \
+        samtools view -Shu - | \
+        samtools sort - ./${dir}/${sample}.sorted
+
+    htseq-count --format=bam \
+        --stranded=no \
+        --type=CDS --order=pos \
+        --idattr=Name ./${dir}/${sample}.sorted.bam ${count} \
+        > ./${ddir}/${sample}.htseq.counts.txt
+
+done
+#+END_SRC
+
+When aligning to reference BWA will use its default value to consider 4 or fewer mismatch to a given read as a good score. Here I applied the default values of =4%=.
+
+Display reads with =tview=. Press =?= for additional help inside tview.
+#+BEGIN_SRC shell
+samtools tview -d -H <file>.bam QPX_Genome_v017.fasta
+#+END_SRC
+
+Another lightweight tool for displaying alignments is =Tablet Viewer=. [[http://ics.hutton.ac.uk/tablet/][Link]] to download and manual.P
+
+**** Remove duplicates (redup)
+There is 2 options either with samtools function/module =rmdup= or with =Picard=. Picard is recommended for better alignment of PE reads. [[https://broadinstitute.github.io/picard/command-line-overview.html][Download]] and description of functions can be found on Broad Institute website. Some troubleshooting and sorting issues due to compatibility problems between samtools and picard, check this [[http://seqanswers.com/forums/showthread.php?s%3Dbbb083294ce9bad821e6973185d1f3bc&t%3D5494][thread]]. 
+
+Remove optical duplicate reads with Picard =MarkDuplicates= function.
+#+BEGIN_SRC shell
+java -Xmx2g -jar ~/data/picard/picard.jar \
+MarkDuplicates \
+INPUT=../mapping/A1.sorted.bam \
+OUTPUT=./A1.nodup.bam \
+METRICS_FILE=./A1.dup.metrics \
+REMOVE_DUPLICATES=true \
+ASSUME_SORTED=true
+#+END_SRC
+**** Summary in one code snippet
+The code below generate a bam file of mapped reads to a reference transcriptome without duplicated PCR reads. It generates also a counting of contigs before duplication elimination and after of the mapped reads.
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+:'
+this script accomplish 5 things:
+1. map all paired end samples to reference woth bwa
+2. sort the mapped contigs with samtools
+3. remove duplicate contigs with picard
+4. index contigs with samtools
+5. count contigs with htseq
+'
+
+sample[1]=A1
+sample[2]=A2
+sample[3]=A3
+
+dir=mapping3
+ddir=rmdup3
+
+extension=./trimmed/.trimmed.P.fastq.gz
+reference=./mmetsp0098/contigs.fa
+
+count=./mmetsp0098/MMETSP0098.gff3
+htseq=./${dir}/${sample}.htseq.counts
+sorted=./${dir}/${sample}.sorted
+
+nodup=./${ddir}/${sample}.nodup
+metrics=./${ddir}/${sample}.dup.metrics
+
+
+
+for i in 1 2 3
+do
+    sample=${sample[${i}]}
+    bwa mem ${reference} \
+        ~/data/QPX/trimmed/${sample}R1${extension} \
+        ~/data/QPX/trimmed/${sample}R2${extension} | \
+        samtools view -Shu - | \
+        samtools sort - ${sorted}
+
+    htseq-count --format=bam \
+        --stranded=no \
+        --type=CDS --order=pos \
+        --idattr=Name ${sorted}.bam ${count} \
+        > ${htseq}.txt
+
+    java -jar ~/data/picard/picard.jar \
+    MarkDuplicates \
+        INPUT=${sorted}.bam \
+        OUTPUT=${nodup}.bam \
+        METRICS_FILE= ${metrics} \
+        REMOVE_DUPLICATES=true \
+        ASSUME_SORTED=true        
+
+    samtools index ${sorted}.bam
+    
+    rm -rf ${sorted}.bam
+
+    htseq-count --format=bam \
+        --stranded=no \
+        --type=CDS --order=pos \
+        --idattr=Name ${nodup}.bam ${count} \
+        > ${htseq}.nodup.txt
+
+
+done
+#+END_SRC
+
+=Note= Sometimes Picard MarkDuplicates function throws an error. This error might be due to sample fastq.gz files where R1 and R2 reads are not in the correct order, which will cause an incorrect memory handling and stop the analysis. This error was introduced when mapping all strain R1s and R2s to both MMETSP0098 and Steve Roberts genome v015 (approx 21,000). No duplicates where removed. Proceeded to the next step for SNP calling.
+#+BEGIN_SRC shell
+[Wed Apr 15 11:51:44 EDT 2015] picard.sam.markduplicates.MarkDuplicates done. Elapsed time: 0.47 minutes.
+Runtime.totalMemory()=2556952576
+To get help, see http://broadinstitute.github.io/picard/index.html#GettingHelp
+Exception in thread "main" htsjdk.samtools.SAMException: /tmp/neo/CSPI.7539378699724755388.tmp/3744.tmpnot found
+	at htsjdk.samtools.util.FileAppendStreamLRUCache$Functor.makeValue(FileAppendStreamLRUCache.java:63)
+	<...>
+#+END_SRC
+
+The above error is due to RAM memory limitations attributed to java when =-Xmx= is specified. On powerful servers and with big libraries one should assign higher =-Xmx=.
+
+**** SNP calling (1)
+=aim= Sequence variation between strains. also nucleotide substitution rate
+Tool to be used is samtools. GATK can also be used. Or varscan.
+1. Generate VCF files from bam =mapped to reference=
+2. Map indels with GATK
+3. Calculate the depth of coverage with GATK
+4. Annotate variants/indels (annovar for which species??) see [[http://annovar.openbioinformatics.org/en/latest/user-guide/startup/][here]]
+5. Filter SNPs (flag dbSNP, might not be causal for difference)
+6. Extract nonsynonymous SNPs (loss of function (LoF) amorphic - gain of function (GoF) neomorphic - dominant negative antimorphic - indels (frameshift, stop loss, missense) - composite insertions - substitution events (transition, transversions) - synonymous mutation)
+7. SNPs in Low coverage areas might be wrong (reanalyze w/ depth of coverage)
+8. Annotate variants (find a suitable library)
+9. Rank variants with data from GO genes from other species
+
+***** step 1
+Trim raw reads then map them to reference. The whole script is available in =mapNoCount.sh=. It contains all =6 libraries= mapped to =3 references=.
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+:'
+this script accomplishes 4 things:
+1. map all paired end samples to reference woth bwa
+2. sort the mapped contigs with samtools
+3. remove duplicate contigs with picard
+4. index contigs with samtools
+'
+
+java -jar /home/neo/data/Trimmomatic-0.33/trimmomatic-0.33.jar PE \
+/media/sf_docs/data/QPX-RNA-Seq/mmetsp0098.1.NY.fastq.gz \
+/media/sf_docs/data/QPX-RNA-Seq/mmetsp0098.2.NY.fastq.gz \
+/media/sf_docs/data/QPX-RNA-Seq/trimmed/mmetsp0098.1.trimmed.P.NY.fastq.gz \
+/media/sf_docs/data/QPX-RNA-Seq/trimmed/mmetsp0098.1.trimmed.U.NY.fastq.gz \
+/media/sf_docs/data/QPX-RNA-Seq/trimmed/mmetsp0098.2.trimmed.P.NY.fastq.gz \
+/media/sf_docs/data/QPX-RNA-Seq/trimmed/mmetsp0098.2.trimmed.U.NY.fastq.gz \
+ILLUMINACLIP:TrueSeq3-PE-3.fa:2:30:10 \
+SLIDINGWINDOW:4:15 \
+TRAILING:5 \
+MINLEN:45
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp001433
+sample[3]=mmetsp00992
+sample[4]=mmetsp001002
+sample[5]=mmetsp0099
+sample[6]=mmetsp00100
+
+ir=/media/sf_docs/data/QPX-RNA-Seq/trimmed
+dir=/media/sf_docs/data/mappingX3
+ddir=/media/sf_docs/data/rmdupX3
+extension=.trimmed.P.NY.fastq.gz
+
+reference=/media/sf_docs/data/genomeSRv015/QPX_v015.fasta
+count=/media/sf_docs/data/genomeSRv015/QPX_v015.gff3
+
+for i in 1 2 3 4 5 6
+do
+    sample=${sample[${i}]}
+    bwa mem ${reference} \
+        ${ir}/${sample}.1${extension} \
+        ${ir}/${sample}.2${extension} | \
+        samtools view -Shu - | \
+        samtools sort - ${dir}/${sample}.sorted
+
+    java -jar /home/neo/data/picard/picard.jar \
+        MarkDuplicates \
+        INPUT=${dir}/${sample}.sorted.bam \
+        OUTPUT=${ddir}/${sample}.nodup.bam \
+        METRICS_FILE=${ddir}/${sample}.dup.metrics \
+        REMOVE_DUPLICATES=true \
+        ASSUME_SORTED=true
+
+    samtools index ${ddir}/${sample}.nodup.bam
+
+done
+
+#+END_SRC
+
+Or index the reference with samtools
+#+BEGIN_SRC shell
+samtools faidx QPX_Genome_v017.fasta
+#+END_SRC
+***** step 2
+Create a probability per variant =vcf= file with samtools. Description of command line [[http://samtools.sourceforge.net/mpileup.shtml][here]].
+#+BEGIN_SRC shell
+#! /usr/bin/bash
+
+:'
+samtools -u for ouputing an uncompressed bcf file
+-B : no baq computing for faster jobs
+-d : depth of covreage, increase it to get precise depth of coverage
+-f : decalre reference
+-D : control the number of variant to keep per sample based on the depth of coverage
+-C : reduce effect of reads with high mismatches
+--min-ac : minimum of the percentage of most frequent variants
+-g : yes or no for homoz/heteroz/missing nucleotides
+'
+
+reference=/media/sf_docs/data/QPX-RNA-Seq/Steve_Roberts/QPXTranscriptome_v21/QPX_transcriptome_v2orf.fasta
+
+dir=/media/sf_docs/data/mappingX
+ddir=/media/sf_docs/data/callingX
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp001433
+sample[3]=mmetsp00992
+sample[4]=mmetsp001002
+sample[5]=mmetsp0099
+sample[6]=mmetsp00100
+
+for i in 1 2 3 4 5 6
+do
+    sample=${sample[${i}]}
+    samtools mpileup -u -C50 -BQ0 -d1000 -f ${reference} \
+        ${dir}/${sample}.sorted.bam | \
+    bcftools view --min-ac 0 -g "^miss" | \
+    /home/neo/data/bcftools-1.2/vcfutils.pl varFilter -D100 \
+        > ${ddir}/${sample}.var.vcf
+
+done
+#+END_SRC
+***** step 3
+Call SNPs with bcftools. See script one step above. When finished with calling SNPs with samtools, enumerate the number of SNPs called for each reference.
+#+BEGIN_SRC shell
+#for example
+grep "MMETSP0098" fileName.var.vcf | wc -l
+#+END_SRC
+
+Six samples where analyzed.
+#+CAPTION: Samples and references used for SNP calling
+| Sample       | Reference            |
+|--------------+----------------------|
+| mmetsp0098   | SR transcriptome v21 |
+| mmetsp00992  | mmetsp0098           |
+| mmetsp001002 | SR genome v015       |
+| mmetsp001433 |                      |
+| mmetsp0099   |                      |
+| mmetsp00100  |                      |
+
+***** step 4
+Convert vcf file to fasta. either use =seqtk= or =vcftools=. Many tests are available. BLAST can be done on the fasta file.
+#+BEGIN_SRC shell
+./bcftools/vcfutils.pl vcf2fq fileName.vcf > fileName.fq
+seqtk seq -a fileName.fq > fileName.fasta
+#+END_SRC 
+**** SNP calling (2)
+SAM format specifications, in this [[https://samtools.github.io/hts-specs/SAMv1.pdf][PDF,]] describe the @RG =read group= format. This @RG is essential to run GATK, which is an other way to call SNPs.
+#+BEGIN_SRC shell
+@RG\tID:mmetsp0098\tSM:NY1\tPL:illumina\tLB:mmetsp0098\tPU:unit1
+#+END_SRC
+
+The script for mapping all QPX reads of all libraries. This script can be run in parallel for fast computing and mapping to several available references. This script is compiles in =mappingV2.sh=.
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+:'
+this script accomplish 5 things:
+1. map all paired end samples to reference woth bwa
+2. sort the mapped contigs with samtools
+3. remove duplicate contigs with picard
+4. index contigs with samtools
+5. count contigs with htseq
+-M: bwa mark shorter hits as secondary, increase picard comaptibility
+'
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp001433
+sample[3]=mmetsp00992
+sample[4]=mmetsp001002
+sample[5]=mmetsp0099
+sample[6]=mmetsp00100
+
+ir=/media/sf_docs/data/QPX-RNA-Seq/trimmed
+dir=/media/sf_docs/data/mappingY
+ddir=/media/sf_docs/data/rmdupY
+
+extension=.trimmed.P.NY.fastq.gz
+reference=/media/sf_docs/data/QPX-RNA-Seq/Steve_Roberts/QPXTranscriptome_v21/QPX_transcriptome_v2orf.fasta
+
+RG[1]='@RG\tID:mmetsp0098\tSM:NY1\tPL:illumina\tLB:mmetsp0098\tPU:QPXtrxSRv21'
+RG[2]='@RG\tID:mmetsp001433\tSM:NY1\tPL:illumina\tLB:mmetsp001433\tPU:QPXtrxSRv21'
+RG[3]='@RG\tID:mmetsp00992\tSM:MA1\tPL:illumina\tLB:mmetsp00992\tPU:QPXtrxSRv21'
+RG[4]='@RG\tID:mmetsp001002\tSM:VA1\tPL:illumina\tLB:mmetsp001002\tPU:QPXtrxSRv21'
+RG[5]='@RG\tID:mmetsp0099\tSM:MA2\tPL:illumina\tLB:mmetsp0099\tPU:QPXtrxSRv21'
+RG[6]='@RG\tID:mmetsp00100\tSM:VA2\tPL:illumina\tLB:mmetsp00100\tPU:QPXtrxSRv21'
+
+    java -jar /home/neo/data/picard/picard.jar \
+        CreateSequenceDictionary \
+        R=${reference} \
+        O=/media/sf_docs/data/QPX-RNA-Seq/Steve_Roberts/QPXTranscriptome_v21/QPX_transcriptome_v2orf.dict
+
+    samtools faidx ${reference}
+
+for i in 1 2 3 4 5 6
+do
+    sample=${sample[${i}]}
+    RG=${RG[${i}]}
+    bwa mem -M \
+        -R ${RG} \
+        -p ${reference} \
+        ${ir}/${sample}.1${extension} \
+        ${ir}/${sample}.2${extension} \
+    > ${dir}/${sample}.sam
+
+    java -jar /home/neo/data/picard/picard.jar \
+        SortSam \
+        INPUT=${dir}/${sample}.sam \
+        OUTPUT=${ddir}/${sample}.sorted.bam \
+        SORT_ORDER=coordinate
+
+    java -jar /home/neo/data/picard/picard.jar \
+        MarkDuplicates \
+        INPUT=${ddir}/${sample}.sorted.bam \
+        OUTPUT=${ddir}/${sample}.nodup.bam \
+        METRICS_FILE=${ddir}/${sample}.dup.metrics \
+        REMOVE_DUPLICATES=true \
+        ASSUME_SORTED=true
+
+
+done
+#+END_SRC
+
+1. Create a custom read group for each library. Samtools/Picard can do it too.
+2. Create a dictionary index with Picard of the reference
+3. Create an index of each read with samttools
+4. For loop over all libraries to align reads to each reference
+5. Sort the generated sam output with Picard
+6. Mark duplicate reads and remove them with Picard
+7. Realign reads around indels with GATK
+8. Recalibrate SNP calls
+9. Call SNPs on recalibrated bam files
+
+This script is compiled in =mappingV3.sh=. It can be combined with the one above.
+#+BEGIN_SRC shel l
+#! /user/bin/bash
+
+:'
+Note: For more info refer to GATK best practices on official site
+
+This script accomplishes 3 things;
+1. sort sam files into bam
+2. removes duplicate reads
+3. calls SNPs
+
+A. This script is the third version of mapping reads into references.
+B. It is best to run this script in parallel for each reference.
+C. All samples contain raw reads.
+D. Raw reads were first trimmed with trimmomatic
+E. @RG: read groups were custom build in mappingV2.sh
+F. Also reads were mapped with BWA in mappingV2.sh
+G. Here we use an alternative step to call SNPs with GATK
+
+a. create a dictionary file with Picard is essential
+b. indexing the reference is essential
+c. sam/bam convertion is done with Picard
+d. sorting was done following read coordinate to reference
+e. duplicates (optical) were removed with Picard. usually 30-40% are duplicated reads
+f. reads were counted before/after dup removal
+g. reads were realigned around indels with GATK (important 2 step process)
+h. reads were recalibrated with known SNPs (important 5 step process)
+h.1 we have no preliminary SNP data, so discover SNPs with very high phred scores
+h.2 use the selected SNPs to calculate a quality score
+h.3 use the GATK recalibrator to call again the last batch of SNPs with even higher phred scores
+
+Note(2): h.1 and h.2 can be bootstraped
+Note(3): there is a generated R report before after recalibration of quality scores
+
+'
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp001433
+sample[3]=mmetsp00992
+sample[4]=mmetsp001002
+sample[5]=mmetsp0099
+sample[6]=mmetsp00100
+
+ir=/media/sf_docs/data/QPX-RNA-Seq/trimmed
+dir=/media/sf_docs/data/mappingY3
+ddir=/media/sf_docs/data/rmdupY3
+
+counts=${ddir}/counts
+realign=${ddir}/realign
+call=${ddir}/call
+
+extension=.trimmed.P.NY.fastq.gz
+reference=/media/sf_docs/data/genomeSRv015/QPX_v015.fasta
+
+
+java -jar /home/neo/data/picard/picard.jar \
+CreateSequenceDictionary \
+R=${reference} \
+O=/media/sf_docs/data/genomeSRv015/QPX_v015.dict
+
+samtools faidx ${reference}
+mkdir -p ${counts} ${realign} ${call}
+
+
+
+
+for i in 1 2 3 4 5 6
+do
+    sample=${sample[${i}]}
+
+    java -jar /home/neo/data/picard/picard.jar \
+        SortSam \
+        INPUT=${dir}/${sample}.sam \
+        OUTPUT=${ddir}/${sample}.sorted.bam \
+        SORT_ORDER=coordinate
+
+    java -jar /home/neo/data/picard/picard.jar \
+        MarkDuplicates \
+        INPUT=${ddir}/${sample}.sorted.bam \
+        OUTPUT=${ddir}/${sample}.nodup.bam \
+        METRICS_FILE=${ddir}/${sample}.dup.metrics \
+        REMOVE_DUPLICATES=true \
+        ASSUME_SORTED=true
+
+    java -jar /home/neo/data/picard/picard.jar \
+        BuildBamIndex \
+        INPUT=${ddir}/${sample}.nodup.bam
+
+# count and redirect output to a file
+# grep the file with $grep "counted"
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T CountReads \
+        -R ${reference} \
+        -fixMisencodedQuals \
+        -I ${ddir}/${sample}.nodup.bam \
+        2> ${counts}/${sample}.nodup.count.txt \
+        && grep "counted" ${counts}/${sample}.nodup.count.txt
+
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T CountReads \
+        -R ${reference} \
+        -fixMisencodedQuals \
+        -I ${ddir}/${sample}.nodup.bam \
+        -rf DuplicateRead \
+        2> ${counts}/${sample}.dup.count.txt \
+        grep "counted" ${counts}/${sample}.dup.count.txt
+
+
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T RealignerTargetCreator \
+        -R ${reference} \
+        -fixMisencodedQuals \
+        -I ${ddir}/${sample}.nodup.bam \
+        -o ${realign}/${sample}.target.intervals.list
+
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T IndelRealigner \
+        -R ${reference} \
+        -fixMisencodedQuals \
+        -I ${ddir}/${sample}.nodup.bam \
+        -targetIntervals ${realign}/${sample}.target.intervals.list \
+        -o ${realign}/${sample}.realign.bam
+
+
+
+# first call = high filters
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T HaplotypeCaller \
+        -R ${reference} \
+        -I ${realign}/${sample}.realign.bam \
+        --genotyping_mode DISCOVERY \
+        -stand_emit_conf 30 \
+        -stand_call_conf 45 \
+        -o ${call}/${sample}.hi.first.call.vcf
+
+# recalibration
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T BaseRecalibrator \
+        -R ${reference} \
+        -I ${realign}/${sample}.realign.bam \
+        -knownSites ${call}/${sample}.hi.first.call.vcf \
+        -o ${call}/${sample}.recal.table
+
+# recal (2)
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T BaseRecalibrator \
+        -R ${reference}
+        -I ${realign}/${sample}.realign.bam \
+        -knownSites ${call}/${sample}.hi.first.call.vcf \
+        -BQSR ${call}/${sample}.recal.table \
+        -o ${call}/${sample}.postrecal.table
+
+# plots
+# make sure to install R packages and dependencies
+# reshape gplots ggplot2 gsalib
+        java -jar /home/neo/data/GenomeAnalysisTK.jar \
+            -T AnalyzeCovariates \
+            -R ${reference}
+            -before ${call}/${sample}.recal.table \
+            -after ${call}/${sample}.postrecal.table \
+            -plots ${call}/${sample}.recal.plots.pdf
+
+# apply recal
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T PrintReads \
+                -R ${reference} \
+                -I ${realign}/${sample}.realign.bam \
+                -BQSR ${call}/${sample}.recal.table \
+                -o ${call}/${sample}.recal.bam
+
+
+#second calling
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T HaplotypeCaller \
+                -R ${reference} \
+                -I ${call}/${sample}.recal.bam \
+                --genotyping_mode DISCOVERY \
+                -stand_emit_conf 30 \
+                -stand_call_conf 50 \
+                -o ${call}/${sample}.last.call.vcf
+
+
+done
+
+
+# print number of snps
+for j in 1 2 3 4 5 6
+do
+    sample=${sample[${j}]}
+    grep "QPX_transcriptome" ${call}/${sample}.last.call.vcf | wc -l
+
+done
+#+END_SRC
+**** Hard filtering SNPs 
+This is done with =GATK=. first reason for the utility of this step is that we do not have a known list of QPX SNPs that can validate our calls. Second reason is to remove all SNPs that have bad quality, which is calculated with SNP confidence score and depth of coverage.
+
+After calling SNPs and indels with =HaplotypeCaller= we can use =SelectVariants= to pick SNPs and separate them from indels.
+
+The next script is saved in =mappingV6.sh=. The reference used therein is the genome v015 of steve Roberts. The quality by depth of coverage for each SNP and indel (QD) was set to =QD<5.0=. Each element that meets this criteria is discarded. At the end, 2 files are generated and contain either the SNPs or indels. The =ok= SNPs/indels are labelled in these files either with =PASS= or =DISCARD=.
+
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp001433
+sample[3]=mmetsp00992
+sample[4]=mmetsp001002
+sample[5]=mmetsp0099
+sample[6]=mmetsp00100
+
+ddir=/media/sf_docs/data/rmdupY3
+
+counts=${ddir}/counts
+realign=${ddir}/realign
+call=${ddir}/callV4
+hard=${ddir}/hard
+
+reference=/media/sf_docs/data/genomeSRv015/QPX_v015.fasta
+
+mkdir ${hard}
+
+for i in 1 2 3 4 5 6
+do
+    sample=${sample[${i}]}
+
+# call SNPs
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T SelectVariants \
+                -R ${reference} \
+                -V ${call}/${sample}.last.call.2.vcf \
+                -selectType SNP \
+                -o ${hard}/${sample}.raw.snps.vcf
+
+
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T VariantFiltration \
+                -R ${reference} \
+                -V ${hard}/${sample}.raw.snps.vcf \
+                --filterExpression "QD < 5.0 || FS > 60.0 || MQ < 40.0" \
+                --filterName "DISCARD" \
+                -o ${hard}/${sample}.filtered.snps.vcf
+
+# call indels
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T SelectVariants \
+                -R ${reference} \
+                -V ${call}/${sample}.last.call.2.vcf \
+                -selectType INDEL \
+                -o ${hard}/${sample}.raw.indel.vcf
+
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T VariantFiltration \
+                -R ${reference} \
+                -V ${hard}/${sample}.raw.indel.vcf \
+                --filterExpression "QD < 5.0 || FS > 200.0" \
+                --filterName "DISCARD" \
+                -o ${hard}/${sample}.filtered.indel.vcf
+
+
+done
+
+
+    echo "These are SNPS that passed hard filtering\n"
+for j in 1 2 3 4 5 6
+do
+    sample=${sample[${j}]}
+    grep "PASS" ${hard}/${sample}.filtered.snps.vcf | wc -l
+
+done
+
+
+    echo "These are INDELS that passed hard filtering\n"
+for k in 1 2 3 4 5 6
+do
+    sample=${sample[${k}]}
+    grep "PASS" ${hard}/${sample}.filtered.indel.vcf | wc -l
+
+done
+#+END_SRC
+
+***** Summary of data
+References used:
+1. Transcriptome SR v21
+2. MMETSP0098 published assembly
+3. Genome SR v15
+4. MMETSP0098 custom assembly with SR genome v15
+5. Combined assembly published of all MMETSPs
+
+Libraries used:
+1. MMETSP0098
+2. MMETSP00992
+3. MMETSP001002
+4. MMETSP001433
+5. MMETSP0099
+6. MMETSP00100
+
+#+CAPTION: Files and directories
+| Task         | SNPs    | Script    | Directory           | Reference        | Libraries |
+|--------------+---------+-----------+---------------------+------------------+-----------|
+| Assembly     |         | assembl   | assembl             | genome SR v15    | 98        |
+| mapping/dup  |         | mappingV2 | mappingY            | all              | all       |
+| realign/call | x1      | mappingV3 | rmdupY5/call        | Combined assembl | all       |
+| realign/call | x1      | mappingV3 | rmdupY4/call        | MMETSP0098 cust  | all       |
+| realign/call | x1      | mappingV3 | rmdupY3/call        | Genome SR v15    | all       |
+| realign/call | x1      | mappingV3 | rmdupY2/call        | MMETSP0098 pub   | all       |
+| realign/call | x1      | mappingV3 | rmdupY/call         | Transcriptome SR | all       |
+| realign/call | x2      | mappingV4 | rmdupY4/callV4      | MMETSP0098 cust  | all       |
+| realign/call | x2      | mappingV4 | rmdupY3/callV4      | Genome SR v15    | all       |
+| realign/call | x2      | mappingV4 | rmdupY2/callV4      | MMETSP0098 pub   | all       |
+| realign/call | x2      | mappingV4 | rmdupY/callV4       | Transcriptome SR | all       |
+| realign/call | x3      | mappingV5 | rmdupY4/callV5      | MMETSP0098 cust  | all       |
+| realign/call | x3      | mappingV5 | rmdupY3/callV5      | Genome SR v15    | all       |
+| realign/call | x3      | mappingV5 | rmdupY2/callV5      | MMETSP0098 pub   | all       |
+| realign/call | x3      | mappingV5 | rmdupY/callV5       | Transcriptome SR | all       |
+| Hard filter  | +indels | mappingV6 | rmdupY3/callV4/hard | Genome SR v15    | all       |
+| Hard filter  | +indels | mappingV6 | rmdupY5/callV4/hard | Combined assembl | all       |
+
+The hard filtering step is done on the SNPs called after 2 sets of filtering. Meaning on the SNPs called with =mappingV4.sh=.
+
+**** SNP processing
+***** Desktop packages
+1. [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2815658/][Tablet 2010]] is a java package, it can be ran from a web-app [[http://bioinf.hutton.ac.uk/tablet/webstart/tablet.jnlp][here]]
+2. IGV [[http://www.broadinstitute.org/igv/projects/current/igv_mm.jnlp][1GB]] [[http://www.broadinstitute.org/igv/projects/current/igv_lm.jnlp][2GB]] [[https://www.broadinstitute.org/software/igv/sites/cancerinformatics.org.igv/files/images/webstart_small2.jpg][10GB]] java web-apparent
+
+One needs a bam file, indexed (w/ GATK, samtools, bwa ...), and a reference (fasta)
+***** VCFTools
+1. Setting up [[http://vcftools.sourceforge.net/examples.html][VCFTools]] and BioPerl (sat up earlier)
+2. Dependencies: Tabix and bgzip (sudo apt-get install tabix)
+3. examples using vcftools perl api [[http://vcftools.sourceforge.net/perl_examples.html][here]]
+4. The following is done after hard filtering SNPs
+5. Tables of SNPs can be rendered too, usefull for machine learning testing
+
+Gunzipping a vcf file makes analysis faster. Tabix indexes the file.
+#+BEGIN_SRC shell
+bgzip file.vcf
+tabix -p vcf file.vcf.gz
+#+END_SRC
+
+Compare vcf files entries. Meaning count the shared SNPs or indels between either libraries or SNPs/indels called by using different parameters and filters. The VCF files generated with =GATK= and hard-filtered afterward contain both =PASS= and =DISCARD= SNPs/indels.
+The =-a= option will not compare the SNPs/indels that are tagged with DISCARD.
+#+BEGIN_SRC shell
+vcftools/bin/vcf-compare -a  file1.vcf.gz file2.vcf.gz
+vcftools/bin/vcf-compare -a  file1.vcf.gz file2.vcf.gz | grep ^VN | cut -f 2- > compared.txt
+#+END_SRC
+
+****** Table rendering (opti1onal)
+Remove =DISCARD= tagged SNPs with vcftools perl tool =vcf-annotate=. SNPs are hard-filtered with these tags. They are under the FILTER column in the vcf file. 
+SNPs in the ALT (alternative column vs REF, the reference). Finally convert vcf to tab delimited file.
+#+BEGIN_SRC shell
+vcf-annotate --help
+zcat file.vcf.gz | vcftools/bin/vcf-annotate -H | bgzip -c > pass.vcf.gz
+zcat file.vcf.gz | vcftools/bin/vcf-annotate -H | vcftools/bin/vcf-to-tab > out.tab
+#+END_SRC
+
+Remove unnecessary label for each contig.
+#+BEGIN_SRC shell
+$ zcat mmetsp001433.filtered.snps.vcf.gz | \
+../../../../vcftools_0.1.12b/bin/vcf-annotate -H | \
+../../../../vcftools_0.1.12b/bin/vcf-to-tab > tables/mm1433.tab
+
+$ cat mm1433.tab | sed 's/^U.*|//g' > mm1433.2.tab
+sed 's/VA1/ALT/g' mm1002.2.tab > mm1002.txt
+#+END_SRC
+
+****** Concatenate files (optional)
+For machine learning analysis SNPs from different strains must be compared together to distinguish which are absent and the nature of the one that do exist.
+To concatenate filtered SNP files together, all columns must be the same. since each strain has been labelled differently during assembly, an additional step is implemented to standardise column names.
+#+BEGIN_SRC shell
+zcat mmetsp001433.filtered.snps.vcf.gz | sed 's/NY1/LIB/g' - | gzip -c > mm1433.snps.vcf.gz
+## change MA1 in mm99_2
+## change VA1 in mm1002
+## change NY1 in mm98 and mm1433
+#+END_SRC
+
+Remove =DISCARD= labelled SNPs and change the label of each contig. Change this =QPX_v015_contig_= label if libraries are mapped with SR Genome v15. The below label is usefull for the combined assembly reference transcriptome.
+#+BEGIN_SRC shell
+zcat mm1433.snps.vcf.gz | ~/data/vcftools_0.1.12b/bin/vcf-annotate -H | sed 's/^U.*|//g' | bgzip -c > mm1433.vcf.gz
+#+END_SRC
+
+Concatenate all SNPs into a single file. (optional)
+#+BEGIN_SRC shell
+~/data/vcftools_0.1.12b/bin/vcf-concat mm992.vcf.gz mm98.vcf.gz mm1002.vcf.gz mm1433.vcf.gz | bgzip -c > all.snps.vcf.gz
+#+END_SRC
+
+Number of SNPs.
+#+BEGIN_SRC shell
+$ dim all.snps.vcf.gz 
+3920
+20
+#+END_SRC
+
+****** Extract custom columns 
+Extract custom columns from =vcf.gz= compressed SNP file. =optional formatting=
+#+BEGIN_SRC shell
+~/data/vcftools_0.1.12b/bin/vcf-query mm1433.vcf.gz -f '%CHROM:%POS %ALT [m1433]\n' >> all.snps.sum.txt
+#+END_SRC
+
+Get description of VCF standard labels (columns and tags).
+#+BEGIN_SRC shell
+zcat mm1433.vcf.gz | grep "ID=DP" | head
+## common tags GT:AD:DP:GQ:PL:FS
+#+END_SRC
+
+Get the columns names from the vcf file.
+#+BEGIN_SRC shell
+zcat mm1433.vcf.gz | grep "CHROM"
+#+END_SRC
+
+Extract columns from vcf file for machine learning analysis, with low number of samples (only 4, 1 for each assembled library).
+#+BEGIN_SRC shell
+~/data/vcftools_0.1.12b/bin/vcf-query mm98.vcf.gz -f '%CHROM %POS %ALT [%AD %DP %GQ %PL] m98\n' | sed 's/,/ /g' > m98.ml.txt
+#+END_SRC
+
+****** Additional GATK guidelines
+If no hard-filtering was done, GATK generates one vcf file for both indels and SNPs. Comparing shared elements can be done with =vcf-compare -g=.
+****** Get the number of shared SNPs between samples
+Once numbers are extracted and shared data are summarized in a venn-friendly output, clean with the following command.
+#+BEGIN_SRC shell
+cat compared.txt | sed -e "s/.filtered.SNPs.vcf.gz //g" | sed -e "s/mmetsp00//g" > compared.cl.txt
+#+END_SRC
+
+All the previous tasks in one command.
+#+BEGIN_SRC shell
+vcftools_0.1.12b/bin/vcf-compare -a mmetsp0098.filtered.indel.vcf.gz mmetsp001002.filtered.indel.vcf.gz mmetsp00992.filtered.indel.vcf.gz mmetsp001433.filtered.indel.vcf.gz | grep ^VN | cut -f 2- | sed -e "s/.filtered.indel.vcf.gz //g" | sed -e "s/mmetsp00//g" > shared.indel.txt
+#+END_SRC
+****** Descriptive SNPs detection
+5 libraries were used to look for relatedness from shared SNPs, ie., mmetsp0098, mmetsp00992, mmetsp001002, mmetsp001433, annd S. Roberts Genome assembly v15.
+SNPs are extracted after realignment and hard filtering, scripts =mappingV5.sh= and =mappingV6.sh= respectively.
+Contigs are mapped to S. Roberts genome v15. 
+****** Preferential substitution of SNPs
+Get stats of the number of time a nucleotide is preferentially changed into another specific nucleotide.
+#+BEGIN_SRC shell
+$ ~/data/vcftools_0.1.12b/bin/vcf-stats mmetsp001002.filtered.snps.vcf.gz | \
+cut -f 1,2 -d '=' --output-delimiter=$'\t' - | \
+sed -e 's/> //g' | \
+grep '.>..*' | \
+head -n 12 | \
+sed -e "s/'//g" | \
+sed -e "s/,//g" > vcf.stats.1002.txt
+#+END_SRC
+
+**** Clustering analysis of shared sequences
+Export annotations of shared sequences between libraries and do some cleaning.
+First, replace random reference number with library names.
+#+BEGIN_SRC shell
+cat table.csv| sed -e "s/4632846.3/mmetsp1002/g" | sed -e "s/4632845.3/mmetsp1433/g" | sed -e "s/4632739.3/mmetsp992/g" | sed -e "s/4632738.3/mmetsp98/g" | sed -e "s/4632737.3/QPX_v15/g" > table.txt
+#+END_SRC
+**** Functional phylogenomics based on transcriptome data
+This [[http://angus.readthedocs.org/en/2014/genome-comparison-and-phylogeny.html][tutorial]] introduces some techniques and tools to address these objectives. Mainly this task relies on pairwise sequence comparisons.
+1. Mauve as a multi aligner for different genomes
+2. Search for TSS
+3. Search for sRNAs
+***** Drawing a circular genome
+A long option is to draw a circos with perl modules. The fast way is to use =CGview=.
+Its input is a an =xml= file. Can convert fasta, embl, genbank files to xml.
+#+BEGIN_SRC shell
+perl cgview/cgview_xml_builder/cgview_xml_builder.pl -sequence file.fa -output file.xml
+java -jar cgview/cgview.jar -i file.xml -o file.png -f png 
+#+END_SRC
+***** MG-RAST
+Upload assemblies to MG-RAST to get some stats and read description.  
+***** Phylogeny analysis
+Straightforward but not simple task. Takes a lot of hard disk size for database downloads.
+****** Pipeline
+1. Sequence samples
+2. Assemble de novo
+3. Find a nearest reference to the assembly on the tree of life
+4. Order assembly contigs with the nearest reference
+5. Find homologous contigs to a standardized list of =elite genes=
+6. Align contigs to a list of maker genes
+7. Infer a phylogeny based on aligned homologous shared genes
+****** Packages needed
+1. Mauve [[http://darlinglab.org/mauve/download.html][download page]]
+2. Phylosift [[https://phylosift.wordpress.com/][web page]]
+3. HMMER [[ftp://selab.janelia.org/pub/software/hmmer3/3.1b1/Userguide.pdf][userguide]]
+4. Archaeotperyx from frontiers [[https://sites.google.com/site/cmzmasek/home/software/archaeopteryx][google site]]
+5. Advanced shell skills
+****** Pipeline (scripts)
+All compiled data are found in phylosift directory under =PS_temp= folder.
+Run =phylosift= to find the nearest neighbor on the tree of life.
+#+BEGIN_SRC shell
+./phylosift all file.fa
+## or ... 
+./phylosift all --besthit file.fa
+#+END_SRC 
+Or on all files =contigs.fa= placed inside phylosift directory together.
+#+BEGIN_SRC shell
+find . -maxdepth 1 -name "*fa" -exec ./philosift all {} \;
+#+END_SRC
+
+Visualize in firefox (krona) and archaeopteryx (xml).
+#+BEGIN_SRC shell
+firefox ./physlosift/PS_temp/file.fa/file.fa.html
+java -cp .\forester.jar org.forester.archaeopteryx.Archaeopteryx -c .\_aptx_configuration_file ./physlosift/PS_temp/file.fa/file.fa.xml
+#+END_SRC
+
+The =all= label will run the =Core marker set= for alignment. Fast and small sized. Add =extended= label for =Extended marker set= bigger (70 Gb).
+#+BEGIN_SRC shell
+./phylosift all --extended file.fa
+#+END_SRC
+
+=(optional)= Once the nearest reference is found and visualized with =archaeopteryx=, download from ncbi the species genome, then order our assembly scaffolds with =Mauve= using that genome.
+#+BEGIN_SRC shell
+./Mauve # GUI
+# or ...
+java -Xmx5000g -Djava.awt.headless=true -cp ./Mauve  org.gel.mauve.contigs.ContigOrderer -output ordered -ref reference.fa -draft contigs.fa
+#+END_SRC
+
+Finally use =phylosift= to build a phylogeny. Phylosift is based on:
+1. pplacer = minimum likelihood and bayesian phylogenetic placement of sequences onto fixed reference tree.
+2. Adaptive seeds to tame genomic sequence comparison
+3. RNA alignment tool
+4. Bowtie to align short DNA reads
+5. HMMER 3.0
+6. Phylogenetic diversity tools
+
+Search for homologous sequences between assemblies with the =search= label. Assemblies are deposited in =phyogeny= directory inside =phylosift= directory (for convenience). =besthit= will remove lower scored hits and keep the highest. =isolate= label indicates distinct assemblies to be analyzed separately.
+#+BEGIN_SRC shell
+find ./phylogeny -maxdepth 1 -name "*fa" -exec ./phylosift search --isolate --besthit {} \;
+#+END_SRC
+
+Results are deposited inside phylosift directory =PS_temp=. Next align the homologous contigs found earlier together.
+#+BEGIN_SRC shell
+find ./phylogeny -maxdepth 1 -name "*fa" -exec ./phylosift align --isolate --besthit {} \;
+#+END_SRC
+
+At this step 2 folders are created in PS_temp. One for homlogy analysis and an other for alignment. Both contain lots of unique files for each contig. Inside the alignment repository we find a =concat.codon.updated.1.fasta= file that contain the collection of the homologously aligned contigs shared between assemblies. The following script will concatenate all =concat= file assemblies into 1 for phylogeny creation.
+#+BEGIN_SRC shell
+find ./PS_temp -type f -regex '.*concat.codon.updated.1.fasta' -exec cat {} \; | sed "s/\.1\..*//" > hom.aligned.fa
+#+END_SRC
+
+Create tree.
+#+BEGIN_SRC shell
+./phylosift/bin/FastTree -nt -gtr < hom.aligned.fa > hom.aligned.tre
+#+END_SRC
+
+Visualize the tree with =archaeopteryx=.
+#+BEGIN_SRC shell
+java -cp ./forester.jar org.forester.archaeopteryx.Archaeopteryx -c ./_aptx_configuration_file hom.aligned.tre
+#+END_SRC
+
+**** Gene Finding
+1. Apply homology on all strains either (alternate strategy)
+   - pairwise sequence comparison
+   - tree-based analysis
+2. Infer orhtology
+3. find gene duplication
+4. find genome duplication
+
+***** Blast 2 GO
+****** Activation keys
+PRO version: B2G-BASSSLEI-E4A5CD5459B0C0C3D75B6E853B518168
+Basic: B2G-BASSSLEI-CC5E4E288A87C7C3E262BF0B0DC2EE9A
+***** Contig annotation with HMMER
+As a main strategy the functional annotation is done with HMMER, the alignment is based on hidden markov models that calculate posteriors to the similarity scores.
+****** Library preparation
+Download and Install HMMER
+#+BEGIN_SRC shell
+wget http://selab.janelia.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz
+./configure
+sudo make
+sudo make install
+cd easel: sudo make install
+#+END_SRC 
+
+Download Pfam 28.0 database (as of 06/20/2015). It is possible to download the fasta database. But in this case an HMM profile must be built. The process will than take over 3 hours.
+#+BEGIN_SRC shell
+ftp ftp.ebi.ac.uk
+anonymous
+<<no password>>
+cd pub/databases/Pfam/current_release/
+get Pfam-A.hmm.gz
+bye
+gzip -d Pfam-A.hmm.gz
+#+END_SRC
+
+Index the Pfam.hmm database. this will produce 16,230 accessions.
+#+BEGIN_SRC shell
+hmmpress Pfam-A.hmm
+#+END_SRC
+
+=hmmscan= is a function used to search =Pfam-A.hmm= profiles. Otherwise if we had a sequence database =hmmsearch= would've been used. The query used is either a peptide or an HMM profile produced with =hmmbuild= or multiple HMM alignment profiles produced with =hmmalign= which generates a =stockholm= format alignment file. The stockholm file is then fed to hmmbuild to make an HMM query profile.
+
+Pfam can be searched using keywords and =accession= numbers can be extracted with copy/paste into a txt file. Get the accession number from gene of interest.
+
+****** Annotating all peptides (pfam)
+Annotation of the 4 strains peptides against a Pfam v28 updated database. Here we have two choices, first, annotate against the whole pfam library, second, annotate against a subset of selected HMM profiles of PFAM. The latter is mostly beneficial if one wants to extract =contig= number to find SNPs. However its not a straightforward process. Refer to p.50 of the HMMER3 userguide.
+#+BEGIN_SRC shelle
+hmmscan Pfam-A.hmm ../extras/peptides.fa > file.pfamA.txt
+#+END_SRC
+
+****** Summary 
+#+CAPTION: Keywords used in PFAM
+| Keyword        | Pfam-A |  a98 | s98 | a992 | s992 | a1002 | s1002 | a1433 | s1433 |
+|----------------+--------+------+-----+------+------+-------+-------+-------+-------|
+| virulence      |    655 | 5098 | 313 | 3075 |  261 |  4606 |   291 |  4794 |   308 |
+| temperature    |    251 | 2484 | 168 | 1680 |  141 |  2283 |   164 |  2277 |   161 |
+| salinity       |     22 |  163 |  13 |   91 |    9 |   123 |    10 |   137 |    12 |
+| salt tolerance |     79 | 2231 |  70 | 1422 |   64 |  2097 |    66 |  2078 | 66    |
+
+****** Selected protein domains (strategy 1)
+=outdated pfam= Count the number of domains found inside the =analysis/extras/hmmer3.pfam.hits= output file for each strain. The code below will extract HMM profiles in the annotated output HMMER file.hits.
+#+BEGIN_SRC shell
+cut -f 1 ./query/virulence.pfam.txt | sed 's/ //g' | grep -Ff - ../analysis/extras98/hmmer3_pfam.hits | grep ">>" | wc -l
+#+END_SRC  
+
+=updated pfam= On the other hand, the new versions of pfam and HMMER3.2b dont add the accession number for each domain. this means: domain pattern search is done on =-w= whole words and using the domain keyword.
+#+BEGIN_SRC shell
+cut -f 2 ../query/virulence.pfam.txt | sed 's/  //g' | grep -Fwf - m98.pfamA.txt | grep ">>" | sort - | uniq | wc -l
+#+END_SRC
+
+=outdated pfam= Get the number of single domains found using old data. this number is particularly descriptive of the number of potential genes in the contig library.
+#+BEGIN_SRC shell
+cut -f 1 ./query/virulence.pfam.txt | sed 's/ //g' | grep -Ff - ../analysis/extras98/hmmer3_pfam.hits | grep ">>" | sort - | uniq | wc -l
+#+END_SRC
+
+
+The pipeline used with old annotated contigs is to extract gene of interest from already annotated contigs versus protein domain databases. The new pipeline with the new versions of HMMER3.2b and Pfam-A v28 is to annotate the contigs against a subset of Pfam gene of interest.
+
+****** Subsetting Pfam database (strategy 2)
+This step is necessary to get the contig numbers of the identified protein domains found above. All files are located in the HMMER directory under =analysis= or =libraries= folders.
+
+First to get a subset out of =pfam.hmm= we need to index it for fast extraction. Pfam must be hmmpressed too.
+#+BEGIN_SRC shell
+hmmfetch --index pfam-A.hmm
+#+END_SRC
+
+Many fails can happen when constructing hmmscan pipelines for a subset of databases. See p50 of Hmmer Userguide.
+
+Second, the list of desired sequences/profiles (got using keywword search [[http://pfam.xfam.org/search/keyword?query%3Dsalt%2Btolerance][here for example]]) must be formated like so: <NAME> - <ACCESSION> for each entry.
+#+BEGIN_SRC shell
+cut -f 1,2 ../../query/salinity.pfam.txt | awk '{ print $2 " - " $1 }' | head
+#+END_SRC
+
+Finally, =hmmfetch= desired domains, =hmmpress= them, then annotate the 4 strains. This process of creating subset is done on each list of domain. Output formats can be found [[http://www.unix.com/man-page/debian/1/hmmscan/][here (debian man page)]].
+#+BEGIN_SRC shell
+cut -f 1,2 ../../query/salinity.pfam.txt | awk '{ print $2 " - " $1 }' | hmmfetch -f Pfam-A.hmm - > pfam.subset.hmm
+hmmpress pfam.subset.hmm 
+hmmscan --domtblout <output.txt> --cpu 4 <pfam.subset.hmm> <peptides.fa>
+#+END_SRC
+
+The script above saves a table for each domain identified. Contains accession numbers for contigs and Pfam domains, as well as posterior statistics.
+Extract the accession number of contigs that contains potential protein domains. The code below will remove the first 3 lines of the output file of hmmscan. For more =awk= oneliners, visit [[http://www.pement.org/awk/awk1line.txt][here]].
+#+BEGIN_SRC shell
+cat salinity.pfam/m1002.txt | awk '{ NF > 10; if ($8 > 350) print $4 "\t" $8}'
+#+END_SRC
+
+Get the number of domains identified in the subset annotation. In the code below the domains have a 10e-4 significance.
+#+BEGIN_SRC shell
+cat virulence.pfam/m1002.txt | awk '{ NR>3; if ($7 < 0.0001) print $2 }' | sort - | uniq | grep "^P" | wc -l
+#+END_SRC
+
+Get the number of contigs that match at least one domain. In the code below the contigs have a 10e-10 significance.
+#+BEGIN_SRC shell
+cat virulence.pfam/m1002.txt | awk '{ NR>3; if ($7 < 0.0000000001) print $4 }' | sort - | uniq | grep "^M" | wc -l
+#+END_SRC
+
+****** Locating SNPs on identified pfam domains
+=note= interesting perl and awk commands can be found [[http://bioinformatics.cvr.ac.uk/blog/short-command-lines-for-manipulation-fastq-and-fasta-sequence-files/][here]].
+
+=general instruction= Get =one= sequence from fasta file with a known =id=.
+#+BEGIN_SRC shell
+perl -ne 'if(/^>(\S+)/){$c=grep{/^$1$/}qw(id1 id2)}print if $c' sample1.fa
+#+END_SRC
+
+=general instruction= Get a =list= of sequences from a fasta file. The id list contains one id per line without special characters.
+#+BEGIN_SRC shell
+cat file.fa | sed 's/^>.*|/>/g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' ids.txt -
+#+END_SRC
+
+=general command= Create a list of ids for each strain and for each category of protein. by filtering out peptides with an evalue higher than but not equal to 10e-10.
+#+BEGIN_SRC shell
+cat salinity.pfam/m98.txt | awk '{print $4}' | sed 's/^.*|//g' | sed 's/_1//g' | sort - | uniq | grep "[0-9]" | grep "^[^\.]" | grep "^[^/]" > salinity.contig/m98.id.txt
+#+END_SRC
+
+Get the nucleotide sequences for the identified pfam domains for each strain, but first, modify the header of each fasta sequence (fasta that contain the contigs).
+#+BEGIN_SRC shell
+cat contigs.fa | sed 's/^>.*|/>/g'
+#+END_SRC
+
+Get contigs for each identified domain. =note= Oftentimes the number of contigs is lower than the number of domains. One nucleotide sequence can produce more than one peptide sequence (3 frameshift possibilities x 2 strands) : [[http://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM%3Dblastp&PAGE_TYPE%3DBlastSearch&LINK_LOC%3Dblasthome][blastp]] [[http://web.expasy.org/translate/][exPasy (translate RNA)]] for testing.
+#+BEGIN_SRC shell
+cat virulence.pfam/m1002.txt | awk '{ if ($7 < 0.0000000001) print  $4 }' | sort - | uniq | grep "^M" | sed 's/^M.*|//g' | sed 's/_1//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' - ../../data/qpx/mme98/contigs.mod.fa | grep ">" | wc -l
+#+END_SRC
+
+****** BLAT (Locating SNPs continued)
+Blat can be found also on xsede. [[http://genome.ucsc.edu/goldenPath/help/blatSpec.html][Documentation]] and [[http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/][Blat linux packages]]
+Installation.
+#+BEGIN_SRC shell
+ftp hgdownload.cse.ucsc.edu
+Name: anonymous
+cd admin/exe/linux.x86_64/blat
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslSort
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslReps
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslPretty
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslStats
+chmod +x ./blat
+chmod +x ./faToTwoBit
+#+END_SRC
+
+Convert the genome to =2bit= (faster). This step will index the genome and place it in the computer memory for fast pulling of alignments.
+#+BEGIN_SRC shell
+./faToTwoBit ../genomev015/QPX_v015.fasta ../genomev015/qpxv15.2bit
+#+END_SRC
+
+Align RNAseq contigs to genome. =psl= is a tabulated output.
+#+BEGIN_SRC shell
+./blat ../genomev015/qpxv15.2bit ../db/salinity.pfam/m992.contigs.pfam.fa output.test.psl
+#+END_SRC
+
+Show the alignment in a human readable format.
+#+BEGIN_SRC shell
+./pslPretty 2> pslpretty.README.txt
+./pslPretty <psl file> <genome target 2bit> <query fa> <output.txt>
+#+END_SRC
+
+Get overall statistics.
+#+BEGIN_SRC shell
+./pslStats -overallStats <psl file> <output>
+#+END_SRC
+
+Get the contigs. After =Blat= on the indexed genome the overall stats show the mean length of the aligned contigs. Since each contig can be found multiple times in the genome (at different alignment lengths of course) it is best if we choose the best contigs those that have a maximum alignment length. For those contigs must be mapped/aligned once and thus, no duplicate entries should be selected for whatever contig. For this reason choosing an alignment length equal to the half of the mean of the alignment length gives the minimum number of duplicate contigs.
+#+BEGIN_SRC shell
+# choose genome contigs that align to at least half of the mean of the alignment length
+## get overall stats of one strain for each gene set
+./pslStats -overallStats ../data/analysis/salinity.pfam/m1002.genomv15.psl m1002.pretty && cat m1002.pretty
+cat m1002.pretty | awk 'NR>2' >> salinity.stats.txt
+## watch the number of duplicates
+cat m1002.genomv15.psl | awk '{if ($1 >= 900) print $10 }' | awk 'NR>3' | sort - |uniq | wc -l
+#+END_SRC
+
+Get SNPs. Script will select custom columns, necessary for the next step. This will create one file for each strain, total 4.
+#+BEGIN_SRC shell
+vcf-query m98.SNPs.passed.vcf.gz -f '%CHROM %POS %REF %ALT %QUAL [m98]\n' > m98.SNPs.custom.txt
+#+END_SRC
+
+=fast querying= Get genome contigs + SNPs. Those contigs where aligned to RNAseq contigs which means they contain an identified pfam protein domain. The mean Query sizes (meanQsize) from the overall stat can be visualized for all strains and gene sets in the R report section =Map RNA contigs to Genome v15 contigs=. At the end of this script we will get 1 file for each pfam subset and for each strain, equal to 14 files. All files for each strain will be merged together.
+#+BEGIN_SRC shell
+cat ~/data/analysis/virulence.pfam/m98.genomv15.psl | awk '{ if ($1 >= 2900) print $14}' | awk 'NR>3' | sort - | uniq | grep -Fwf - m98.snps.custom.txt | less
+#+END_SRC
+
+Create separate files for each strain and gene set. Script below is the first half of the one above. Choose a mean query size of at least 1500 that has been matched to the reference genome.
+#+BEGIN_SRC shell
+cat ~/data/analysis/virulence.pfam/m98.genomv15.psl | awk '{ if ($1 >= 1500) print $0}' > ~/data/analysis/hotspots/m98.vir.top.aln.txt
+#+END_SRC
+
+Merge the pfam subset files for each strain.
+#+BEGIN_SRC shell
+## add pfam label and strain name as last columns + remove wrong header and 
+## concatenate files for the same strain.
+cat m1002.salinity.top.aln.txt | awk 'NR>3' | sed 's/$/\tsalinity/g' | sed 's/$/\tm1002/g' >> m1002.top.aln.txt
+#+END_SRC
+
+At this point we have 4 SNPs/reference genome files and 4 RNAseq contigs/reference contigs/4 pfam subsets for each strain. We will use the genome contig labels to extract SNP positions.
+#+BEGIN_SRC shell
+cat m98.top.aln.txt | awk '{print $14}' | sort - | uniq | grep -Fwf - m98.SNPs.custom.txt > m98.SNPs.aln.position.txt
+#+END_SRC
+
+Merge aligned contigs to reference and the position of SNPs in the reference in R.
+#+BEGIN_SRC R
+## get file with genome aligned to rnaseq contigs
+x <- read.table("./hotspots/m98.top.aln.txt")
+header.x <- c("match", "mismatch", "repmatch",
+            "N", "QgapCount", "QgapBases",
+            "TgapCount", "TgapBases", "Strand",
+              "Qname", "Qsize", "Qstart", "Qend", "Tname",
+            "Tsize", "Tstart", "Tend", "BlockCount",
+            "BlockSize", "qStarts", "tStarts",
+            "pfam", "lib")
+colnames(x) <- header.x
+
+## get file with SNPs position
+y <- read.table("./hotspots/m98.SNPs.aln.position.txt")
+header.y <- c("Tname", "Position", "REF", "ALT",
+              "Quality", "lib")
+colnames(y) <- header.y
+
+## merge
+z <- merge(x, y, by = "Tname")
+
+## save final concatenated file
+write.table(z, "m98.contigs.SNPs.txt", quote = F, sep ="   ")
+#+END_SRC
+
+Merge the above file (containing SNPs + genome contigs + rnaseq contigs) with pfam domains.
+Concatenate pfam subsets of each strain together
+#+BEGIN_SRC shell
+cat virulence.pfam/m1002.txt | awk '{ if ($7 < 0.0000000001) print  $1"\t"$2"\t"$3"\t"$4"\t"$6"\t"$7"\t"$8"\t"$12"\t"$13"\t"$14"\t"$18"\t"$19"\t"$22"\t"$23 }' | sed '/^#.*$/d' | sed 's/MME.*|\(.*\)_1/\1/g' | sed 's/$/\tvirulence\tm98/g' >> ./pfam.final/m98.pfam.txt
+#+END_SRC
+
+R code to merge the above file (the one with all pfam domains) with the SNP data.
+#+BEGIN_SRC R
+header.a <- c("Domain", "accession", "tLen", "qName",
+              "qLen", "evalue", "score2", "cEvalue",
+              "iEval", "score", "alnFrom",
+              "alnTo", "acc", "description", "pfam", "lib")
+a <- read.table("./hotspots/m1433.pfam.txt", fill = NA)
+colnames(a) <- header.a
+head(a)
+dim(a)
+b <- merge(z, a, by.x = "Qname", by.y = "qName")
+write.table(b, "./hotspots/m1433.pfam.SNP.txt", quote = F, sep ="   ")
+#+END_SRC
+
+****** Key description
+The final file above contains 43 columns or keys. Here is the description of each key and their job significance.
+| Key         | Job   | Description                                                                                                      |
+|-------------+-------+------------------------------------------------------------------------------------------------------------------|
+| Qname       | BLAT  | Query identifier (RNAseq DNA contig)                                                                             |
+| Tname       | BLAT  | Target identifier (Reference genome)                                                                             |
+| match       | BLAT  | Number of nucleotides that match  between Q and T                                                                |
+| mismatch    | BLAT  | Number of nucleotides that dont match                                                                            |
+| repmatch    | BLAT  | Number of nucleotides that match a repetitive region                                                             |
+| N           | BLAT  | N nucleotides in the query sequence                                                                              |
+| QgapCount   | BLAT  | Number of gaps in Q                                                                                              |
+| QgapBases   | BLAT  | Length of gaps in Q                                                                                              |
+| TgapCount   | BLAT  | Number of gaps in T                                                                                              |
+| TgapBases   | BLAT  | Length of gaps in T                                                                                              |
+| Strand      | BLAT  | +/-                                                                                                              |
+| Qsize       | BLAT  | Size of the RNAseq contigs                                                                                       |
+| Qstart      | BLAT  | Alignment start position in RNAseq contigs                                                                       |
+| Qend        | BLAT  | Alignment end position in RNAseq contigs                                                                         |
+| Tsize       | BLAT  | Size of the Reference genome contig                                                                              |
+| Tstart      | BLAT  | Alignment start position in Reference contigs                                                                    |
+| Tend        | BLAT  | Alignment end position in Reference contigs                                                                      |
+| BlockCount  | BLAT  | Number of aligned regions without gaps                                                                           |
+| BlockSize   | BLAT  | Size of the aligned regions without gaps                                                                         |
+| qStarts     | BLAT  | Start positions of the blocks in the RNAseq contigs                                                              |
+| tStarts     | BLAT  | Start positions of the blocks in the reference genome                                                            |
+| pfam.x      | BLAT  | Pfam category that map to the Rnaseq contigs                                                                     |
+| lib.x       | BLAT  | Strain                                                                                                           |
+| Position    | GATK  | Position of the SNP in the Reference genome                                                                      |
+| REF         | GATK  | Reference nucleotide at one allele                                                                               |
+| ALT         | GATK  | Alternate nucleotide at one allele                                                                               |
+| Quality     | GATK  | Genomic quality at one allele                                                                                    |
+| lib.y       | GATK  | Strain                                                                                                           |
+| Domain      | HMMER | Identified pfam protein domain                                                                                   |
+| accession   | HMMER | Accession number of each pfam domain                                                                             |
+| tLen        | HMMER | Domain length in peptide count                                                                                   |
+| qLen        | HMMER | RNAseq peptide length                                                                                            |
+| evalue      | HMMER | Statistical significance of the match of the whole sequence (relative to Q size and T database size)             |
+| score2      | HMMER | Log-odd of the whole RNAseq peptide (for evalue estimation, non relative to T database size)                     |
+| cEvalue     | HMMER | Conditional-evalue, statistical significance for each domain                                                     |
+| iEvalue     | HMMER | Independent-evalue, similar to the 1 domain evalue                                                               |
+| score       | HMMER | Log-odd of each identified domain of the RNAseq peptide (for evalue estimation, non relative to T database size) |
+| alnFrom     | HMMER | First RNAseq peptide that align to the pfam domain                                                               |
+| alnTo       | HMMER | Last RNAseq peptide that align to the pfam domain                                                                |
+| acc         | HMMER | Expected accuracy per residue of the alignment (posterior probability)                                            |
+| description | HMMER | Short name description of the domain                                                                             |
+| pfam.y      | HMMER | Pfam category that map to the RNAseq contigs                                                                     |
+| lib         | HMMER | Strain                                                                                                           |
+
+***** Locate SNPs hotspots
+How many SNPs can be found outside and ahead of a protein domain?
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 < $17) print $3,$25,$26,$27}' | sort - | uniq | wc -l
+#+END_SRC
+
+How many SNPs can be found outside and after a protein domain?
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 > $18) print $3,$25,$26,$27}' | sort - | uniq | wc -l
+#+END_SRC
+
+How many SNPs can be found inside a protein domain?
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$25,$26,$27 }' | sort - | uniq | wc -l
+#+END_SRC
+
+How many SNPs can be found inside =virulence= domains?
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$25,$26,$27,$23 }' | sort - | uniq | awk '{if ($5 == "virulence") print $0}' | wc -l
+#+END_SRC
+
+How many SNPs can be found outside (before and after domain) of =virulence= domains?
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 < $17) print $3,$25,$26,$27,$23}' | sort - | uniq | awk '{if ($5 == "virulence") print $0}' | wc -l
+cat all.pfam.snp.txt | awk '{if ($25 > $18) print $3,$25,$26,$27,$23}' | sort - | uniq | awk '{if ($5 == "virulence") print $0}' | wc -l     
+#+END_SRC
+
+How many SNPs can be found in =m98= NY strain?
+#+BEGIN_SRC shell
+## inside domain
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$25,$26,$27 }' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | wc -l
+#+END_SRC
+
+Sum of the length of each contig with SNPs inside pfam domains for each strain. With the script above we can normalize the SNP counts.
+#+BEGIN_SRC shell
+## inside
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$13 }' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{s+=$3; print s}' | tail -n 1 
+#+END_SRC
+
+How many SNPs can be found for =m98= NY in =viruelnce= domains?
+#+BEGIN_SRC shell
+## outside after
+cat all.pfam.snp.txt | awk '{if ($25 > $18) print $3,$24,$25,$26,$27,$23}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | wc -l 
+
+## inside
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$25,$26,$27,$23}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | wc -l
+#+END_SRC
+
+Sum of length of each contig for each pfam domain between strains. Total sum of sizes is used for normalization with script above.
+#+BEGIN_SRC shell
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$13,$23}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($4 == "virulence") print $0}' | sort - | uniq | awk '{s+=$3; print s}' | tail -n 1 
+#+END_SRC
+
+=general= Using all the scripts above give the net number of SNPs. The number doesn't show the net number of domains that contain these SNPs. For example, the output below shows that the SNP at position 23 can map to 3 different pfam domains. However this same SNP is only found inside and in the salt tolerance pfam domains.
+#+BEGIN_SRC shell
+Reference    Strain    Position   REF   ALT   PFAM   Gene   Accession
+QPX_v015_contig_1247 m1002 23 C G salt.tolerance AAA_21 PF13304.2
+QPX_v015_contig_1247 m1002 23 C G salt.tolerance ABC_membrane PF00664.19
+QPX_v015_contig_1247 m1002 23 C G salt.tolerance ABC_tran PF00005.23 
+#+END_SRC
+
+=general= What are the protein domains found with high or low SNP count for =all= strains? This script focuses on the proteins found not on SNP count, so the output will be longer. Examining the evalue is encouraged.
+#+BEGIN_SRC shell
+## inside
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$25,$26,$27,$23,$30,$31,$34,$35}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | wc -l
+#+END_SRC
+
+Preferential substitution inside/outside domains per pfam subset for each strain. Here we would like to count both the number of domains with differential mutation and the preferential nature of each mutation.
+#+BEGIN_SRC shell
+## ahead
+cat all.pfam.snp.txt | awk '{if ($25 < $17) print $3,$24,$25,$26,$27,$23,$30,$31,$34,$35}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | cut -f 4,5 -d " " --output-delimiter=$'>' | sort - | uniq -c
+
+## inside
+cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$25,$26,$27,$23,$30,$31,$34,$35}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | cut -f 4,5 -d " " --output-delimiter=$'>' | sort - | uniq -c
+#+END_SRC
+
+
+**** Create a database for structured data
+Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
+
+
+
