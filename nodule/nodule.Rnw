@@ -1,0 +1,124 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results=FALSE>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+\section{Data preprocessing}
+\label{sec:dataPreporcessing}
+Load packages.
+<<>>=
+pkgs <- c('xlsx','caret','leaps','glmnet','lattice','latticeExtra',
+          'ggplot2')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+Load file with read counts per sample.
+\begin{itemize}
+\item A samples as nodule tissue
+\item B samples as non nodule diseased tissue
+\item C samples as non nodule non diseased tissue
+\end{itemize}
+Raw reads is the number of reads that have been trimmed, mapped to reference genome (Steve Roberts v15 with 21280 contigs), sorted by position on the genome, and cleaned from duplicated reads.\marginnote{\small\color{blue}$\Lsh$ Hypothetically these raw reads includes specific QPX reads}[.1cm]
+<<counts1>>=
+reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 1)
+reads.counts$fill <- gl(3, 3, 9, labels = c("a", "b", "c"))
+ggplot(reads.counts,
+       aes(x = sample,
+           y = raw.reads,
+           fill = fill)) +
+    coord_flip() +
+        theme_bw() +
+            geom_bar(stat = "identity") +
+                geom_text(aes(x = sample,
+                              y = raw.reads,
+                              ymax = raw.reads,
+                              label = raw.reads,
+                              size = 2,
+                              hjust = 1)) + 
+                    scale_color_hue(c = 10, l = 20)
+@ 
+
+Number of reads that mapped to the reference genome of QPX.
+\marginnote{\small\color{blue}$\Lsh$ These reads are probably those of QPXs'}[.1cm]
+<<counts2>>=
+ggplot(reads.counts,
+       aes(x = sample,
+           y = mapped.reads,
+           fill = fill)) +
+    geom_bar(stat = "identity") +
+        geom_text(aes(x = sample,
+                      y = mapped.reads,
+                      ymax = mapped.reads,
+                      label = mapped.reads,
+                      hjust = 1,
+                      size = 2)) +
+            coord_flip() +
+                theme_bw() +
+                    scale_color_grey(start = .2, end = .8)
+@ 
+
+Mapped reads to the QPX reference where than assembled into contigs (ie, the reads showing in the chart above).
+\marginnote{\small\color{blue}$\Lsh$ These contigs must be specific transcripts to QPX}[.1cm]
+<<counts3>>=
+reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 2)
+reads.counts <- gather(reads.counts, "category", "counts", 3:7)
+ggplot(reads.counts,
+       aes(x = sample,
+           y = counts,
+           fill = category)) + 
+    geom_bar(stat = "identity") +
+        theme_bw() +
+            facet_wrap( ~ category, 
+                       ncol = 2, 
+                       scales = "free")
+@ 
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}
