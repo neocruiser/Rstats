@@ -39,6 +39,8 @@ rm(list=ls())
 #lsos(pat="")
 @ 
 
+\marginnote{\small\color{blue}$\Lsh$ Project started July 10 2015}[.1cm]
+
 \section{Data preprocessing}
 \label{sec:dataPreporcessing}
 Load packages.

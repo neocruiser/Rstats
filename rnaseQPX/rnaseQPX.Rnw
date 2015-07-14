@@ -29,6 +29,8 @@ options(formatR.arrow=TRUE,
 @ 
 
 \noindent
+\marginnote{\small\color{blue}$\Lsh$ Project started April 2015 - ended June 2015}[.1cm]
+
 Loaded functions:
 <<loading,results=FALSE>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
@@ -38,6 +40,7 @@ rm(list=ls())
 ###load("PD.Rdata", .GlobalEnv)
 #lsos(pat="")
 @ 
+
 
 \section{Load R packages}
 \label{sec:dataPreporcessing}
