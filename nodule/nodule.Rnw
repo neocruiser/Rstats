@@ -143,7 +143,7 @@ ggplot(reads.counts,
             facet_wrap( ~ sample, ncol = 1,
                        scales = "free") +
                 scale_fill_manual(values = brewer.pal(3, "Greens"))
-   
+
 @ 
 \section{System Information}
 \label{sec:sys_info}
