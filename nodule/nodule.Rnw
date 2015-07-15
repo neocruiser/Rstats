@@ -29,6 +29,7 @@ options(formatR.arrow=TRUE,
 @ 
 
 \noindent
+\marginnote{\small\color{blue}$\Lsh$ Project started July 10 2015}[.1cm]
 Loaded functions:
 <<loading,results=FALSE>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
@@ -39,7 +40,6 @@ rm(list=ls())
 #lsos(pat="")
 @ 
 
-\marginnote{\small\color{blue}$\Lsh$ Project started July 10 2015}[.1cm]
 
 \section{Data preprocessing}
 \label{sec:dataPreporcessing}
@@ -72,8 +72,8 @@ ggplot(reads.counts,
                               ymax = raw.reads,
                               label = raw.reads,
                               size = 2,
-                              hjust = 1)) + 
-                    scale_color_hue(c = 10, l = 20)
+                              hjust = 1.3)) + 
+                    scale_fill_hue(c = 40, l = 60)
 @ 
 
 Number of reads that mapped to the reference genome of QPX.
@@ -92,7 +92,8 @@ ggplot(reads.counts,
                       size = 2)) +
             coord_flip() +
                 theme_bw() +
-                    scale_color_grey(start = .2, end = .8)
+                    scale_fill_grey(start = .4, end = .9)
+
 @ 
 
 Mapped reads to the QPX reference where than assembled into contigs (ie, the reads showing in the chart above).
@@ -108,9 +109,42 @@ ggplot(reads.counts,
         theme_bw() +
             facet_wrap( ~ category, 
                        ncol = 2, 
-                       scales = "free")
+                       scales = "free") + 
+                theme(legend.position = "top")
 @ 
 
+All contigs were than aligned to the reference genome QPX. The chart shows the number of contigs (both genomic and mRNA sequenced) that align with an increasing length of 100>200>300>400>500.
+\marginnote{\small\color{blue}$\Lsh$ Helps discard misassembled contigs or non QPX ones}[.1cm]
+<<counts4>>=
+reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 4)
+reads.counts <- gather(reads.counts, "category", "count", 3:7)
+ggplot(reads.counts,
+       aes(x = sample,
+           y = count,
+           fill = category)) +
+    theme_bw() +
+        geom_bar(stat = "identity",
+                 position = "dodge") +
+            facet_wrap( ~ blat, ncol = 1, scale = "free") +
+                scale_fill_manual(values = brewer.pal(5, "Greens"))
+@ 
+
+All contigs were than translated to peptides in 6 frames. Each frame peptide was than aligned to the whole PFAM library (v28, date: Jul 14 2015).
+<<counts5>>=
+reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 3)
+reads.counts <- gather(reads.counts, "category", "count", 3:5)
+ggplot(reads.counts,
+       aes(x = category,
+           y = count,
+           fill = pfam)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+        theme_bw() + 
+            facet_wrap( ~ sample, ncol = 1,
+                       scales = "free") +
+                scale_fill_manual(values = brewer.pal(3, "Greens"))
+   
+@ 
 \section{System Information}
 \label{sec:sys_info}
 \noindent
