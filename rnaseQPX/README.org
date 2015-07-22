@@ -20,7 +20,7 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
-* Goals =An initial analysis of genetic variation in the parasite QPX genome=
+* Goals
 The data we have include 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains. We also have the combined assembly of the transcriptome from the 4 QPX strain. In addition a published first draft of the QPX genome.
 
 1. Compare multiple QPX transcriptomes
@@ -1659,9 +1659,9 @@ cd rnaseQPX
 
 * Computational server
 ** SDSC Gordon @XSEDE
-Login and connect through secure network.
+Login and connect through secure network. Replace the Xs with login.
 #+BEGIN_SRC shell
-ssh -l silo gordon.sdsc.xsede.org
+ssh -l XXXX gordon.sdsc.xsede.org
 #+END_SRC
 
 Shared directory with bassem.
