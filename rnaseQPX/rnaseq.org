@@ -20,4 +20,12 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
-beginsrcR
+#+header: :width 8 :height 8 :R-dev-args bg="olivedrab", fg="hotpink"
+#+begin_src R :file png/1.png :results output graphics
+pkgs <- c('xlsx','lattice','latticeExtra',
+          'ggplot2', 'dplyr', 'vegan', 'tidyr',
+          'ggbiplot')
+lapply(pkgs, require, character.only = TRUE)
+#+end_src
+
+
