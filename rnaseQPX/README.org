@@ -41,33 +41,11 @@ The data we have include 4 QPX transcriptomes generated from different strains o
 3. [[http://data.imicrobe.us/project/view/104][NCBI]] metadata entries for the project
 4. [[http://jcvi.org/metarep/][JCVI METAREP]] annotation protocol for the project
 
-* Bioinformatic packages and there alternative
-1. [[https://trinityrnaseq.github.io/][Trinity]]
-2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
-3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
-4. RSEM IsoEM (DEF on de novo transcriptome)
-5. R/Bioconductor packages (ShortRead edgeR DESeq GenomicRanges GenomicFeatures DEXSeq BaySeq BBSeq NOISeq QuasiSeq BitSeq ShrinkSeq)
-6. SAMtools [[http://www.htslib.org/doc/samtools.html][HomePage]] [[http://www.htslib.org/doc/samtools.html][Documentation]]
-7. Count map reads [[http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html][HTSeq]]
-8. [[http://genome.sph.umich.edu/wiki/Bam_read_count#Download][ReadCount]] reads in a bam file
-9. MEGA-CC (command line) and MEGA-PRO (GUI) -- [[http://megasoftware.net/MEGA7-CC-Quick-Start-Tutorial.pdf][Intro]]
-10. BLAST+ =command line=
-11. CLC Genomics =Xeon Desktop= [[http://www.clcsupport.com/clcgenomicsworkbench/current/index.php?manual%3DIntroduction_CLC_Genomics_Workbench.html][tutorial]]
-12. MG-RAST [[http://metagenomics.anl.gov/metagenomics.cgi?page%3DHome][homepage]]
-13. [[http://bioconductor.org/][Bioconductor]]
-14. Gene Ontology Packages: =GOseq= =topGO= =GOstat= =Ontologizer= =DAVID= =ontoCAT= ([[http://www.ontocat.org/browser/trunk/ontoCAT/src/uk/ac/ebi/ontocat/examples/R/Example1.R][help]]) =biomaRT=
-15. Draft genome assemblers: =Velvet= =Oasis= =ABySS= =SOAPdenovo= (reads to contigs) or hybrid methods: =celera= =MIRA= =ALLPATHS-LG=
-16. Genome Finishing Tools: =AHA= =SSPACE-LongRead= (reduce contiguous assembled pair-ends) =scaffolding routine= [[http://www.biomedcentral.com/1471-2105/15/211][Boetzer 2014]]
-17. Proteogenomics (w/ circos and D3) [[http://qcmg.org/bioinformatics/PGTools][PGTools]]
-18. Integrated Genome Viewer [[https://www.broadinstitute.org/igv/][BroadInstitute]] [[http://www.broadinstitute.org/igv/projects/downloads/IGV_2.3.46.zip][IGV]]
-19. Aliners of reads to transriptome (=tophat2= =GSNAP= =SpliceMap= =Subread= =STAR=)
-20. Burrows-Wheeler Aligner (BWA) [[http://sourceforge.net/projects/bio-bwa/files/][sourceforge.net]] or on [[https://github.com/lh3/bwa][github]]
-21. MAUVE [[http://genome.cshlp.org/content/14/7/1394.short][paper]] for genomic alignment & identification of recombination and horizontal transfer.
-22. QIIME for bacterial rna seq data processing [[http://qiime.org/][main site]]
-23. [[http://www.scfbm.org/content/10/1/8/abstract][PrimerView]] CPAN module for primer design on multiple sequences
-24. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
-25. Bpipe [[http://docs.bpipe.org/][documentation]]
-26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
+
+
+* Phase 1 - Requiring packages and quality check of raw reads
+** Aligners and useful packages (to be installed on Linux)
+Of many there is =bowtie= fast but does not handle gaps (indels) correctly and there is =bwa= (Burrows-Wheeler aligner) which can handle different sizes of reads.
 
 Update your linux system and insure the packages below are installed.
 #+BEGIN_SRC shell
@@ -78,11 +56,6 @@ libxcb-xinerama0-dev libxcb-shm0-dev libjack-jackd2-dev \
 libdbus-1-dev libglib2.0-dev libavahi-client-dev libxcb-xinerama0 \
 libgl1-mesa-dev-lts-trusty
 #+END_SRC
-
-
-* Phase 1 - Requiring packages and quality check of raw reads
-** Aligners and useful packages (to be installed on Linux)
-Of many there is =bowtie= fast but does not handle gaps (indels) correctly and there is =bwa= (Burrows-Wheeler aligner) which can handle different sizes of reads.
 
 Download and set up BWA
 #+BEGIN_SRC shell
@@ -1647,6 +1620,35 @@ cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18)
 * Phase 5 - Concatenate all data into one database (in progress with MySQL)
 ** Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
+
+GITHUB * Bioinformatic packages and there alternative
+1. [[https://trinityrnaseq.github.io/][Trinity]]
+2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
+3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
+4. RSEM IsoEM (DEF on de novo transcriptome)
+5. R/Bioconductor packages (ShortRead edgeR DESeq GenomicRanges GenomicFeatures DEXSeq BaySeq BBSeq NOISeq QuasiSeq BitSeq ShrinkSeq)
+6. SAMtools [[http://www.htslib.org/doc/samtools.html][HomePage]] [[http://www.htslib.org/doc/samtools.html][Documentation]]
+7. Count map reads [[http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html][HTSeq]]
+8. [[http://genome.sph.umich.edu/wiki/Bam_read_count#Download][ReadCount]] reads in a bam file
+9. MEGA-CC (command line) and MEGA-PRO (GUI) -- [[http://megasoftware.net/MEGA7-CC-Quick-Start-Tutorial.pdf][Intro]]
+10. BLAST+ =command line=
+11. CLC Genomics =Xeon Desktop= [[http://www.clcsupport.com/clcgenomicsworkbench/current/index.php?manual%3DIntroduction_CLC_Genomics_Workbench.html][tutorial]]
+12. MG-RAST [[http://metagenomics.anl.gov/metagenomics.cgi?page%3DHome][homepage]]
+13. [[http://bioconductor.org/][Bioconductor]]
+14. Gene Ontology Packages: =GOseq= =topGO= =GOstat= =Ontologizer= =DAVID= =ontoCAT= ([[http://www.ontocat.org/browser/trunk/ontoCAT/src/uk/ac/ebi/ontocat/examples/R/Example1.R][help]]) =biomaRT=
+15. Draft genome assemblers: =Velvet= =Oasis= =ABySS= =SOAPdenovo= (reads to contigs) or hybrid methods: =celera= =MIRA= =ALLPATHS-LG=
+16. Genome Finishing Tools: =AHA= =SSPACE-LongRead= (reduce contiguous assembled pair-ends) =scaffolding routine= [[http://www.biomedcentral.com/1471-2105/15/211][Boetzer 2014]]
+17. Proteogenomics (w/ circos and D3) [[http://qcmg.org/bioinformatics/PGTools][PGTools]]
+18. Integrated Genome Viewer [[https://www.broadinstitute.org/igv/][BroadInstitute]] [[http://www.broadinstitute.org/igv/projects/downloads/IGV_2.3.46.zip][IGV]]
+19. Aliners of reads to transriptome (=tophat2= =GSNAP= =SpliceMap= =Subread= =STAR=)
+20. Burrows-Wheeler Aligner (BWA) [[http://sourceforge.net/projects/bio-bwa/files/][sourceforge.net]] or on [[https://github.com/lh3/bwa][github]]
+21. MAUVE [[http://genome.cshlp.org/content/14/7/1394.short][paper]] for genomic alignment & identification of recombination and horizontal transfer.
+22. QIIME for bacterial rna seq data processing [[http://qiime.org/][main site]]
+23. [[http://www.scfbm.org/content/10/1/8/abstract][PrimerView]] CPAN module for primer design on multiple sequences
+24. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
+25. Bpipe [[http://docs.bpipe.org/][documentation]]
+26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
+
 
 
 * GITHUB
