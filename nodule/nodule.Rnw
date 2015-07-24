@@ -34,21 +34,444 @@ Loaded functions:
 <<loading,results=FALSE>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
 rm(list=ls())
-#setwd("/media/Data/Dropbox/humanR/PD/")
-#setwd("~/Dropbox/humanR/PD/")
-###load("PD.Rdata", .GlobalEnv)
-#lsos(pat="")
 @ 
 
-
-\section{Data preprocessing}
-\label{sec:dataPreporcessing}
 Load packages.
-<<>>=
+<<packages, results='hide'>>=
 pkgs <- c('xlsx','caret','leaps','glmnet','lattice','latticeExtra',
           'ggplot2')
 lapply(pkgs, require, character.only = TRUE)
 @
+
+\section{Quality controls after trimming bad reads}
+\label{subsec:trim}
+Many different options are available while trimming reads.
+\begin{itemize}
+\item Nature of PCR adapters (trueSeq2 or trueSeq3)
+\item Sliding window while reading contigs
+\item Crop less than a desired read length
+\item Minimum length for reads
+\item Trailing while removing the ends of reads with low quality
+\end{itemize}
+
+Different trimming parameters where tested. 
+The plot shows the differences between nature off adapters (colors) and the combination of the trimming parameters (shapes).
+<<chartrim>>=
+trim <- read.xlsx("./data/Classeur1.xlsx", header = T, sheetName = "Feuil1")
+trim <- trim[1:3, ]
+key.variety <- list(space = "right", 
+                    text = list(colnames(trim[, -c(1:2)])), 
+                    points = list(pch = c(15:18,25,4)))
+
+dotplot(c(trim$Total-trim$default)/100000 +
+           c(trim$Total-trim$slide)/100000 + 
+               c(trim$Total-trim$crop)/100000 +
+                   c(trim$Total-trim$slcrop)/100000 +
+                       c(trim$Total-trim$default2)/100000 +
+                           c(trim$Total-trim$slide2)/100000
+       ~ trim$Sample,
+       data = trim,
+       type = 'o',
+        pch = c(15:18,25,4),
+        key = key.variety,
+        lty = 1, cex = 1.5, 
+       xlab = 'Nodule samples',
+       ylab = 'Discarded reads x 100,000')
+
+@ 
+
+Another way to visualize the discarded reads.
+<<trim2>>=
+custom.colors <- c(col1 = "#ffeda0", col2 = "#feb24c", col3 = "#f03b20")
+
+barplot(as.matrix((trim$Total-trim[, -c(1:2)])/100000),
+        horiz = TRUE,
+        col = custom.colors,
+        xlab = 'Discarded reads x 100,000',
+        ylab = 'Protocols for trimming',
+        las = 2)
+@ 
+
+
+\section{Aligning contigs to reference}
+\label{subsec:align}
+Two sets of reads were mapped to 2 references.
+First batch from the trimmed reads with the default parameters (adapters clipping, trailing, and minimum length) and TrueSeq3 adapters (ones Bassem supplied).
+Second batch were also trimmed with default settings but using TrueSeq2 adapters (ones that sleiman supplied).
+With the second batch of adapters, more reads were trimmed and discarded. This analysis will try to show why by regressing the number of mapped reads over the length of each reference.
+<<map>>=
+ref.genome1 <- read.table("./data/refGenome/A1.htseq.counts.txt")
+ref.genome2 <- read.table("./data/refGenome/A2.htseq.counts.txt")
+ref.genome3 <- read.table("./data/refGenome/A3.htseq.counts.txt")
+ref.genome4 <- read.table("./data/refGenome/A1-4.htseq.counts.txt")
+ref.genome5 <- read.table("./data/refGenome/A2-4.htseq.counts.txt")
+ref.genome6 <- read.table("./data/refGenome/A3-4.htseq.counts.txt")
+@ 
+
+Merge all mapped reads on the genome
+<<mapx2>>=
+ref.genome <- data.frame(
+    A1 = ref.genome1[-c(556:560), 2],
+    A2 = ref.genome2[-c(556:560), 2],
+    A3 = ref.genome3[-c(556:560), 2],
+    A1.4 = ref.genome4[-c(556:560), 2],
+    A2.4 = ref.genome5[-c(556:560), 2],
+    A3.4 = ref.genome6[-c(556:560), 2],
+    contigs = ref.genome1[-c(556:560), 1])
+dim(ref.genome)
+genome <- read.table("./data/QPX_Genome_v017.gff3")
+genome1 <- data.frame(contigs= genome[,1], length = genome$V5)
+@
+
+Merge length and number of mapped reads
+<<mapx3>>=
+ref.genome.mix <- merge(genome1, ref.genome)
+head(ref.genome.mix)
+@ 
+
+Plot the correlation between read length and number of mapped reads on the genome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
+<<map2>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 3:5])),
+                    col = custom.colors)
+xyplot(A1 + A2 + A3 ~ length, 
+       data = ref.genome.mix,
+       xlab = 'Length of contigs in reference Genome (total 555)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+      
+@ 
+
+
+Regression between reads and length of contigs in reference genome with adapters TrueSeq2 under default trimming settings.
+<<map3>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 6:8])),
+                    col = custom.colors)
+xyplot(A1.4 + A2.4 + A3.4 ~ length, 
+#                   alpha = .5,
+       data = ref.genome.mix,
+       xlab = 'Length of contigs in reference Genome (total 555)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+      
+@ 
+
+Previously i regressed the number of mapped reads of nodule samples over the reference genome of QPX.
+Now its time to do the same thing over the reference transcriptome of QPX.
+Both references belong the Steve Roberts.
+<<trans>>=
+ref.transcriptome1 <- read.table("./data/refTranscriptome/A1.htseq.counts.txt")
+ref.transcriptome2 <- read.table("./data/refTranscriptome/A2.htseq.counts.txt")
+ref.transcriptome3 <- read.table("./data/refTranscriptome/A3.htseq.counts.txt")
+ref.transcriptome4 <- read.table("./data/refTranscriptome/A1-4.htseq.counts.txt")
+ref.transcriptome5 <- read.table("./data/refTranscriptome/A2-4.htseq.counts.txt")
+ref.transcriptome6 <- read.table("./data/refTranscriptome/A3-4.htseq.counts.txt")
+dim(ref.transcriptome1)
+tail(ref.transcriptome1)
+@ 
+
+Merge all mapped reads on the transcriptome
+<<trans2>>=
+ref.transcriptome <- data.frame(
+    A1 = ref.transcriptome1[-c(11775:11779), 2],
+    A2 = ref.transcriptome2[-c(11775:11779), 2],
+    A3 = ref.transcriptome3[-c(11775:11779), 2],
+    A1.4 = ref.transcriptome4[-c(11775:11779), 2],
+    A2.4 = ref.transcriptome5[-c(11775:11779), 2],
+    A3.4 = ref.transcriptome6[-c(11775:11779), 2],
+    contigs = ref.transcriptome1[-c(11775:11779), 1])
+dim(ref.transcriptome)
+head(ref.transcriptome)
+transcriptome <- read.table("./data/QPX_transcriptome_v2orf.gff3")
+transcriptome1 <- data.frame(contigs= transcriptome[,1], length = transcriptome$V5)
+@ 
+
+Merge length and number of mapped reads
+<<trans3>>=
+ref.transcriptome.mix <- merge(transcriptome1, ref.transcriptome)
+head(ref.transcriptome.mix)
+@ 
+ 
+\subsection{Concentration of contigs in different libraries}
+\label{subsec:density}
+Plot correlation between transcriptome contigs and assembled reads of nodule samples. Trimming parameters are of default with TrueSeq3 adapters.
+<<trans1>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 3:5])),
+                    col = custom.colors)
+densityplot(A1 + A2 + A3 ~ length, 
+       data = ref.transcriptome.mix,
+#            alpha = .7,
+            xlab = 'Length of contigs in reference Genome (total 11774)',
+       ylab = 'Nb of mapped reads from nodule samples',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+#       scales = list(log = 10),
+       key = key.variety)
+
+@ 
+
+Plot correlation same as above but with TrueSeq2 adapters with default parameters.
+<<trans2x>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.genome.mix[, 6:8])),
+                    col = custom.colors)
+densityplot(A1.4 + A2.4 + A3.4 ~ length, 
+       data = ref.transcriptome.mix,
+#            alpha = .9,
+       xlab = 'Length of contigs in reference Genome (total 11774)',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+@ 
+
+
+Load the number of mapped reads to the MMETSP0098 transcriptome before discarding duplicates.
+<<prediscardR3>>=
+ref.dupA1R3 <- read.table("./data/refMME98/A1.htseq.counts.txt")
+ref.dupA2R3 <- read.table("./data/refMME98/A2.htseq.counts.txt")
+ref.dupA3R3 <- read.table("./data/refMME98/A3.htseq.counts.txt")
+@ 
+
+Merge all mapped reads to MMETSP0098 reference transcriptome before discarding duplicates (ie, raw counts).
+<<prediscardR31>>=
+ref.mme98 <- data.frame(A1 = ref.dupA1R3$V2,
+                        A2 = ref.dupA2R3$V2,
+                        A3 = ref.dupA3R3$V2,
+                        contigs = ref.dupA1R3$V1)
+@ 
+
+Add the length values to each contig mapped to MMETsp0098. But first remove extra rows.
+<<mappedx23>>=
+nr <- nrow(ref.mme98)
+ref.mme98 <- ref.mme98[1:(nr-5), ]
+tail(ref.mme98)
+@
+
+Merge length and counts.
+<<predis34>>=
+
+#ref.mme98.mix <- merge(ref.mme98, mme98[, c(1,5)])
+@
+
+Load the number of mapped reads to the MMETSP0099\_2 transcriptome before discarding duplicates.
+<<prediscardR34>>=
+ref.dupA1R4 <- read.table("./data/refMME992/A1.htseq.counts.txt")
+ref.dupA2R4 <- read.table("./data/refMME992/A2.htseq.counts.txt")
+ref.dupA3R4 <- read.table("./data/refMME992/A3.htseq.counts.txt")
+@
+Merge all mapped reads to MMETSP0099\_2 reference transcriptome before discarding duplicates (ie, raw counts).
+<<prediscardR314>>=
+ref.mme992 <- data.frame(A1 = ref.dupA1R4$V2,
+                        A2 = ref.dupA2R4$V2,
+                        A3 = ref.dupA3R4$V2,
+                        contigs = ref.dupA1R4$V1)
+@ 
+
+Add the length values to each contig mapped to MMETsp0099\_2. But first remove extra rows.
+<<mappedx234>>=
+nr <- nrow(ref.mme992)
+ref.mme992 <- ref.mme992[1:(nr-5), ]
+tail(ref.mme992)
+@ 
+
+Load the number of mapped reads to SR v015 genome before discarding duplicates.
+<<prediscardR345>>=
+ref.dupA1R5 <- read.table("./data/refGenomV015/A1.htseq.counts.txt")
+ref.dupA2R5 <- read.table("./data/refGenomV015/A2.htseq.counts.txt")
+ref.dupA3R5 <- read.table("./data/refGenomV015/A3.htseq.counts.txt")
+@
+
+Merge all mapped reads to SR v015 reference genome before discarding duplicates (ie, raw counts).
+<<prediscardR3145>>=
+ref.genomv015 <- data.frame(A1 = ref.dupA1R5$V2,
+                        A2 = ref.dupA2R5$V2,
+                        A3 = ref.dupA3R5$V2,
+                        contigs = ref.dupA1R5$V1)
+@ 
+
+Add the length values to each contig mapped to SR v015 reference genome. But first remove extra rows.
+<<mappedx2345>>=
+nr <- nrow(ref.genomv015)
+ref.genomv015 <- ref.genomv015[1:(nr-5), ]
+tail(ref.genomv015)
+@ 
+
+
+\section{Removing the duplicate reads and reducing bias for better coverage}
+\label{sec:duplicates}
+After aligning the reads to a reference duplicates must be removed.
+
+First load the sample reads mapped to reference genome (without duplication) of Steve Roberts.
+<<dupl1>>=
+nodupA1R1 <- read.table("./data/nodupR1/A1.htseq.nodup.counts.txt")
+nodupA2R1 <- read.table("./data/nodupR1/A2.htseq.nodup.counts.txt")
+nodupA3R1 <- read.table("./data/nodupR1/A3.htseq.nodup.counts.txt")
+@ 
+
+Second load the sample reads mapped to reference transcriptome (withtout duplication) of Steve Roberts.
+<<dupl2>>=
+nodupA1R2 <- read.table("./data/nodupR2/A1.htseq.nodup.counts.txt")
+nodupA2R2 <- read.table("./data/nodupR2/A2.htseq.nodup.counts.txt")
+nodupA3R2 <- read.table("./data/nodupR2/A3.htseq.nodup.counts.txt")
+@ 
+
+Third load the sample reads mapped to reference transcriptome (without duplication) of MMESTO0098.
+<<dupl3>>=
+nodupA1R3 <- read.table("./data/nodupR3/A1.htseq.counts.nodup.txt")
+nodupA2R3 <- read.table("./data/nodupR3/A2.htseq.counts.nodup.txt")
+nodupA3R3 <- read.table("./data/nodupR3/A3.htseq.counts.nodup.txt")
+@ 
+
+Forth load of sample reads mapped to reference transcriptome MMETSP0099\_2.
+<<dupl4>>=
+nodupA1R4 <- read.table("./data/nodupR4/A1.htseq.counts.nodup.txt")
+nodupA2R4 <- read.table("./data/nodupR4/A2.htseq.counts.nodup.txt")
+nodupA3R4 <- read.table("./data/nodupR4/A3.htseq.counts.nodup.txt")
+@ 
+
+Forth load of sample reads mapped to reference SR genome v015 with approximately 21,000 contigs.
+<<dupl44>>=
+nodupA1R5 <- read.table("./data/nodupR5/A1.htseq.counts.nodup.txt")
+nodupA2R5 <- read.table("./data/nodupR5/A2.htseq.counts.nodup.txt")
+nodupA3R5 <- read.table("./data/nodupR5/A3.htseq.counts.nodup.txt")
+@ 
+
+Merge mapped samples relative to the reference.
+\begin{itemize}
+\item R1 = genome of QPX (steve roberts, 555 contigs)
+\item R2 = transcriptome of QPX (steve roberts)
+\item R3 = transcriptome of QPX MMETSP0098
+\item R4 = transcriptome of QPX MMETSP0099\_2
+\item R5 = genome of QPX (steve roberts v015, approx. 21,000 contigs)
+\end{itemize}
+<<>>=
+allR1 <- data.frame(A1n = nodupA1R1$V2,
+                  A2n = nodupA2R1$V2,
+                  A3n = nodupA3R1$V2,
+                  reference = rep("genomSRv017", nrow(nodupA1R1)),
+                    contigs = nodupA1R1$V1)
+allR1 <- allR1[1:555, ]
+
+allR2 <- data.frame(A1n = nodupA1R2$V2,
+                  A2n = nodupA2R2$V2,
+                  A3n = nodupA3R2$V2,
+                  reference = rep("trxSRv022", nrow(nodupA1R2)),
+                    contigs = nodupA1R2$V1)
+allR2 <- allR2[1:11774, ]
+
+allR3 <- data.frame(A1n = nodupA1R3$V2,
+                  A2n = nodupA2R3$V2,
+                  A3n = nodupA3R3$V2,
+                  reference = rep("trxMME98", nrow(nodupA1R3)),
+                    contigs = nodupA1R3$V1)
+allR3 <- allR3[1:15489, ]
+
+allR4 <- data.frame(A1n = nodupA1R4$V2,
+                  A2n = nodupA2R4$V2,
+                  A3n = nodupA3R4$V2,
+                  reference = rep("trxMME992", nrow(nodupA1R4)),
+                    contigs = nodupA1R4$V1)
+allR4 <- allR4[1:c(nrow(nodupA1R4)-5), ]
+
+allR5 <- data.frame(A1n = nodupA1R5$V2,
+                  A2n = nodupA2R5$V2,
+                  A3n = nodupA3R5$V2,
+                  reference = rep("genomSRv015", nrow(nodupA1R5)),
+                    contigs = nodupA1R5$V1)
+allR5 <- allR5[1:c(nrow(nodupA1R5)-5), ]
+
+
+ 
+@ 
+
+Put before /after duplicates removal in one dataset for genome of Steve Roberts.
+<<genomexxc>>=
+genomeSR <- merge(ref.genome.mix[, 1:5], allR1)
+head(genomeSR)
+rownames(genomeSR) <- genomeSR$contigs
+genomeSR <- t(genomeSR[, -c(1,9)])
+genomeSR[, 1:3]
+genomeSR <- data.frame(genomeSR,
+                       y = c(2, rep(0,3), rep(1,3)))
+@
+
+Put the before /after duplicates removal in one datasetfor transcriptome of SR.
+<<transcriptomexcc>>=
+transcriptomeSR <- merge(ref.transcriptome.mix[, 1:5], allR2)
+head(transcriptomeSR)
+@ 
+
+
+Present difference for each sample mapped to the references. First merge all samples before /after duplicates were removed.
+<<ref123>>=
+allRefs <- rbind(allR1, allR2, allR3, allR4, allR5)
+dim(allRefs)
+summary(allRefs$reference)
+
+allRefs.raw <- rbind(ref.genome.mix[, 3:5],
+                     ref.transcriptome.mix[, 3:5],
+                     ref.mme98[, 1:3],
+                     ref.mme992[, 1:3],
+                     ref.genomv015[, 1:3])
+dim(allRefs.raw)
+
+allDF <- cbind(allRefs, allRefs.raw)
+allDF[sample(1:20000, 5), ]
+@ 
+
+Plot the difference before and after duplicates were discarded. The number of mapped reads to the reference contigs is descriptive for any bias in contig assembly. For example in the case of SR genome v017, more than 20 \% of A1, A2, A3 reads align to a small set of contigs. We have to imagine that each vertical bar is a different reference contig. The best distribution is a constant one.
+
+Even though we did not plot length of contigs, the analyzes above demonstrate that length is linearly correlated to the number of mapped reads. Therefore, peaks indicate a specific preference that reads have to map to the assembled reference.
+<<summaryPlot2>>=
+custom.colors <- c(col1 = "#762a83", 
+                   col2 = "#1b7837", 
+                   col3 = "#ef8a62",
+                   col4 = "#2166ac",
+                   col5 = "#8c510a",
+                   col6 = "#e6ab02")
+
+histogram( ~ A1 + A2 + A3 | c('A1n', 'A2n', 'A3n'),
+     data = allDF,
+     nint = 50,
+     scales = list(log = 2),
+     type = "p",
+     ylim = c(0,25),
+     groups = allDF$reference,
+     panel = function(...) panel.superpose(..., 
+         panel.groups = panel.histogram,
+         col = custom.colors, 
+         alpha = 1),
+     auto.key=list(columns=3,
+         rectangles = FALSE,
+         col = custom.colors),
+          main = 'Peaks indicate bias mapping to one contig length',
+          ylab = 'Percent of total number of mapped reads to the reference (%)',
+          xlab = 'Number of mapped reads for each reference contig (log10)'
+     )
+
+@ 
+
+
+\section{Extracting QPX reads}
+\label{sec:exctraction}
 
 Load file with read counts per sample.
 \begin{itemize}
