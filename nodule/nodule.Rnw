@@ -39,11 +39,11 @@ rm(list=ls())
 Load packages.
 <<packages, results='hide'>>=
 pkgs <- c('xlsx','caret','leaps','glmnet','lattice','latticeExtra',
-          'ggplot2')
+          'ggplot2', 'dplyr', 'tidyr')
 lapply(pkgs, require, character.only = TRUE)
 @
 
-\section{Quality controls after trimming bad reads}
+\section{Quality controls and preprocessing}
 \label{subsec:trim}
 Many different options are available while trimming reads.
 \begin{itemize}
@@ -54,8 +54,9 @@ Many different options are available while trimming reads.
 \item Trailing while removing the ends of reads with low quality
 \end{itemize}
 
-Different trimming parameters where tested. 
-The plot shows the differences between nature off adapters (colors) and the combination of the trimming parameters (shapes).
+Different trimming options were tested. Iterations were run on combination of the trimming options.
+The plot shows the number of reads remaining after trimming using different adapters and a combination of trimming parameters (shapes).
+The \textit{default} parameters includes clipping low quality segments and size of reads. The \textit{slide} option include frameshiftting while filtering out low quality reads and the defaults. The \textit{crop} option includes trimming the end of the reads and the defaults. The \textit{slcrop} option includes sliding and cropping and the defaults. The \textit{default2} parameters reliy on using different adapters for paired end sequencing. The \textit{slide2} option include frameshiftting with the default parameters and different set of adapters.
 <<chartrim>>=
 trim <- read.xlsx("./data/Classeur1.xlsx", header = T, sheetName = "Feuil1")
 trim <- trim[1:3, ]
@@ -80,7 +81,7 @@ dotplot(c(trim$Total-trim$default)/100000 +
 
 @ 
 
-Another way to visualize the discarded reads.
+Another way to visualize the discarded reads. A1 = yellow, A2 = orange, A3 = red.
 <<trim2>>=
 custom.colors <- c(col1 = "#ffeda0", col2 = "#feb24c", col3 = "#f03b20")
 
@@ -93,12 +94,14 @@ barplot(as.matrix((trim$Total-trim[, -c(1:2)])/100000),
 @ 
 
 
-\section{Aligning contigs to reference}
+\section{Mapping reads to reference}
 \label{subsec:align}
-Two sets of reads were mapped to 2 references.
-First batch from the trimmed reads with the default parameters (adapters clipping, trailing, and minimum length) and TrueSeq3 adapters (ones Bassem supplied).
-Second batch were also trimmed with default settings but using TrueSeq2 adapters (ones that sleiman supplied).
-With the second batch of adapters, more reads were trimmed and discarded. This analysis will try to show why by regressing the number of mapped reads over the length of each reference.
+
+Two sets of reads were mapped to 3 different assembled references.
+\marginnote{\small\color{blue}$\Lsh$ The references v017 and genome v21 are test references, while genome v015 is the one used in the published work.}[.1cm]
+First batch from the trimmed reads with the default parameters (adapters clipping, trailing, and minimum length) and TrueSeq3 adapters.
+Second batch were also trimmed with default settings but using TrueSeq2 adapters.
+With the second batch of adapters, more reads were trimmed and discarded. This analysis will try to show the regression of mapped reads to the length of each reference.
 <<map>>=
 ref.genome1 <- read.table("./data/refGenome/A1.htseq.counts.txt")
 ref.genome2 <- read.table("./data/refGenome/A2.htseq.counts.txt")
@@ -108,7 +111,7 @@ ref.genome5 <- read.table("./data/refGenome/A2-4.htseq.counts.txt")
 ref.genome6 <- read.table("./data/refGenome/A3-4.htseq.counts.txt")
 @ 
 
-Merge all mapped reads on the genome
+Merge by reference position all the mapped reads from different trimming options.
 <<mapx2>>=
 ref.genome <- data.frame(
     A1 = ref.genome1[-c(556:560), 2],
@@ -123,13 +126,14 @@ genome <- read.table("./data/QPX_Genome_v017.gff3")
 genome1 <- data.frame(contigs= genome[,1], length = genome$V5)
 @
 
-Merge length and number of mapped reads
+Merge by reference position the length and number of mapped reads.
+\marginnote{\small\color{blue}$\Lsh$ Data are from trimming with TrueSeq3 (selected) and TrueSeq2 (testing). We only plot TrueSeq3.}[.1cm]
 <<mapx3>>=
 ref.genome.mix <- merge(genome1, ref.genome)
 head(ref.genome.mix)
 @ 
 
-Plot the correlation between read length and number of mapped reads on the genome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
+Correlation between read length and number of mapped reads on the (testing) genome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
 <<map2>>=
 custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
 key.variety <- list(space = "right", 
@@ -148,7 +152,7 @@ xyplot(A1 + A2 + A3 ~ length,
 @ 
 
 
-Regression between reads and length of contigs in reference genome with adapters TrueSeq2 under default trimming settings.
+Regression between reads and length of contigs in reference genome with (testing) adapters TrueSeq2 under default trimming settings.
 <<map3>>=
 custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
 key.variety <- list(space = "right", 
@@ -167,8 +171,8 @@ xyplot(A1.4 + A2.4 + A3.4 ~ length,
       
 @ 
 
-Previously i regressed the number of mapped reads of nodule samples over the reference genome of QPX.
-Now its time to do the same thing over the reference transcriptome of QPX.
+Previously we regressed the number of mapped reads over the reference genome (v21) of QPX.
+Now its time to do the same thing over the reference transcriptome of QPX (v17).
 Both references belong the Steve Roberts.
 <<trans>>=
 ref.transcriptome1 <- read.table("./data/refTranscriptome/A1.htseq.counts.txt")
@@ -181,7 +185,8 @@ dim(ref.transcriptome1)
 tail(ref.transcriptome1)
 @ 
 
-Merge all mapped reads on the transcriptome
+Merge by the position on the reference transcriptome all the mapped reads.
+\marginnote{\small\color{blue}$\Lsh$ Data is from trimming with TrueSeq3 (selected) and TrueSeq2 (testing). We only plot TruSeq3}[.1cm]
 <<trans2>>=
 ref.transcriptome <- data.frame(
     A1 = ref.transcriptome1[-c(11775:11779), 2],
@@ -197,15 +202,33 @@ transcriptome <- read.table("./data/QPX_transcriptome_v2orf.gff3")
 transcriptome1 <- data.frame(contigs= transcriptome[,1], length = transcriptome$V5)
 @ 
 
-Merge length and number of mapped reads
+Merge by the position on the reference transcriptome the length and number of the mapped reads.
 <<trans3>>=
 ref.transcriptome.mix <- merge(transcriptome1, ref.transcriptome)
 head(ref.transcriptome.mix)
 @ 
- 
+
+
+Plot the correlation between read length and number of mapped reads on the transcriptome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
+<<trans4>>=
+custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+key.variety <- list(space = "right", 
+                    text = list(colnames(ref.transcriptome.mix[, 3:5])),
+                    col = custom.colors)
+xyplot(A1 + A2 + A3 ~ length, 
+       data = ref.transcriptome.mix,
+       xlab = 'Length of contigs in reference transcriptome',
+       ylab = 'Nb of mapped reads from nodule samples (log10)',
+       col = custom.colors,
+       cex = 0.5,
+       type = c("g", "p", "smooth"), 
+       scales = list(log = 10),
+       key = key.variety)
+      
+@ 
 \subsection{Concentration of contigs in different libraries}
 \label{subsec:density}
-Plot correlation between transcriptome contigs and assembled reads of nodule samples. Trimming parameters are of default with TrueSeq3 adapters.
+Density plot between reference transcriptome and assembled contigs. The plot shows a high concentration of contigs under 2000 base pair. Trimming parameters are of default with TrueSeq3 adapters.
 <<trans1>>=
 custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
 key.variety <- list(space = "right", 
@@ -214,7 +237,7 @@ key.variety <- list(space = "right",
 densityplot(A1 + A2 + A3 ~ length, 
        data = ref.transcriptome.mix,
 #            alpha = .7,
-            xlab = 'Length of contigs in reference Genome (total 11774)',
+            xlab = 'Length of contigs in reference transcriptome v017 (total 11774)',
        ylab = 'Nb of mapped reads from nodule samples',
        col = custom.colors,
        cex = 0.5,
@@ -233,7 +256,7 @@ key.variety <- list(space = "right",
 densityplot(A1.4 + A2.4 + A3.4 ~ length, 
        data = ref.transcriptome.mix,
 #            alpha = .9,
-       xlab = 'Length of contigs in reference Genome (total 11774)',
+       xlab = 'Length of contigs in reference transcriptome v017 (total 11774)',
        ylab = 'Nb of mapped reads from nodule samples (log10)',
        col = custom.colors,
        cex = 0.5,
@@ -243,6 +266,9 @@ densityplot(A1.4 + A2.4 + A3.4 ~ length,
 @ 
 
 
+\subsection{Testing contig length and mapping with different assembled references}
+\label{subsec:references}
+\marginnote{\small\color{blue}$\Lsh$ MMETSP is a project for sequencing different strains of QPX. MMETSP0098 and MMETPS00992 were used here. Both strains come fron New York and Virginia respectively. Official project can be found \href{https://goo.gl/xnpgdt}{here}.}[.1cm]
 Load the number of mapped reads to the MMETSP0098 transcriptome before discarding duplicates.
 <<prediscardR3>>=
 ref.dupA1R3 <- read.table("./data/refMME98/A1.htseq.counts.txt")
@@ -265,11 +291,6 @@ ref.mme98 <- ref.mme98[1:(nr-5), ]
 tail(ref.mme98)
 @
 
-Merge length and counts.
-<<predis34>>=
-
-#ref.mme98.mix <- merge(ref.mme98, mme98[, c(1,5)])
-@
 
 Load the number of mapped reads to the MMETSP0099\_2 transcriptome before discarding duplicates.
 <<prediscardR34>>=
@@ -277,6 +298,7 @@ ref.dupA1R4 <- read.table("./data/refMME992/A1.htseq.counts.txt")
 ref.dupA2R4 <- read.table("./data/refMME992/A2.htseq.counts.txt")
 ref.dupA3R4 <- read.table("./data/refMME992/A3.htseq.counts.txt")
 @
+
 Merge all mapped reads to MMETSP0099\_2 reference transcriptome before discarding duplicates (ie, raw counts).
 <<prediscardR314>>=
 ref.mme992 <- data.frame(A1 = ref.dupA1R4$V2,
@@ -315,9 +337,7 @@ tail(ref.genomv015)
 @ 
 
 
-\section{Removing the duplicate reads and reducing bias for better coverage}
-\label{sec:duplicates}
-After aligning the reads to a reference duplicates must be removed.
+After aligning the reads to a reference duplicates must be removed. Testing was done with different reference transcriptomes and genomes to assess the strength of the parameters used for removing the duplicate reads and reducing bias for better coverage.
 
 First load the sample reads mapped to reference genome (without duplication) of Steve Roberts.
 <<dupl1>>=
@@ -354,12 +374,12 @@ nodupA2R5 <- read.table("./data/nodupR5/A2.htseq.counts.nodup.txt")
 nodupA3R5 <- read.table("./data/nodupR5/A3.htseq.counts.nodup.txt")
 @ 
 
-Merge mapped samples relative to the reference.
+Merge mapped reads relative to the followingf references.
 \begin{itemize}
 \item R1 = genome of QPX (steve roberts, 555 contigs)
 \item R2 = transcriptome of QPX (steve roberts)
-\item R3 = transcriptome of QPX MMETSP0098
-\item R4 = transcriptome of QPX MMETSP0099\_2
+\item R3 = transcriptome of QPX MMETSP0098, New York strain
+\item R4 = transcriptome of QPX MMETSP0099\_2, Virginia strain
 \item R5 = genome of QPX (steve roberts v015, approx. 21,000 contigs)
 \end{itemize}
 <<>>=
@@ -437,10 +457,11 @@ allDF <- cbind(allRefs, allRefs.raw)
 allDF[sample(1:20000, 5), ]
 @ 
 
-Plot the difference before and after duplicates were discarded. The number of mapped reads to the reference contigs is descriptive for any bias in contig assembly. For example in the case of SR genome v017, more than 20 \% of A1, A2, A3 reads align to a small set of contigs. We have to imagine that each vertical bar is a different reference contig. The best distribution is a constant one.
+Plot the difference before and after duplicates were discarded. The number of mapped reads to the reference contigs is descriptive for any bias in contig assembly. For example in the case of SR genome v017, more than 20 \% of A1, A2, A3 reads align to a small set of contigs. The best distribution is a constant one.
 
-Even though we did not plot length of contigs, the analyzes above demonstrate that length is linearly correlated to the number of mapped reads. Therefore, peaks indicate a specific preference that reads have to map to the assembled reference.
-<<summaryPlot2>>=
+Even though we did not plot length of contigs, the analyzes above demonstrate that length is linearly correlated to the number of mapped reads. Therefore, peaks indicate a specific preference that reads have to map to an assembled reference.
+\marginnote{\small\color{blue}$\Lsh$ A high resolution version of the plot below can be found in the Supplemental Information}[.1cm]
+<<summaryPlot2, results='hide'>>=
 custom.colors <- c(col1 = "#762a83", 
                    col2 = "#1b7837", 
                    col3 = "#ef8a62",
@@ -479,7 +500,7 @@ Load file with read counts per sample.
 \item B samples as non nodule diseased tissue
 \item C samples as non nodule non diseased tissue
 \end{itemize}
-Raw reads is the number of reads that have been trimmed, mapped to reference genome (Steve Roberts v15 with 21280 contigs), sorted by position on the genome, and cleaned from duplicated reads.\marginnote{\small\color{blue}$\Lsh$ Hypothetically these raw reads includes specific QPX reads}[.1cm]
+Raw reads have been trimmed, mapped to reference genome (Steve Roberts v15 with 21280 contigs), sorted by position on the genome, and cleaned from duplicated reads.\marginnote{\small\color{blue}$\Lsh$ Hypothetically these raw reads includes specific QPX reads}[.1cm]
 <<counts1>>=
 reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 1)
 reads.counts$fill <- gl(3, 3, 9, labels = c("a", "b", "c"))
@@ -496,7 +517,9 @@ ggplot(reads.counts,
                               label = raw.reads,
                               size = 2,
                               hjust = 1.3)) + 
-                    scale_fill_hue(c = 40, l = 60)
+                    scale_fill_hue(c = 40, l = 60) +
+                labs(x = "Number of raw sequenced reads",
+                     y = "Sequenced replicated samples")
 @ 
 
 Number of reads that mapped to the reference genome of QPX.
@@ -515,11 +538,13 @@ ggplot(reads.counts,
                       size = 2)) +
             coord_flip() +
                 theme_bw() +
-                    scale_fill_grey(start = .4, end = .9)
+                    scale_fill_grey(start = .4, end = .9) + 
+                labs(x = "Number of filtered and mapped reads",
+                     y = "Sequenced replicated samples")
 
 @ 
 
-Mapped reads to the QPX reference where than assembled into contigs (ie, the reads showing in the chart above).
+Mapped reads to the QPX reference are than assembled into contigs (ie, the reads showing in the chart above).
 \marginnote{\small\color{blue}$\Lsh$ These contigs must be specific transcripts to QPX}[.1cm]
 <<counts3>>=
 reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 2)
@@ -533,7 +558,9 @@ ggplot(reads.counts,
             facet_wrap( ~ category, 
                        ncol = 2, 
                        scales = "free") + 
-                theme(legend.position = "top")
+                theme(legend.position = "top") +
+            labs(x = "Samples merged by genomic position",
+                 y = "Number of filtered reads")
 @ 
 
 All contigs were than aligned to the reference genome QPX. The chart shows the number of contigs (both genomic and mRNA sequenced) that align with an increasing length of 100>200>300>400>500.
@@ -549,10 +576,12 @@ ggplot(reads.counts,
         geom_bar(stat = "identity",
                  position = "dodge") +
             facet_wrap( ~ blat, ncol = 1, scale = "free") +
-                scale_fill_manual(values = brewer.pal(5, "Greens"))
+                scale_fill_manual(values = brewer.pal(5, "Greens")) +
+            labs(x = "Samples merged by genomic position",
+                 y = "Number of filtered reads")
 @ 
 
-All contigs were than translated to peptides in 6 frames. Each frame peptide was than aligned to the whole PFAM library (v28, date: Jul 14 2015).
+All contigs were than translated to peptides in 6 frames. Each peptide was than aligned to the whole PFAM library (v28, date: Jul 14 2015).
 <<counts5>>=
 reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 3)
 reads.counts <- gather(reads.counts, "category", "count", 3:5)
@@ -565,9 +594,41 @@ ggplot(reads.counts,
         theme_bw() + 
             facet_wrap( ~ sample, ncol = 1,
                        scales = "free") +
-                scale_fill_manual(values = brewer.pal(3, "Greens"))
+                scale_fill_manual(values = brewer.pal(3, "Greens")) +
+            labs(x = "Evalue for sequence similarity alignement to Pfam",
+                 y = "Number of domains or contigs")
 
+@
+
+\subsection{Evaluating identified QPX contigs with sequence similarities}
+\label{subsec:blast}
+BLAST is used at this step to align the contigs found to non redundant (NR), nucleotide (NT), and swissprot databases. Contigs were translated into peptide sequencing with EMBOSS \textit{transeq} in all 6 possible frames.
+All contigs were mapped to genome v15 of S. Roberts. Top hit sequences were filtered either with an evalue score, the percentage of identity between query and target sequences, and the number of mismatches found in the aligned region.
+<<blast1>>=
+blast <- read.xlsx("./data/blast.xlsx", sheetIndex = 1)
+blast <- gather(blast[, -c(13:14)], "options", "counts", 4:12)
+ggplot(blast,
+       aes(x = sample,
+           y = counts,
+           fill = options)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    theme_bw() + 
+#    geom_text(aes(x = sample,
+#                  y = counts,
+#                  ymax = counts,
+#                  label = counts,
+#                  size = 1,
+#                  hjust = .5),
+#              position = position_dodge(width = 1)) +
+    facet_wrap( ~ ncbi, ncol = 1,
+               scales = 'free') + 
+    labs(x = "Sequenced samples",
+         y = "Number of contigs found by BLAST similarity search") +
+    scale_fill_brewer(type = "qual",
+                      palette = 6)
 @ 
+
 \section{System Information}
 \label{sec:sys_info}
 \noindent
