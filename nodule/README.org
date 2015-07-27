@@ -1,0 +1,570 @@
+#+TITLE: Interplay between parasite and host immune defense system.
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+* Goals
+1. Transcriptomic data were generated on infectious nodules (QPX + hard clam tissue)
+2. Samples are from diseased clams and controls
+3. First goal is to identify QPX transcripts
+4. Time: identify parasite transcripts produced in clam tissue during infection
+5. Second goal is to identify a crosstalk with the host (clam transcripts responding to parasite factors).
+6. Published work on this data includes: analysis on most abundant transcripts in the nodules (e.g. clam transcripts) and discarded the rare QPX transcripts.
+7. Preliminary results shows over 1400 proteins for QPX.
+8. It would be significantly better if the clam transcriptome is used in read assembly to discard non QPX genes.
+9. Final step was a blastx search over the NR ncbi library.
+10. Blastn can also be done with assembled contigs over the NT database.
+11. For the crosstalk analysis, the best deal is to look for expression patterns between differentially expressed genes.
+12. Over 1400 protein list annotated with hmmer/pfam can be used with blat/S.R.genomev15 and gene expression data to extract differentially transcribed proteins.
+
+* Quality controls
+1. Download FastQC =on linux= (sorry)
+2. Windows users download from [[http://www.bioinformatics.bbsrc.ac.uk/projects/fastqc/][here]]
+3. Java simulation of Q/C
+#+BEGIN_SRC shell
+curl -O http://www.bioinformatics.bbsrc.ac.uk/projects/fastqc/fastqc_v0.11.2.zip
+7z x fastqc_v0.11.2.zip
+cd FastQC
+chmod 755 fastqc
+sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
+#+END_SRC
+
+Load =FastQC= directly or in the shell. (every line is an option)
+#+BEGIN_SRC shell
+fastqc & # open a GUI
+fastqc <file>.txt
+zcat file1.fastq.gz | fastqc file1.fastq.gz # stream the content of gz files
+#+END_SRC
+
+Have a fastq.gz of the sequences. Run fastqc. Results are outputed in html format.
+#+BEGIN_SRC shell
+./fastqc <file.fasta>
+Firefox report.html
+#+END_SRC
+
+Run quality controls on A1 A2 A3 samples
+#+BEGIN_SRC shell
+zcat 1_Index_1.A1_R1.fastq.gz | fastqc 1_Index_1.A1_R1.fastq.gz && \
+zcat 1_Index_2.A2_R1.fastq.gz | fastqc 1_Index_2.A2_R1.fastq.gz && \
+zcat 2_Index_8.A3_R1.fastq.gz | fastqc 2_Index_8.A3_R1.fastq.gz && \
+zcat HI.0615.001.Index_1.A1_R2.fastq.gz | fastqc HI.0615.001.Index_1.A1_R2.fastq.gz && \
+zcat HI.0615.001.Index_2.A2_R2.fastq.gz | fastqc HI.0615.001.Index_2.A2_R2.fastq.gz && \
+zcat HI.0615.002.Index_8.A3_R2.fastq.gz | fastqc HI.0615.002.Index_8.A3_R2.fastq.gz
+#+END_SRC
+
+* Trimming, mapping, sorting by reference position, duplicate removal
+Run bwa over reference genome of QPX for every paired samples (A1 A2 A3). Forget not to index the reference with =bwa index= before mapping.
+
+Additional tools needed are HTSeq for sequence count (for reference) and samtools for conversion of sam bam files, indexing, removing duplications, and sorting reads (for samples).
+
+
+Trimming is done on paired ends on sequences sampled from the A1 A2 A3 data. Sequencer is Illumina HiSEQ. Very important to choose the adapter sequences. The adapters that have been used here are saved under =TrueSeq3-PE-3.fa=. The code below allows a batch processing of all 9 sequenced samples As, Bs, and Cs.
+
+#+BEGIN_SRC shell
+#! /user/bin/bash
+
+:'
+this script accomplish 6 things:
+0. trimm reads
+1. map all paired end samples to reference with bwa
+2. sort the mapped reads with picard
+3. remove duplicate reads with picard
+4. index reads with samtools
+5. count reads with htseq
+'
+
+sample[1]=C1
+sample[2]=C2
+sample[3]=C3
+
+ir=/media/sf_data/nodule
+irr=/media/sf_data/nodule/trimmed
+
+dir=/media/sf_data/nodule/mapping
+ddir=/media/sf_data/nodule/rmdup
+
+extension=.trimmed.P.fastq.gz
+reference=/media/sf_data/genomeSRv015/QPX_v015.fasta
+
+## essential for calling SNPs
+RG[1]='@RG\tID:noduleC1\tSM:MA\tPL:illumina\tLB:noduleC1\tPU:genomeSRv015'
+RG[2]='@RG\tID:noduleC2\tSM:MA\tPL:illumina\tLB:noduleC2\tPU:genomeSRv015'
+RG[3]='@RG\tID:noduleC3\tSM:MA\tPL:illumina\tLB:noduleC3\tPU:genomeSRv015'
+
+stats=/media/sf_data/nodule/stats
+count=/media/sf_data/genomeSRv015/QPX_v015.gff3
+
+
+for i in 1 2 3
+do
+    sample=${sample[${i}]}
+    java -Xmx10g -jar /home/neo/data/Trimmomatic-0.33/trimmomatic-0.33.jar PE \
+        ${ir}/${sample}R1.fastq.gz \
+        ${ir}/${sample}R2.fastq.gz \
+        ${irr}/${sample}.1.trimmed.P.fastq.gz \
+        ${irr}/${sample}.1.trimmed.U.fastq.gz \
+        ${irr}/${sample}.2.trimmed.P.fastq.gz \
+        ${irr}/${sample}.2.trimmed.U.fastq.gz \
+        ILLUMINACLIP:TrueSeq3-PE-3.fa:2:30:10 \
+        SLIDINGWINDOW:4:15 \
+        TRAILING:5 \
+        CROP:70 \
+        MINLEN:30
+
+    rm -f ${irr}/${sample}.1.trimmed.U.fastq.gz
+    rm -f ${irr}/${sample}.2.trimmed.U.fastq.gz
+
+done
+
+
+## create dictionary and index of reference
+    java -jar /home/neo/data/picard/picard.jar \
+        CreateSequenceDictionary \
+        R=${reference} \
+        O=/media/sf_data/genomeSRv015/QPX_v015.dict
+
+    samtools faidx ${reference}
+
+## Map | Sort | remove duplicates
+for i in 1 2 3
+do
+    sample=${sample[${i}]}
+    RG=${RG[${i}]}
+    bwa mem -M \
+        -R ${RG} \
+        -p ${reference} \
+        ${irr}/${sample}.1${extension} \
+        ${irr}/${sample}.2${extension} \
+    > ${dir}/${sample}.sam
+
+    java -Xmx10g -jar /home/neo/data/picard/picard.jar \
+        SortSam \
+        INPUT=${dir}/${sample}.sam \
+        OUTPUT=${dir}/${sample}.sorted.bam \
+        SORT_ORDER=coordinate
+
+    java -Xmx10g -jar /home/neo/data/picard/picard.jar \
+        MarkDuplicates \
+        INPUT=${dir}/${sample}.sorted.bam \
+        OUTPUT=${ddir}/${sample}.nodup.bam \
+        METRICS_FILE=${stats}/${sample}.dup.metrics \
+        REMOVE_DUPLICATES=true \
+        ASSUME_SORTED=true
+
+    htseq-count --format=bam \
+        --stranded=no \
+        --type=CDS --order=pos \
+        --idattr=Name ${ddir}/${sample}.nodup.bam ${count} \
+        > ${stats}/${sample}.htseq.counts.nodup.txt
+
+done
+#+END_SRC
+
+When aligning to reference BWA will use its default value to consider 4 or fewer mismatch to a given read as a good score. Here I applied the default values of =4%=.
+
+Display reads with =tview=. Press =?= for additional help inside tview.
+#+BEGIN_SRC shell
+samtools tview -d -H <file>.bam QPX_Genome_v017.fasta
+#+END_SRC
+
+Another lightweight tool for displaying alignments is =Tablet Viewer=. [[http://ics.hutton.ac.uk/tablet/][Link]] to download and manual.
+
+Calculate the number of reads per sample. =htseq= is blazing fast and accurate.
+#+BEGIN_SRC shell
+time cat sample.htseq.counts.txt | awk '{s+=$2; print s}' | tail -n 1
+## OR
+time samtools view -c sample.bam
+#+END_SRC
+
+Get the number of mapped reads.
+#+BEGIN_SRC shell
+## mapped
+samtools view -c -F 4 sample.bam
+## unmapped
+samtools view -c -f 4 sample.bam
+#+END_SRC
+
+Get the number of reads from paired ends where both the forward and reverse mate are mapped.
+#+BEGIN_SRC shell
+samtools -c -f 1 -F 12 sample.bam
+#+END_SRC
+
+Get a summary on reads.
+#+BEGIN_SRC shell
+samtools flagstat sample.bam
+#+END_SRC
+
+* Genome-guided trinity transcriptome assembly
+QPX can be considered as gene-dense genome. =--jacard-clip= can be used. In this case [[http://bowtie-bio.sourceforge.net/index.shtml][Bowtie]] have to be installed.
+
+#+BEGIN_SRC shell
+wget http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.1.2/bowtie-1.1.2-linux-x86_64.zip
+sudo ln -n /path/to/bowtie /usr/local/bin/bowtie
+bowtie --help | less
+#+END_SRC
+
+Assemble reads that are filtered after mapping to reference genome. Those reads were trimmed, mapped, sorted, and duplicates removed from script in =trimmingNodules.sh=. =genome_guided_bam= (below) cannot take multiple bam files. If one has many replicates bam files can be merged together with =Picard MergeSamFiles= function. This step can be done after mapping with BWA to a reference or after Picard MarkDuplicates for discarding duplicate reads. =note= set the output to a destination that does not require root privileges. Merging 3 bam files takes 90 minutes. Assembling a 6Gb bam files can take up to 4h.
+#+BEGIN_SRC shell
+## Merge bam files for Trinity genome-guided assembly
+#! /usr/bin/bash
+
+dir=/media/sf_data/nodule/rmdup/
+ddir=/home/neo/data/nodule/trinity
+
+x=A1
+y=A2
+z=A3
+b=A
+
+    java -Xmx10g -jar /home/neo/data/picard/picard.jar \
+        MergeSamFiles \
+        I=${dir}${x}.nodup.bam \
+        I=${dir}${y}.nodup.bam \
+        I=${dir}${z}.nodup.bam \
+        O=${dir}/${b}.bam \
+        SO=coordinate \
+        AS=true
+
+/home/neo/data/QPX/trinityrnaseq/Trinity \
+--genome_guided_bam ${dir}${b}.bam \
+--genome_guided_max_intron 1000 \
+--max_memory 10G \
+--output ${ddir} \
+--CPU 5
+#+END_SRC
+
+Check if bam file is sorted
+#+BEGIN_SRC shell
+samtools view -H file.bam | less
+#+END_SRC
+
+Calculate the N50 (1) and L50 (2) in bp.
+#+BEGIN_SRC shell
+cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | sort -rn | awk '{sum += $0; print "N50:" $0"\t", sum}' | tac | awk 'NR==1 {halftot=$2/2} lastsize>halftot && $2<halftot {print} {lastsize=$2}'
+#+END_SRC
+
+Calculate the total size of contigs in bp.
+#+BEGIN_SRC shell
+cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | head | awk '{sum+=$1}END{print "Total:", sum}out'
+#+END_SRC
+
+* Gene Finding
+** Contig annotation with HMMER
+As a main strategy the functional annotation is done with HMMER, the alignment is based on hidden markov models that calculate posteriors to the similarity scores.
+*** Library preparation
+Download and Install HMMER
+#+BEGIN_SRC shell
+wget http://selab.janelia.org/software/hmmer3/3.1b2/hmmer-3.1b2-linux-intel-x86_64.tar.gz
+./configure
+sudo make
+sudo make install
+cd easel: sudo make install
+#+END_SRC 
+
+Download Pfam 28.0 database (as of 06/20/2015). It is possible to download the fasta database. But in this case an HMM profile must be built. The process will than take over 3 hours.
+#+BEGIN_SRC shell
+ftp ftp.ebi.ac.uk
+anonymous
+<<no password>>
+cd pub/databases/Pfam/current_release/
+get Pfam-A.hmm.gz
+bye
+gzip -d Pfam-A.hmm.gz
+#+END_SRC
+
+Index the Pfam.hmm database. this will produce 16,230 accessions.
+#+BEGIN_SRC shell
+hmmpress Pfam-A.hmm
+#+END_SRC
+
+=hmmscan= is a function used to search =Pfam-A.hmm= profiles. Otherwise if we had a sequence database =hmmsearch= would've been used. The query used is either a peptide or an HMM profile produced with =hmmbuild= or multiple HMM alignment profiles produced with =hmmalign= which generates a =stockholm= format alignment file. The stockholm file is then fed to hmmbuild to make an HMM query profile.
+
+Pfam can be searched using keywords and =accession= numbers can be extracted with copy/paste into a txt file. Get the accession number from gene of interest.
+*** Translate contigs to peptides
+Using =Transeq= from Emboss. If an error occurs after the first =make install= try =ldconfig= then =make install= a second time. Make install can be replaced with =checkinstall= for creating a deb package that can be removed without =make uninstall=.
+#+BEGIN_SRC shell
+wget ftp://emboss.open-bio.org/pub/EMBOSS/old/6.5.0/EMBOSS-6.5.7.tar.gz
+./configure
+sudo make
+sudo make install
+sudo ldconfig
+sudo make install
+#+END_SRC
+
+Translate in 6 frames from fasta file. [[http://www.sacs.ucsf.edu/Documentation/emboss/transeq.html][Documentation]]
+#+BEGIN_SRC shell
+## correct name of each sequence
+cat assembled.contigs.fasta | sed 's/|.*len/ len/g' > assembled.contigs.fa
+## translate in 6 frames
+transeq assembled.contigs.fa peptides.fa -frame=6
+#+END_SRC
+
+*** Annotating all peptides (pfam)
+Annotation of the 4 strains peptides against a Pfam v28 updated database. Here we have two choices, first, annotate against the whole pfam library, second, annotate against a subset of selected HMM profiles of PFAM. The latter is mostly beneficial if one wants to extract =contig= number to find SNPs. However its not a straightforward process. Refer to p.50 of the HMMER3 userguide.
+#+BEGIN_SRC shelle
+hmmscan Pfam-A.hmm ../extras/peptides.fa > file.pfamA.txt
+#+END_SRC
+
+*** BLAT (Locating SNPs continued)
+Blat can be found also on xsede. [[http://genome.ucsc.edu/goldenPath/help/blatSpec.html][Documentation]] and [[http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/][Blat linux packages]]
+Installation.
+#+BEGIN_SRC shell
+ftp hgdownload.cse.ucsc.edu
+Name: anonymous
+cd admin/exe/linux.x86_64/blat
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslSort
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslReps
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslPretty
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslStats
+chmod +x ./blat
+chmod +x ./faToTwoBit
+
+
+## OR
+git clone https://github.com/neocruiser/blat.git
+#+END_SRC
+
+Convert the genome to =2bit= (faster). This step will index the genome and place it in the computer memory for fast pulling of alignments.
+#+BEGIN_SRC shell
+./faToTwoBit ../genomev015/QPX_v015.fasta ../genomev015/qpxv15.2bit
+#+END_SRC
+
+Align RNAseq contigs to genome. =psl= is a tabulated output.
+#+BEGIN_SRC shell
+./blat ../genomev015/qpxv15.2bit ../db/A.contigs.pfam.fa output.test.psl
+#+END_SRC
+
+Show the alignment in a human readable format.
+#+BEGIN_SRC shell
+./pslPretty 2> pslpretty.README.txt
+./pslPretty <psl file> <genome target 2bit> <query fa> <output.txt>
+#+END_SRC
+
+Get overall statistics.
+#+BEGIN_SRC shell
+./pslStats -overallStats <psl file> <output>
+#+END_SRC
+
+** BLAST+
+Download NR library (protein database NCBI). Index it (this will generate .pin files. p for protein). If NT was downloaded and indexed .nin files will be generated. BLAST is set on xsede with every database used here.
+
+Set the database path.
+#+BEGIN_SRC shell
+export BLASTDB="/media/sf_data/db/nr"
+#+END_SRC
+
+Or write path in login profile.
+#+BEGIN_SRC shell
+cat >> ~/.profile
+BLASTDB=/media/sf_data/db:$BLASTDB; export BLASTDB
+BLASTDB=/media/sf_data/db/nr:$BLASTDB; export BLASTDB
+#+END_SRC
+
+Blastx. Use nucleotide query and blast will translate it in 6 frames. Use Transeq only if using hmmer
+#+BEGIN_SRC shell
+blastx -query nodule/assembled/C.assembl.QPXgv5.fasta \
+-db nr \
+-outfmt "7 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore length pident nident mismatch gaps staxids sscinames " \
+-max_target_seqs 10 \
+-out output.txt \n
+-num_threads 16
+#+END_SRC
+
+Blast sequence similarity analysis are done with NR (protein), NT (nucleotide), SWISSPROT (protein).
+
+*** Sequence homology analysis
+How many assembled contigs have been aligned to a SWISSPROT entry (NCBI) with a minimum of 10e-10 evalue, 80% sequence similarity, and 1 mismatch. Repeat for NT and NR. Only done on Blast output not hummer.
+#+BEGIN_SRC shell
+cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | awk '{if ($12 >= 80) print $0}' | awk '{if ($14 <= 1) print $0}' | cut -f 1 | sed 's/|.*$//g' | sort - | uniq | wc -l
+#+END_SRC
+
+** Gene-gene interaction
+Interaction network can be constructed from publicly available databases comprising of protein–protein interactions (KEGG, STRING, BioGRID) and genetic interactions (TRANSFAC).
+* Create a database for structured data
+Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
+* XSEDE
+** SDSC Gordon
+Login and connect through secure network.
+#+BEGIN_SRC shell
+ssh -l silo gordon.sdsc.xsede.org
+#+END_SRC
+
+Shared directory with bassem. Huge space.
+#+BEGIN_SRC shell
+cd /oasis/project/nsf/sun108
+#+END_SRC
+
+Transfer files
+#+BEGIN_SRC shell
+scp file1 silo@gordon.sdsc.xsede.org:~/
+scp -r folder ...
+scp -C file # compress for fast transfer
+#+END_SRC
+
+Download files. (no need to create the destination folder)
+#+BEGIN_SRC shell
+rsync -auv bassem@gordon.sdsc.xsede.org:~/folder/ ./destination
+#+END_SRC
+
+Show remaining allocations and accounts. On SDSC 1 compute node for 1 hour = 16 SU (service unit) = 60 Gb ram = 16 cores. [[https://portal.xsede.org/sdsc-gordon#modules][Visit here]] for more modules and compiling instructions.
+#+BEGIN_SRC shell
+xdusage
+show_accounts
+#+END_SRC
+
+Load modules. Packages that are installed.
+#+BEGIN_SRC shell
+module avail
+module load R
+module unload R
+#+END_SRC
+
+Create TORQUE batch file. 
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=1:00:00
+#PBS -N makeblastdb
+#PBS -o silo.out
+#PBS -e silo.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+export PATH="$PATH:/home/bassem/blast/bin"
+oasis=/oasis/projects/nsf/sun108
+makeblastdb -in ${oasis}/bassem/db/nt/nt.fasta -out ${oasis}/bassem/db/nt/nt -dbtype nucl -parse_seqids
+#+END_SRC
+
+Monitor jobs. =qdel= to delete a running job with the job ID number.
+#+BEGIN_SRC shell
+qstat -a -u silo
+qstat -f <job id>
+#+END_SRC
+
+Status of a job.
+#+BEGIN_SRC shell
+R = running
+Q = queued
+H = held
+C = completed after having run
+E = exiting after having run
+#+END_SRC
+
+Alter job properties. =important= One can reduce time remaining but not increase it.
+#+BEGIN_SRC shell
+qstat -a <job id>
+qalter -l walltime=9:00 <job id>
+qstat -a silo
+#+END_SRC
+
+Obtaining queue properties of a job.
+#+BEGIN_SRC shell
+qstat -q
+#+END_SRC
+** Analysis
+Data are stored in :
+#+BEGIN_SRC shell
+cd /oasis/projects/nsf/sun108/silo
+#+END_SRC
+
+Blastx on =NR= database (updated on July 2015). =important= When changing from nucleotide to peptide blast search the BLASTDB must be change too. The alternative is to merge all database files into one directory.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=10:ppn=16:native
+#PBS -l walltime=48:00:00
+#PBS -N blastx.A
+#PBS -o blastxA.out
+#PBS -e blastxA.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+export PATH="$PATH:/home/silo/blast/bin"
+export BLASTDB="/oasis/projects/nsf/sun108/bassem/db/nr"
+oasis=/oasis/projects/nsf/sun108
+
+blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
+-db nr \
+-outfmt " 7 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore length pident nident mismatch gaps staxids sscinames " \
+-max_target_seqs 10 \
+-out A.blastx.txt
+#+END_SRC
+
+* Bibliography
+** First set
+1. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][Xiong 2014]] =science=
+2. Difference in genome annotation (RefSeq, UCSC, Ensembl) is responsible for differences in read mapping to genes and transcription quantification [[http://www.biomedcentral.com/1471-2164/16/97][Zhao 2015]] =gene model=
+3. Non-parametric approach to detect DETs from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv119.abstract][Shi 2015]] =r friendly=
+4. Co-expression analysis require high number of samples [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv118.full.pdf%2Bhtml][Ballouz 2015]] =metanalysis networks=
+5. Co-expression and network construction from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/28/12/1592.short][Iancu 2012]]
+6. Multifunctionality is better than association for network inference [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0017258][Gillis 2011]] =Pavlidis amd machine learning + pleiotropy=
+7. SimSeq non parametric simulation engine for real rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/26/bioinformatics.btv124.abstract][Benidt 2015]]
+8. Overlapping genes and analysis of rnaseq data [[http://www.biomedcentral.com/1471-2105/16/S1/S3][Sun 2015]]
+9. Phylogenetic analysis of the marine microbial transcriptome [[http://journals.plos.org/plosbiology/article?id%3D10.1371/journal.pbio.1001889][Keeling 2014]] =metagenomics=
+10. Detect rna editing events fron rnaseq data [[http://onlinelibrary.wiley.com/doi/10.1002/0471250953.bi1212s49/abstract][Picardi 2015]] =python=
+11. Orthologs from related species w/ rnaseq data [[http://www.biomedcentral.com/1471-2164/15/343?utm_source%3Ddlvr.it&utm_medium%3Dtumblr][Zhu 2014]] =vertebrates=
+12. Orthologs from rnaseq expression data clustering analysis [[http://www.biomedcentral.com/content/pdf/gb-2014-15-8-r100.pdf][Yan 2014]] =networks=
+13. Analysis of rnaseq expression data in Nature Protocols w/ R [[http://www.nature.com/nprot/journal/v8/n9/abs/nprot.2013.099.html][Anders 2013]] and [[http://link.springer.com/protocol/10.1007/978-1-4939-2444-8_24][Loraine 2015]] [[http://www.nature.com/nprot/journal/v7/n3/full/nprot.2012.016.html#ref12][Trapnell 2012]]=protocol=
+14. edgeR paper [[http://bioinformatics.oxfordjournals.org/content/26/1/139.short][Robinson 2009]] =R=
+15. Comparative paper of rnaseq packages [[http://www.nature.com/nmeth/journal/v8/n6/abs/nmeth.1613.html][Garber 2011]] =tools=
+16. Machine learning for predicting gene expression from epigenetic data [[http://lungcancernewstoday.com/2015/03/23/new-prediction-model-for-gene-expression-in-lung-cancer-based-on-epigenetics/][Li 2015]]
+17. Look for dsRNAs from rnaseq data after genome alignment [[http://rnajournal.cshlp.org/content/early/2015/03/24/rna.048801.114.full.pdf%2Bhtml][Whipple 2015]]
+18. Gene expression of virulence, metabolism, and growth of QPX are temperature dependent [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0074196][Vedrenne 2013]] =bad paper=
+19. Retrotransposons as effectors and transmittors of immune cancer cells in clam [[http://www.sciencemag.org/content/348/6231/170.full][Metzger 2015]]
+20. 
+
+** Second set
+1. How to characterize SNPs affected by the reference bias? Align reads to personalized genomes [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0126911][Wood 2015]] =also ref. 26 and 28 inside=
+2. Genome and transcriptome sequencing of single cell [[http://www.nature.com/nmeth/journal/v12/n6/full/nmeth.3370.html][Macaulay 2015]]
+3. the next 20 years in genome research [[http://biorxiv.org/content/early/2015/06/02/020289.large.jpg?rss%3D1][Schatz 2015]]
+4. Basic strategy on annotating a genome [[http://www.nature.com/nrg/journal/v13/n5/full/nrg3174.html#B22][Yandall 2012]] =review=
+5. Terraformation of mars: importance of genome annotation and visualization [[http://motherboard.vice.com/read/darpa-we-are-engineering-the-organisms-that-will-terraform-mars][Jacksons lab]] =DARPA are engineering organisms=
+6. Reference transcriptome and database used for gene annotation both influence variant caling [[http://www.biomedcentral.com/1471-2164/16/S8/S2][Franckish 2015]]
+7. Cross sample contamination, viral, and pathogenic database contamination are real threat to sequencing data analysis [[http://jvi.asm.org/content/early/2015/06/11/JVI.00822-15.abstract][Kazemian 2015]]
+8. 5-formylCytosine a DNA modified sugar that regulates genes [[http://www.nature.com/nchembio/journal/vaop/ncurrent/full/nchembio.1848.html][Backman 2015]]
+9. Classification of reads between parasite and host [[http://www.plantmethods.com/content/11/1/34][Ikeue 2015]] =plant=
+10. Finding parasitic genes [[http://www.plantphysiol.org/content/166/3/1186.long][Ranjan 2014]] =plant=
+11. 2 SNPs linked to depression [[http://www.nature.com/nature/journal/vaop/ncurrent/full/nature14659.html#affil-auth][Converge consortium 2015]] =Nature=
+12. Comparison of interface-built pipelines for rna-seq data [[http://bib.oxfordjournals.org/content/early/2015/06/23/bib.bbv036.short][Poplawski 2015]] =review=
+13. Gene expression quantification by LFC [[http://nar.oxfordjournals.org/content/early/2015/07/08/nar.gkv696.short][Erhard 2015]] =estimate fold change=
+14. Transcript quantification, new fast pipeline [[http://www.biorxiv.org/content/early/2015/06/27/021592.abstract][Patro 2015]] =gene expression=
+15. The need to sequence C. virginica genome [[http://www.sciencedirect.com/science/article/pii/S1050464815002211][Gomez 2015]] =review=
+16. Crosstalk between snail and parasite [[http://www.sciencedirect.com/science/article/pii/S1050464815000509][Coustau 2015]] =review=
+17. How to recognize host-pathogen mechanisms [[http://ac.els-cdn.com/S0166685109000267/1-s2.0-S0166685109000267-main.pdf?_tid%3D58e521fa-2ef4-11e5-9802-00000aacb35d&acdnat%3D1437406450_c52e14fbc087a1152765fa0696a28730][Bayne 2009]] =review=
+18. FPKM (fragments per 1kb per million reads) vs TPM (transcripts per million) [[https://liorpachter.wordpress.com/2014/04/30/estimating-number-of-(transcripts-from-rna-seq-measurements-and-why-i-believe-in-paywall/][here]] and [[http://www.biomedcentral.com/1471-2105/12/323/][Li 2011]] =transcript quantification= (FPKM = depth of coverage + sum length of contigs, TPM = sum length of contigs + depth of coverage).
+19. Identified molecular involvement host-pathogen [[http://www.sciencedirect.com/science/article/pii/S1050464815002429][He 2015]] =virus-oyster=
+20. Normalization of rna-seq samples [[http://www.hindawi.com/journals/bmri/2015/621690/][Walczak 2015]] =review=
+** Generalities
+Lectins
+1. Interaction with the complement
+2. Key role in innate immune defense
+3. Central role in filter feeding processes
+4. Association with neurone morphology
+5. Reduce functionality or absence cause diesease
+
+Transposons
+miRNAs
+Virus
+
