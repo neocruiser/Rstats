@@ -321,7 +321,7 @@ Annotation of the 4 strains peptides against a Pfam v28 updated database. Here w
 hmmscan Pfam-A.hmm ../extras/peptides.fa > file.pfamA.txt
 #+END_SRC
 
-*** BLAT (Locating SNPs continued)
+*** BLAT
 Blat can be found also on xsede. [[http://genome.ucsc.edu/goldenPath/help/blatSpec.html][Documentation]] and [[http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/][Blat linux packages]]
 Installation.
 #+BEGIN_SRC shell
@@ -396,7 +396,81 @@ cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | aw
 #+END_SRC
 
 ** Gene-gene interaction
-Interaction network can be constructed from publicly available databases comprising of protein–protein interactions (KEGG, STRING, BioGRID) and genetic interactions (TRANSFAC).
+****** Databases
+
+#+CAPTION: Sequence databaases in public repositiories
+| database   | content    | tool  | function            | description           |
+|------------+------------+-------+---------------------+-----------------------|
+| [[http://pfam.xfam.org/][Pfam]]       | protein    | hmmer | domain              | protein similarities  |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][NR]]         | protein    | blast | domain              | protein similarities  |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][NT]]         | nucleotide | blast | classification      | phylogeny             |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][Swiss-prot]] | protein    | blast | domain              | protein similarities  |
+| [[http://www.phi-base.org/release_notes.php][Phi-base]]   | protein    | hmmer | interactions        | virulence             |
+| [[http://www.mgc.ac.cn/VFs/main.htm][VFDB]]       | prot/nucl  | blast | virulence           |                       |
+| [[http://string-db.org/newstring_cgi/show_download_page.pl?UserId%3D_yWWhZVtWw47&sessionId%3DDpBbN0jI1blB][STRING]]     | protein    | blast | interactions        | network analysis      |
+| [[http://thebiogrid.org/][BioGRID]]    |            | shell | interactions        |                       |
+| [[http://www.transcriptionfactor.org/index.cgi?Download][DBD]]        | protein    | shell | transcrption factor | acc. Pfam+superfamily |
+| [[http://operondb.jp/][OperonDB]]   |            |       | operons             |                       |
+| [[http://www.ncbi.nlm.nih.gov/COG/][COG]]        | protein    |       | classification      | phylogeny             |
+| [[http://phospho.elm.eu.org/][Pospho-elm]] | protein    | shell | phosphorylation     | acc Uniprot+EnsEMBL   |
+| [[http://www.jcvi.org/cgi-bin/tigrfams/index.cgi][TIGRFAM]]    | protein    | blast | subfamilies         | classification        |
+
+
+- Known and predicted protein-protein interactions [[http://string-db.org/newstring_cgi/show_download_page.pl?UserId%3D_yWWhZVtWw47&sessionId%3DDpBbN0jI1blB][STRING]]. Protein database. Searched with =blastx=. Indexed with =makeblastdb= but without =-parse_seqids= because its a network data. Proteins have duplicate seq ids. Download STRING alias id text file that include convectional protein names.
+- [[ftp://ftp.jcvi.org/pub/data/TIGRFAMs/][TIGRFAM]] complete listings of functionally defined subfamilies. Database with multiple sequence alignments. To be used with =hmmer=. Use this script =find . -name "TIGR*" -exec cat {} > tigrfam.hmm \;= to create one hmm model. Database is searched with =hmmscan=.
+- InterPro database for domains, GO terms, families. Downloading =interproscan= will also acquire hmm databases for =Gene3D= =HAMAP= =PIRSF= =PRINTS= =PRODOM= =PROSITE= =SMART= =SUPERFAMILY= =TIGRFAM=. Download and setup interproscan [[https://code.google.com/p/interproscan/wiki/HowToDownload][here]]. Download the database and GO terms not =interproscan=. 
+#+BEGIN_SRC shell
+ftp ftp.ebi.ac.uk
+cd pub/databases/interpro/Current
+get interpro2go
+get entry.list
+get names.dat 
+get short_names.dat
+get protein2ipr.dat.gz
+#+END_SRC
+
+Interpro scan. =Note= each analyzed sequence generates =SVG= output files. These files are gunzipped together. If protein is being analyzed the peptide sequence must not contain any special characters. Characters are usually due to =stop codons=. If =transeq= is being used to translate nucleotide sequences into peptides, use =-trim= function to replace all =*= with =X=.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=5:ppn=16:native
+#PBS -l walltime=01:00:00
+#PBS -N interproscan.C
+#PBS -e interproscan.C.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+oasis=/oasis/projects/nsf/sun108
+
+${oasis}/silo/interproscan/interproscan.sh \
+-t p \
+-appl ProDom,PANTHER,TIGRFAM,SUPERFAMILY,PRINTS,Gene3D,PIRSF,Pfam,Coils,SMART \
+-i ${oasis}/silo/nodule/peptides/C.peptides.QPXv15.fa \
+-iprlookup \
+-goterms \
+-pa \
+-f TSV, SVG, GFF3, XML \
+-b ${oasis}/silo/nodule/interpro/C/C.interpro.all
+#+END_SRC
+
+| database    | content   | tool | function       | description                |
+|-------------+-----------+------+----------------+----------------------------|
+| [[http://www.ebi.ac.uk/interpro/release_notes.html][InterPro]]    | nucl/prot | IPS  | classification | integrates 12 databases    |
+| [[http://prodom.prabi.fr/prodom/current/html/home.php][ProDom]]      | protein   | IPS  | families       | uniprot domains            |
+| [[http://hamap.expasy.org/][PANTHER]]     | protein   | IPS  | classification | domain+pathways            |
+| [[http://www.jcvi.org/cgi-bin/tigrfams/index.cgi][TIGRFAM]]     | protein   | IPS  | subfamilies    | classification             |
+| [[http://supfam.cs.bris.ac.uk/SUPERFAMILY/][SUPERFAMILY]] | protein   | IPS  | classification | domain+phylog+taxon        |
+| [[http://www.bioinf.manchester.ac.uk/dbbrowser/PRINTS/index.php][PRINTS]]      | protein   | IPS  | fingerprinting | conserved motifs SwissProt |
+| [[http://pir.georgetown.edu/pirwww/dbinfo/pirsf.shtml][PIRSF]]       | protein   | IPS  | phylogeny      | domain classification      |
+| [[http://gene3d.biochem.ucl.ac.uk/Gene3D/][Gene3D]]      | protein   | IPS  | interactions   | domain families            |
+| [[http://www.ch.embnet.org/software/COILS_form.html][Coils]]       | protein   | IPS  | domains        | coiled-coil conformation   |
+| [[http://pfam.xfam.org/][Pfam]]        | protein   | IPS  | domain         | protein similarities       |
+| [[http://smart.embl-heidelberg.de/][SMART]]       | protein   | IPS  | domains        | SwissProt Trembl Ensembl   |
+| [[http://prosite.expasy.org/][PROSITE]]     | not used  | IPS  | domains        | +functions                 |
+| [[http://hamap.expasy.org/][HAMAP]]       | not used  | IPS  | classification | uniprot classification     |
+
 * Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
 * XSEDE
