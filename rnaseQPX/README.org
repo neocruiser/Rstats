@@ -1261,10 +1261,12 @@ sudo make install
 
 Translate in 6 frames from fasta file. [[http://www.sacs.ucsf.edu/Documentation/emboss/transeq.html][Documentation]]
 #+BEGIN_SRC shell
-## correct name of each sequence
+## FIRST correct name of each sequence
 cat assembled.contigs.fasta | sed 's/|.*len/ len/g' > assembled.contigs.fa
-## translate in 6 frames
-transeq assembled.contigs.fa peptides.fa -frame=6
+## SECOND translate in 6 frames
+transeq assembled.contigs.fa peptides.fa -frame=6 -clean=yes
+## THIRD remove length and description
+cat peptides.fa | sed 's/ len.*$//g' > peptides.clean.fa
 #+END_SRC
 
 **** Annotating all peptides (pfam)
@@ -1348,10 +1350,11 @@ The pipeline used with old annotated contigs is to extract gene of interest from
 perl -ne 'if(/^>(\S+)/){$c=grep{/^$1$/}qw(id1 id2)}print if $c' sample1.fa
 #+END_SRC
 
-=general instruction= Get a =list= of sequences from a fasta file. The id list contains one id per line without special characters.
+=general instruction= Get a =list= of sequences from a fasta file. The id list contains one id per line without spaces (replace spaces with dots in sequence.fa and ids.txt).
 #+BEGIN_SRC shell
-cat file.fa | sed 's/^>.*|/>/g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' ids.txt -
+cat sequences.fa | sed 's/^>.*|/>/g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' ids.txt -
 #+END_SRC
+
 
 =general command= Create a list of ids for each strain and for each category of protein. by filtering out peptides with an evalue higher than but not equal to 10e-10.
 #+BEGIN_SRC shell
