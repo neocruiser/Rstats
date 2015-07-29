@@ -20,6 +20,8 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
+This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.Rnw][the R code]] for graphing and data table management (in KnitR format. Can be imported with RStudio), [[2https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
+
 * Goals
 The data we have include 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains. We also have the combined assembly of the transcriptome from the 4 QPX strain. In addition a published first draft of the QPX genome.
 

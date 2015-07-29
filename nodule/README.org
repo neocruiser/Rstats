@@ -19,6 +19,10 @@
 #+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
+
+This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/nodule/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in KnitR format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/nodule/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/nodule/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
+
+
 * Goals
 1. Transcriptomic data were generated on infectious nodules (QPX + hard clam tissue)
 2. Samples are from diseased clams and controls
@@ -34,7 +38,7 @@
 12. Over 1400 protein list annotated with hmmer/pfam can be used with blat/S.R.genomev15 and gene expression data to extract differentially transcribed proteins.
 
 * Quality controls
-1. Download FastQC =on linux= (sorry)
+1. Download FastQC =on linux=
 2. Windows users download from [[http://www.bioinformatics.bbsrc.ac.uk/projects/fastqc/][here]]
 3. Java simulation of Q/C
 #+BEGIN_SRC shell
