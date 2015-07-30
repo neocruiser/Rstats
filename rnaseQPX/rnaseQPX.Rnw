@@ -1220,7 +1220,7 @@ ggplot(hotspots.raw,
 How many SNPs can be found inside and outside of protein domains, those of which reside in assembled QPX contigs?
 <<hotspots2>>=
 count <- c(264, 749, 295)
-position <- c("head", "inside", "tail")
+position <- c("Upstream", "Genic", "Downstream")
 dat <- data.frame(position, count)
 dat$per <- round((dat$count/sum(dat[, 2]))*100, digits = 2)
 ggplot(dat,
@@ -1264,7 +1264,7 @@ ggplot(dat,
 
 @ 
 
-How many SNPs can be found outside of each domain? The outside SNPs can be before or after the aligned contig over the reference. The SNP position outside the domains is dependent on the Reference contig length, which was selected through alignment.
+How many SNPs can be found outside of each domain? The outside SNPs can be upstream or downstream the aligned contig over the reference. The SNP position outside the domains is dependent on the Reference contig length, which was selected through alignment.
 <<hotspots4>>=
 before <- c(155, 160, 11, 126)
 after <- c(201, 89, 4, 163)
