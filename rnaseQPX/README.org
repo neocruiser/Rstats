@@ -1,4 +1,4 @@
-#+TITLE: An initial analysis of genetic variation in the parasite QPX genome
+#+TITLE: Assessing virulence and local adaptation by genetic diversity between different strains of QPX, the hard clam parasite
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -22,7 +22,7 @@
 
 This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
-* Aims
+* Aims and resulting headlines
 The data we have include 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains. We also have the combined assembly of the transcriptome from the 4 QPX strain. In addition a published first draft of the QPX genome.
 
 1. There is multiple levels for host resistance and many more levels for pathogen virulence
@@ -42,7 +42,7 @@ The data we have include 4 QPX transcriptomes generated from different strains o
 15. Higher number of variants were found in salinity genes than in virulence genes
 16. Higher number of variants were found outside of virulence protein domains
 17. Higher number of variants were found inside of salinity protein domains
-18. Low genetic variation in virulence genes can be linked to a low spread of QPX in a demographic region or a susceptible host.
+18. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX in a demographic region or a susceptible host. (comparison between NY, VA, and MA)
 
 
 * DATA
