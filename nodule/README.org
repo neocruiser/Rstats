@@ -1,4 +1,4 @@
-#+TITLE: Interplay between parasite and host immune defense system.
+#+TITLE: Interplay between the parasite and host immune defense systems
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -23,19 +23,17 @@
 This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/nodule/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/nodule/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/nodule/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
 
-* Goals
-1. Transcriptomic data were generated on infectious nodules (QPX + hard clam tissue)
-2. Samples are from diseased clams and controls
-3. First goal is to identify QPX transcripts
-4. Time: identify parasite transcripts produced in clam tissue during infection
-5. Second goal is to identify a crosstalk with the host (clam transcripts responding to parasite factors).
-6. Published work on this data includes: analysis on most abundant transcripts in the nodules (e.g. clam transcripts) and discarded the rare QPX transcripts.
-7. Preliminary results shows over 1400 proteins for QPX.
-8. It would be significantly better if the clam transcriptome is used in read assembly to discard non QPX genes.
-9. Final step was a blastx search over the NR ncbi library.
-10. Blastn can also be done with assembled contigs over the NT database.
-11. For the crosstalk analysis, the best deal is to look for expression patterns between differentially expressed genes.
-12. Over 1400 protein list annotated with hmmer/pfam can be used with blat/S.R.genomev15 and gene expression data to extract differentially transcribed proteins.
+* Aims and resulting headlines
+1. Gene expression RNA-seq data were generated on infectious nodules (QPX + hard clam tissue), non-nodule tissue from infected animal, and tissue from non-infected clam
+2. First goal is to identify (QPX) parasite transcripts produced in clam tissue during infection
+3. Published work on this data includes: analysis on most abundant transcripts in the nodules (e.g. clam transcripts) while discarding QPX transcripts.
+4. Pipeline was constructed to include 2 filtering phases which helps discard non-QPX reads and contigs
+5. Preliminary results include discovery of over 1400 proteins for QPX.
+6. The clam genome or transcriptome are used in read assembly to identify and discard dominant clam genes.
+7. Annotation of discovered contigs is done on 21 different public databases that includes nucleotide and protein sequences.
+8. Second goal is to identify gene-for-gene interplay between the host and pathogen
+9. Cluster analysis by gene expression patterns between conditions can highlight gene-for-gene interplay. However the low number of available samples will increase the statistical bias.
+10. Alternative approach is to use the available information on protein families to trace connection between subfamilies, processes, and functions.
 
 * Quality controls
 1. Download FastQC =on linux=

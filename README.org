@@ -29,3 +29,9 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 | Algae       |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]   | S. Bassim | E. Espinosa P | Stony Brook |
 |             |          |     |           |               |             |
 
+* GITHUB
+Download all sequence data, statistical inferences, and sequence analysis pipeline from =github=.
+#+BEGIN_SRC shell
+git clone git@github.com:neocruiser/Rstats.git
+cd rnaseQPX
+#+END_SRC
