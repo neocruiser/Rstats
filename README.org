@@ -1,4 +1,4 @@
-#+TITLE: Assessing virulence and local adaptation by genetic diversity between different strains of QPX, the hard clam parasite
+#+TITLE: Summary of RNA-seq tutorials, R, and D3.js
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
