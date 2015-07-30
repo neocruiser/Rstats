@@ -22,10 +22,17 @@
 
 This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
+* GITHUB
+Download all sequence data, statistical inferences, and sequence analysis pipeline from =github=.
+#+BEGIN_SRC shell
+git clone git@github.com:neocruiser/Rstats.git
+cd rnaseQPX
+#+END_SRC
+
 * Aims and resulting headlines
 The data we have include 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains. We also have the combined assembly of the transcriptome from the 4 QPX strain. In addition a published first draft of the QPX genome.
 
-1. There is multiple levels for host resistance and many more levels for pathogen virulence
+1. There is multiple levels of host resistance and many more levels of pathogen virulence
 2. Hypothesis 1: High virulent strains frequently strive on high resistant hosts
 3. Hypothesis 2: Trade-off exists between pathogen spread/transmission and levels of aggressiveness
 4. Hypothesis 3: High number of virulence genes can increase infectivity but reduce local adaption of the pathogen
@@ -42,13 +49,14 @@ The data we have include 4 QPX transcriptomes generated from different strains o
 15. Higher number of variants were found in salinity genes than in virulence genes
 16. Higher number of variants were found outside of virulence protein domains
 17. Higher number of variants were found inside of salinity protein domains
-18. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX in a demographic region or a susceptible host. (comparison between NY, VA, and MA)
+18. What is the prevalence of QPX in relation to number of virulence genes? By area? For salinity and temperature?
+19. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX in a demographic region or a susceptible host. (comparison between NY, VA, and MA)
 
 
 * DATA
 1. [[http://www.marinemicroeukaryotes.org/project_organisms][Marine Mirobial Eukayote Transcriptome Project]]
 2. [[http://data.imicrobe.us/project/view/104][iMicrobe]] hosted data: description of the project and fasta files + ftp
-3. [[http://data.imicrobe.us/project/view/104][NCBI]] metadata entries for the project
+3. [[http://www.ncbi.nlm.nih.gov/bioproject/?term%3DPRJNA231566][NCBI]] metadata entries for the project
 4. [[http://jcvi.org/metarep/][JCVI METAREP]] annotation protocol for the project
 
 
@@ -1664,12 +1672,7 @@ GITHUB * Bioinformatic packages and there alternative
 
 
 
-* GITHUB
-Download all statistical data and results from =github=.
-#+BEGIN_SRC shell
-git clone git@github.com:neocruiser/Rstats.git
-cd rnaseQPX
-#+END_SRC
+
 
 
 * Computational server
@@ -1808,7 +1811,6 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 17. Look for dsRNAs from rnaseq data after genome alignment [[http://rnajournal.cshlp.org/content/early/2015/03/24/rna.048801.114.full.pdf%2Bhtml][Whipple 2015]]
 18. Gene expression of virulence, metabolism, and growth of QPX are temperature dependent [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0074196][Vedrenne 2013]] =bad paper=
 19. Retrotransposons as effectors and transmittors of immune cancer cells in clam [[http://www.sciencemag.org/content/348/6231/170.full][Metzger 2015]]
-20. 
 
 ** Second set
 1. How to characterize SNPs affected by the reference bias? Align reads to personalized genomes [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0126911][Wood 2015]] =also ref. 26 and 28 inside=

@@ -1,0 +1,31 @@
+#+TITLE: Assessing virulence and local adaptation by genetic diversity between different strains of QPX, the hard clam parasite
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+This git repository includes RNA-seq data analysis pipelines, protocols, R code, figures, and supplemental information of peer-reviewed manuscripts.
+
+| Project     | Pipeline | PDF | Author    | PI            | University  |
+|-------------+----------+-----+-----------+---------------+-------------|
+| QPX strains | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]   | S. Bassim | B. Allam      | Stony Brook |
+| QPX nodules | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]   | S. Bassim | B. Allam      | Stony Brook |
+| Algae       |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]   | S. Bassim | E. Espinosa P | Stony Brook |
+|             |          |     |           |               |             |
+
