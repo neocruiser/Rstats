@@ -1,4 +1,4 @@
-#+TITLE: Summary of RNA-seq tutorials, R, and D3.js
+#+TITLE: Summary of RNA-seq tutorials, R, MySQL, and D3.js
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -22,12 +22,17 @@
 
 This git repository includes RNA-seq data analysis pipelines, protocols, R code, figures, and supplemental information of peer-reviewed manuscripts.
 
-| Project     | Pipeline | PDF | Author    | PI            | University  |
-|-------------+----------+-----+-----------+---------------+-------------|
-| QPX strains | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]   | S. Bassim | B. Allam      | Stony Brook |
-| QPX nodules | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]   | S. Bassim | B. Allam      | Stony Brook |
-| Algae       |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]   | S. Bassim | E. Espinosa P | Stony Brook |
-|             |          |     |           |               |             |
+| Project               | Pipeline | R    | Author    | PI            | Year | University    |
+|-----------------------+----------+------+-----------+---------------+------+---------------|
+| QPX strains           | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][code]] | S. Bassim | B. Allam      | 2015 | Stony Brook   |
+| QPX nodules           | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][code]] | S. Bassim | B. Allam      | 2015 | Stony Brook   |
+| Databases             | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Table]]s   |      | Public    |               | 2015 |               |
+| Algae                 |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][code]] | S. Bassim | E. Espinosa P | 2015 | Stony Brook   |
+| Bibliographies        | [[https://github.com/neocruiser/bilbiographies][Tutorial]] |      | S. Bassim |               |      |               |
+| Unsupervised learning |          | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][code]] | S. Bassim | R. Tremblay   | 2014 | Quebec (UQAR) |
+| Cluster analysis      |          | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
+| Bayesian networks     |          | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
+| Microarray processing |          | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
 
 * GITHUB
 Download all sequence data, statistical inferences, and sequence analysis pipeline from =github=.

@@ -25,15 +25,16 @@ This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/
 
 * Aims and resulting headlines
 1. Gene expression RNA-seq data were generated on infectious nodules (QPX + hard clam tissue), non-nodule tissue from infected animal, and tissue from non-infected clam
-2. First goal is to identify (QPX) parasite transcripts produced in clam tissue during infection
-3. Published work on this data includes: analysis on most abundant transcripts in the nodules (e.g. clam transcripts) while discarding QPX transcripts.
-4. Pipeline was constructed to include 2 filtering phases which helps discard non-QPX reads and contigs
-5. Preliminary results include discovery of over 1400 proteins for QPX.
-6. The clam genome or transcriptome are used in read assembly to identify and discard dominant clam genes.
-7. Annotation of discovered contigs is done on 21 different public databases that includes nucleotide and protein sequences.
-8. Second goal is to identify gene-for-gene interplay between the host and pathogen
-9. Cluster analysis by gene expression patterns between conditions can highlight gene-for-gene interplay. However the low number of available samples will increase the statistical bias.
-10. Alternative approach is to use the available information on protein families to trace connection between subfamilies, processes, and functions.
+2. Hypothesis 1: The gene-for-gene concept associates every host resistance gene with a pathogen avirulence gene
+3. First goal is to identify (QPX) parasite transcripts produced in clam tissue during infection
+4. Published work on this data includes: analysis on most abundant transcripts in the nodules (e.g. clam transcripts) while discarding QPX transcripts.
+5. Pipeline was constructed to include 2 filtering phases which helps discard non-QPX reads and contigs
+6. Preliminary results include discovery of over 1400 proteins for QPX.
+7. The clam genome or transcriptome are used in read assembly to identify and discard dominant clam genes.
+8. Annotation of discovered contigs is done on 21 different public databases that includes nucleotide and protein sequences.
+9. Second goal is to identify gene-for-gene interplay between the host and pathogen
+10. Cluster analysis by gene expression patterns between conditions can highlight gene-for-gene interplay. However the low number of available samples will increase the statistical bias.
+11. Alternative approach is to use the available information on protein families to trace connection between subfamilies, processes, and functions.
 
 * Quality controls
 1. Download FastQC =on linux=
