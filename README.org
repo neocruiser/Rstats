@@ -22,21 +22,22 @@
 
 This git repository includes RNA-seq data analysis pipelines, protocols, R code, figures, and supplemental information of peer-reviewed manuscripts.
 
-| Project               | Pipeline | R    | Author    | PI            | Year | University    |
-|-----------------------+----------+------+-----------+---------------+------+---------------|
-| QPX strains           | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][code]] | S. Bassim | B. Allam      | 2015 | Stony Brook   |
-| QPX nodules           | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][code]] | S. Bassim | B. Allam      | 2015 | Stony Brook   |
-| Databases             | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Table]]s   |      | Public    |               | 2015 |               |
-| Algae                 |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][code]] | S. Bassim | E. Espinosa P | 2015 | Stony Brook   |
-| Bibliographies        | [[https://github.com/neocruiser/bilbiographies][Tutorial]] |      | S. Bassim |               |      |               |
-| Unsupervised learning |          | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][code]] | S. Bassim | R. Tremblay   | 2014 | Quebec (UQAR) |
-| Cluster analysis      |          | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
-| Bayesian networks     |          | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
-| Microarray processing |          | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][code]] | S. Bassim | R. Tremblay   | 2013 | Quebec (UQAR) |
+| Project               | Pipeline | R    | Author    | Year | University    |
+|-----------------------+----------+------+-----------+------+---------------|
+| QPX strains           | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][code]] | S. Bassim | 2015 | Stony Brook   |
+| QPX nodules           | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][code]] | S. Bassim | 2015 | Stony Brook   |
+| Databases             | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Table]]s   |      | Public    | 2015 |               |
+| Algae                 |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][code]] | S. Bassim | 2015 | Stony Brook   |
+| Bibliographies        | [[https://github.com/neocruiser/bilbiographies][Tutorial]] |      | S. Bassim |      |               |
+| Unsupervised learning |          | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][code]] | S. Bassim | 2014 | Quebec (UQAR) |
+| Cluster analysis      |          | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][code]] | S. Bassim | 2013 | Quebec (UQAR) |
+| Bayesian networks     |          | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][code]] | S. Bassim | 2013 | Quebec (UQAR) |
+| Microarray processing |          | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][code]] | S. Bassim | 2013 | Quebec (UQAR) |
 
 * GITHUB
 Download all sequence data, statistical inferences, and sequence analysis pipeline from =github=.
 #+BEGIN_SRC shell
 git clone git@github.com:neocruiser/Rstats.git
-cd rnaseQPX
+# or 
+git clone https://github.com/neocruiser/Rstats.git
 #+END_SRC

@@ -1,4 +1,4 @@
-#+TITLE: Assessing virulence and local adaptation by genetic diversity between different strains of QPX, the hard clam parasite
+#+TITLE: QPX strains in North America demonstrate high aggressiveness but low genotypic diversity in virulence genes
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -36,15 +36,14 @@ The data we have include 4 QPX transcriptomes generated from different strains o
 8. Hierarchical clustering was thus used for strain relatedness
 9. Preliminary results were significant
 10. Additional analysis were done on variant calling.
-11. Differential distribution of SNPs and indels were found between strains.
-12. Preferential substitution of SNPs were found between strains.
-13. Furthermore, contigs were annotated with Pfam domains.
+11. Differential distribution of SNPs and indels was observed between strains.
+12. Preferential substitution of SNPs was observed between strains.
+13. Contigs were annotated with Pfam domains.
 14. Differential distribution of SNPs inside and outside domains were investigated.
-15. Higher number of variants were found in salinity genes than in virulence genes
 16. Higher number of variants were found outside of virulence protein domains
 17. Higher number of variants were found inside of salinity protein domains
 18. What is the prevalence of QPX in relation to number of virulence genes? By area? For salinity and temperature?
-19. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX in a demographic region or a susceptible host. (comparison between NY, VA, and MA)
+19. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX between populations.
 
 
 * DATA
@@ -1133,7 +1132,11 @@ sed -e "s/'//g" | \
 sed -e "s/,//g" > vcf.stats.1002.txt
 #+END_SRC
 
-
+**** SNP densities
+Get the total sum of the length of all assembled contigs. Get the count of SNPs called for that assembly. Divide the two scores then multiply by 1000 bp.
+#+BEGIN_SRC shell
+cat contigs.fa | grep "^>" | awk '{print $2}' | sed 's/len=//g' | awk '{s+=$1;  print s}' | tail -n 1
+#+END_SRC
 * Phase 4 - Inferential analyzes and contig annotation 
 ** Functional phylogenomics based on transcriptome data
 This [[http://angus.readthedocs.org/en/2014/genome-comparison-and-phylogeny.html][tutorial]] introduces some techniques and tools to address these objectives. Mainly this task relies on pairwise sequence comparisons.
@@ -1635,37 +1638,24 @@ cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18)
 * Phase 5 - Concatenate all data into one database (in progress with MySQL)
 ** Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
+Summary File has been generated containing all genomic SNPs mapped to 4 QPX strains. Strain contigs are also annotated.
 
-GITHUB * Bioinformatic packages and there alternative
-1. [[https://trinityrnaseq.github.io/][Trinity]]
-2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
-3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
-4. RSEM IsoEM (DEF on de novo transcriptome)
-5. R/Bioconductor packages (ShortRead edgeR DESeq GenomicRanges GenomicFeatures DEXSeq BaySeq BBSeq NOISeq QuasiSeq BitSeq ShrinkSeq)
-6. SAMtools [[http://www.htslib.org/doc/samtools.html][HomePage]] [[http://www.htslib.org/doc/samtools.html][Documentation]]
-7. Count map reads [[http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html][HTSeq]]
-8. [[http://genome.sph.umich.edu/wiki/Bam_read_count#Download][ReadCount]] reads in a bam file
-9. MEGA-CC (command line) and MEGA-PRO (GUI) -- [[http://megasoftware.net/MEGA7-CC-Quick-Start-Tutorial.pdf][Intro]]
-10. BLAST+ =command line=
-11. CLC Genomics =Xeon Desktop= [[http://www.clcsupport.com/clcgenomicsworkbench/current/index.php?manual%3DIntroduction_CLC_Genomics_Workbench.html][tutorial]]
-12. MG-RAST [[http://metagenomics.anl.gov/metagenomics.cgi?page%3DHome][homepage]]
-13. [[http://bioconductor.org/][Bioconductor]]
-14. Gene Ontology Packages: =GOseq= =topGO= =GOstat= =Ontologizer= =DAVID= =ontoCAT= ([[http://www.ontocat.org/browser/trunk/ontoCAT/src/uk/ac/ebi/ontocat/examples/R/Example1.R][help]]) =biomaRT=
-15. Draft genome assemblers: =Velvet= =Oasis= =ABySS= =SOAPdenovo= (reads to contigs) or hybrid methods: =celera= =MIRA= =ALLPATHS-LG=
-16. Genome Finishing Tools: =AHA= =SSPACE-LongRead= (reduce contiguous assembled pair-ends) =scaffolding routine= [[http://www.biomedcentral.com/1471-2105/15/211][Boetzer 2014]]
-17. Proteogenomics (w/ circos and D3) [[http://qcmg.org/bioinformatics/PGTools][PGTools]]
-18. Integrated Genome Viewer [[https://www.broadinstitute.org/igv/][BroadInstitute]] [[http://www.broadinstitute.org/igv/projects/downloads/IGV_2.3.46.zip][IGV]]
-19. Aliners of reads to transriptome (=tophat2= =GSNAP= =SpliceMap= =Subread= =STAR=)
-20. Burrows-Wheeler Aligner (BWA) [[http://sourceforge.net/projects/bio-bwa/files/][sourceforge.net]] or on [[https://github.com/lh3/bwa][github]]
-21. MAUVE [[http://genome.cshlp.org/content/14/7/1394.short][paper]] for genomic alignment & identification of recombination and horizontal transfer.
-22. QIIME for bacterial rna seq data processing [[http://qiime.org/][main site]]
-23. [[http://www.scfbm.org/content/10/1/8/abstract][PrimerView]] CPAN module for primer design on multiple sequences
-24. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
-25. Bpipe [[http://docs.bpipe.org/][documentation]]
-26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
+* Phase 6 (in progress)
+** Genome annotation
+** SNP annotation
+Annotation of variants is done with =SnpEff=.
+#+BEGIN_SRC shell
+wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
+7z x snpeff_latest_core.zip
+#+END_SRC
 
+Download a reference genome to annotate SNPs. Library contains over 2500 genomes. QPX is not among them. Therefore a custom genome must be constructed. Add the following lines in the =configuration= file.
+#+BEGIN_SRC 
+# QPX genome S. Roberts v15
+qpx.genome : QPX
+#+END_SRC
 
-
+A =GTF3= or =GFF3= or a =GenBank= genomic annotation file must be included in =snpeff= custom genome construction. [[http://snpeff.sourceforge.net/SnpEff_manual.html#databases][Tutorial]]
 
 
 
@@ -1781,6 +1771,34 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 -max_target_seqs 10 \
 -out A.blastx.txt
 #+END_SRC
+
+* Bioinformatic packages and there alternative
+1. [[https://trinityrnaseq.github.io/][Trinity]]
+2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
+3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
+4. RSEM IsoEM (DEF on de novo transcriptome)
+5. R/Bioconductor packages (ShortRead edgeR DESeq GenomicRanges GenomicFeatures DEXSeq BaySeq BBSeq NOISeq QuasiSeq BitSeq ShrinkSeq)
+6. SAMtools [[http://www.htslib.org/doc/samtools.html][HomePage]] [[http://www.htslib.org/doc/samtools.html][Documentation]]
+7. Count map reads [[http://www-huber.embl.de/users/anders/HTSeq/doc/overview.html][HTSeq]]
+8. [[http://genome.sph.umich.edu/wiki/Bam_read_count#Download][ReadCount]] reads in a bam file
+9. MEGA-CC (command line) and MEGA-PRO (GUI) -- [[http://megasoftware.net/MEGA7-CC-Quick-Start-Tutorial.pdf][Intro]]
+10. BLAST+ =command line=
+11. CLC Genomics =Xeon Desktop= [[http://www.clcsupport.com/clcgenomicsworkbench/current/index.php?manual%3DIntroduction_CLC_Genomics_Workbench.html][tutorial]]
+12. MG-RAST [[http://metagenomics.anl.gov/metagenomics.cgi?page%3DHome][homepage]]
+13. [[http://bioconductor.org/][Bioconductor]]
+14. Gene Ontology Packages: =GOseq= =topGO= =GOstat= =Ontologizer= =DAVID= =ontoCAT= ([[http://www.ontocat.org/browser/trunk/ontoCAT/src/uk/ac/ebi/ontocat/examples/R/Example1.R][help]]) =biomaRT=
+15. Draft genome assemblers: =Velvet= =Oasis= =ABySS= =SOAPdenovo= (reads to contigs) or hybrid methods: =celera= =MIRA= =ALLPATHS-LG=
+16. Genome Finishing Tools: =AHA= =SSPACE-LongRead= (reduce contiguous assembled pair-ends) =scaffolding routine= [[http://www.biomedcentral.com/1471-2105/15/211][Boetzer 2014]]
+17. Proteogenomics (w/ circos and D3) [[http://qcmg.org/bioinformatics/PGTools][PGTools]]
+18. Integrated Genome Viewer [[https://www.broadinstitute.org/igv/][BroadInstitute]] [[http://www.broadinstitute.org/igv/projects/downloads/IGV_2.3.46.zip][IGV]]
+19. Aliners of reads to transriptome (=tophat2= =GSNAP= =SpliceMap= =Subread= =STAR=)
+20. Burrows-Wheeler Aligner (BWA) [[http://sourceforge.net/projects/bio-bwa/files/][sourceforge.net]] or on [[https://github.com/lh3/bwa][github]]
+21. MAUVE [[http://genome.cshlp.org/content/14/7/1394.short][paper]] for genomic alignment & identification of recombination and horizontal transfer.
+22. QIIME for bacterial rna seq data processing [[http://qiime.org/][main site]]
+23. [[http://www.scfbm.org/content/10/1/8/abstract][PrimerView]] CPAN module for primer design on multiple sequences
+24. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
+25. Bpipe [[http://docs.bpipe.org/][documentation]]
+26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
 
 
 
