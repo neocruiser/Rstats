@@ -46,7 +46,7 @@ The data we have include 4 QPX transcriptomes generated from different strains o
 19. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX between populations.
 
 
-* DATA
+* Data
 1. [[http://www.marinemicroeukaryotes.org/project_organisms][Marine Mirobial Eukayote Transcriptome Project]]
 2. [[http://data.imicrobe.us/project/view/104][iMicrobe]] hosted data: description of the project and fasta files + ftp
 3. [[http://www.ncbi.nlm.nih.gov/bioproject/?term%3DPRJNA231566][NCBI]] metadata entries for the project
@@ -164,7 +164,6 @@ Sample from *fastq.gz file
 seqtk sample -s123 *1.fastq.gz 250 > sample1.fq
 seqtk sample -s123 *2.fastq.gz 250 > sample2.fq
 #+END_SRC
-
 
 
 * Phase 2 - Assembling contigs and mapping filtered reads
@@ -509,11 +508,10 @@ Exception in thread "main" htsjdk.samtools.SAMException: /tmp/neo/CSPI.753937869
 The above error is due to RAM memory limitations attributed to java when =-Xmx= is specified. On powerful servers and with big libraries one should assign higher =-Xmx=.
 
 
-
 * Phase 3 - Genetic variant calling
 ** SNP calling (1)
 =aim= Sequence variation between strains. also nucleotide substitution rate.
-Tool to be used are =samtools=, =GATK= or =varscan=.
+Tool to be used are =samtools=, =GATK= or =varscan=. GATK can be run on RNAseq data [[http://gatkforums.broadinstitute.org/discussion/3891/calling-variants-in-rnaseq][(website]])
 1. Generate VCF files from bam =mapped to reference=
 2. Map indels with GATK
 3. Calculate the depth of coverage with GATK
@@ -609,10 +607,12 @@ done
 5. Sort the generated sam output with Picard
 6. Mark duplicate reads and remove them with Picard
 7. Realign reads around indels with GATK
-8. Recalibrate SNP calls
-9. Call SNPs on recalibrated bam files
+8. Recalibrate SNP calls x3 rounds
+9. Call SNPs on recalibrated bam files x3 rounds. Final round retained
+10. =optional= recalibration can be done x2 or x1
 
-This script is compiled in =mappingV3.sh=. It can be combined with the one above.
+
+This script is compiled in =mappingV5.sh=. It can be combined with the one above.
 #+BEGIN_SRC shel l
 #! /user/bin/bash
 
@@ -649,6 +649,7 @@ Note(3): there is a generated R report before after recalibration of quality sco
 
 '
 
+
 sample[1]=mmetsp0098
 sample[2]=mmetsp001433
 sample[3]=mmetsp00992
@@ -678,7 +679,6 @@ mkdir -p ${counts} ${realign} ${call}
 
 
 
-
 for i in 1 2 3 4 5 6
 do
     sample=${sample[${i}]}
@@ -700,6 +700,7 @@ do
     java -jar /home/neo/data/picard/picard.jar \
         BuildBamIndex \
         INPUT=${ddir}/${sample}.nodup.bam
+
 
 # count and redirect output to a file
 # grep the file with $grep "counted"
@@ -738,61 +739,124 @@ do
 
 
 
+# PHASE 1
 # first call = high filters
     java -jar /home/neo/data/GenomeAnalysisTK.jar \
         -T HaplotypeCaller \
         -R ${reference} \
         -I ${realign}/${sample}.realign.bam \
         --genotyping_mode DISCOVERY \
-        -stand_emit_conf 30 \
-        -stand_call_conf 45 \
-        -o ${call}/${sample}.hi.first.call.vcf
+        -stand_emit_conf 15 \
+        -stand_call_conf 25 \
+        -o ${call}/${sample}.filter.call.vcf
 
 # recalibration
     java -jar /home/neo/data/GenomeAnalysisTK.jar \
         -T BaseRecalibrator \
         -R ${reference} \
         -I ${realign}/${sample}.realign.bam \
-        -knownSites ${call}/${sample}.hi.first.call.vcf \
-        -o ${call}/${sample}.recal.table
+        -knownSites ${call}/${sample}.filter.call.vcf \
+        -o ${call}/${sample}.recal.1.table
 
-# recal (2)
-    java -jar /home/neo/data/GenomeAnalysisTK.jar \
-        -T BaseRecalibrator \
-        -R ${reference}
-        -I ${realign}/${sample}.realign.bam \
-        -knownSites ${call}/${sample}.hi.first.call.vcf \
-        -BQSR ${call}/${sample}.recal.table \
-        -o ${call}/${sample}.postrecal.table
-
-# plots
-# make sure to install R packages and dependencies
-# reshape gplots ggplot2 gsalib
-        java -jar /home/neo/data/GenomeAnalysisTK.jar \
-            -T AnalyzeCovariates \
-            -R ${reference}
-            -before ${call}/${sample}.recal.table \
-            -after ${call}/${sample}.postrecal.table \
-            -plots ${call}/${sample}.recal.plots.pdf
 
 # apply recal
             java -jar /home/neo/data/GenomeAnalysisTK.jar \
                 -T PrintReads \
                 -R ${reference} \
                 -I ${realign}/${sample}.realign.bam \
-                -BQSR ${call}/${sample}.recal.table \
-                -o ${call}/${sample}.recal.bam
+                -BQSR ${call}/${sample}.recal.1.table \
+                -o ${call}/${sample}.recal.1.bam
 
 
-#second calling
+
+# PHASE 2
+# first call = high filters
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T HaplotypeCaller \
+        -R ${reference} \
+        -I ${call}/${sample}.recal.1.bam \
+        --genotyping_mode DISCOVERY \
+        -stand_emit_conf 25 \
+        -stand_call_conf 35 \
+        -o ${call}/${sample}.filter.2.call.vcf
+
+# recalibration
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T BaseRecalibrator \
+        -R ${reference} \
+        -I ${call}/${sample}.recal.1.bam \
+        -knownSites ${call}/${sample}.filter.2.call.vcf \
+        -o ${call}/${sample}.recal.2.table
+
+
+# apply recal
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T PrintReads \
+                -R ${reference} \
+                -I ${call}/${sample}.recal.1.bam \
+                -BQSR ${call}/${sample}.recal.2.table \
+                -o ${call}/${sample}.recal.2.bam
+
+
+# PHASE 3
+# first call = high filters
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T HaplotypeCaller \
+        -R ${reference} \
+        -I ${call}/${sample}.recal.2.bam \
+        --genotyping_mode DISCOVERY \
+        -stand_emit_conf 35 \
+        -stand_call_conf 45 \
+        -o ${call}/${sample}.filter.3.call.vcf
+
+# recalibration
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T BaseRecalibrator \
+        -R ${reference} \
+        -I ${call}/${sample}.recal.2.bam \
+        -knownSites ${call}/${sample}.filter.3.call.vcf \
+        -o ${call}/${sample}.recal.3.table
+
+
+# apply recal
+            java -jar /home/neo/data/GenomeAnalysisTK.jar \
+                -T PrintReads \
+                -R ${reference} \
+                -I ${call}/${sample}.recal.2.bam \
+                -BQSR ${call}/${sample}.recal.3.table \
+                -o ${call}/${sample}.recal.3.bam
+
+
+
+# END
+# plots
+# recal
+    java -jar /home/neo/data/GenomeAnalysisTK.jar \
+        -T BaseRecalibrator \
+        -R ${reference}
+        -I ${call}/${sample}.recal.3.bam \
+        -knownSites ${call}/${sample}.filter.3.call.vcf \
+        -BQSR ${call}/${sample}.recal.3.table \
+        -o ${call}/${sample}.postrecal.table
+
+# make sure to install R packages and dependencies
+# reshape gplots ggplot2 gsalib
+        java -jar /home/neo/data/GenomeAnalysisTK.jar \
+            -T AnalyzeCovariates \
+            -R ${reference}
+            -before ${call}/${sample}.recal.1.table \
+            -after ${call}/${sample}.postrecal.table \
+            -plots ${call}/${sample}.recal.plots.3.pdf
+
+#final calling
             java -jar /home/neo/data/GenomeAnalysisTK.jar \
                 -T HaplotypeCaller \
                 -R ${reference} \
-                -I ${call}/${sample}.recal.bam \
+                -I ${call}/${sample}.recal.3.bam \
                 --genotyping_mode DISCOVERY \
-                -stand_emit_conf 30 \
+                -stand_emit_conf 40 \
                 -stand_call_conf 50 \
-                -o ${call}/${sample}.last.call.vcf
+                -o ${call}/${sample}.last.call.3.vcf
 
 
 done
@@ -802,10 +866,11 @@ done
 for j in 1 2 3 4 5 6
 do
     sample=${sample[${j}]}
-    grep "QPX_transcriptome" ${call}/${sample}.last.call.vcf | wc -l
+    grep "QPX_v015" ${call}/${sample}.last.call.3.vcf | wc -l
 
 done
 #+END_SRC
+
 
 *** step 1 (optional, issues may occur during calling)
 Create a probability per variant =vcf= file with samtools. Description of command line [[http://samtools.sourceforge.net/mpileup.shtml][here]].
@@ -1634,16 +1699,16 @@ cat all.pfam.snp.txt | awk '{if ($25 < $17) print $3,$24,$25,$26,$27,$23,$30,$31
 cat all.pfam.snp.txt | awk '{if ($25 >= $17) print $0}' | awk '{ if ($25 <= $18) print $3,$24,$25,$26,$27,$23,$30,$31,$34,$35}' | sort - | uniq | awk '{if ($2 == "m98") print $0}' | sort - | uniq | awk '{if ($6 == "virulence") print $0}' | cut -f 4,5 -d " " --output-delimiter=$'>' | sort - | uniq -c
 #+END_SRC
 
-
 * Phase 5 - Concatenate all data into one database (in progress with MySQL)
 ** Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
 Summary File has been generated containing all genomic SNPs mapped to 4 QPX strains. Strain contigs are also annotated.
 
-* Phase 6 (in progress)
+* Phase 6 - Genome annotation (in progress)
 ** Genome annotation
+This paper describes one way to do it [[http://journals.plos.org/plosgenetics/article?id%3D10.1371/journal.pgen.1004261#s3][Janbon 2014]], but it is redundant and little messy.
 ** SNP annotation
-Annotation of variants is done with =SnpEff=.
+Annotation of variants is done with =SnpEff=. SNP annotation will help get the percentage of synonymous SNPs and non-synonymous ones, which helps estimates the pressure of purifying selection. (related [[http://beta.bmcgenomics.com/articles/10.1186/1471-2164-13-545][article]])
 #+BEGIN_SRC shell
 wget http://sourceforge.net/projects/snpeff/files/snpEff_latest_core.zip
 7z x snpeff_latest_core.zip
@@ -1772,7 +1837,7 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 -out A.blastx.txt
 #+END_SRC
 
-* Bioinformatic packages and there alternative
+* Bioinformatic packages and there alternatives
 1. [[https://trinityrnaseq.github.io/][Trinity]]
 2. Bowtie [[http://tophat.cbcb.umd.edu/][TopHat]] [[http://cufflinks.cbcb.umd.edu/][Cufflinks]] Cuffdiff (Align Annotate Compare DEG for sequenced genome)
 3. Trinity TransAbyss [[http://www.ebi.ac.uk/~zerbino/oases/][Oases]] (gene discovery on de novo transcriptome)
@@ -1799,7 +1864,6 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 24. R and [[https://github.com/qinwf/awesome-R][awesomeR]] (summary of best used packages)
 25. Bpipe [[http://docs.bpipe.org/][documentation]]
 26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
-
 
 
 * Bibliography
@@ -1847,3 +1911,4 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 
 ** Third set
 1. Trade-off between virulence and dissemination of pathogenicity [[http://www.sciencemag.org/content/299/5613/1735.full][Thrall 2003]] =plant=
+2. Interconnectedness between biodiversity disease and climate change [[http://www.sciencedirect.com/science/article/pii/S1471492207002504][Brooks 2007]] =review=
