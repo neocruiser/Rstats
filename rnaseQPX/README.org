@@ -1,4 +1,4 @@
-#+TITLE: QPX strains in North America demonstrate high aggressiveness but low genotypic diversity in virulence genes
+#+TITLE: QPX strains in North America demonstrate high aggressiveness but low genotypic diversity in virulence genes -- QPX parasite exhibits low genetic diversity in virulence genes than local adaptation genes
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -608,7 +608,7 @@ done
 6. Mark duplicate reads and remove them with Picard
 7. Realign reads around indels with GATK
 8. Recalibrate SNP calls x3 rounds
-9. Call SNPs on recalibrated bam files x3 rounds. Final round retained
+9. Call SNPs on recalibrated bam files
 10. =optional= recalibration can be done x2 or x1
 
 
@@ -872,7 +872,7 @@ done
 #+END_SRC
 
 
-*** step 1 (optional, issues may occur during calling)
+*** optional step, issues may occur during calling)
 Create a probability per variant =vcf= file with samtools. Description of command line [[http://samtools.sourceforge.net/mpileup.shtml][here]].
 #+BEGIN_SRC shell
 #! /usr/bin/bash
@@ -1912,3 +1912,4 @@ blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
 ** Third set
 1. Trade-off between virulence and dissemination of pathogenicity [[http://www.sciencemag.org/content/299/5613/1735.full][Thrall 2003]] =plant=
 2. Interconnectedness between biodiversity disease and climate change [[http://www.sciencedirect.com/science/article/pii/S1471492207002504][Brooks 2007]] =review=
+3. Thymine relaxes dimerization and decrease the susceptibility of DNA UV breakage [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2792699/][Shreier 2007]] [[http://scholarworks.unist.ac.kr/bitstream/201301/5164/1/84903210246.pdf][McFarland 2015]] =preferential substitution analysis=

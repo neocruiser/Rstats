@@ -508,7 +508,7 @@ ggplot(rstats,
                               size = 5,
                               color = "white",
                               hjust = 1.2)) +
-                labs(x = "Number of base pair (nb) in the sequenced QPX libraries",
+                labs(x = "Number of base pair (bp) in the sequenced QPX libraries",
                      y = "QPX libraries")
 @ 
 
@@ -1236,8 +1236,8 @@ ggplot(dat,
                               size = 4,
                               hjust = 2,
                               color = "white")) +
-                labs(x = "Number of SNPs (x axis) and % (bar labels)",
-                     y = "Position of SNPs relative to contigs aligned to reference")
+                labs(y = "Number of SNPs (x axis) and % (bar labels)",
+                     x = "Position of SNPs relative to contigs aligned to reference")
 @ 
 
 How are SNPs distributed between Pfam subsets? On the chart, the score between parenthesis is the normalized amount of SNPs. It has no units. It is just a score of the normalized counts of SNPs by the number of domains found in each subset. The counts are those of the position of SNPs inside the domains.
