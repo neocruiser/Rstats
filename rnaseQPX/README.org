@@ -1623,6 +1623,21 @@ The final file above contains 43 columns or keys. Here is the description of eac
 | pfam.y      | HMMER | Pfam category that map to the RNAseq contigs                                                                     |
 | lib         | HMMER | Strain                                                                                                           |
 
+**** GO annotation of orthologs
+Get interpro data. They contain protein entries from over 10 public protein databases. Get all flat files from [[http://www.ebi.ac.uk/interpro/download.html%3Bjsessionid%3DD8833CB9AF91969493F14D7056B31083][here]].
+Interpro dump files contain Protein names, interpro accession numbers and GO terms. So by searching for protein names then looking by interpro accession number we can get GO terms for every protein entry.
+#+BEGIN_SRC shell
+# get protein names from pfam.SNP.all.txt annotated SNPs
+# next get interpro accession numbers
+time zcat protein2ipr.dat.gz | grep -Fwf hotspots.interpro.go/1.pfam.tags.all.snps.txt - | sort - | uniq | awk '{print $2}' | hotspots.interpro.go/2.pfam.interpro.acc.txt
+#+END_SRC
+
+
+Get GO terms using interpro accession keys for orthologs shared between strains.
+#+BEGIN_SRC shell
+time cat interpro2go | grep -Fwf hotspots.interpro.go/2.pfam.interpro.acc.txt - | sort - > hotspots.interpro.go/3.pfam.go.txt 
+#+END_SRC
+
 *** Locate SNPs hotspots
 How many SNPs can be found outside and ahead of a protein domain?
 #+BEGIN_SRC shell
