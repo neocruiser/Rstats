@@ -24,13 +24,13 @@ This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/
 
 
 * Aims and resulting headlines
-The data we have include 4 QPX transcriptomes generated from different strains of the parasite and the idea here is to comparatively assess the profiles (or even phylogenetic relationships) among the different strains. We also have the combined assembly of the transcriptome from the 4 QPX strain. In addition a published first draft of the QPX genome.
+The data we have include 4 QPX transcriptomes generated from four multiclonal strains of the parasite. Our aim is to comprehensively examine their evolutionary and function relatedness. We also combined 4 separate assemblies for each transcriptome of the 4 QPX strains. We also acquired a published first draft of the QPX genome.
 
 1. There is multiple levels of host resistance and many more levels of pathogen virulence
 2. Hypothesis 1: High virulent strains frequently strive on high resistant hosts
 3. Hypothesis 2: Trade-off exists between pathogen spread/transmission and levels of aggressiveness
 4. Hypothesis 3: High number of virulence genes can increase infectivity but reduce local adaption of the pathogen
-5. Hypothesis 4: The gene-for-gene concept associates every host resistance gene with a pathogen avirulence gene
+5. Hypothesis 4: The gene-for-gene concept associates every host resistance gene with a pathogen avirulence gene [[http://www.sciencemag.org/content/299/5613/1735.full][Thrall 2003]]
 6. Compare 4 QPX strains (transcriptomes) that derive from 3 geographically different locations
 7. First goal is to study the relatedness between strains (or closeness using SNP data)
 8. Hierarchical clustering was thus used for strain relatedness
@@ -1636,6 +1636,15 @@ time zcat protein2ipr.dat.gz | grep -Fwf hotspots.interpro.go/1.pfam.tags.all.sn
 Get GO terms using interpro accession keys for orthologs shared between strains.
 #+BEGIN_SRC shell
 time cat interpro2go | grep -Fwf hotspots.interpro.go/2.pfam.interpro.acc.txt - | sort - > hotspots.interpro.go/3.pfam.go.txt 
+#+END_SRC
+
+Get a numbered list of GO terms.
+#+BEGIN_SRC shell
+## How many GO terms in total
+cat 3.pfam.go.txt | sed 's/^.*>.GO:/GO:/g' | sed 's/;.*//g' | sort - | uniq -c | sort -nr | awk '{s+=$1; print s}' | tail -n 1
+
+## Show numerically sorted list
+cat 3.pfam.go.txt | sed 's/^.*>.GO:/GO:/g' | sed 's/;.*//g' | sort - | uniq -c | sort -nr | less
 #+END_SRC
 
 *** Locate SNPs hotspots
