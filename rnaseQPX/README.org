@@ -24,7 +24,7 @@ This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/
 
 
 * Aims and resulting headlines
-The data we have include 4 QPX transcriptomes generated from four multiclonal strains of the parasite. Our aim is to comprehensively examine their evolutionary and function relatedness. We also combined 4 separate assemblies for each transcriptome of the 4 QPX strains. We also acquired a published first draft of the QPX genome.
+The data we have include 4 QPX transcriptomes generated from four multiclonal strains of the parasite. Our aim is to comprehensively examine their evolutionary and functional relatedness. We also combined 4 separate assemblies for each transcriptome of the 4 QPX strains. We also acquired a published first draft of the QPX genome.
 
 1. There is multiple levels of host resistance and many more levels of pathogen virulence
 2. Hypothesis 1: High virulent strains frequently strive on high resistant hosts
@@ -1746,7 +1746,52 @@ qpx.genome : QPX
 
 A =GTF3= or =GFF3= or a =GenBank= genomic annotation file must be included in =snpeff= custom genome construction. [[http://snpeff.sourceforge.net/SnpEff_manual.html#databases][Tutorial]]
 
+Create a =gff3= file from genomic fasta file.
+#+BEGIN_SRC shell
+gmod_fasta2gff3.pl --fasta_dir QPX_Genome_v017.fasta --gfffilename QPX_Genome_v017.gff3 --type CDS --nosequence
+#+END_SRC
+The gff3 file can be used to create a database for =snpEff=. The fasta sequences can be added to the end of the gff3.
+#+BEGIN_SRC shell
+cd /path/to/snpEff
+mkdir -p data/qpx
+mv QPX.gff3 snpEff/data/qpx/genes.gff
+echo "##FASTA" >> genes.gff 
+cat QPX_genome.fasta >> genes.gff 
+#+END_SRC
 
+Create the database (Fast). Warning may appear, but this does not mean the database is not created.
+#+BEGIN_SRC shell
+java -jar snpEff.jar build -gff3 qpx
+#+END_SRC
+
+Check the database. It contains several statistical summaries, the list of genes (...), and a section for exon|CDS|Protein.
+#+BEGIN_SRC shell
+java -jar snpEff.jar dump qpx | less
+#+END_SRC
+
+Annotate and generate an =HTML= summary.
+#+BEGIN_SRC shell
+#! /usr/bin/bash
+
+sample[1]=mmetsp0098
+sample[2]=mmetsp00992
+sample[3]=mmetsp001002
+sample[4]=mmetsp001433
+
+dir=/home/neo/data/analysis/strains
+
+for i in 1 2 3 4
+do
+sample=${sample[${i}]}
+
+java -Xmx4g \
+-jar snpEff.jar \
+-stats ${dir}/annotateSNPEFF/${sample}.html \
+qpx \
+${dir}/vcf/${sample}.vcf.gz > ${dir}/annotateSNPEFF/${sample}.ann.vcf.gz
+done
+
+#+END_SRC
 
 * Computational server
 ** SDSC Gordon @XSEDE

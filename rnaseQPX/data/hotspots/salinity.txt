@@ -1,0 +1,22 @@
+PF14571 	Di19_C 	Stress-induced protein Di19, C-terminal 			
+PF00003 	7tm_3 	7 transmembrane sweet-taste receptor of 3 GCPR 			
+PF00022 	Actin 	Actin 			
+PF00032 	Cytochrom_B_C 	Cytochrome b(C-terminal)/b6/petD 			
+PF00115 	COX1 	Cytochrome C and Quinol oxidase polypeptide I 			
+PF00116 	COX2 	Cytochrome C oxidase subunit II, periplasmic domain 			
+PF00119 	ATP-synt_A 	ATP synthase A chain 			
+PF00146 	NADHdh 	NADH dehydrogenase 			
+PF00171 	Aldedh 	Aldehyde dehydrogenase family 			
+PF00361 	Proton_antipo_M 	Proton-conducting membrane transporter 			
+PF00499 	Oxidored_q3 	NADH-ubiquinone/plastoquinone oxidoreductase chain 6 			
+PF00507 	Oxidored_q4 	NADH-ubiquinone/plastoquinone oxidoreductase, chain 3 			
+PF00510 	COX3 	Cytochrome c oxidase subunit III 			
+PF00662 	Proton_antipo_N 	NADH-Ubiquinone oxidoreductase (complex I), chain 5 N-terminus 			
+PF00847 	AP2 	AP2 domain 			
+PF01094 	ANF_receptor 	Receptor family ligand binding region 			
+PF01145 	Band_7 	SPFH domain / Band 7 family 			
+PF02790 	COX2_TM 	Cytochrome C oxidase subunit II, transmembrane domain 			
+PF05770 	Ins134_P3_kin 	Inositol 1, 3, 4-trisphosphate 5/6-kinase 			
+PF07562 	NCD3G 	Nine Cysteines Domain of family 3 GPCR 			
+PF13631 	Cytochrom_B_N_2 	Cytochrome b(N-terminal)/b6/petB 			
+PF06965 	Na_H_antiport_1 	Na+/H+ antiporter 1

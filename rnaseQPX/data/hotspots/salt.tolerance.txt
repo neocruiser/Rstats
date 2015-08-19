@@ -1,0 +1,79 @@
+PF09506 	Salt_tol_Pase 	Glucosylglycerol-phosphate phosphatase (Salt_tol_Pase) 				
+PF13945 	NST1 	Salt tolerance down-regulator 				
+PF00005 	ABC_tran 	ABC transporter 				
+PF00010 	HLH 	Helix-loop-helix DNA-binding domain 				
+PF00018 	SH3_1 	SH3 domain 				
+PF00027 	cNMP_binding 	Cyclic nucleotide-binding domain 				
+PF00069 	Pkinase 	Protein kinase domain 				
+PF00072 	Response_reg 	Response regulator receiver domain 				
+PF00076 	RRM_1 	RNA recognition motif. (a.k.a. RRM, RBD, or RNP domain) 				
+PF00082 	Peptidase_S8 	Subtilase family 				
+PF00122 	E1-E2_ATPase 	E1-E2 ATPase 				
+PF00127 	Copper-bind 	Copper binding proteins, plastocyanin/azurin family 				
+PF00170 	bZIP_1 	bZIP transcription factor 				
+PF00194 	Carb_anhydrase 	Eukaryotic-type carbonic anhydrase 				
+PF00270 	DEAD 	DEAD/DEAH box helicase 				
+PF00271 	Helicase_C 	Helicase conserved C-terminal domain 				
+PF00293 	NUDIX 	NUDIX domain 				
+PF00355 	Rieske 	Rieske [2Fe-2S] domain 				
+PF00403 	HMA 	Heavy-metal-associated domain 				
+PF00407 	Bet_v_1 	Pathogenesis-related protein Bet v I family 				
+PF00459 	Inositol_P 	Inositol monophosphatase family 				
+PF00512 	HisKA 	His Kinase A (phospho-acceptor) domain 				
+PF00520 	Ion_trans 	Ion transport protein 				
+PF00560 	LRR_1 	Leucine Rich Repeat 				
+PF00566 	RabGAP-TBC 	Rab-GTPase-TBC domain 				
+PF00611 	FCH 	Fes/CIP4, and EFC/F-BAR homology domain 				
+PF00643 	zf-B_box 	B-box zinc finger 				
+PF00657 	Lipase_GDSL 	GDSL-like Lipase/Acylhydrolase 				
+PF00664 	ABC_membrane 	ABC transporter transmembrane region 				
+PF00689 	Cation_ATPase_C 	Cation transporting ATPase, C-terminus 				
+PF00690 	Cation_ATPase_N 	Cation transporter/ATPase, N-terminus 				
+PF00702 	Hydrolase 	haloacid dehalogenase-like hydrolase 				
+PF00795 	CN_hydrolase 	Carbon-nitrogen hydrolase 				
+PF00884 	Sulfatase 	Sulfatase 				
+PF00899 	ThiF 	ThiF family 				
+PF00982 	Glyco_transf_20 	Glycosyltransferase family 20 				
+PF00989 	PAS 	PAS fold 				
+PF01521 	Fe-S_biosyn 	Iron-sulphur cluster biosynthesis 				
+PF01545 	Cation_efflux 	Cation efflux family 				
+PF01553 	Acyltransferase 	Acyltransferase 				
+PF01636 	APH 	Phosphotransferase enzyme family 				
+PF01679 	Pmp3 	Proteolipid membrane potential modulator 				
+PF01740 	STAS 	STAS domain 				
+PF02401 	LYTB 	LytB protein 				
+PF02518 	HATPase_c 	Histidine kinase-, DNA gyrase B-, and HSP90-like ATPase 				
+PF03168 	LEA_2 	Late embryogenesis abundant protein 				
+PF03194 	LUC7 	LUC7 N_terminus 				
+PF03666 	NPR3 	Nitrogen Permease regulator of amino acid transport activity 3 				
+PF04774 	HABP4_PAI-RBP1 	Hyaluronan / mRNA binding family 				
+PF04836 	IFRD_C 	Interferon-related protein conserved region 				
+PF04960 	Glutaminase 	Glutaminase 				
+PF04969 	CS 	CS domain 				
+PF05004 	IFRD 	Interferon-related developmental regulator (IFRD) 				
+PF05255 	UPF0220 	Uncharacterised protein family (UPF0220) 				
+PF06094 	GGACT 	Gamma-glutamyl cyclotransferase, AIG2-like 				
+PF06203 	CCT 	CCT motif 				
+PF07859 	Abhydrolase_3 	alpha/beta hydrolase fold 				
+PF07883 	Cupin_2 	Cupin domain 				
+PF07992 	Pyr_redox_2 	Pyridine nucleotide-disulphide oxidoreductase 				
+PF08263 	LRRNT_2 	Leucine rich repeat N-terminal domain 				
+PF08587 	UBA_2 	Ubiquitin associated domain (UBA) 				
+PF09598 	Stm1_N 	Stm1 				
+PF10280 	Med11 	Mediator complex protein 				
+PF12609 	DUF3774 	Wound-induced protein 				
+PF12796 	Ank_2 	Ankyrin repeats (3 copies) 				
+PF12848 	ABC_tran_Xtn 	ABC transporter 				
+PF13246 	Cation_ATPase 	Cation transport ATPase (P-type) 				
+PF13410 	GST_C_2 	Glutathione S-transferase, C-terminal domain 				
+PF13414 	TPR_11 	TPR repeat 				
+PF13417 	GST_N_3 	Glutathione S-transferase, N-terminal domain 				
+PF13424 	TPR_12 	Tetratricopeptide repeat 				
+PF13516 	LRR_6 	Leucine Rich repeat 				
+PF13855 	LRR_8 	Leucine rich repeat 				
+PF13857 	Ank_5 	Ankyrin repeats (many copies) 				
+PF13912 	zf-C2H2_6 	C2H2-type zinc finger 				
+PF16579 	AdenylateSensor 	Adenylate sensor of SNF1-like protein kinase 				
+PF00999 	Na_H_Exchanger 	Sodium/hydrogen exchanger family 				
+PF00959 	Phage_lysozyme 	Phage lysozyme 				
+PF15630 	CENP-S 	Kinetochore component CENP-S
