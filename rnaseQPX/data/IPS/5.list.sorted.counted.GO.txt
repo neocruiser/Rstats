@@ -1,0 +1,94 @@
+     13 GO:ATP binding 
+      8 GO:Arp2/3 protein complex 
+      8 GO:Arp2/3 complex-mediated actin nucleation 
+      7 GO:nucleus 
+      6 GO:protein binding 
+      6 GO:actin binding 
+      5 GO:regulation of actin filament polymerization 
+      5 GO:oxidation-reduction process 
+      5 GO:actin cytoskeleton 
+      4 GO:regulation of transcription, DNA-templated 
+      4 GO:hydrolase activity 
+      4 GO:chromatin remodeling 
+      4 GO:actin filament organization 
+      3 GO:metal ion binding 
+      3 GO:intracellular 
+      3 GO:Ino80 complex 
+      3 GO:ATPase activity 
+      3 GO:actin cytoskeleton organization 
+      2 GO:transferase activity, transferring acyl groups 
+      2 GO:transcription, DNA-templated 
+      2 GO:SWI/SNF complex 
+      2 GO:RSC complex 
+      2 GO:response to oxidative stress 
+      2 GO:regulation of signal transduction 
+      2 GO:proteolysis 
+      2 GO:protein serine/threonine kinase activity 
+      2 GO:oxidoreductase activity 
+      2 GO:membrane 
+      2 GO:lactoylglutathione lyase activity 
+      2 GO:integral component of membrane 
+      2 GO:hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides 
+      2 GO:hydrolase activity, acting on acid anhydrides 
+      2 GO:endocytosis 
+      2 GO:DNA repair 
+      2 GO:cytoskeleton 
+      2 GO:cytoplasm 
+      2 GO:cell adhesion 
+      2 GO:calcium ion binding 
+      2 GO:calcium-dependent phospholipid binding 
+      2 GO:calcium-dependent cysteine-type endopeptidase activity 
+      2 GO:ATP-dependent chromatin remodeling 
+      1 GO:viral genome replication 
+      1 GO:ubiquitin-protein transferase activity 
+      1 GO:ubiquinol-cytochrome-c reductase activity 
+      1 GO:transferase activity, transferring acyl groups other than amino-acyl groups 
+      1 GO:synaptic transmission 
+      1 GO:sulfuric ester hydrolase activity 
+      1 GO:signaling adaptor activity 
+      1 GO:serine-type endopeptidase activity 
+      1 GO:RNA secondary structure unwinding 
+      1 GO:response to cold 
+      1 GO:regulation of endocytosis 
+      1 GO:regulation of cytoskeleton organization 
+      1 GO:regulation of calcium ion-dependent exocytosis 
+      1 GO:protein phosphorylation 
+      1 GO:protein import 
+      1 GO:protein disulfide oxidoreductase activity 
+      1 GO:positive regulation of vesicle fusion 
+      1 GO:positive regulation of Rho protein signal transduction 
+      1 GO:positive regulation of insulin secretion 
+      1 GO:positive regulation of calcium ion-dependent exocytosis 
+      1 GO:peroxidase activity 
+      1 GO:oxidoreductase activity, acting on diphenols and related substances as donors 
+      1 GO:nucleoside diphosphate metabolic process 
+      1 GO:nucleic acid binding 
+      1 GO:NuA4 histone acetyltransferase complex 
+      1 GO:npBAF complex 
+      1 GO:nervous system development 
+      1 GO:mRNA processing 
+      1 GO:metal ion transport 
+      1 GO:metabolic process 
+      1 GO:manganese ion binding 
+      1 GO:magnesium ion binding 
+      1 GO:helicase activity 
+      1 GO:glycerolipid biosynthetic process 
+      1 GO:extrachromosomal circular DNA 
+      1 GO:extracellular region 
+      1 GO:extracellular matrix 
+      1 GO:enoyl-[acyl-carrier-protein] reductase (NADH) activity 
+      1 GO:dynactin complex 
+      1 GO:developmental process 
+      1 GO:cytoskeletal regulatory protein binding 
+      1 GO:complement activation 
+      1 GO:chromatin organization 
+      1 GO:chromatin modification 
+      1 GO:cell junction 
+      1 GO:calcium ion-dependent exocytosis of neurotransmitter 
+      1 GO:ATP-dependent RNA helicase activity 
+      1 GO:ATP-dependent helicase activity 
+      1 GO:actin filament polymerization 
+      1 GO:actin filament bundle assembly 
+      1 GO:actin filament binding 
+      1 GO:actin cortical patch 
+      1 GO:2 iron, 2 sulfur cluster binding 

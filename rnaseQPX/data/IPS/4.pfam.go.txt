@@ -1,0 +1,193 @@
+InterPro:IPR000008 C2 domain > GO:protein binding ; GO:0005515
+InterPro:IPR000059 NUDIX hydrolase, NudL, conserved site > GO:hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides ; GO:0016818
+InterPro:IPR000059 NUDIX hydrolase, NudL, conserved site > GO:magnesium ion binding ; GO:0000287
+InterPro:IPR000059 NUDIX hydrolase, NudL, conserved site > GO:manganese ion binding ; GO:0030145
+InterPro:IPR000059 NUDIX hydrolase, NudL, conserved site > GO:nucleoside diphosphate metabolic process ; GO:0009132
+InterPro:IPR000086 NUDIX hydrolase domain > GO:hydrolase activity ; GO:0016787
+InterPro:IPR000542 Acyltransferase ChoActase/COT/CPT > GO:transferase activity, transferring acyl groups ; GO:0016746
+InterPro:IPR000569 HECT domain > GO:ubiquitin-protein transferase activity ; GO:0004842
+InterPro:IPR000917 Sulfatase > GO:metabolic process ; GO:0008152
+InterPro:IPR000917 Sulfatase > GO:sulfuric ester hydrolase activity ; GO:0008484
+InterPro:IPR001300 Peptidase C2, calpain, catalytic domain > GO:calcium-dependent cysteine-type endopeptidase activity ; GO:0004198
+InterPro:IPR001300 Peptidase C2, calpain, catalytic domain > GO:intracellular ; GO:0005622
+InterPro:IPR001300 Peptidase C2, calpain, catalytic domain > GO:proteolysis ; GO:0006508
+InterPro:IPR001434 Domain of unknown function DUF11 > GO:extrachromosomal circular DNA ; GO:0005727
+InterPro:IPR001680 WD40 repeat > GO:protein binding ; GO:0005515
+InterPro:IPR001853 DSBA-like thioredoxin domain > GO:protein disulfide oxidoreductase activity ; GO:0015035
+InterPro:IPR002108 Actin-depolymerising factor homology domain > GO:actin binding ; GO:0003779
+InterPro:IPR002108 Actin-depolymerising factor homology domain > GO:intracellular ; GO:0005622
+InterPro:IPR002656 Acyltransferase 3 > GO:transferase activity, transferring acyl groups other than amino-acyl groups ; GO:0016747
+InterPro:IPR003018 GAF domain > GO:protein binding ; GO:0005515
+InterPro:IPR003718 OsmC/Ohr family > GO:response to oxidative stress ; GO:0006979
+InterPro:IPR003959 ATPase, AAA-type, core > GO:ATP binding ; GO:0005524
+InterPro:IPR003960 ATPase, AAA-type, conserved site > GO:ATP binding ; GO:0005524
+InterPro:IPR004361 Glyoxalase I > GO:lactoylglutathione lyase activity ; GO:0004462
+InterPro:IPR004361 Glyoxalase I > GO:metal ion binding ; GO:0046872
+InterPro:IPR005613 Actin interacting protein 3 > GO:actin filament bundle assembly ; GO:0051017
+InterPro:IPR005613 Actin interacting protein 3 > GO:cytoskeletal regulatory protein binding ; GO:0005519
+InterPro:IPR005805 Rieske iron-sulphur protein, C-terminal > GO:membrane ; GO:0016020
+InterPro:IPR005805 Rieske iron-sulphur protein, C-terminal > GO:oxidation-reduction process ; GO:0055114
+InterPro:IPR005805 Rieske iron-sulphur protein, C-terminal > GO:ubiquinol-cytochrome-c reductase activity ; GO:0008121
+InterPro:IPR005938 AAA ATPase, CDC48 family > GO:hydrolase activity ; GO:0016787
+InterPro:IPR006121 Heavy metal-associated domain, HMA > GO:metal ion binding ; GO:0046872
+InterPro:IPR006121 Heavy metal-associated domain, HMA > GO:metal ion transport ; GO:0030001
+InterPro:IPR006789 Actin-related protein 2/3 complex subunit 5 > GO:actin cytoskeleton ; GO:0015629
+InterPro:IPR006789 Actin-related protein 2/3 complex subunit 5 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR006789 Actin-related protein 2/3 complex subunit 5 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR006789 Actin-related protein 2/3 complex subunit 5 > GO:regulation of actin filament polymerization ; GO:0030833
+InterPro:IPR007180 Domain of unknown function DUF382 > GO:nucleus ; GO:0005634
+InterPro:IPR007188 Actin-related protein 2/3 complex subunit 2 > GO:actin cytoskeleton ; GO:0015629
+InterPro:IPR007188 Actin-related protein 2/3 complex subunit 2 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR007188 Actin-related protein 2/3 complex subunit 2 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR007188 Actin-related protein 2/3 complex subunit 2 > GO:regulation of actin filament polymerization ; GO:0030833
+InterPro:IPR007204 Actin-related protein 2/3 complex subunit 3 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR007204 Actin-related protein 2/3 complex subunit 3 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR007204 Actin-related protein 2/3 complex subunit 3 > GO:cytoskeleton ; GO:0005856
+InterPro:IPR007204 Actin-related protein 2/3 complex subunit 3 > GO:regulation of actin filament polymerization ; GO:0030833
+InterPro:IPR007421 ATPase, AAA-4 > GO:ATP binding ; GO:0005524
+InterPro:IPR007582 TFIID subunit, WD40-associated region > GO:nucleus ; GO:0005634
+InterPro:IPR007582 TFIID subunit, WD40-associated region > GO:regulation of transcription, DNA-templated ; GO:0006355
+InterPro:IPR008384 Actin-related protein 2/3 complex subunit 4 > GO:actin cytoskeleton ; GO:0015629
+InterPro:IPR008384 Actin-related protein 2/3 complex subunit 4 > GO:actin filament polymerization ; GO:0030041
+InterPro:IPR008384 Actin-related protein 2/3 complex subunit 4 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR008384 Actin-related protein 2/3 complex subunit 4 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR008424 Immunoglobulin C2-set > GO:cell adhesion ; GO:0007155
+InterPro:IPR008424 Immunoglobulin C2-set > GO:integral component of membrane ; GO:0016021
+InterPro:IPR010011 Domain of unknown function DUF1518 > GO:nucleus ; GO:0005634
+InterPro:IPR010363 Domain of unknown function DUF959, collagen XVIII, N-terminal > GO:extracellular matrix ; GO:0031012
+InterPro:IPR010402 CCT domain > GO:protein binding ; GO:0005515
+InterPro:IPR011115 SecA DEAD-like, N-terminal > GO:ATP binding ; GO:0005524
+InterPro:IPR011115 SecA DEAD-like, N-terminal > GO:membrane ; GO:0016020
+InterPro:IPR011115 SecA DEAD-like, N-terminal > GO:protein import ; GO:0017038
+InterPro:IPR011360 Complement B/C2 > GO:complement activation ; GO:0006956
+InterPro:IPR011360 Complement B/C2 > GO:extracellular region ; GO:0005576
+InterPro:IPR011360 Complement B/C2 > GO:serine-type endopeptidase activity ; GO:0004252
+InterPro:IPR011492 DEAD box, Flavivirus > GO:ATP binding ; GO:0005524
+InterPro:IPR011492 DEAD box, Flavivirus > GO:ATP-dependent helicase activity ; GO:0008026
+InterPro:IPR011492 DEAD box, Flavivirus > GO:viral genome replication ; GO:0019079
+InterPro:IPR011545 DEAD/DEAH box helicase domain > GO:ATP binding ; GO:0005524
+InterPro:IPR011545 DEAD/DEAH box helicase domain > GO:nucleic acid binding ; GO:0003676
+InterPro:IPR011703 ATPase, AAA-3 > GO:ATPase activity ; GO:0016887
+InterPro:IPR011703 ATPase, AAA-3 > GO:ATP binding ; GO:0005524
+InterPro:IPR011704 ATPase, dynein-related, AAA domain > GO:ATPase activity ; GO:0016887
+InterPro:IPR011704 ATPase, dynein-related, AAA domain > GO:ATP binding ; GO:0005524
+InterPro:IPR012510 Actin-binding, Xin repeat > GO:actin binding ; GO:0003779
+InterPro:IPR012510 Actin-binding, Xin repeat > GO:actin cytoskeleton organization ; GO:0030036
+InterPro:IPR012510 Actin-binding, Xin repeat > GO:cell junction ; GO:0030054
+InterPro:IPR012549 Domain of unknown function DUF1705 > GO:integral component of membrane ; GO:0016021
+InterPro:IPR013565 Domain of unknown function DUF1729 > GO:enoyl-[acyl-carrier-protein] reductase (NADH) activity ; GO:0004318
+InterPro:IPR013565 Domain of unknown function DUF1729 > GO:oxidation-reduction process ; GO:0055114
+InterPro:IPR013701 DEAD/H associated > GO:ATP binding ; GO:0005524
+InterPro:IPR013701 DEAD/H associated > GO:hydrolase activity, acting on acid anhydrides, in phosphorus-containing anhydrides ; GO:0016818
+InterPro:IPR014292 Acyltransferase, WS/DGAT/MGAT > GO:glycerolipid biosynthetic process ; GO:0045017
+InterPro:IPR014292 Acyltransferase, WS/DGAT/MGAT > GO:transferase activity, transferring acyl groups ; GO:0016746
+InterPro:IPR014349 Rieske iron-sulphur protein > GO:oxidation-reduction process ; GO:0055114
+InterPro:IPR014349 Rieske iron-sulphur protein > GO:oxidoreductase activity, acting on diphenols and related substances as donors ; GO:0016679
+InterPro:IPR014800 Apx/Shrm Domain 1 > GO:actin filament binding ; GO:0051015
+InterPro:IPR015021 Domain of unknown function DUF1907 > GO:nucleus ; GO:0005634
+InterPro:IPR015236 Domain of unknown function DUF1938 > GO:cytoplasm ; GO:0005737
+InterPro:IPR015623 Actin-related protein 3 > GO:actin filament organization ; GO:0007015
+InterPro:IPR015623 Actin-related protein 3 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR015623 Actin-related protein 3 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR015623 Actin-related protein 3 > GO:ATP binding ; GO:0005524
+InterPro:IPR015797 NUDIX hydrolase domain-like > GO:hydrolase activity ; GO:0016787
+InterPro:IPR015943 WD40/YVTN repeat-like-containing domain > GO:protein binding ; GO:0005515
+InterPro:IPR017383 Actin-related protein 2/3 complex subunit 1 > GO:actin cytoskeleton ; GO:0015629
+InterPro:IPR017383 Actin-related protein 2/3 complex subunit 1 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR017383 Actin-related protein 2/3 complex subunit 1 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR017383 Actin-related protein 2/3 complex subunit 1 > GO:regulation of actin filament polymerization ; GO:0030833
+InterPro:IPR017941 Rieske [2Fe-2S] iron-sulphur domain > GO:2 iron, 2 sulfur cluster binding ; GO:0051537
+InterPro:IPR017941 Rieske [2Fe-2S] iron-sulphur domain > GO:oxidation-reduction process ; GO:0055114
+InterPro:IPR017941 Rieske [2Fe-2S] iron-sulphur domain > GO:oxidoreductase activity ; GO:0016491
+InterPro:IPR017986 WD40-repeat-containing domain > GO:protein binding ; GO:0005515
+InterPro:IPR018146 Glyoxalase I, conserved site > GO:lactoylglutathione lyase activity ; GO:0004462
+InterPro:IPR018146 Glyoxalase I, conserved site > GO:metal ion binding ; GO:0046872
+InterPro:IPR019904 Peroxiredoxin OsmC > GO:peroxidase activity ; GO:0004601
+InterPro:IPR019904 Peroxiredoxin OsmC > GO:response to oxidative stress ; GO:0006979
+InterPro:IPR020084 NUDIX hydrolase, conserved site > GO:hydrolase activity ; GO:0016787
+InterPro:IPR021046 Cold-shock protein, DEAD box A, C-terminal > GO:hydrolase activity, acting on acid anhydrides ; GO:0016817
+InterPro:IPR022684 Peptidase C2, calpain family > GO:calcium-dependent cysteine-type endopeptidase activity ; GO:0004198
+InterPro:IPR022684 Peptidase C2, calpain family > GO:intracellular ; GO:0005622
+InterPro:IPR022684 Peptidase C2, calpain family > GO:proteolysis ; GO:0006508
+InterPro:IPR023173 NADPH-cytochrome p450 reductase, FAD-binding, alpha-helical domain-3 > GO:oxidation-reduction process ; GO:0055114
+InterPro:IPR023173 NADPH-cytochrome p450 reductase, FAD-binding, alpha-helical domain-3 > GO:oxidoreductase activity ; GO:0016491
+InterPro:IPR024195 NUDIX hydrolase, YfcD, predicted > GO:hydrolase activity, acting on acid anhydrides ; GO:0016817
+InterPro:IPR024678 Serine/threonine-protein kinase OSR1/WNK, CCT domain > GO:ATP binding ; GO:0005524
+InterPro:IPR024678 Serine/threonine-protein kinase OSR1/WNK, CCT domain > GO:protein serine/threonine kinase activity ; GO:0004674
+InterPro:IPR024937 Domain X > GO:mRNA processing ; GO:0006397
+InterPro:IPR025604 Actin cytoskeleton-regulatory complex protein End3 > GO:actin filament organization ; GO:0007015
+InterPro:IPR025604 Actin cytoskeleton-regulatory complex protein End3 > GO:endocytosis ; GO:0006897
+InterPro:IPR026111 Actin-binding Rho-activating protein > GO:actin binding ; GO:0003779
+InterPro:IPR026111 Actin-binding Rho-activating protein > GO:positive regulation of Rho protein signal transduction ; GO:0035025
+InterPro:IPR026812 Actin cytoskeleton-regulatory complex protein Pan1, fungal > GO:actin cortical patch ; GO:0030479
+InterPro:IPR026812 Actin cytoskeleton-regulatory complex protein Pan1, fungal > GO:endocytosis ; GO:0006897
+InterPro:IPR027306 Actin-related protein 2 > GO:actin filament organization ; GO:0007015
+InterPro:IPR027306 Actin-related protein 2 > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR027306 Actin-related protein 2 > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR027306 Actin-related protein 2 > GO:ATP binding ; GO:0005524
+InterPro:IPR027306 Actin-related protein 2 > GO:cytoskeleton ; GO:0005856
+InterPro:IPR027664 Actin-related protein 5 > GO:DNA repair ; GO:0006281
+InterPro:IPR027664 Actin-related protein 5 > GO:Ino80 complex ; GO:0031011
+InterPro:IPR027664 Actin-related protein 5 > GO:regulation of transcription, DNA-templated ; GO:0006355
+InterPro:IPR027665 Actin-related protein 9, fungi > GO:chromatin remodeling ; GO:0006338
+InterPro:IPR027665 Actin-related protein 9, fungi > GO:RSC complex ; GO:0016586
+InterPro:IPR027665 Actin-related protein 9, fungi > GO:SWI/SNF complex ; GO:0016514
+InterPro:IPR027667 Actin-related protein 4 > GO:chromatin remodeling ; GO:0006338
+InterPro:IPR027667 Actin-related protein 4 > GO:DNA repair ; GO:0006281
+InterPro:IPR027667 Actin-related protein 4 > GO:Ino80 complex ; GO:0031011
+InterPro:IPR027667 Actin-related protein 4 > GO:NuA4 histone acetyltransferase complex ; GO:0035267
+InterPro:IPR027667 Actin-related protein 4 > GO:regulation of transcription, DNA-templated ; GO:0006355
+InterPro:IPR027668 Actin-related protein 8/Plant actin-related protein 9 > GO:chromatin remodeling ; GO:0006338
+InterPro:IPR027668 Actin-related protein 8/Plant actin-related protein 9 > GO:Ino80 complex ; GO:0031011
+InterPro:IPR027678 Actin-related protein 7, plant > GO:chromatin organization ; GO:0006325
+InterPro:IPR027678 Actin-related protein 7, plant > GO:developmental process ; GO:0032502
+InterPro:IPR027678 Actin-related protein 7, plant > GO:nucleus ; GO:0005634
+InterPro:IPR028449 Actin-binding LIM protein 3 > GO:actin binding ; GO:0003779
+InterPro:IPR028449 Actin-binding LIM protein 3 > GO:actin cytoskeleton organization ; GO:0030036
+InterPro:IPR028449 Actin-binding LIM protein 3 > GO:transcription, DNA-templated ; GO:0006351
+InterPro:IPR028450 Actin-binding LIM protein 2 > GO:actin binding ; GO:0003779
+InterPro:IPR028450 Actin-binding LIM protein 2 > GO:actin cytoskeleton organization ; GO:0030036
+InterPro:IPR028450 Actin-binding LIM protein 2 > GO:transcription, DNA-templated ; GO:0006351
+InterPro:IPR029907 Actin filament-associated protein 1 > GO:regulation of cytoskeleton organization ; GO:0051493
+InterPro:IPR029907 Actin filament-associated protein 1 > GO:regulation of signal transduction ; GO:0009966
+InterPro:IPR029909 Actin-related protein 1 family > GO:dynactin complex ; GO:0005869
+InterPro:IPR029911 Actin-related protein 7, fungi > GO:ATP-dependent chromatin remodeling ; GO:0043044
+InterPro:IPR029911 Actin-related protein 7, fungi > GO:RSC complex ; GO:0016586
+InterPro:IPR029911 Actin-related protein 7, fungi > GO:SWI/SNF complex ; GO:0016514
+InterPro:IPR029912 Actin-like protein 6A > GO:ATP-dependent chromatin remodeling ; GO:0043044
+InterPro:IPR029912 Actin-like protein 6A > GO:npBAF complex ; GO:0071564
+InterPro:IPR030054 Actin-related protein 6 > GO:chromatin remodeling ; GO:0006338
+InterPro:IPR030054 Actin-related protein 6 > GO:nucleus ; GO:0005634
+InterPro:IPR030078 Actin-regulating kinase, fungi > GO:actin filament organization ; GO:0007015
+InterPro:IPR030078 Actin-regulating kinase, fungi > GO:protein phosphorylation ; GO:0006468
+InterPro:IPR030078 Actin-regulating kinase, fungi > GO:protein serine/threonine kinase activity ; GO:0004674
+InterPro:IPR030078 Actin-regulating kinase, fungi > GO:regulation of endocytosis ; GO:0030100
+InterPro:IPR030104 Actin-binding protein IPP > GO:actin binding ; GO:0003779
+InterPro:IPR030115 Actin filament-associated protein 1-like 2 > GO:cytoplasm ; GO:0005737
+InterPro:IPR030115 Actin filament-associated protein 1-like 2 > GO:regulation of signal transduction ; GO:0009966
+InterPro:IPR030115 Actin filament-associated protein 1-like 2 > GO:signaling adaptor activity ; GO:0035591
+InterPro:IPR030141 Actin-related protein 2/3 complex subunit 1B > GO:actin cytoskeleton ; GO:0015629
+InterPro:IPR030141 Actin-related protein 2/3 complex subunit 1B > GO:Arp2/3 complex-mediated actin nucleation ; GO:0034314
+InterPro:IPR030141 Actin-related protein 2/3 complex subunit 1B > GO:Arp2/3 protein complex ; GO:0005885
+InterPro:IPR030141 Actin-related protein 2/3 complex subunit 1B > GO:regulation of actin filament polymerization ; GO:0030833
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:calcium-dependent phospholipid binding ; GO:0005544
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:calcium ion binding ; GO:0005509
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:calcium ion-dependent exocytosis of neurotransmitter ; GO:0048791
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:positive regulation of calcium ion-dependent exocytosis ; GO:0045956
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:positive regulation of insulin secretion ; GO:0032024
+InterPro:IPR030534 Double C2-like domain-containing protein beta > GO:positive regulation of vesicle fusion ; GO:0031340
+InterPro:IPR030535 Double C2-like domain-containing protein alpha > GO:calcium-dependent phospholipid binding ; GO:0005544
+InterPro:IPR030535 Double C2-like domain-containing protein alpha > GO:calcium ion binding ; GO:0005509
+InterPro:IPR030535 Double C2-like domain-containing protein alpha > GO:regulation of calcium ion-dependent exocytosis ; GO:0017158
+InterPro:IPR030535 Double C2-like domain-containing protein alpha > GO:synaptic transmission ; GO:0007268
+InterPro:IPR030542 Tandem C2 domains nuclear protein > GO:nucleus ; GO:0005634
+InterPro:IPR030726 Protocadherin alpha-C2 > GO:cell adhesion ; GO:0007155
+InterPro:IPR030726 Protocadherin alpha-C2 > GO:nervous system development ; GO:0007399
+InterPro:IPR030880 DEAD-box ATP-dependent RNA helicase CshA > GO:ATP binding ; GO:0005524
+InterPro:IPR030880 DEAD-box ATP-dependent RNA helicase CshA > GO:ATP-dependent RNA helicase activity ; GO:0004004
+InterPro:IPR030880 DEAD-box ATP-dependent RNA helicase CshA > GO:RNA secondary structure unwinding ; GO:0010501
+InterPro:IPR030881 DEAD-box ATP-dependent RNA helicase CshB > GO:helicase activity ; GO:0004386
+InterPro:IPR030881 DEAD-box ATP-dependent RNA helicase CshB > GO:response to cold ; GO:0009409
+InterPro:IPR031252 ATPase family AAA domain-containing protein 2 > GO:ATPase activity ; GO:0016887
+InterPro:IPR031252 ATPase family AAA domain-containing protein 2 > GO:chromatin modification ; GO:0016568
+InterPro:IPR031252 ATPase family AAA domain-containing protein 2 > GO:regulation of transcription, DNA-templated ; GO:0006355
