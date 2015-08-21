@@ -34,6 +34,19 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 | Bayesian networks     |          | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][code]] | S. Bassim | 2013 | Quebec (UQAR) |
 | Microarray processing |          | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][code]] | S. Bassim | 2013 | Quebec (UQAR) |
 
+* Mentions
+Empirical Bayes Estimation of Dynamic Bayesian Networks (ebdbNet) on CRAN [[https://cran.r-project.org/web/packages/ebdbNet/NEWS][(updates]]).
+
+
+Google Scholar [[https://scholar.google.com/citations?user=mDJZY3oAAAAJ&hl=en][personal page]] for published papers. 
+
+
+Linkedin [[https://www.linkedin.com/profile/view?id=AAMAAAD-CVIBL2ksOX7KT3k7ZUYPiE7A5XB7QFA&trk=hp-identity-name][profile]] for ongoing projects.
+
+
+Research gate [[https://www.researchgate.net/profile/Sleiman_Bassim][personal page]] for downloading published papers.
+
+
 * GITHUB
 Download all sequence data, statistical inferences, and sequence analysis pipeline from =github=.
 #+BEGIN_SRC shell
