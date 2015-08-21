@@ -24,7 +24,11 @@ This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/
 
 
 We also share the summary [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/hotspots/all.pfam.snp.txt][file]] that includes SNP position in QPX contigs structured by [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/hotspots/virulence.txt][virulence]], [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/hotspots/temperature.txt][temperature]], [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/hotspots/salinity.txt][salinity]], and [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/hotspots/salt.tolerance.txt][salt tolerance]] and by area, New York, Virgina, and Massachusetts. Additionally all filtered base-calls with GATK for the four QPX strains in [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data/vcf][VCF]] format (centered around indels, recalibrated twice, and hard filtered) - protocol [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX#phase-3---genetic-variant-calling][here]]. 
+
+
 There is Pfam accession numbers and description IDs for the [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data/pfam/virulence][virulence]], [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data/pfam/temperature][temperature]], [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data/pfam/salinity][salinity]], and [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX/data/pfam/salt.tolerance][salt tolerance]] domains that have been found for each QPX strain.
+
+
 Finally, we present GO-terms of the [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/5.list.sorted.counted.GO.txt][139 orthologs]] (virulence and adaptation genes) of the four QPX strains or the entire summary of the orthologs with Interpro accessions, Pfam names, UniProt description, and GO-terms [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/4.pfam.go.txt][here]].
 
 * Aims and resulting headlines
