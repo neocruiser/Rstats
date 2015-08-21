@@ -1311,7 +1311,7 @@ Shared and imported from [[https://phylosift.wordpress.com/tutorials/scripts-mar
 | mtDNA_ND5 	     | Mitochondrial NADH Deyhydrogenase subunit 5                                                     | Eukaryotic                          |
 | mtDNA_ND6 	     | Mitochondrial NADH Deyhydrogenase subunit 6                                                     | Eukaryotic                          |
 
-**** Find the nearest neighbor to a QPX strain 
+**** Phylogenetic placement of four QPX strains
 All compiled data are found in phylosift directory under =PS_temp= folder.
 Run =phylosift= to find the nearest neighbor on the tree of life.
 #+BEGIN_SRC shell
@@ -1330,7 +1330,7 @@ firefox ./physlosift/PS_temp/file.fa/file.fa.html
 java -cp .\forester.jar org.forester.archaeopteryx.Archaeopteryx -c .\_aptx_configuration_file ./physlosift/PS_temp/file.fa/file.fa.xml
 #+END_SRC
 
-The =all= label will run the =Core marker set= for alignment. Fast and small sized. Add =extended= label for =Extended marker set= bigger (70 Gb).
+=optional= The =all= label will run the =Core marker set= for alignment. Fast and small sized. Add =extended= label for =Extended marker set= bigger (70 Gb).
 #+BEGIN_SRC shell
 ./phylosift all --extended file.fa
 #+END_SRC
