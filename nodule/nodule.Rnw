@@ -629,6 +629,49 @@ ggplot(blast,
                       palette = 6)
 @ 
 
+Sequences from A, B, C samples are also aligned to 10 other databases. We used interpro accession numbers to get GO-terms too.
+We show below the number of contigs if we filter them only by e-value. The no-filter label represent the total number of sequences per database.
+<<interpro1>>=
+interpro <- read.xlsx("./data/interpro.xlsx", sheetIndex = 1)
+interpro <- gather(interpro, "filters", "value", 2:5)
+head(interpro)
+ggplot(interpro,
+       aes(x = sample,
+           y = value,
+           fill = filters)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") + 
+    theme_bw() +
+        facet_wrap( ~ database,
+               ncol = 2,
+               scales = "free") + 
+    labs(x = "RNAseq Samples",
+         y = "Number of annotated contigs found by protein similarity search") + 
+    scale_fill_brewer(type = "qual",
+                      palette = 6)
+@ 
+
+We show here the number of contigs annotated by database and filtered by both evalue and the length of the similarity between query and target sequences.
+<<interpro2>>=
+interpro <- read.xlsx("./data/interpro.xlsx", sheetIndex = 2)
+interpro <- gather(interpro, "filters", "value", 3:7)
+head(interpro)
+ggplot(interpro, 
+       aes(x = database,
+           y = value,
+           fill = filters)) + 
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") + 
+    facet_wrap( ~ sample + option, 
+               ncol = 3,
+               scales = "free") +
+    labs(x = "Database used for annotation",
+         y = "Number of annotated contigs") +
+        scale_fill_brewer(type = "qual",
+                      palette = 6)
+@ 
+
 \section{System Information}
 \label{sec:sys_info}
 \noindent

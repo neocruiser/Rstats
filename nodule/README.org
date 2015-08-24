@@ -35,6 +35,8 @@ This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/
 9. Second goal is to identify gene-for-gene interplay between the host and pathogen
 10. Cluster analysis by gene expression patterns between conditions can highlight gene-for-gene interplay. However the low number of available samples will increase the statistical bias.
 11. Alternative approach is to use the available information on protein families to trace connection between subfamilies, processes, and functions.
+12. Search for mobility (flagellate) and secretion (outside and transmembrane) genes.
+13. Scrap data from google scholar.
 
 * Quality controls
 1. Download FastQC =on linux=
@@ -399,7 +401,7 @@ cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | aw
 #+END_SRC
 
 ** Gene-gene interaction
-****** Databases
+*** Databases
 
 #+CAPTION: Sequence databaases in public repositiories
 | database   | content    | tool  | function            | description           |
@@ -473,7 +475,74 @@ ${oasis}/silo/interproscan/interproscan.sh \
 | [[http://smart.embl-heidelberg.de/][SMART]]       | protein   | IPS  | domains        | SwissProt Trembl Ensembl   |
 | [[http://prosite.expasy.org/][PROSITE]]     | not used  | IPS  | domains        | +functions                 |
 | [[http://hamap.expasy.org/][HAMAP]]       | not used  | IPS  | classification | uniprot classification     |
+*** Getting annotation hits from interpro scan
+Alignment hits are in a =tsv= output. Described [[https://code.google.com/p/interproscan/wiki/OutputFormats][here]].
+1. Protein Accession (e.g. P51587)
+2. Sequence MD5 digest (e.g. 14086411a2cdf1c4cba63020e1622579)
+3. Sequence Length (e.g. 3418)
+4. Analysis (e.g. Pfam / PRINTS / Gene3D)
+5. Signature Accession (e.g. PF09103 / G3DSA:2.40.50.140)
+6. Signature Description (e.g. BRCA2 repeat profile)
+7. Start location
+8. Stop location
+9. Score - is the e-value of the match reported by member database method (e.g. 3.1E-52)
+10. Status - is the status of the match (T: true)
+11. Date - is the date of the run
+12. (InterPro annotations - accession (e.g. IPR002093) - optional column; only displayed if -iprscan option is switched on)
+13. (InterPro annotations - description (e.g. BRCA2 repeat) - optional column; only displayed if -iprscan option is switched on)
+14. (GO annotations (e.g. GO:0005515) - optional column; only displayed if --goterms option is switched on)
+15. (Pathways annotations (e.g. REACT_71) - optional column; only displayed if --pathways option is switched on)
 
+
+Check if all hits are annotated.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($10 == "F") print $0 }' | wc -l
+#+END_SRC
+
+Get the name of the databases that contain hits. And the total number of unfiltered hits.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ print $4 }' | sort - | uniq -c | sort -n
+## output
+     14 ProDom
+     20 PIRSF
+     37 TIGRFAM
+    159 SMART
+    314 Coils
+    391 PRINTS
+    783 Pfam
+    788 SUPERFAMILY
+    874 Gene3D
+   1190 PANTHER
+#+END_SRC
+
+Get the number of hits per database at different e-values. Although the number of hits is filtered by evalue, it is not filtered by unique sequence entries. For example, a single contig translated in 6 different frames might be matched to 2 different domains because of 2 separate frames shifts.
+#+BEGIN_SRC shell
+## some databases dont include description of the accession number
+## accession numbers are registered under columns $8 or $9
+## so we must filter the $9 and $8 by evalue.
+## $4 is correct for all
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($9<=.0000000001) print $4}' | sort - | uniq -c | sort -n
+## and
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($8 <= .0000000001) print $4}' | sort - | uniq -c | sort -n
+
+#+END_SRC
+
+In interpro output 5 databases have the full number of columns (shown above) and 5 others dont. filtering should be separated if the options depend on the columns that come after the 4th.
+Create a list for each set of database.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($8 <= .0000000001) print $4}' | sort - | uniq > db.without.acc.txt 
+
+# AND
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($9 <= .0000000001) print $4}' | sort - | uniq > db.with.acc.txt
+#+END_SRC
+
+Use these lists to filter separately the contigs by evalue and the sequence length of alignment. =hint= the calculated =x= returns an absolute value of the equation =end position - start - position=. Negative numbers might occur if the alignment is on the opposite strand.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.without.acc.txt - | awk '{if($8 <= 0.00000000000000001) print $0}' | awk '{x=$6-$7?$7-$6:$6-$7; if(x>=10) print $4 }' | sort - | uniq -c | sort -n
+
+#AND 
+cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.with.acc.txt - | awk '{if($9 <= 0.00000000000000000001) print $0}' | awk '{x=$7-$8?$8-$7:$7-$8; if(x>=20) print $4 }' | sort - | uniq -c | sort -n
+#+END_SRC
 * Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
 * XSEDE
