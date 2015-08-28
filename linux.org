@@ -1,0 +1,1732 @@
+#+TITLE: Collection of information
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:3 H:3 num:2
+#+LANGUAGE: english
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \usepackage[hyperref,x11names]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+
+* INSTALL DROPBOX
+#+BEGIN_SRC shell
+sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
+#+END_SRC
+* INSTALL GITHUB
+#+BEGIN_SRC shell
+sudo apt-get install git
+git clone git://github.com/
+#+END_SRC
+* INSTALL JAVA
+#+BEGIN_SRC shell
+
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+java -version
+#+END_SRC
+
+For Trinity, must install java version 1.7. Follow these instructions [[http://www.wikihow.com/Install-Oracle-Java-JDK-on-Ubuntu-Linux][here]]
+* INSTALL EMACS 24
+Latest version [[http://git.savannah.gnu.org/cgit/emacs.git/tree/][on git]]
+#+BEGIN_SRC shell
+
+sudo apt-get update
+sudo apt-get install
+sudo apt-get purge emacs emacs-snapshot-common emacs-snapshot-bin-common emacs-snapshot emacs-snapshot-el emacs-snapshot-gtk emacs23 emacs23-bin-common emacs23-common emacs23-el emacs23-nox emacs23-lucid auctex apel emacs24 emacs24-bin-common emacs24-common emacs24-common-non-dfsg emacs24-el
+sudo add-apt-repository ppa:cassou/emacs
+sudo apt-get update
+sudo apt-get install emacs24 emacs24-el emacs24-common-non-dfsg
+
+
+#+END_SRC
+[ESS] copy ESS/ to /usr/share/emacs24/site-lisp/
+** Markdown mode
+- install the package from melpa
+- download a parser http://daringfireball.net/projects/markdown/
+- unzip it ~/
+- in emacs Mx customize-mode RET
+- add in Markdown command: ~/Markdown_1.0.1/Markdown.pl
+** Themes
+[[http://pawelbx.github.io/emacs-theme-gallery/][gallery]] 
+* EMACS keybindings                              :SYSADMIN:LATEX:EMACS:TABLE:
+:PROPERTIES:
+:ID:       2b013ae7-a2c8-4972-a0e8-b7258eece7dd
+:END:
+
+#+CAPTION: emacs normal settings
+| keybinding     | command                           | plugin      |
+|----------------+-----------------------------------+-------------|
+| C-=            | expand selection                  | emacs       |
+| C-M-:          | jump by letter inside buffer      | emacs       |
+| Cx-Mb          | switch bookmarks                  | emacs       |
+| Cx-r-m         | set (mark) bookmark               | emacs       |
+| M-S-s-WASD     | resizing buffers                  | emacs       |
+| Cc-p           | speedbar                          | emacs       |
+| Cx-l           | count line number                 | emacs       |
+| Ch-m           | help                              | emacs       |
+| Ch-k           | describe key                      | emacs       |
+| Ch-a           | describe apropos                  | emacs       |
+| Ch-b           | describe binding                  | emacs       |
+| Mx eval-buffer | reload buffer                     | emacs       |
+| M =            | count selected words              | emacs       |
+| Mx-diff        | compare 2 files                   | emacs       |
+| Mx-linum       | add line numbering                | emacs       |
+| Cc-x           | helm-scholar                      | emacs       |
+| Mx-shell       | shell                             | emacs       |
+| Mx-R           | R                                 | emacs       |
+| Cx-Cw          | save as                           | emacs       |
+| Cx-5-2         | new frame from within window      | emacs       |
+| Cx-5-b         | new frame from between buffers    | emacs       |
+| C-M-v          | sroll unfocused frame             | emacs       |
+| Cx-5-o         | swith between windows             | emacs       |
+| M-%            | search/replace                    | emacs       |
+| M-C-%          | search/replace REGEX              | emacs       |
+| Cx-Cv          | replace this file w/ an alternate | emacs       |
+| M-g            | Go to line                        | emacs       |
+| M-z            | delete until "next" charachter    | emacs       |
+| S-C u,d,l,r    | resize window                     | emacs       |
+| C-t, M-t       | transpose 2 charachters/words     | emacs       |
+| Cx-t           | transpose 2 lines                 | emacs       |
+| Cx-Cu, Cx-Cl   | switch upper/lower case           | emacs       |
+| Cc-g           | search with ag all files          | emacs       |
+| Cc-G           | search with only this file        | emacs       |
+| M-l / u        | lower/upper case a word           | emacs       |
+| C-_ / M-_      | undo / redo                       | emacs       |
+| Cx-u           | undo/redo Tree                    | emacs       |
+| Cx-i           | insert file in another file       | emacs       |
+| Cc-Cx-\        | toggle display UTF8 entities      | org         |
+|                | org-entities-help                 | org         |
+| Cc-Ct          | TODO cycle through                | org         |
+| Cc-Cq          | TAG cycle through                 | org         |
+| Cx-n-s         | open heading only                 | org         |
+| Cx-n-w         | open all headings                 | org         |
+| M-S-right      | add column                        | org         |
+| M-S-left       | del column                        | org         |
+| M-S-down       | add row                           | org         |
+| M-S-up         | del row                           | org         |
+| Cc-Cb          | select previous heading           | org         |
+| Cc-Ce          | compile/export org file           | org         |
+| Cc-a           | agenda                            | org         |
+| Cc-.           | insert date                       | org         |
+| Cc-Cs          | insert schedule                   | org         |
+| Cc-Cd          | insert deadline                   | org         |
+| Cc-Cx-d        | insrt drawer                      | org         |
+| Cc-l           | store location                    | org         |
+| Cc-Cl          | insert link, location ...         | org         |
+| M-h            | mark line                         | org         |
+| Cc-/           | sparce tree                       | org         |
+| <e TAB         | open exemple environment          | org         |
+| M-$            | correct word                      | ispell      |
+| Cx-b           | activate Helm                     | Helm        |
+| Cx-Cf          | open file Helm                    | Helm        |
+| C-spc          | select file activated helm        | Helm        |
+| M-a            | select multiple files             | Helm        |
+| Cc-x           | Helm-bibtex                       | Helm        |
+| Cc-c           | Reftex (biblio must be included)  | Helm        |
+| C-!            | revives last helm session         | Helm        |
+| C-@            | select entry                      | Helm-bibtex |
+| M-(            | loop through next selected entry  | Helm-bibtex |
+| Mn-C           | previous chunk                    | knitr       |
+| Mn-c           | next chunk                        | knitr       |
+| Cx-i           | insert content of file            | knitr       |
+| Mn-x           | insert Sexp                       | knitr       |
+| Mn-r           | compile knitr                     | knitr       |
+| Mn-P-p         | export/open pdf                   | knitr       |
+| Mn-u           | purl                              | knitr       |
+| Mn-s           | sweave (extrat to sweave)         | knitr       |
+| Mn-T           | Tangle (extract R code)           | knitr       |
+| Cc-Ca-L        | insert a link                     | Markdown    |
+| Cc-Cs-Cp       | code synthas region               | Markdown    |
+| Cc-Ct-h        | insert title                      | Markdown    |
+| Cc-Ct 1-6      | insert subtitles                  | Markdown    |
+| Cc -           | insert /hline                     | Markdown    |
+| Cc-CC-m        | compile                           | Markdown    |
+| Cc-Cc-p        | preview                           | Markdown    |
+| Cc-Cc-v        | html/browser view                 | Markdown    |
+| C =            | select region                     | latex       |
+| Cc %           | comment/uncomment region          | latex       |
+| Cc-Ca          | Master file compile               | latex       |
+| Cc-x           | helm-bibtex                       | latex       |
+| Cc-c           | reftex                            | latex       |
+| Cc-Cc          | compile latex & bibtex            | latex       |
+| Cc-Cq          | format paragraph                  | latex       |
+| C-M-f          | move to fwd environment           | latex       |
+| C-M-b          | move back environment             | latex       |
+| Cc-Cp          | previous section                  | latex       |
+| Cc-Cn          | next section                      | latex       |
+| Cc-s           | writegood mode                    | latex       |
+| Cc-Cg-g        | writegood grade level             | latex       |
+| Cc-Cg-e        | writegood reading ease            | latex       |
+| Cc-Cg-s        | style-check.rb                    | latex       |
+| Cc-Cj          | indent line (function)            | perl        |
+| Cc-Ca          | toggle autoline                   | perl        |
+| Cc-Cb          | find bad style                    | perl        |
+| Cc-t           | tidy code                         | perl        |
+| C-;            | comment line                      | perl        |
+| Cu-C;          | delete comment                    | perl        |
+* R
+** Revolution R
+[[http://mran.revolutionanalytics.com/documents/rro/installation/#sysreq][Tutorial]]
+
+1. Update: uninstall RRO first
+#+BEGIN_SRC shell
+sudo dpkg --purge rro
+sudo rm -r /usr/lib64/rro
+#+END_SRC
+1. Download and install RRO and MKL
+2. configure MKL.
+
+*Important notice*
+In the next step I install =r-cran-rgl=. This will install an older version of R and it will be symlinked as the main R. I either have to reinstall RRO to resymlink it as main or use the =alternatives= linux command.
+** install rgl package for R
+#+BEGIN_SRC shell
+sudo apt-get install r-cran-rgl libX11-dev libglu1-mesa-dev mesa-common-dev
+#+END_SRC
+** INSTALL PACKAGES
+Some useful packages for data manipulation and wrangling, [[http://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html][here]]. For text mining [[https://github.com/arnab621/Text-Analysis-R-Aylien][here]]. and [[https://github.com/qinwf/awesome-R][awesome-R]]
+#+BEGIN_SRC R
+sudo R CMD javareconf
+sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev
+
+pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
+lapply(pkgs, install.packages)
+lapply(pkgs, require, character.only = TRUE)
+
+pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'ROAuth', 'SnowballC', 'wordcloud', 'xlsx','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
+
+sudo R CMD javareconf
+install.packages('rJava')
+#+END_SRC
+
+Install packages from github with devtools command.
+#+BEGIN_SRC R
+#options(unzip = 'internal')
+devtools::install_github("hadley/devtools")
+#+END_SRC
+
+Github packages
+#+BEGIN_SRC R
+devtools::install_github("vqv/ggbiplot")
+#+END_SRC
+
+Install Bioconductor packages
+#+BEGIN_SRC R
+source("http://bioconductor.org/biocLite.R")
+biocLite('GenABEL'
+#+END_SRC
+
+Install package =radiant= a shiny app that run in the browser for automated stats. not interactive.
+#+BEGIN_SRC R
+install.packages("radiant", repos = "http://vnijs.github.io/radiant_miniCRAN/")
+#+END_SRC
+
+Plotly tutorials [[https://plot.ly/online-graphing/][free online graphing]].
+
+
+** Add the lsos() function and disable save workspace
+#+BEGIN_SRC shell
+locate Rprofile.site
+#+END_SRC
+either vanilla R at /usr/lib/R/etc/Rprofile.site
+or RRO at /usr/lib64/RRO-8.0/R-3.1.1/lib/R/etc/Rprofile.site
+#+BEGIN_SRC shell
+sudo su && cat >> Rprofile.site
+#+END_SRC
+Then add the lsos() function
+#+BEGIN_SRC R
+.ls.objects <- function (pos = 1, pattern, order.by,
+                        decreasing=FALSE, head=FALSE, n=5) {
+    # Function for listing ALL objects and size
+    # improved list of objects
+    napply <- function(names, fn) sapply(names, function(x)
+                                         fn(get(x, pos = pos)))
+    names <- ls(pos = pos, pattern = pattern)
+    obj.class <- napply(names, function(x) as.character(class(x))[1])
+    obj.mode <- napply(names, mode)
+    obj.type <- ifelse(is.na(obj.class), obj.mode, obj.class)
+    obj.prettysize <- napply(names, function(x) {
+                           capture.output(print(object.size(x), units = "auto")) })
+    obj.size <- napply(names, object.size)
+    obj.dim <- t(napply(names, function(x)
+                        as.numeric(dim(x))[1:2]))
+    vec <- is.na(obj.dim)[, 1] & (obj.type != "function")
+    obj.dim[vec, 1] <- napply(names, length)[vec]
+    out <- data.frame(obj.type, obj.size, obj.prettysize, obj.dim)
+    names(out) <- c("Type", "Size", "PrettySize", "Rows", "Columns")
+    if (!missing(order.by))
+        out <- out[order(out[[order.by]], decreasing=decreasing), ]
+    if (head)
+        out <- head(out, n)
+    out
+}
+
+lsos <- function(..., n=100) {
+    # shorthand
+    .ls.objects(..., decreasing=TRUE, head=TRUE, n=n)   # order.by="Size"
+}
+
+## sweave function for knitr
+.ess_weave <- function(command, file, encoding = NULL) 
+{
+    cmd_symb <- substitute(command)
+    if (grepl("knit|purl", deparse(cmd_symb))) 
+        require(knitr)
+    od <- getwd()
+    on.exit(setwd(od))
+    setwd(dirname(file))
+    frame <- parent.frame()
+    if (is.null(encoding)) 
+        eval(bquote(.(cmd_symb)(.(file))), envir = frame)
+    else eval(bquote(.(cmd_symb)(.(file), encoding = .(encoding))), 
+        envir = frame)
+}
+
+#+END_SRC
+
+Add also the snippet to disable workspace savings.
+#+BEGIN_SRC R
+utils::assignInNamespace("q", 
+   function(save = "no", status = 0, runLast = TRUE) {
+     .Internal(quit(save, status, runLast))
+   }, "base")    
+
+utils::assignInNamespace("quit", 
+   function(save = "no", status = 0, runLast = TRUE) {
+     .Internal(quit(save, status, runLast))
+   }, "base")
+#+END_SRC
+** Install Bioconductor
+Create a symlink of =repositories= in RRO
+#+BEGIN_SRC shell
+sudo cp /usr/lib/R/etc/repositories /usr/lib64/RRO-8.0.1/R-3.1.2/lib/R/etc
+#+END_SRC
+In R run:
+#+BEGIN_SRC R
+source("http://bioconductor.org/biocLite.R")
+biocLite()
+#+END_SRC
+** Update CRAN packages in R
+#+BEGIN_SRC R
+update.packages(checkBuilt=TRUE, ask=FALSE)
+update.packages(lib.loc = "/usr/local/lib/R/site-library")
+update.packages(lib.loc = "/usr/lib64/RRO-3.2.1/R-3.2.1/lib/R/site-library")
+#+END_SRC
+*old* 
+#+BEGIN_SRC shell
+sudo apt-get install xorg-dev; libX11-dev; r-base-dev; libreadline-dev; g++
+#+END_SRC
+** ess_weave
+#+BEGIN_SRC R
+.ess_weave <- function(command, file, encoding = NULL) 
+{
+    cmd_symb <- substitute(command)
+    if (grepl("knit|purl", deparse(cmd_symb))) 
+        require(knitr)
+    od <- getwd()
+    on.exit(setwd(od))
+    setwd(dirname(file))
+    frame <- parent.frame()
+    if (is.null(encoding)) 
+        eval(bquote(.(cmd_symb)(.(file))), envir = frame)
+    else eval(bquote(.(cmd_symb)(.(file), encoding = .(encoding))), 
+        envir = frame)
+}
+#+END_SRC
+** Source R scripts
+Source R scripts inside R
+#+BEGIN_SRC R
+source('testing.R')
+#+END_SRC
+
+Run R scripts in shell. Or put the code inside a bash file
+#+BEGIN_SRC shell
+R CMD BATCH testing.R
+#+END_SRC
+
+Or use Rscript directly. Create =.sh= file and put the following code
+#+BEGIN_SRC shell
+#! /usr/bin/Rscript
+#+END_SRC
+Then add the =R= code. Once finished =chmod +x= the file.
+#+BEGIN_SRC R
+1+1
+#+END_SRC
+
+** RNASeq packages
+From Bioconductor
+#+BEGIN_SRC R
+source("http://www.Bioconductor.org/biocLite.R")
+biocLite("BiocUpgrade")
+biocLite( c("ShortRead","DESeq", "edgeR") )
+#+END_SRC
+** (optional) Install/Update R in bash
+Update cran mirror :
+#+BEGIN_SRC shell
+sudo emacs /etc/apt/sources.list
+deb http://cran.stat.sfu.ca/bin/linux/ubuntu_precise/
+sudo apt-get update
+sudo apt-get install r-base r-base-dev
+#+END_SRC
+** set working env for GenePattern
+- I need to install the rJava package.
+- If I have a problem installing it update the r-base-dev
+** R guide for code writing
+[[http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml][GOOGLE
+instructions]] 
+** installed packages
+#+BEGIN_SRC R
+ip = installed.packages(priority = "high")
+ip[, 1]
+ip[, 2]
+#+END_SRC
+* R short summary                                             :R:RSTAT:TABLE:
+#+CAPTION: Cheat sheet: Exploration of an R object and packages
+| Function                 | Description                       |
+|--------------------------+-----------------------------------|
+| search()                 | search packages                   |
+| help.search()            | help                              |
+| RSiteSearch()            | web search                        |
+| install.packages()       | print detailed installed packages |
+| remove.packages()        | uninstall packages                |
+| packageDescription("")   | package description               |
+| vignette(pkg)            | load package vignette             |
+| source()                 | read in an R file and execute it  |
+| data(name, pkg)          | load dataset                      |
+| data(pkg="")             | list available datasets           |
+| edit()                   | edit table                        |
+| biocLite()               | install via Bioconductor          |
+| toLatex()                | latex compatible                  |
+| update.packages()        | update packages                   |
+| system.time()            | run time                          |
+| benchmark()              | "rbenchmark"                      |
+| example()                | show examples man                 |
+| show()                   |                                   |
+| args()                   |                                   |
+| codetools::findGlobals() | list external dependencies        |
+
+#+CAPTION: Cheat sheet: Visualization
+| Function               | Description             |
+|------------------------+-------------------------|
+| rainbow()              | colors                  |
+| demo("colors")         | show of colors          |
+| par(mfrow)             | adjust output           |
+| windows(record=T)      | record                  |
+| postscript(path)       | initialize              |
+| dev.off()              | push plot to .ps        |
+| ggsave(filename, plot) | from ggplot2, plot save |
+|                        |                         |
+
+#+CAPTION: Cheat sheet: Manipulation data objects
+| Function       | Description                                |
+|----------------+--------------------------------------------|
+| rm(list=ls())  | remove everything                          |
+| history()      |                                            |
+| ls.str()       |                                            |
+| lsos()         | list everything (personal)                 |
+| list.files()   | list files of the working directory        |
+| .Last.value    | results of the previous output             |
+| traceback()    | debugging                                  |
+| debug()        | debugging                                  |
+| undebug()      | debugging                                  |
+| object.size()  | ?memory-limits                             |
+| gc()           | reallocate RAM                             |
+| relevel        | restructure factors                        |
+| ifelse()       | vectorizing "if"                           |
+| colSums()      | faster than apply() + rowSums() rowMeans() |
+| replicate(n,r) | n=col; r=row; containing r values          |
+|                |                                            |
+
+#+CAPTION: Cheat sheet: Vectorization fast functions
+| Function                                                    | Description                               |
+|-------------------------------------------------------------+-------------------------------------------|
+| lapply(pkgs, require, character.only=T)                     | attach packages                           |
+| do.call("rbind",lapply(list,as.data.frame))                 | transform list to dataframe               |
+| unlist(strsplit(vector, ","))                               | unlist and split the content of a column  |
+| save(list=ls(pattern="*."),file="*.Rdata")                  | save data to Rdata                        |
+| seq(from, to, by/length)                                    | incremental sequencing                    |
+| rep(what, length)                                           | repetition                                |
+| sd(vector, na.rm = TRUE)                                    | ignore NA values                          |
+| na.omit(matrix)                                             | remove NA                                 |
+| df[complete.cases(df), ]                                    | remove NA                                 |
+| (df, select=column, subset(column>10))                      | subsetting                                |
+| merge()                                                     | merge common column                       |
+| filter(), mutate(), group_by()                              | subsetting rows (dplyr)                   |
+| select(), summarize(), arrange()                            | subsetting columns (dplyr)                |
+| rep(2, nrow(x)) %*% x                                       | colSums(), matmult                        |
+| cov.wt()                                                    | covariance and mean weighted              |
+| paste("1",letters,sep="")                                   | add number to letters                     |
+| gl(level, replication, length, label="")                    | length=level*replication                  |
+| sum(is.na(colname))                                         | count how many missing observation        |
+| all.equal(matrix1, matrix2)                                 | compare 2 matrices                        |
+| matrix(as.numeric(unlist(df)),nrow=nrow(df))                | convert character to numeric              |
+| as.matrix(sapply(df, as.numeric))                           | convert character to numeric              |
+| data.matrix(data.frame(x = "123", stringsAsFactors = TRUE)) | convert character to numeric              |
+| apply(as.matrix.noquote(df),2,as.numeric)                   | convert character to numeric              |
+| droplevels(df)                                              | remove unecessary factor levels           |
+| paste0('some ', 'text')                                     | alternative to paste(sep=''')             |
+| file_path_sans_ext(filename)                                | gives a version of a filename w/o path    |
+| gather(data, "new.col1", "new.col2", 2:5)                   | require(tidyr), reshape columns into rows |
+| arrange(data, col1)                                         | order data following col1 require(dplyr)   |
+|                                                             |                                            |
+* Statistical learning (Summary)
+A subfield of statistics. It refers to a set of approaches for estimating
+f(X)+E=Y. (E=error of the residuals of the least squares) 
+** Supervised and unsupervised modeling and prediction
+Unsupervised learning (ch10) == clustering of groups in order to identify
+possible property of interest with respect to each group 
+*** semi supervised learning paradigm
+the predictors are easily collected. however the response are hard to collect
+*** degrees of freedom
+DF are quantity that summarize the flexibility of a curve. An lm has less DF so less flexible (restricted). Model flexibility increases with more DF
+*** Overfitting
+when the model is picking on patterns caused by random chance rather than by true properties of the association between the variables
+*** Flexible vs restricted models (the bias-variance trade-off)
++ restricted models (eg., lm) have low variance and high bias (error from approximating a linear association between variables)
++ flexible models (eg., bagging, boosting, svm) have high variance (because they follow closely the trend of the training data)
++ when p>n or p=n, a simple least sqaures regression line is too flexible, and hence overfits the data
+**** The trade off (p47)
++ Expected test error = *variance* of X + sqaured *bias* of X + variance of the *error* e. (e = the irreducible error)
++ variance of X = difference between multiple training datasets
++ bias of X = error introduced by the difference between the estimated prediction of the response and the true response of the varaibles
++ Increasing the flexibility of a model, the bias tends to decrease faster than increasing the variance! the challenge is to find a method for which both the variance and the squared bias are low
+*** Residual standard error (RSE)
++ MSE = for measuring of the quality of fit
++ RSS is small when the the predicted responses are closer to the true response (MSE= 1/n * RSS ; RSS= y°-y hat)
++ is an estimate of the standard error of the deviation of e (from Y=f(x)+e). MSE=RSS/n. RSS= Somme(observed-predicted)responses
++ R2 = provides an absolute measure of lack of fit of the model. R2=1-RSS/TSS
++ TSS = sum(yi - y)^2 ; where yi= i reposne and y = average response  
++ r=cor(X,Y) ; R2=r2 ; correlation r quantifies the association between a single pair of variables, R2 is better suited for multiple variables. 
++ A high R2 indicates that the model explains a large portion of the variance in the response variable.
++ More variables are added to the model, bigger R2 will get, even if those variables are weakly associated. by adding another variable to the least squares equations we more accurately fit the training data not necessary the testing data.
+*** The F statistics
++ it adjusts for the number of predictors, hence no relationship between predictor and respond could be attributed to chance
++ small n (samples) must be equal to a big F to be considered stat. significant
++ if p >> n then F stats CANT be used. MLR cant be used all together. better use forward selection (high dimensional setting)
++ if n >> p then variance is low when fitting a least squares model
++ if n ~ p linear model might overfit = poor predictions
+*** t-statistics
+small t-stats == big SE == collinearity of the predictors
+*** Correlation
++ correlated variables can be distinguished from a mutiple lineae regression + F stats + p val.
++ correlated variables will give bad inferences about the model, even if they are weaklly associated with the response variable.
+*** Interaction terms and main effect
+even if the interaction terms are statistically significant but the main effect are not, we should include the coefficients of both signle variables.
+** Modelling for Predictions or Inferences
+either I want to predict the outcome Y using X (prediction). or I want to caracterize the relationship between Y and X (inference)
+** Generalized linear models
++ linear models are inflexible because they generate only linear functions (parametric). thin plate splines in the other hand are more flexible (non-parametric).
++ Inflexible models with more interpretability == modeling for Inference
++ flexible models with no interpretability and high prediction accuracy == modeling for prediction
+** Resampling
+*** Validation set
+*** Cross validation
+**** Leave one out cross validation (LOOCV)
+smaller bias + higher variance (high number of n)
+**** K fold cross validation
+less variance than LOOCV
+*** Bootstrap
++ the block bootstrap (in a timeseries scenario where the observations are correlated through time) where blocks are independent
++ in general, the observartions are independant 
+** Model selection
+*** Subset selection
++ or feature selection, variable selection
++ RSS and R2 are not suited for estimating accuracy of the best model (when overfitting == high R2 + low RSS)
++ the training set MSE underestimate the test MSE (MSE=RSS/n)
++ the model with the highest adj-R2 will have only correct variables and no noise variables
+**** Methods
+***** Best subset selection
++ very computationally intensive when p is large
++ only works for least squares regression
++ larger p == lower RSS == higher R2
+***** Stepwise selection
+****** Forward Stepwise selection
++ less computationally intensive
++ is not guaranteed to find the best model (since features are added gradually, and the best model is depedent on the first added feature M°+1)
++ if p > n, submodels will be constructed, using least squares they will yield different solutions
+****** Backward stepwise selection
++ n must be >> p
+****** Hybrid approaches
++ adding features and removing any that doesn't contribute to bettering the model
+**** Estimating the test error
+***** Adjusting the MSE
++ Mallow's Cp -- AIC -- BIC -- adj R2
++ if p > n these procedures were best fit
++ Cp and AIC for linear models are the same
++ AIC for other models is better than Cp
++ Cp cant be used for p>n
++ BIC tend to choose fewer features that Cp and AIC (log n > 2 if n>7, ie n>p)
++ adjR2, we pay a price when including unnecessary variables in the model
+***** Validation and cross-validation to estimate the test error
++ this procedure provides a direct estimate of the test error
++ also can be used when the number of degrees of freedom (predictors)  is unknown
++ p > n can be well modelled
++ cross validation is appealing for small number of n (ie, it averages the errors across all training samples)
+*** Shrinkage
+The goal is to reduce the variance (trade-off w/ bias) for better prediction
++ estimated coefficients are shrunken toward zero
++ all predictors are used
++ Ridge regression and Lasso are computationally feasible alternatives to best subset selection
++ lambda = 0 then ridge regression and lasso estimates are the same as the least squares'
++ cross validation (+ ridge regression/lasso) can be used to determine which approach is better on a particular dataset
+**** Ridge regression (p232)
++ high lambda (tuning parameter) = less flexibility = less variance = high bias (this is why its advantageous over least squares)
++ l2 norm = distance of beta from 0 = high lambda = high shrinkage of the ridge regression estimate coefficient toward 0
++ Increasing the value of lambda will tend to reduce the magnitudes of the coefficients, but will not result in exclusion of any of the variables
+**** Lasso
++ capable of feature selection
++ least flexible (less flexible that least squares) = if least sqaures yield high variance, then lasso can reduce it
++ same as ridge regression but can do variable selection == which generates sparse models
++ estimated coefficients can be shrunk toward zero when lambda is sufficienty high
++ produces simple and interpretable models (than ridge regression due to feature extraction)
++ Find sparse models (subsets) to explain the response variable	
+*** Dimension reduction
++ The goal is to reduce the variance too
++ a class of approached that transform the predictions (linear combinations of the original features) and then fit a least squares model using these new transformed variabes
++ when doing dimension reduction we restrict ourselves to simpler models. ie, variance decrease and bias increase
+**** Principal components analysis (PCA)
++ unsupervised training
++ find the first and second PC direction of the data along which the observations vary the most.
++ the first PC is where the projected observations woould have the largest possible variance OR is the line that is as close as possible to the data
++ projecting a point onto a line simply involves fnding the location on the lne which is the closest to the point
++ PCR (regression) involves identifying linear combinations, or directions, that best represent the predictors
++ directions that best explain the predictors will not always be the best directions to use for predicting the response
+**** Partial least squares
++ supervised alternative to PCR
++ it attempts to find directions that help explain both the response and the predictors (ie, supervised)
+** Models
+*** Linear
+linear models provide an approximation to the solution (and sometimes a poor one)
+*** non linear
++ Polynomial regression
++ step functions
++ regression splines
++ smoothing splines
++ local regression
++ generalized additive models: they do regression and classification for several predictors
+** Tree-based methods
++ bagging, boosting, and random forests
++ a complex tree can overfit the data = very flexible = high varaince
+** Support vector machines
++ observations that lie on the margin or on the wrong side of the margin for their class, are knwon as support vectors. these observations affect the support vector classifier
++ C is the amount by which the margin can be violeated by the n observations. If C increases, we become more tolerant of violations to the margin and so the margin will widen
++ If C is small, then there will be fewer support vectors, and hence the resulting classifier have low bias but high varaince
++ support vector classifier and logisitc regression are closely related
++ a support vector classifier is equivalent to SVM using a polynomial kernel of d=1
++ non linear kernels = SVM polynomial with higher d or radial SVM (gamma)
++ SVMs for 2 class response variables
+** Unsupervised Learning
+*** PCA
+search for variance between varaibles
+*** Clustering
+search for similarity between variables
+**** centroid linkage is more common in genomics
+**** Complete, Single, Average linkages
+*** Self-organizing maps
+*** Independent component analysis
+*** spectral clustering
+* INSTALL TEXLIVE
+Basic [[http://xmodulo.com/how-to-install-latex-on-ubuntu-or-debian.html][tutorial]] also this [[http://tug.org/texlive/doc.html][documentation]]
+- Download [[http://ctan.cms.math.ca/tex-archive/systems/texlive/tlnet/][tl.unx.tar]]
+- untar, cd, then sudo su
+#+BEGIN_SRC shell
+
+perl install-tl
+
+#+END_SRC
+- configure size, follow the instructions
+- Add to ~/.profile
+#+BEGIN_SRC shell
+PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH; export PATH 
+MANPATH=/usr/local/texlive/2014/texmf-dist/doc/man:$MANPATH; export MANPATH 
+INFOPATH=/usr/local/texlive/2014/texmf-dist/doc/info:$INFOPATH; export INFOPATH
+#+END_SRC
+** Create a dvi file
+- remove the following from the LATEX config files
+#+BEGIN_SRC latex
+\PassOptionsToPackage{pdftex}{graphicx}
+\usepackage{graphicx,epstopdf}
+#+END_SRC
+- add:
+#+BEGIN_SRC latex
+\usepackage{graphicx}
+#+END_SRC
+- command line:
+#+BEGIN_SRC shell
+latex fileName.tex
+#+END_SRC
+- open dvi
+#+BEGIN_SRC shell
+xdvi fileName.dvi
+#+END_SRC
+** latex small2e	test if latex is installed
+#+BEGIN_SRC shell
+sudo texhash	refresh/rebuild the list of file name database after missing *.sty
+latex sample.tex
+latex sampleref.bib
+#+END_SRC    
+* GITHUB                                                              :TABLE:
+
+#+CAPTION: Most used commands
+| Command                        | Alias | Description          |
+|--------------------------------+-------+----------------------|
+| status                         | gst   | summary              |
+| commit -a                      |       | add                  |
+| commit -m                      |       | message              |
+| add -f                         |       | force add            |
+| git log                        | glog  | logs                 |
+| remote add origin https:       |       | add and rename a url |
+| remote -v                      |       | show remotes         |
+| remote rename                  |       | rename a remote      |
+| remote rm origin               |       | remove remote        |
+| config --list                  |       | list configs         |
+| help -a \vref grep credential- |       | search help          |
+
+Create and push files to repository
+#+BEGIN_SRC shell
+echo "# tetst" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/neocruiser/tetst.git
+git push -u origin master
+#+END_SRC
+
+=pushing data to github via ssh= Setting a public key in SSH for github. [[https://help.github.com/articles/generating-ssh-keys/][Ttutorial here]]
+
+Correct remote url from =HTTPS= to =SSH=
+#+BEGIN_SRC shell
+git remote set-url origin git@github.com:neocruiser/repo.git
+#+END_SRC
+* NEEDSREVIEW ADDITIONAL LINUX APPS                              :Table:HOLD:
+#+CAPTION: Theming linux 
+| Function              | Command                                                 | Notes                                      |
+|-----------------------+---------------------------------------------------------+--------------------------------------------|
+| datascience soft      |                                                         | Mega Imagemagick clustalX2 Cytoscape       |
+| *bioconductor*        |                                                         | and R                                      |
+| *MEGA*                | "install Alien then download rpm package"               | [[http://megasoftware.net/][website]]                                    |
+| gimp                  |                                                         |                                            |
+| *inkscape*            |                                                         |                                            |
+| *evince*              |                                                         |                                            |
+| *shotwell*            |                                                         |                                            |
+| *gv*                  |                                                         |                                            |
+| gparted               |                                                         |                                            |
+| *vlc*                 |                                                         |                                            |
+| glipper               |                                                         |                                            |
+| *hamster*             |                                                         | and hamster indicator                      |
+| *htop*                |                                                         |                                            |
+| *locate*              |                                                         |                                            |
+| Run in a terminal     | screenfetch                                             | Get a summary of the PC credentials        |
+|                       | archinfo                                                |                                            |
+|                       | archey                                                  |                                            |
+| xmodmap               | ~/.xsession                                             | [[http://www.emacswiki.org/emacs/MovingTheCtrlKey#toc5][reconfigure key bindings]]                   |
+|                       | ~/.xinitrc                                              | .xsession has the role of .xinitrc         |
+|                       | ~/.profile                                              | and .profile combined                      |
+| *urxvt/rxvt-unicode*  | sudo apt-get install rxvt-unicode xclip                 | [[https://wiki.archlinux.org/index.php/Urxvt#][archlinux configs]]                          |
+|                       | git clone [[https://github.com/muennich/urxvt-perls][urxt-perls]]                                    | put git content in ~/.urxvt/ext            |
+|                       | https://github.com/muennich/urxvt-perls.git             |                                            |
+|                       | yaourt -S urxvt-perls                                   | to activate copy/pasting                   |
+|                       | with xclip                                              | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
+| liquidprompt          |                                                         | [[https://github.com/nojhan/liquidprompt][easy install]]                               |
+| bash                  | chsh -s /bin/bash                                       | use bash                                   |
+| *zsh*                 | chsh -s /bin/zsh                                        | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
+|                       | echo $SHELL                                             | see what shell used                        |
+|                       | bash                                                    | switch between shells, write only the name |
+| *oh-my-zsh*           |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/themes][themes]]                                     |
+|                       |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins][plugins]]                                    |
+|                       |                                                         | [[https://github.com/zsh-users/zsh-syntax-highlighting][Fish-highlighting]]                          |
+|                       | ~/.oh-my/custom/alias                                   | create alias [[http://alias.sh/most-popular/usage][URL1]] [[http://www.commandlinefu.com/commands/browse][URL2]]                     |
+| PKGBUILD (arch)       | tar xzvf                                                | untar the tarball                          |
+|                       | makepkg                                                 | copy PKGBUILD in the untared dir           |
+|                       | makepkg -s --asroot                                     | build dependecies and install              |
+|                       | pacman -U tar.gz                                        |                                            |
+| i3                    | dmenu                                                   | install it                                 |
+| bpswm                 |                                                         | [[https://www.reddit.com/r/unixporn/comments/2ldfmw/bspwm_beginner_panel_bar_question/][reddit comment 1]]                           |
+| *ncdu*                |                                                         | disk usage display                         |
+| centerim              |                                                         | chat app                                   |
+| gpicview              |                                                         | picture                                    |
+| *p7zip* & *unrar*     | $ 7z x *.zip <folder>                                   | zip                                        |
+|                       | sudo apt-get install p7zip-full p7zip-rar               |                                            |
+|                       | sudo apt-get install unrar-free  ($ unrar e *.rar)      |                                            |
+| alpine + aspell (C-t) |                                                         | [[http://blog.binarymist.net/2011/11/27/centerim-irssi-alpine-on-screen/][email client]]                               |
+| Sendmail              |                                                         | email for alpine                           |
+| irssi                 | /channel list                                           | [[https://pthree.org/2010/02/02/irssis-channel-network-server-and-connect-what-it-means/][irc commands]]                               |
+|                       | mv .pl ~/.irssi/scripts                                 | [[http://scripts.irssi.org/][irc perl plugins]]                           |
+|                       | /save                                                   |                                            |
+|                       | /layout save                                            | [[http://quadpoint.org/articles/irssi/][Beginner guide]]                             |
+|                       | <add freenode>                                          | [[https://freenode.net/certfp/makecert.shtml][guide]]                                      |
+|                       | <SSL connection>>                                       | [[https://freenode.net/certfp/certfp-irssi.shtml][guide]]                                      |
+|                       |                                                         |                                            |
+| elinks                |                                                         | browser in console                         |
+| rogue                 |                                                         | [[http://www.rots.net/rogue/guide.txt][game]]                                       |
+| nethack               |                                                         | [[http://www.nethack.org/][game]]                                       |
+| *perldoc*             | perl-doc                                                | documentation for perl                     |
+| *ttytter*             | $ wget                                                  | [[http://www.floodgap.com/software/ttytter/ttytter.txt][get it from here]]                           |
+|                       | $ chmod +x ~/ttytter.txt                                | make it executable [[http://www.floodgap.com/software/ttytter/][website]]                 |
+|                       | $ mv ttytter.txt ttytter                                | remove .txt                                |
+|                       | /set ansi 1, /set notimeline 1                          | enable colors                              |
+|                       | /trends or                                              |                                            |
+|                       |                                                         | [[http://www.floodgap.com/software/ttytter/copts.html][command line options]]                       |
+| *tmux*                | tmux new -s <name>                                      | [[http://xmodulo.com/improve-productivity-terminal-environment-tmux.html][tutorial]]                                   |
+|                       | tmux attach-session -t ...                              |                                            |
+| scrot                 |                                                         | [[http://xmodulo.com/take-screenshot-command-line-linux.html][tutorial]]                                   |
+| *cheat sheet*         | cheat -e emacs &                                        | [[http://xmodulo.com/access-linux-command-cheat-sheets-command-line.html][tutorial]]                                   |
+| *pip*                 | sudo apt-get install python-pip                         | Python package installer                   |
+| ack                   | community/ack (arch)                                    | [[http://xmodulo.com/search-text-files-patterns-efficiently.html][tutorial]] or [[http://beyondgrep.com/install/][official site]]                  |
+| *ag* Silver Searcher  | pacman -S the_silver_searcher                           | [[https://github.com/ggreer/the_silver_searcher][git official site]]                          |
+| *acpi*                |                                                         | [[http://calummacrae.blogspot.fr/2012/12/dropping-status-bars-for-tmux-as-im.html][battery]]                                    |
+| *transmission-cli*    | sudo apt-get install transmission-cli                   | [[http://xmodulo.com/download-iso-image-bittorrent-command-line.html][tutorial]] or [[http://go.kblog.us/2011/03/using-transmission-cli-to-download.html][this]]                           |
+| ruby                  |                                                         | to use with style-check                    |
+| style-check.rb        | $style-check.rb *.tex                                   | [[http://www.cs.umd.edu/~nspring/software/style-check-readme.html][official site]]                              |
+| *diction*             | $ diction -sbq *.txt                                    |                                            |
+| pdftk                 |                                                         | [[http://xmodulo.com/how-to-edit-pdf-file-for-free.html][description]]                                |
+| cpanm                 |                                                         | [[https://metacpan.org/pod/App::cpanminus#INSTALLATION][here]] module installer                      |
+| *firefox*             | $ mkdir ~/.fonts                                        | [[https://github.com/lucy/tewi-font][tewi-font]]                                  |
+|                       | $ ~/.mozilla/firefox/<>default/chrome/.css              | [[http://1drv.ms/1ubbEIi][userChrome.css]]                             |
+|                       | file:///home/neocruiser/startpage/index.html            | startpage                                  |
+|                       | :mkvimrc                                                | vimpirator save customization              |
+| *FONTS*               | $ pacman -S                                             | [[https://wiki.archlinux.org/index.php/Infinality#Installation_2][Try these]] don't set xorg-fonts             |
+| *gzip*                |                                                         | *vcf.gz files need an index *gz.tbi        |
+| *tabix*               | $ tabix -p vcf file.vcf.gz                              | generate an index file                     |
+|                       | $ bgzip -c file.vcf > file.vcf.gz                       | compress                                   |
+|                       | $ bgzip -d file.vcf.gz                                  | decompress                                 |
+| *mu4e*                |                                                         | [[http://wenshanren.org/?p%3D111][tutorial for gmail]]  [[http://www.djcbsoftware.nl/code/mu/mu4e/index.html][*official tutorial*]]    |
+|                       |                                                         | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][different setup tutorial]]                   |
+|                       | $ install offlineimap                                   | offlineimap & .offlineimaprc               |
+|                       |                                                         | *maybe* mbsync instead of offlineimap      |
+|                       |                                                         | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][Multiple accounts]]                          |
+|                       | $ install if necessary                                  | html2text view html emails                 |
+|                       | setup smtp                                              | [[http://email.about.com/od/accessinggmail/f/Gmail_SMTP_Settings.htm][tutorial for gmail]]                         |
+| pem                   | $ pem name $$                                           | [[http://xmodulo.com/manage-personal-expenses-command-line.html][tutorial]]                                   |
+| feednix               |                                                         | Read Feedly in terminal [[http://xmodulo.com/feedly-rss-feed-command-line-linux.html][tutorial]]           |
+| *Alien* & *dpkg*      | sudo apt-get install alien                              | Alien for npm packages                     |
+|                       | sudo apt-get install dpkg-dev debhelper build-essential |                                            |
+|                       | alien <PACKAGENAME>.rpm                                 |                                            |
+|                       | sudo dpkg -i package.deb                                |                                            |
+| *VirtualBox*          | sudo apt-get install libqt4-opengl                      |                                            |
+|                       | dpkg -i <pkg>                                           | [[https://www.virtualbox.org/wiki/Linux_Downloads][Download]]                                   |
+|                       | sudo apt-get install dkms                               |                                            |
+|                       | mount /dev/cdrom /mnt/                                  | Get full screen                            |
+|                       | cd /mnt/                                                |                                            |
+|                       | ./VBoxLinuxAdditions.run                                | reboot                                     |
+
+
+* INPROGRESS G3.js: data.viz
+** Setup a HTTP localhost =serving=
+1. Navigate to the directory that contains the html files
+2. Run Python's =SimpleHTTPServer=
+#+BEGIN_SRC shell
+python -m SimpleHTTPServer 8000
+## OR
+python -m http.server 8000
+#+END_SRC
+3. In =Firefox= run http://localhost:8000
+
+** Styling
+[[https://developer.mozilla.org/en-US/docs/Web/CSS/Reference#Selectors][CSS selectors]].
+
+** Convert data to JSON
+Many options are available. Some are listed [[http://stackoverflow.com/questions/662859/converting-csv-xls-to-json][here]]. Best way is to use =Powershell= since i will mostly use windows.
+=ConvertTo-Json= is a function in poweshell. man [[https://technet.microsoft.com/library/hh849922.aspx?f%3D255&MSPPError%3D-2147217396][here]]. Or use a web-app [[http://shancarter.github.io/mr-data-converter/][here]].
+** Tips
+Get the variable nature in javascript
+#+BEGIN_SRC javascript
+var x = 1;
+typeof x; // returns "number"
+#+END_SRC
+
+Declare a single global object and assign to all your variable, this would avoid poullution the globale namespace =window=.
+#+BEGIN_SRC javascript
+var Vis = {};  //Declare empty global object
+Vis.zebras = "still pretty amazing";
+Vis.monkeys = "too funny LOL";
+Vis.fish = "you know, not bad";
+#+END_SRC
+
+Load =CSV= data to D3. Convert xlsx to csv in excel.
+#+BEGIN_SRC javascript
+d3.csv("food.csv", function(data) {
+    console.log(data);
+});
+#+END_SRC
+
+Load csv data but try to avoid handling data errors.
+#+BEGIN_SRC javascript
+var dataset;
+
+d3.csv("food.csv", function(error, data) {
+
+        if (error) {  //If error is not null, something went wrong.
+          console.log(error);  //Log the error.
+        } else {      //If no error, the file loaded correctly. Yay!
+          console.log(data);   //Log the data.
+
+      //Include other code to execute after successful file load here
+      dataset = data;
+      generateVis();
+      hideLoadingMsg();
+        }
+
+});
+#+END_SRC
+
+Tab-separated data =tsv= can be executed with =d3.tsv()=.
+
+Declaring classes inside attributes.
+#+BEGIN_SRC javascript
+.attr("class", "bar")
+## OR
+.classed("bar", true)
+#+END_SRC
+
+** JavaScrip
+
+#+CAPTION: Summary of useful javascript functions
+| function          | description                   |
+|-------------------+-------------------------------|
+| Math.random()     | create random numbers < 1     |
+| Math.sqrt()       | square root                   |
+| push()            | write content into dataframe  |
+| Math.round()      | round to nearest number       |
+| Math.floor()      | round to smallest number      |
+| text-anchor       | .attr(), set to "middle"      |
+| d3.scale.linear() | .domain() \\ input            |
+|                   | .range() \\output             |
+|                   | .nice() \\ rounding numbers   |
+|                   | .rangeRound() \\ rounding     |
+|                   | .clam(true) \\ keep in range  |
+| d3.scale          | .sqrt()                       |
+|                   | .pow() \\ exponential         |
+|                   | .log()                        |
+|                   | .quantize() \\ sort           |
+|                   | .quantile()                   |
+|                   | .ordinal() \\ non numeric     |
+| d3.time.scale()   | date and time                 |
+| d3.svg.axis()     | .scale()                      |
+|                   | .orient()                     |
+|                   | .ticks()                      |
+|                   | .tickFormat(d3.format(".1%")) |
+| d3.range()        | numerate by sequence          |
+| .ease()           | circle                        |
+|                   | elastic                       |
+|                   | bounce                        |
+|                   | linear                        |
+|                   | cubic-in-out                  |
+| .on()             | click                         |
+|                   | mouseover                     |
+|                   | mouseout                      |
+| d3.layout.        | bundle()                      |
+|                   | chord()                       |
+|                   | cluster()                     |
+|                   | force()                       |
+|                   | histogram()                   |
+|                   | pack()                        |
+|                   | partition()                   |
+|                   | pie()                         |
+|                   | stack()                       |
+|                   | tree()                        |
+|                   | treemap()                     |
+| .transform()      | "translate" (x, y)            |
+|                   | "rotate"                      |
+|                   |                               |
+
+  
+** CSS
+Create a hover effect (coloring) on any element object.
+#+BEGIN_SRC javascript
+<style>
+        rect {
+            -moz-transition: all 0.3s;
+            -o-transition: all 0.3s;
+            -webkit-transition: all 0.3s;
+            transition: all 0.3s;
+        }
+        
+        rect:hover {
+            fill: orange;
+        }
+</style>
+#+END_SRC
+** Operations
+Path Data Generator
+#+BEGIN_SRC javascript
+
+    d3.svg.line - create a new line generator
+    d3.svg.line.radial - create a new radial line generator
+    d3.svg.area - create a new area generator
+    d3.svg.area.radial - create a new radial area generator
+    d3.svg.arc - create a new arc generator
+    d3.svg.symbol - create a new symbol generator
+    d3.svg.chord - create a new chord generator
+    d3.svg.diagonal - create a new diagonal generator
+    d3.svg.diagonal.radial - create a new radial diagonal generator
+
+#+END_SRC
+
+Mutating arrays [[https://github.com/mbostock/d3/wiki/Arrays][Fore more content]]
+#+BEGIN_SRC javascript
+sort()
+reverse()
+splice()
+shift()
+unshift()
+#+END_SRC
+
+Accessing arrays.
+#+BEGIN_SRC javascript
+concat()
+join()
+slice()
+indexOf()
+lastindexOf()
+#+END_SRC
+
+Iterating arrays.
+#+BEGIN_SRC javascript
+filter()
+every()
+forEach()
+map()
+some()
+reduce()
+reduceRight()
+#+END_SRC
+
+** Ideas
+1. Drag and drop with Gridster and D3.js [[https://anmolkoul.wordpress.com/2015/07/06/drag-and-drop-visuals-in-your-interactive-dashboard-gridster-d3-js/][link]]
+2. Create a dashboard with D3.js DC.js node.js and mongoDB [[https://anmolkoul.wordpress.com/2015/06/05/interactive-data-visualization-using-d3-js-dc-js-nodejs-and-mongodb/][link]]
+* Firefox
+Accelerate Firefox with =about:config=. Activate GPL hardware acceleration ([[https://www.reddit.com/r/linux/comments/39q6xt/some_useful_firefox_tips_to_fix_choppy_scrolling/][here]])
+| Entry                                   | Value  |
+|-----------------------------------------+--------|
+| layout.frame_rate.precise               | enable |
+| privacy.trackingprotection.enabled      | true   |
+| image.mem.max_decoded_image_kb          | 51200  |
+| javascript.options.mem.max              | 51201  |
+| javascript.options.mem.high_water_mar   | 30     |
+| browser.sessionhistory.max_entries      | 10     |
+| webgl.force-enabled                     | true   |
+| layers.acceleration.force-enabled       | true   |
+| layers.offmainthreadcomposition.enabled | true   |
+* Latex2RTF and pandoc
+To install latex2rtf, download [[http://latex2rtf.sourceforge.net/manpage.html][official site]]. Install from source. On windows the conversion is easier than that on linux.
+To do before compiling:
+1. remove line numbering
+2. keep sections in separate files
+3. remove additional packages (unsupported)
+4. keep SI files
+5. keep acronyms
+6. keep caption*
+7. insert equations as text, and convert to bitmap
+8. insert figures as file names
+
+To install pandoc. Download from [[http://pandoc.org/installing.html][official site]]. Follow the instruction in the install file. Install Haskell-platform. The installation will around 30 minutes. [[http://pandoc.org/demos.html][Examples]] for conversion.
+#+BEGIN_SRC shell
+sudo apt-get install haskell-platform
+cabal update
+cabal install pandoc
+export PATH="$PATH:/home/neo/.cabal/bin"
+#+END_SRC
+
+* UPDATE SYSTEM
+#+BEGIN_SRC shell
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get dist-upgrade
+#+END_SRC
+* REMOVE UNWANTED APPS
+#+BEGIN_SRC shell
+sudo apt-get autoremove
+sudo apt-get autoclean
+sudo apt-get install -f
+#+END_SRC
+* MIDNIGHT COMMANDER
+Download the skin =elite_commander= [[https://sites.google.com/site/livibetter/blog-files/dotfiles/elite_commander.ini?attredirects%3D0][(From Here)]]
+Replace =default= by =elite_commander= in the ini file
+#+BEGIN_SRC shell
+emacs -nw ~/.config.d/mc/ini
+#+END_SRC
+Then copy =elite_commander.ini= to
+#+BEGIN_SRC shell
+sudo mv ~/Downloads/elite_commander.ini /usr/share/mc/skins/ 
+#+END_SRC
+* INSTALL FLASH AND MP3 PLUGINS
+#+BEGIN_SRC shell
+sudo apt-get install adobe-flashplugin
+sudo apt-get install ubuntu-restricted-extras libavcodec-extra-53
+#+END_SRC
+
+* AUTOMOUNT DRIVES
+- Add lines in fstab file:
+#+BEGIN_SRC shell
+sudo emacs /etc/fstab
+#+END_SRC
+- Add the following to mount the Data Partition for ext3 filesystem
+/dev/sda5          /media/Data        etx3      defaults        0      2
+* INSTALL SWAN
+Download http://cs.joensuu.fi/swan/
+#+BEGIN_SRC shell
+unzip SWAN
+bash Launch\ SWAN\ \(Linux\).sh
+#+END_SRC
+* Display hidden startup entries <RUN ONLY ONCE> in Elementary OS
+#+BEGIN_SRC shell
+sudo sed -i 's/NoDisplay=true/NoDisplay=false/g' /etc/xdg/autostart/*.desktop
+#+END_SRC
+* BLAST+
+1. Download from [[ftp://ftp.ncbi.nih.gov/blast/executables/blast%2B/LATEST/][ftp server]]
+#+BEGIN_SRC shell
+wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.2.31+-x64-linux.tar.gz
+#+END_SRC
+
+Follow these instructions [[http://www.ncbi.nlm.nih.gov/books/NBK52640/][here]]. Write the export lines in $HOME .profile 
+#+BEGIN_SRC shell
+PATH=/home/neo/data/blast/bin:$PATH; export PATH
+BLASTDB=/home/neo/data/blast/db:$BLASTDB; export BLASTDB
+#+END_SRC
+
+Or set the path manually (optional)
+#+BEGIN_SRC shell
+export PATH="$PATH:/home/neocruiser/ncbi-blast-2.2.29+/bin"
+echo $PATH
+export BLASTDB=”.../ncbi-blast-2.2.29+/db”
+#+END_SRC
+
+Create database entries, compatible with blast. And put =taxdb= in the BLASTDB PATH. See [[http://www.ncbi.nlm.nih.gov/books/NBK279680/][here]].
+#+BEGIN_SRC shell
+mkdir ncbi/db
+ftp ftp.ncbi.nlm.nih.gov
+$ *Login*: anonymous
+$ *Email*: email@
+cd blast/db/FASTA
+get nr.gz
+get nt.gz
+get swissprot.gz
+cd ../
+get taxdb.tar.gz
+bye
+#+END_SRC
+
+Database files can be updated automatically. See [[http://www.ncbi.nlm.nih.gov/books/NBK279680/][here]]
+
+** Make a blast database
+mkdir first the folder containing the fasta file. This is usefull when subsetting a big database of just using a reference genome.
+#+BEGIN_SRC shell
+makeblastdb -in nt.fasta -out nt -dbtype nucl -parse_seqids -max_file_sz 2GB
+#+END_SRC
+** Example 1
+$ blastdbcmd -db XX.00 -info
+$ blastdbcmd -db XX.00 -entry all -outfmt %g -out XX.txt
+$ blastdbcmd -db XX.00 -entry XX -out XX.fa
+$ blastn -query XX.fa -db XX.00 -task blastn -dust no -outfmt "7 qseqid sseqid evalue bitscore" -max_target_seqs 2
+** Table of functions                                                :Table:
+| Program           | Function                                                                                                                                        |
+|-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------|
+| blastdbcheck      | Checks the integrity of a BLAST database                                                                                                        |
+| blastdbcmd        | Retrieves sequences or other information from a BLAST database                                                                                  |
+| blastdb_aliastool | Creates database alias (to tie volumes together for example)                                                                                    |
+| Blastn            | Searches a nucleotide query against a nucleotide database                                                                                       |
+| blastp            | Searches a protein query against a protein database                                                                                             |
+| blastx            | Searches a nucleotide query, dynamically translated in all six frames, against a protein database                                               |
+| blast_formatter   | Formats a blast result using its assigned request ID (RID) or its saved archive                                                                 |
+| convert2blastmask | Converts lowercase masking into makeblastdb readable data                                                                                       |
+| deltablast        | Searches a protein query against a protein database, using a more sensitive algorithm                                                           |
+| dust masks        | Masks the low complexity regions in the input nucleotide sequences                                                                              |
+| legacy_blast.pl   | Converts a legacy blast search command line into blast+ counterpart and execute it                                                              |
+| makeblastdb       | Formats input FASTA file(s) into a BLAST database                                                                                               |
+| makembindex       | Indexes an existing nucleotide database for use with megablast                                                                                  |
+| makeprofiledb     | Creates a conserved domain database from a list of input position specific scoring matrix (scoremats) generated by psiblast                     |
+| psiblast          | Finds members of a protein family, identifies proteins distantly related to the query, or builds position specific scoring matrix for the query |
+| rpsblast          | Searches a protein against a conserved domain database to identify functional domains present in the query                                      |
+| rpstblastn        | Searches a nucleotide query, by dynamically translating it in all six-frames first, against a conserved domain database                         |
+| segmasker         | Masks the low complexity regions in input protein sequences                                                                                     |
+| tblastn           | Searches a protein query against a nucleotide database dynamically translated in all six frames                                                 |
+| tblastx           | Searches a nucleotide query, dynamically translated in all six frames, against a nucleotide database similarly translated                       |
+| update_blastdb.pl | Downloads preformatted blast databases from NCBI                                                                                                |
+| windowmasker      | Masks repeats found in input nucleotide sequences                                                                                               |
+|                   |                                                                                                                                                 |
+** Format of the blast output\
+- 0 = pairwise,
+- 1 = query-anchored showing identities,
+- 2 = query-anchored no identities,
+- 3 = flat query-anchored, show identities,
+- 4 = flat query-anchored, no identities,
+- 5 = XML Blast output,
+- 6 = tabular,
+- 7 = tabular with comment lines,
+- 8 = Text ASN.1,
+- 9 = Binary ASN.1,
+- 10 = Comma-separated values,
+- 11 = BLAST archive format (ASN.1)
+** Example 3
+>> download the relevant databases automatically using a keyword
+$ update_blastdb.pl nr
+>> download the taxonomy database 
+$ update_blastdb.pl taxdb
+** Sequence filtering [[http://www.ncbi.nlm.nih.gov/books/NBK1763/#CmdLineAppsManual.Sequence_filtering_app][applications]]
+>> segmasker (mask low complexity regions of protein)
+>> [[ftp://ftp.ncbi.nlm.nih.gov/pub/agarwala/dustmasker/README.dustmasker][dustmasker]] (mask low complexity regions of nucléotides)
+>> [[ftp://ftp.ncbi.nlm.nih.gov/pub/agarwala/windowmasker/README.windowmasker][windowmasker]] (identify sequences represented too often to be of interest)
+** [[http://www.ncbi.nlm.nih.gov/books/NBK1763/#CmdLineAppsManual.Megablast_indexed_sear][Megablast]] indexed searches
+>> Megablast is optimized for *intraspecies* comparison whereas blastn is suited for *interspecies* comparisons w/ a shorter word size.
+>> build database indices that greatly speed up megablast
+>> index libraries are x4 bigger than BLAST database
+** Combine the same nature db
+$ blastdb_aliastool -dblist "XX1 XX2" -dbtype nucl -out XX -title "Homo RefSeq mRNA + Genomic"
+>> create a subset of the database
+$ blastdb_aliastool -db XX -gilist XX.gi -dbtype nucl -out XX
+** Remote blast search                                               :Table:
+>> search
+$ blastn -db nt/refseq_rna -task blastn/magablast -query XXX -out XXX.out -remote
+>> get RID
+$ grep RID XXX.out
+>> format into tabular
+$ blast_formatter -rid XXX -out XXX.tab outfmt 7
+>> format into XML
+$ blast_formatter -rid XXX -out XXX.xml outfmt5
+
+#+CAPTION: Search tasks http://goo.gl/4fF45 
+| program | task name    | description                                   |
+|---------+--------------+-----------------------------------------------|
+| blastp  | blastp       | traditional                                   |
+|         | blastp-short | optimized for queries less than 30 residues   |
+| blastn  | blastn       | traditional requiring an exact 11 mismatch    |
+|         | blastn-short | optimized for sequences shorter that 50 nt    |
+|         | megablast    | traditional for very similar intraspecies seq |
+|         | dc-megablast | discontiguous interspecies seq                |
+* BLAT
+Map translated nucleotides (RNAs) on genome (DNA). BLAT can be found [[http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/blat/][here]].
+#+BEGIN_SRC shell
+ftp hgdownload.cse.ucsc.edu
+Name: anonymous
+cd admin/exe/linux.x86_64/blat
+wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faToTwoBit
+#+END_SRC
+
+* INSTALL ARCHIVE FORMATS <RUN ONLY ONCE>
+#+BEGIN_SRC shell
+sudo apt-get install unace rar unrar p7zip-rar p7zip sharutils uudeview mpack lha arj cabextract lzip lunzip
+#+END_SRC
+* INSTALL JABREF
+1) Download http://sourceforge.net/projects/jabref/files/jabref/2.10/
+2) untar into then launch
+#+BEGIN_SRC shell
+tar xzvf <name> /usr/local/share/
+java -jar jabref.jar
+#+END_SRC
+
+* INSTALL CHROME
+#+BEGIN_SRC shell
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+#+END_SRC
+* INSTALLED PACKAGES AND APPS
+#+BEGIN_SRC shell
+dpkg --get-selections
+dpkg --get-selections > /backup/installed-software.log
+#+END_SRC
+Restore installed software 
+#+BEGIN_SRC shell
+dpkg --set-selections < /backup/finstalled-software.log
+dselect
+#+END_SRC
+
+* SCREEN (TERMINAL SESSION SAVE)                                      :Table:
+
+| Keystrokes | C-a : Command | Action                                                          |
+|------------+---------------+-----------------------------------------------------------------|
+| C-a 0      | select 0      | Switch to window 0                                              |
+| C-a 9      | select 9      | Switch to window 9                                              |
+| C-a C-a    | other         | Toggle to the window displayed previously.                      |
+| C-a a      | meta          | Send the command character (C-a) to window. See escape command. |
+| C-a A      | title         | Allow the user to enter a name for the current window.          |
+| C-a c      | screen        | Create a new window with a shell and switch to that window.     |
+| C-a C-c    | screen        | Create a new window with a shell and switch to that window.     |
+| C-a C      | clear         | Clear the screen.                                               |
+| C-a d      | detach        | Detach screen from this terminal.                               |
+| C-a C-d    | detach        | Detach screen from this terminal.                               |
+| C-a D D    | pow detach    | Detach and logout.                                              |
+| C-a k      | kill          | Destroy current window.                                         |
+| C-a C-k    | kill          | Destroy current window.                                         |
+| C-a space  | next          | Switch to the next window.                                      |
+| C-a n      | next          | Switch to the next window.                                      |
+| C-a C-n    | next          | Switch to the next window.                                      |
+| C-a x      | lockscreen    | Lock this terminal.                                             |
+| C-a C-x    | lockscreen    | Lock this terminal.                                             |
+| C-a w      | windows       | Show a list of window.                                          |
+| C-a C-w    | windows       | Show a list of window.                                          |
+| C-a ?      | help          | Show key bindings.                                              |
+|            |               |                                                                 |
+
+* IRC COMMANDS                                                        :Table:
+#+CAPTION: Usefull instructions can be found [[http://quadpoint.org/articles/irssi/][here]]
+| Command       | Alias     | Info                                                            |
+|---------------+-----------+-----------------------------------------------------------------|
+| /ban          | /bans, /b | Sets or List bans for a channel                                 |
+| /clear        | /c, /cl   | Clears a channel buffer                                         |
+| /join         | /j        | Joins a channel                                                 |
+| /kick         | /k        | Kicks a user                                                    |
+| /kickban      | /kb       | Kickban a user                                                  |
+| /msg          | /m        | Send a private message to a user                                |
+| /unban*       | /mub      | Clears the unbanlist (unbans everyone) in a channel             |
+| /names        | /n        | Lists the users in the current channel                          |
+| /query        | /q        | Open a query window with a user, or close current query window  |
+| /topic        | /t        | Displays/edits current topic.                                   |
+|               |           | Tip: use /t[space][tab] to automatically fill in existing topi. |
+| /window close | /wc       | Force closure of a window.                                      |
+| /whois        | /wi       | WHOIS a user. Displays user information                         |
+|               |           |                                                                 |
+
+Setting up an IRC config file.
+First, copy original config file
+#+BEGIN_SRC shell
+sudo cp /etc/irssi.conf ~/.irssi
+sudo chmod +r ~/.irssi/irssi.conf
+mv irssi.conf config
+#+END_SRC
+** ADD NETWORK, SERVER, AND AUTOMATIC CHANNEL CONNECTION             :Table:
+#+BEGIN_SRC shell
+/network add -auto -nick neocruiser -autosendcmd "/msg NickServ identify helloworld ;wait 2000" fn
+/channel add -auto #freenode fn
+/server add -auto -network fn irc.freenode.net 6667
+/server add -auto -network fn chat.freenode.net
+#+END_SRC
+... add other networks, channels, and servers then ...
+#+BEGIN_SRC shell
+/connect irc.unixporn.net
+#+END_SRC
+(hint) look in the section "See also" of archlinux [[https://wiki.archlinux.org/index.php/Irssi][tutorial]]
+(tip) connect to Freenode using SSL ([[https://pthree.org/2010/02/02/irssis-channel-network-server-and-connect-what-it-means/][basic tutorial]])
+
+setup gmail with bitlbee in irssi (for info on setting it visit [[http://www.antonfagerberg.com/archive/my-perfect-irssi-setup/][here]])
+#+BEGIN_SRC shell
+sudo apt-get install bitlbee
+/network add -user neocruiser -realname "Sleiman Bassim" -nick neocruiser -autosendcmd "say identify password" bitlbee
+/server add -auto -network bitlbee localhost
+register (helloworld)
+identify (helloworld)
+account list
+help account add
+account add Jabber <username>
+/OPER
+account jabber on
+set strip_html true
+account jabber del
+add 0 contact@gmail.com
+#+END_SRC
+
+#+CAPTION: Important commands for irssi
+| Command                              | Description                         |
+|--------------------------------------+-------------------------------------|
+| /set theme <theme>                   | change theme                        |
+| /save                                | save to config                      |
+| /layout save                         | remember windows layout             |
+| /ignore * joins                      | ignores showing joins               |
+| /ignore * parts                      | ignores showing parts               |
+| /ignore * quits                      | ignores showing quits               |
+| /ignore * ALL -PUBLIC -ACTIONS       | ignore all the above                |
+| /ignore -time 3600 <nick>            | ignore someone                      |
+| /wc                                  | close window                        |
+| /w 1                                 | switch to window 1                  |
+| /w move 1                            | move current window to position 1   |
+| /help                                | show commands                       |
+| /set                                 | show current settings               |
+| /set nick <nick>                     | set your nickname [[http://www.wikihow.com/Register-a-User-Name-on-Freenode][freenode tutorial]] |
+| /msg nickserv register <pass><email> | step 1                              |
+| /msg NickServ VERIFY REGISTER ...    | step 2 (email attached)             |
+| /msg nickserv set hidemail on        | step 3 (hide email)                 |
+| /msg nickserv identify <pass>        | step 4 (login)                      |
+| /server add -auto -network ...       | add automatic server connection     |
+| /network add -nick <nick><server>    | add nickname to a server            |
+| /channel add -auto <channel><server> | connect automatically to a channel  |
+| /alias                               | create own aliases                  |
+| /s                                   | server                              |
+| /c                                   | connect to a server                 |
+| /dc                                  | disconnect from a server            |
+| /j                                   | join a channel                      |
+| /leave                               | leave a channel                     |
+| /reload                              | reload saved configs                |
+| /q <nick>                            | query; send a private msg           |
+| /network                             | step 1: setup a network [[https://pthree.org/2010/02/02/irssis-channel-network-server-and-connect-what-it-means/][(tutorial)]]  |
+| /channel                             | step 2: add channels                |
+| /server                              | step 3: connect through a server    |
+* SETUP A LOCAL WEB SERVER
+#+BEGIN_SRC shell
+cd <project_dir>
+python -m http.server 8888 &
+google-chrome http://localhost:8888/
+#+END_SRC
+* CHECK GRAPHIC CARD
+#+BEGIN_SRC shell
+sudo update-pciids
+lspci | grep -E "VGA\vert3D"
+sudo lspci -v -s 00:02.0
+#+END_SRC
+* TWITTER                                                             :Table:
+#+CAPTION: Scripts for ttytter
+| Command           | Description                     |
+|-------------------+---------------------------------|
+| ~/ttytter         | launch                          |
+| /set ansi 1       | color coded                     |
+| /trends           | trends                          |
+| /set notimeline 1 | stop updating my timeline       |
+| /tron             | attach a #search to my timeline |
+| /troff            | detach a #                      |
+| /print track      | print attached #s               |
+| /search #         | search for a #                 |
+
+* CITEULIKE
+Download the BibTeX file for a given library using wget:
+#+BEGIN_SRC shell
+sudo wget -O /dev/null --keep-session-cookies --save-cookies cookies.txt --post-data="username=neocruiser&password=jd4ER-RT4ED&perm=1" http://www.citeulike.org/login.do
+wget -O export.bib --load-cookies cookies.txt http://www.citeulike.org/search/all\?q\=gwas++year:2014
+#+END_SRC
+
+From this site [[http://wiki.citeulike.org/index.php/Importing_and_Exporting][here]]
+* HOLD ARCHLINUX                                                 :Table:HOLD:
+** PREINSTALLATION AND CONFIGURATION OF ARCHLINUX
+Download the iso image of archlinux, checksum verification of the md5sums, then
+use a tool like dd to write the image on a bootable usb stick ([[https://wiki.archlinux.org/index.php/installation_guide][here]]). Change the
+path of the iso image and /dev/*sdx* to the usb drive name.
+#+BEGIN_SRC shell
+md5sum image.iso
+lsblk
+sudo su
+dd bs=4M if=/path/to/archlinux.iso of=/dev/sdc && sync
+#+END_SRC
+
+Restore the usb key after installation. If this wasn't enough use GParted to format and create primary partition. Restore to =NTFS= only.
+#+BEGIN_SRC shell
+sudo dd count=1 bs=512 if=/dev/zero of=/dev/sdc && sync
+sudo cfdisk /dev/sdc
+sudo mkfs.vfat -F32 /dev/sdc1
+#+END_SRC
+
+Keyboard layout. List layouts and choose French layout.
+#+BEGIN_SRC shell
+less /usr/share/kbd/keymaps/
+localectl list-keymaps
+loadkeys fr
+#+END_SRC
+
+GPT partitions
+#+BEGIN_SRC shell
+gdisk /dev/sda
+#+END_SRC
+create partitions using p:print, d:delete, w:write, n
+| Description of partitions            | n     | Partitions | Essential |
+|--------------------------------------+-------+------------+-----------|
+| BIOS boot partition +84K (code ef02) | +325K | sda1       | yes       |
+| Boot partition +350M                 | +325M | sda2       | yes       |
+| /home +60G                           |       | sda5       | yes       |
+| /root +40G                           | +150G | sda6       | yes       |
+| Swap +2-4G (code 8200)               |       | sda3       | no        |
+| /var +8G                             |       | sda4       | no        |
+Formatting Boot. But should *leave BIOS untouched*. ext2 dont have journalling
+which is why ext4 is better for root.
+#+BEGIN_SRC shell
+mkfs.ext2 /dev/sda2
+mkfs.ext4 /dev/sda6
+mkfs.xfs /dev/sda5
+mkswap /dev/sda3
+swapon /dev/sda3
+mkreiserfs /dev/sda4
+#+END_SRC
+
+Mounting, mount root. *mount root before mkdir*
+#+BEGIN_SRC shell
+mount /dev/sda6 /mnt
+cd /mnt && mkdir home boot var
+mount /dev/sda2 /mnt/boot
+mount /dev/sda4 /mnt/var
+mount /dev/sda5 /mnt/home
+#+END_SRC
+
+Tree visualization of sdas
+#+BEGIN_SRC shell
+lsblk -f
+#+END_SRC
+
+Test for internet and check the driver status. [[https://wiki.archlinux.org/index.php/Wireless_Setup#iwl3945.2C_iwl4965_and_iwl5000-series][additional wireless testing]] and
+for wired connection without wifi ([[https://wiki.archlinux.org/index.php/Network_Configuration][here]])
+#+BEGIN_SRC shell
+Wi-Fi-menu
+ping -c 3 www.google.com
+lspci -k
+#+END_SRC
+
+Install Arch
+#+BEGIN_SRC shell
+pacstrap -i /mnt base base-devel
+#+END_SRC
+generate fstab file
+#+BEGIN_SRC shell
+genfstab -L -p /mnt >> /mnt/etc/fstab
+nano /mnt/etc/fstab
+#+END_SRC
+change root
+#+BEGIN_SRC shell
+arch-chroot /mnt /bin/bash
+#+END_SRC
+setup and test the internet after drivers configuration. Generate file for
+customizations. see additional wireless testing [[https://wiki.archlinux.org/index.php/Wireless_Setup#iwl3945.2C_iwl4965_and_iwl5000-series][here]]
+#+BEGIN_SRC shell
+pacman -S net-tools iw wireless_tools
+pacman -S dialog wpa_actiond ifplugd wpa_supplicant sudo zsh
+systemctl enable dhcpcd.service
+#+END_SRC
+install emacs
+#+BEGIN_SRC shell
+pacman -S emacs
+#+END_SRC
+
+Language. *uncomment en_US* and generate file for configuations.
+#+BEGIN_SRC shell
+emacs /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+export LANG=en_US.UTF-8
+#+END_SRC
+
+Create user
+#+BEGIN_SRC shell
+useradd -m -g users -G wheel,audio,video,optical,storage,power,lp,locate -s /usr/bin/zsh neo
+#+END_SRC
+uncomment "# %wheel ALL=(ALL) ALL" from sudo, and make zsh the default shell for
+root too
+#+BEGIN_SRC shell
+visudo
+i
+DEL
+ESC
+:wq
+chsh -s /usr/bin/zsh
+#+END_SRC
+TimeZone. Set to US vermont and the configure the hardware clock.
+#+BEGIN_SRC shell
+ls /usr/share/zoneinfo
+ln -sf /usr/share/zoneinfo/US/eastern /etc/localtime
+hwclock --systohc --utc
+#+END_SRC
+
+Hostname, *Replace hostname-domain with arch* after the nano command
+#+BEGIN_SRC shell
+echo arch > /etc/hostname
+nano /etc/hosts
+#+END_SRC
+
+Fix configs and set user password
+#+BEGIN_SRC shell
+mkinitcpio -p linux
+passwd neo
+#+END_SRC
+GRUB, *Download / install GRUB*. Customize grub: *Replace "quiet" with vga=791
+quiet* then *uncomment GRUB_COLOR_NORMAL, GRUB_COLOR_HIGHLIGHT, GRUB_INIT_TUNE*.
+#+BEGIN_SRC shell
+pacman -S grub
+grub-install --target=i386-pc --recheck /dev/sda
+emacs /etc/default/grub
+grub-mkconfig /dev/sda -o /boot/grub/grub.cfg
+#+END_SRC
+Finish
+#+BEGIN_SRC shell
+exit
+reboot
+#+END_SRC
+
+To get access to root after creating a user, type =root= as a username.
+#+BEGIN_SRC shell
+exit 
+root
+#+END_SRC
+
+install terminal, yaourt or visit the [[https://wiki.archlinux.org/index.php/installation_guide#Post-installation][basic installation guide]] for
+[[https://wiki.archlinux.org/index.php/General_recommendations][recommendations]] or a [[https://wiki.archlinux.org/index.php/List_of_applications][list of apps]]. View [[http://tutos.readthedocs.org/en/latest/source/Arch.html][more tutorial]]s.
+#+BEGIN_SRC shell
+pacman -S rxvt-unicode rxvt-unicode-terminfo
+
+pacman -S base-devel wget
+wget https://aur.archlinux.org/packages/pa/package-query/package-query.tar.gz
+wget https://aur.archlinux.org/packages/ya/yaourt/yaourt.tar.gz
+tar xvf package-query.tar.gz
+cd package-query
+makepkg -s
+pacman -U package-query*
+tar xvf yaourt.tar.gz
+cd yaourt
+makepkg -s
+pacman -U yaourt*
+#+END_SRC
+
+If installing arch on a SSD drive, see these recommendations for improving the
+performance of the machine [[https://wiki.archlinux.org/index.php/Solid_State_Drives#Tips_for_Maximizing_SSD_Performance][here]] 
+
+#+CAPTION: Postinstallation ([[https://wiki.archlinux.org/index.php/General_recommendations][Recommendations]])
+| Function        | Application                                                      | Command                            | Link                           |
+|-----------------+------------------------------------------------------------------+------------------------------------+--------------------------------|
+| Desktop         | xorg xorg-utils xorg-server xorg-server-utils                    | pacman -S                          | [[https://wiki.archlinux.org/index.php/Window_manager#List_of_window_managers][window managers]]                |
+|                 | xorg-xinit xorg-twm xorg-xclock                                  |                                    | [[https://wiki.archlinux.org/index.php/Desktop_Environment#List_of_desktop_environments][desktop environment]]            |
+|                 | xf86-input-keyboard                                              |                                    | [[https://wiki.archlinux.org/index.php/List_of_applications#Work_environment][work environment]]               |
+|                 | slim slim-themes archlinux-themes-slim                           |                                    |                                |
+|                 | cinnamon                                                         |                                    |                                |
+| Repos           |                                                                  | emacs -nw /etc/pacman.conf         | *uncomment mulitlib repos*     |
+|                 |                                                                  | pacman -Syu                        | *update repos to add multi*    |
+| .xinitrc        |                                                                  | cp /etc/skel/.xinitrc /home/neo    | [[http://blog.z3bra.org/2013/10/home-sweet-home.html#setup][example xinit]]                  |
+|                 |                                                                  | chown neo:users /home/neo/.xinitrc |                                |
+|                 |                                                                  | emacs /home/neo/.xinitrc           | *insert exec $1*               |
+|                 |                                                                  | systemctl enable slim              | *activate slim*                |
+|                 |                                                                  | emacs /etc/slim.conf               | *configure slim*               |
+|                 |                                                                  |                                    | [[https://wiki.archlinux.org/index.php/SLiM][SLim]]                           |
+|                 |                                                                  | ls /usr/share/slim/themes          | *choose=archlinux*             |
+| Keyboard layout | localectl set-x11-keymap fr pc105 ,fr grp:alt_shift_toggle       |                                    |                                |
+| Sound           | alsa-firmware alsa-utils alsa-plugins pulseaudio-alsa pulseaudio | ps aux / grep pulse                | *check if pulse is running*    |
+|                 | pavucontrol                                                      |                                    | for graphical control of sound |
+| Acceleration    | xf86-video-intel lib32-mesa-libgl libva-intel-driver libva       | Dual monitor, mouse, keyboard      | [[https://wiki.archlinux.org/index.php/Intel_Graphics][Intel Graphics]]                 |
+|                 |                                                                  | install graphic card drivers       | [[https://wiki.archlinux.org/index.php/Xorg][Xorg]]                           |
+|                 |                                                                  |                                    |                                |
+| Application     | ncdu (disk usage), centrim (chat), taskwarrior (taskmanager),    |                                    | [[https://wiki.archlinux.org/index.php/List_of_applications#Terminal_emulators][Teminal emulators]]              |
+|                 | git, gpicview, p7zip, elinks (browser),                          |                                    | [[https://wiki.archlinux.org/index.php/List_of_applications][List of applications]]           |
+|                 | java (jre), texlive-core, [[http://crawl-ref.sourceforge.net/][rogue]], zathura, geany (tex editor),    |                                    | [[http://kmandla.wordpress.com/software/][Software]]                       |
+|                 | ttf-dejavu ttf-inconsolata,                                      |                                    |                                |
+|                 |                                                                  |                                    |                                |
+|                 |                                                                  |                                    |                                |
+| End             |                                                                  | umount -R /mnt                     |                                |
+|                 |                                                                  | reboot                             |                                |
+
+
+Enable options of intel graphics. Write exactly =options= i915 enable_rc6=1 enable_fbc=1
+lvds_downclock=1
+#+BEGIN_SRC shell
+emacs /etc/modprobe.d/i915.conf
+#+END_SRC
+
+** Awesome
+http://awesome.naquadah.org/
+http://awesome.naquadah.org/wiki/My_first_awesome
+change wallpaper in the following file (change path to wallpaper)
+#+BEGIN_SRC shell
+sudo emacs /usr/share/awesome/themes/default/theme.lua
+#+END_SRC
+configuration
+#+BEGIN_SRC shell
+mkdir -p ~/.config/awesome/
+    cp /etc/xdg/awesome/rc.lua ~/.config/awesome/
+#+END_SRC
+autorun at startup
+add to rc.lua 
+#+BEGIN_SRC shell
+function run_once(prg)
+      awful.util.spawn_with_shell("pgrep -u $USER -x " .. prg .. " || (" .. prg .. ")")
+    end
+    run_once("urxvt")
+#+END_SRC    
+
+* SYSADMIN UTILITIES
+** PROCESS MANAGER
+#+BEGIN_SRC shell
+top
+htop
+ps fauxwww
+ps aux | grep <pattern>
+parted <print free>
+df -h
+#+END_SRC
+*** SWAP FREE
+#+BEGIN_SRC shell
+free -m
+sudo su
+swapoff -a && swapon -a
+#+END_SRC
+*** MONITOR FREE MEMORY
+#+BEGIN_SRC shell
+watch -n 1 -d free -m
+#+END_SRC
+** FIND
+
+#+BEGIN_SRC shell
+find <where> -name <what>
+find / -name <what> 2>/dev/null (redirect the error messages)
+find / -mtime +60
+#+END_SRC
+
+** GREP
+Delete all files in a directory except selected ones.
+#+BEGIN_SRC shell
+ls * | grep -v "tex" | xargs rm -f
+#+END_SRC
+To delete files and directories alike.
+#+BEGIN_SRC shell
+ls * | grep -v "tex" | xargs rm -rf
+#+END_SRC
+
+** GENERAL COMMANDS
+Copy the content of one directory into another. (hint: no need to mkdir dir2)
+#+BEGIN_SRC shell
+cp -r dir1 dir2
+#+END_SRC
+
+* CHANGE BACKGROUND
+Install =feh= and set it up for an autostart. There is also =--bg-center= and
+=max= and =fill=.
+#+BEGIN_SRC shell
+sudo pacman -S feh
+feh --bg-scale /path/to/the/image
+cat >> .xinitrc
+$ sh ~/.xinitrc
+#+END_SRC
+* NPM
+If installing modules with npm is not working start with the first step, if I want to create a first install of npm start with the second step.
+#+BEGIN_SRC shell
+sudo apt-get install nodejs
+curl -L https://npmjs.com/install.sh | sh
+#+END_SRC
+
+If I have to uninstall and older version of npm
+#+BEGIN_SRC shell
+sudo apt-get purge nodejs npm
+#+END_SRC
+
+Then install an up to date version of npm 
+#+BEGIN_SRC shell
+curl -sL https://deb.nodesource.com/setup | sudo bash -
+sudo apt-get install -y nodejs
+#+END_SRC
+** peerflix
+Install peerflix to stream torrents with vlc. An alias is now working with vlc
+#+BEGIN_SRC shell
+sudo npm install -g peerflix﻿
+peer 'magnet'
+#+END_SRC
+* Archives
+=note= see table above for download links.
+1. p7zip-full and p7zip-rar to extract/compress =zip= and =rar= files.
+2. tar (Unix pre-installed) to extract =tar= and =tgz=
+#+BEGIN_SRC shell
+tar xvf archive.tar
+tar xzvf archive.tgz
+#+END_SRC
+3. gzip and gunzip to extract =gz= files.
+#+BEGIN_SRC shell
+gzip -d archive.gz
+gunzip archive.gz
+zcat archive.fastq.gz
+#+END_SRC
+4. Tabix to create index of the archive
+* Fonts
+Get the =adobe source code pro=.
+#+BEGIN_SRC shell
+sudo mkdir /usr/share/fonts/opentype
+sudo git clone https://github.com/adobe-fonts/source-code-pro.git /usr/share/fonts/opentype/scp
+sudo fc-cache -f -v
+#+END_SRC
