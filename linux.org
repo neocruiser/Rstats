@@ -20,25 +20,6 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
-* INSTALL DROPBOX
-#+BEGIN_SRC shell
-sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
-#+END_SRC
-* INSTALL GITHUB
-#+BEGIN_SRC shell
-sudo apt-get install git
-git clone git://github.com/
-#+END_SRC
-* INSTALL JAVA
-#+BEGIN_SRC shell
-
-sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
-java -version
-#+END_SRC
-
-For Trinity, must install java version 1.7. Follow these instructions [[http://www.wikihow.com/Install-Oracle-Java-JDK-on-Ubuntu-Linux][here]]
 * INSTALL EMACS 24
 Latest version [[http://git.savannah.gnu.org/cgit/emacs.git/tree/][on git]]
 #+BEGIN_SRC shell
@@ -61,122 +42,6 @@ sudo apt-get install emacs24 emacs24-el emacs24-common-non-dfsg
 - add in Markdown command: ~/Markdown_1.0.1/Markdown.pl
 ** Themes
 [[http://pawelbx.github.io/emacs-theme-gallery/][gallery]] 
-* EMACS keybindings                              :SYSADMIN:LATEX:EMACS:TABLE:
-:PROPERTIES:
-:ID:       2b013ae7-a2c8-4972-a0e8-b7258eece7dd
-:END:
-
-#+CAPTION: emacs normal settings
-| keybinding     | command                           | plugin      |
-|----------------+-----------------------------------+-------------|
-| C-=            | expand selection                  | emacs       |
-| C-M-:          | jump by letter inside buffer      | emacs       |
-| Cx-Mb          | switch bookmarks                  | emacs       |
-| Cx-r-m         | set (mark) bookmark               | emacs       |
-| M-S-s-WASD     | resizing buffers                  | emacs       |
-| Cc-p           | speedbar                          | emacs       |
-| Cx-l           | count line number                 | emacs       |
-| Ch-m           | help                              | emacs       |
-| Ch-k           | describe key                      | emacs       |
-| Ch-a           | describe apropos                  | emacs       |
-| Ch-b           | describe binding                  | emacs       |
-| Mx eval-buffer | reload buffer                     | emacs       |
-| M =            | count selected words              | emacs       |
-| Mx-diff        | compare 2 files                   | emacs       |
-| Mx-linum       | add line numbering                | emacs       |
-| Cc-x           | helm-scholar                      | emacs       |
-| Mx-shell       | shell                             | emacs       |
-| Mx-R           | R                                 | emacs       |
-| Cx-Cw          | save as                           | emacs       |
-| Cx-5-2         | new frame from within window      | emacs       |
-| Cx-5-b         | new frame from between buffers    | emacs       |
-| C-M-v          | sroll unfocused frame             | emacs       |
-| Cx-5-o         | swith between windows             | emacs       |
-| M-%            | search/replace                    | emacs       |
-| M-C-%          | search/replace REGEX              | emacs       |
-| Cx-Cv          | replace this file w/ an alternate | emacs       |
-| M-g            | Go to line                        | emacs       |
-| M-z            | delete until "next" charachter    | emacs       |
-| S-C u,d,l,r    | resize window                     | emacs       |
-| C-t, M-t       | transpose 2 charachters/words     | emacs       |
-| Cx-t           | transpose 2 lines                 | emacs       |
-| Cx-Cu, Cx-Cl   | switch upper/lower case           | emacs       |
-| Cc-g           | search with ag all files          | emacs       |
-| Cc-G           | search with only this file        | emacs       |
-| M-l / u        | lower/upper case a word           | emacs       |
-| C-_ / M-_      | undo / redo                       | emacs       |
-| Cx-u           | undo/redo Tree                    | emacs       |
-| Cx-i           | insert file in another file       | emacs       |
-| Cc-Cx-\        | toggle display UTF8 entities      | org         |
-|                | org-entities-help                 | org         |
-| Cc-Ct          | TODO cycle through                | org         |
-| Cc-Cq          | TAG cycle through                 | org         |
-| Cx-n-s         | open heading only                 | org         |
-| Cx-n-w         | open all headings                 | org         |
-| M-S-right      | add column                        | org         |
-| M-S-left       | del column                        | org         |
-| M-S-down       | add row                           | org         |
-| M-S-up         | del row                           | org         |
-| Cc-Cb          | select previous heading           | org         |
-| Cc-Ce          | compile/export org file           | org         |
-| Cc-a           | agenda                            | org         |
-| Cc-.           | insert date                       | org         |
-| Cc-Cs          | insert schedule                   | org         |
-| Cc-Cd          | insert deadline                   | org         |
-| Cc-Cx-d        | insrt drawer                      | org         |
-| Cc-l           | store location                    | org         |
-| Cc-Cl          | insert link, location ...         | org         |
-| M-h            | mark line                         | org         |
-| Cc-/           | sparce tree                       | org         |
-| <e TAB         | open exemple environment          | org         |
-| M-$            | correct word                      | ispell      |
-| Cx-b           | activate Helm                     | Helm        |
-| Cx-Cf          | open file Helm                    | Helm        |
-| C-spc          | select file activated helm        | Helm        |
-| M-a            | select multiple files             | Helm        |
-| Cc-x           | Helm-bibtex                       | Helm        |
-| Cc-c           | Reftex (biblio must be included)  | Helm        |
-| C-!            | revives last helm session         | Helm        |
-| C-@            | select entry                      | Helm-bibtex |
-| M-(            | loop through next selected entry  | Helm-bibtex |
-| Mn-C           | previous chunk                    | knitr       |
-| Mn-c           | next chunk                        | knitr       |
-| Cx-i           | insert content of file            | knitr       |
-| Mn-x           | insert Sexp                       | knitr       |
-| Mn-r           | compile knitr                     | knitr       |
-| Mn-P-p         | export/open pdf                   | knitr       |
-| Mn-u           | purl                              | knitr       |
-| Mn-s           | sweave (extrat to sweave)         | knitr       |
-| Mn-T           | Tangle (extract R code)           | knitr       |
-| Cc-Ca-L        | insert a link                     | Markdown    |
-| Cc-Cs-Cp       | code synthas region               | Markdown    |
-| Cc-Ct-h        | insert title                      | Markdown    |
-| Cc-Ct 1-6      | insert subtitles                  | Markdown    |
-| Cc -           | insert /hline                     | Markdown    |
-| Cc-CC-m        | compile                           | Markdown    |
-| Cc-Cc-p        | preview                           | Markdown    |
-| Cc-Cc-v        | html/browser view                 | Markdown    |
-| C =            | select region                     | latex       |
-| Cc %           | comment/uncomment region          | latex       |
-| Cc-Ca          | Master file compile               | latex       |
-| Cc-x           | helm-bibtex                       | latex       |
-| Cc-c           | reftex                            | latex       |
-| Cc-Cc          | compile latex & bibtex            | latex       |
-| Cc-Cq          | format paragraph                  | latex       |
-| C-M-f          | move to fwd environment           | latex       |
-| C-M-b          | move back environment             | latex       |
-| Cc-Cp          | previous section                  | latex       |
-| Cc-Cn          | next section                      | latex       |
-| Cc-s           | writegood mode                    | latex       |
-| Cc-Cg-g        | writegood grade level             | latex       |
-| Cc-Cg-e        | writegood reading ease            | latex       |
-| Cc-Cg-s        | style-check.rb                    | latex       |
-| Cc-Cj          | indent line (function)            | perl        |
-| Cc-Ca          | toggle autoline                   | perl        |
-| Cc-Cb          | find bad style                    | perl        |
-| Cc-t           | tidy code                         | perl        |
-| C-;            | comment line                      | perl        |
-| Cu-C;          | delete comment                    | perl        |
 * R
 ** Revolution R
 [[http://mran.revolutionanalytics.com/documents/rro/installation/#sysreq][Tutorial]]
@@ -637,6 +502,174 @@ search for similarity between variables
 *** Self-organizing maps
 *** Independent component analysis
 *** spectral clustering
+* INSTALL GITHUB
+#+BEGIN_SRC shell
+sudo apt-get install git
+git clone git://github.com/
+#+END_SRC
+* GITHUB                                                              :TABLE:
+
+#+CAPTION: Most used commands
+| Command                        | Alias | Description          |
+|--------------------------------+-------+----------------------|
+| status                         | gst   | summary              |
+| commit -a                      |       | add                  |
+| commit -m                      |       | message              |
+| add -f                         |       | force add            |
+| git log                        | glog  | logs                 |
+| remote add origin https:       |       | add and rename a url |
+| remote -v                      |       | show remotes         |
+| remote rename                  |       | rename a remote      |
+| remote rm origin               |       | remove remote        |
+| config --list                  |       | list configs         |
+| help -a \vref grep credential- |       | search help          |
+
+Create and push files to repository
+#+BEGIN_SRC shell
+echo "# tetst" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/neocruiser/tetst.git
+git push -u origin master
+#+END_SRC
+
+=pushing data to github via ssh= Setting a public key in SSH for github. [[https://help.github.com/articles/generating-ssh-keys/][Ttutorial here]]
+
+Correct remote url from =HTTPS= to =SSH=
+#+BEGIN_SRC shell
+git remote set-url origin git@github.com:neocruiser/repo.git
+#+END_SRC
+* INSTALL DROPBOX
+#+BEGIN_SRC shell
+sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
+#+END_SRC
+* INSTALL JAVA
+#+BEGIN_SRC shell
+
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+java -version
+#+END_SRC
+
+For Trinity, must install java version 1.7. Follow these instructions [[http://www.wikihow.com/Install-Oracle-Java-JDK-on-Ubuntu-Linux][here]]
+* EMACS keybindings                              :SYSADMIN:LATEX:EMACS:TABLE:
+:PROPERTIES:
+:ID:       2b013ae7-a2c8-4972-a0e8-b7258eece7dd
+:END:
+
+#+CAPTION: emacs normal settings
+| keybinding     | command                           | plugin      |
+|----------------+-----------------------------------+-------------|
+| C-=            | expand selection                  | emacs       |
+| C-M-:          | jump by letter inside buffer      | emacs       |
+| Cx-Mb          | switch bookmarks                  | emacs       |
+| Cx-r-m         | set (mark) bookmark               | emacs       |
+| M-S-s-WASD     | resizing buffers                  | emacs       |
+| Cc-p           | speedbar                          | emacs       |
+| Cx-l           | count line number                 | emacs       |
+| Ch-m           | help                              | emacs       |
+| Ch-k           | describe key                      | emacs       |
+| Ch-a           | describe apropos                  | emacs       |
+| Ch-b           | describe binding                  | emacs       |
+| Mx eval-buffer | reload buffer                     | emacs       |
+| M =            | count selected words              | emacs       |
+| Mx-diff        | compare 2 files                   | emacs       |
+| Mx-linum       | add line numbering                | emacs       |
+| Cc-x           | helm-scholar                      | emacs       |
+| Mx-shell       | shell                             | emacs       |
+| Mx-R           | R                                 | emacs       |
+| Cx-Cw          | save as                           | emacs       |
+| Cx-5-2         | new frame from within window      | emacs       |
+| Cx-5-b         | new frame from between buffers    | emacs       |
+| C-M-v          | sroll unfocused frame             | emacs       |
+| Cx-5-o         | swith between windows             | emacs       |
+| M-%            | search/replace                    | emacs       |
+| M-C-%          | search/replace REGEX              | emacs       |
+| Cx-Cv          | replace this file w/ an alternate | emacs       |
+| M-g            | Go to line                        | emacs       |
+| M-z            | delete until "next" charachter    | emacs       |
+| S-C u,d,l,r    | resize window                     | emacs       |
+| C-t, M-t       | transpose 2 charachters/words     | emacs       |
+| Cx-t           | transpose 2 lines                 | emacs       |
+| Cx-Cu, Cx-Cl   | switch upper/lower case           | emacs       |
+| Cc-g           | search with ag all files          | emacs       |
+| Cc-G           | search with only this file        | emacs       |
+| M-l / u        | lower/upper case a word           | emacs       |
+| C-_ / M-_      | undo / redo                       | emacs       |
+| Cx-u           | undo/redo Tree                    | emacs       |
+| Cx-i           | insert file in another file       | emacs       |
+| Cc-Cx-\        | toggle display UTF8 entities      | org         |
+|                | org-entities-help                 | org         |
+| Cc-Ct          | TODO cycle through                | org         |
+| Cc-Cq          | TAG cycle through                 | org         |
+| Cx-n-s         | open heading only                 | org         |
+| Cx-n-w         | open all headings                 | org         |
+| M-S-right      | add column                        | org         |
+| M-S-left       | del column                        | org         |
+| M-S-down       | add row                           | org         |
+| M-S-up         | del row                           | org         |
+| Cc-Cb          | select previous heading           | org         |
+| Cc-Ce          | compile/export org file           | org         |
+| Cc-a           | agenda                            | org         |
+| Cc-.           | insert date                       | org         |
+| Cc-Cs          | insert schedule                   | org         |
+| Cc-Cd          | insert deadline                   | org         |
+| Cc-Cx-d        | insrt drawer                      | org         |
+| Cc-l           | store location                    | org         |
+| Cc-Cl          | insert link, location ...         | org         |
+| M-h            | mark line                         | org         |
+| Cc-/           | sparce tree                       | org         |
+| <e TAB         | open exemple environment          | org         |
+| M-$            | correct word                      | ispell      |
+| Cx-b           | activate Helm                     | Helm        |
+| Cx-Cf          | open file Helm                    | Helm        |
+| C-spc          | select file activated helm        | Helm        |
+| M-a            | select multiple files             | Helm        |
+| Cc-x           | Helm-bibtex                       | Helm        |
+| Cc-c           | Reftex (biblio must be included)  | Helm        |
+| C-!            | revives last helm session         | Helm        |
+| C-@            | select entry                      | Helm-bibtex |
+| M-(            | loop through next selected entry  | Helm-bibtex |
+| Mn-C           | previous chunk                    | knitr       |
+| Mn-c           | next chunk                        | knitr       |
+| Cx-i           | insert content of file            | knitr       |
+| Mn-x           | insert Sexp                       | knitr       |
+| Mn-r           | compile knitr                     | knitr       |
+| Mn-P-p         | export/open pdf                   | knitr       |
+| Mn-u           | purl                              | knitr       |
+| Mn-s           | sweave (extrat to sweave)         | knitr       |
+| Mn-T           | Tangle (extract R code)           | knitr       |
+| Cc-Ca-L        | insert a link                     | Markdown    |
+| Cc-Cs-Cp       | code synthas region               | Markdown    |
+| Cc-Ct-h        | insert title                      | Markdown    |
+| Cc-Ct 1-6      | insert subtitles                  | Markdown    |
+| Cc -           | insert /hline                     | Markdown    |
+| Cc-CC-m        | compile                           | Markdown    |
+| Cc-Cc-p        | preview                           | Markdown    |
+| Cc-Cc-v        | html/browser view                 | Markdown    |
+| C =            | select region                     | latex       |
+| Cc %           | comment/uncomment region          | latex       |
+| Cc-Ca          | Master file compile               | latex       |
+| Cc-x           | helm-bibtex                       | latex       |
+| Cc-c           | reftex                            | latex       |
+| Cc-Cc          | compile latex & bibtex            | latex       |
+| Cc-Cq          | format paragraph                  | latex       |
+| C-M-f          | move to fwd environment           | latex       |
+| C-M-b          | move back environment             | latex       |
+| Cc-Cp          | previous section                  | latex       |
+| Cc-Cn          | next section                      | latex       |
+| Cc-s           | writegood mode                    | latex       |
+| Cc-Cg-g        | writegood grade level             | latex       |
+| Cc-Cg-e        | writegood reading ease            | latex       |
+| Cc-Cg-s        | style-check.rb                    | latex       |
+| Cc-Cj          | indent line (function)            | perl        |
+| Cc-Ca          | toggle autoline                   | perl        |
+| Cc-Cb          | find bad style                    | perl        |
+| Cc-t           | tidy code                         | perl        |
+| C-;            | comment line                      | perl        |
+| Cu-C;          | delete comment                    | perl        |
 * INSTALL TEXLIVE
 Basic [[http://xmodulo.com/how-to-install-latex-on-ubuntu-or-debian.html][tutorial]] also this [[http://tug.org/texlive/doc.html][documentation]]
 - Download [[http://ctan.cms.math.ca/tex-archive/systems/texlive/tlnet/][tl.unx.tar]]
@@ -677,40 +710,7 @@ sudo texhash	refresh/rebuild the list of file name database after missing *.sty
 latex sample.tex
 latex sampleref.bib
 #+END_SRC    
-* GITHUB                                                              :TABLE:
-
-#+CAPTION: Most used commands
-| Command                        | Alias | Description          |
-|--------------------------------+-------+----------------------|
-| status                         | gst   | summary              |
-| commit -a                      |       | add                  |
-| commit -m                      |       | message              |
-| add -f                         |       | force add            |
-| git log                        | glog  | logs                 |
-| remote add origin https:       |       | add and rename a url |
-| remote -v                      |       | show remotes         |
-| remote rename                  |       | rename a remote      |
-| remote rm origin               |       | remove remote        |
-| config --list                  |       | list configs         |
-| help -a \vref grep credential- |       | search help          |
-
-Create and push files to repository
-#+BEGIN_SRC shell
-echo "# tetst" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin https://github.com/neocruiser/tetst.git
-git push -u origin master
-#+END_SRC
-
-=pushing data to github via ssh= Setting a public key in SSH for github. [[https://help.github.com/articles/generating-ssh-keys/][Ttutorial here]]
-
-Correct remote url from =HTTPS= to =SSH=
-#+BEGIN_SRC shell
-git remote set-url origin git@github.com:neocruiser/repo.git
-#+END_SRC
-* NEEDSREVIEW ADDITIONAL LINUX APPS                              :Table:HOLD:
+* ADDITIONAL LINUX APPS                                          :Table:HOLD:
 #+CAPTION: Theming linux 
 | Function              | Command                                                 | Notes                                      |
 |-----------------------+---------------------------------------------------------+--------------------------------------------|
@@ -822,8 +822,7 @@ git remote set-url origin git@github.com:neocruiser/repo.git
 |                       | cd /mnt/                                                |                                            |
 |                       | ./VBoxLinuxAdditions.run                                | reboot                                     |
 
-
-* INPROGRESS G3.js: data.viz
+* G3.js: data.viz
 ** Setup a HTTP localhost =serving=
 1. Navigate to the directory that contains the html files
 2. Run Python's =SimpleHTTPServer=
@@ -891,7 +890,7 @@ Declaring classes inside attributes.
 .classed("bar", true)
 #+END_SRC
 
-** JavaScrip
+** JavaScript
 
 #+CAPTION: Summary of useful javascript functions
 | function          | description                   |
@@ -1394,7 +1393,7 @@ wget -O export.bib --load-cookies cookies.txt http://www.citeulike.org/search/al
 #+END_SRC
 
 From this site [[http://wiki.citeulike.org/index.php/Importing_and_Exporting][here]]
-* HOLD ARCHLINUX                                                 :Table:HOLD:
+* ARCHLINUX                                                      :Table:HOLD:
 ** PREINSTALLATION AND CONFIGURATION OF ARCHLINUX
 Download the iso image of archlinux, checksum verification of the md5sums, then
 use a tool like dd to write the image on a bootable usb stick ([[https://wiki.archlinux.org/index.php/installation_guide][here]]). Change the
