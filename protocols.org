@@ -57,7 +57,7 @@
 
 *** Project III: Network analysis between immunity genes
 1. Biological samples: Crassostrea gigas [[http://www.nature.com/nature/journal/v490/n7418/full/nature11413.html][genome of the Pacific oyster]]
-2. Samples from: neural ganglia and mantle/gill
+2. Samples from: visceral ganglia and gill, RNAseq in multiplex
 3. Aim 1: Generate RNAseq data, 2 conditions, 2 tissues
 4. Aim 2: Differential gene expression (edge R. see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]])
 5. Aim 3: Gene-gene interactions 
