@@ -652,7 +652,7 @@ ggplot(interpro,
 @ 
 
 We show here the number of contigs annotated by database and filtered by both evalue and the length of the similarity between query and target sequences.
-<<interpro2>>=
+<<interpro2, out.width='1\\linewidth'>>=
 interpro <- read.xlsx("./data/interpro.xlsx", sheetIndex = 2)
 interpro <- gather(interpro, "filters", "value", 3:7)
 head(interpro)
