@@ -1,4 +1,4 @@
-#+TITLE: Collection of information
+#+TITLE: Linux configurations and application setups
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -1006,6 +1006,21 @@ reduceRight()
 ** Ideas
 1. Drag and drop with Gridster and D3.js [[https://anmolkoul.wordpress.com/2015/07/06/drag-and-drop-visuals-in-your-interactive-dashboard-gridster-d3-js/][link]]
 2. Create a dashboard with D3.js DC.js node.js and mongoDB [[https://anmolkoul.wordpress.com/2015/06/05/interactive-data-visualization-using-d3-js-dc-js-nodejs-and-mongodb/][link]]
+** Wordpress
+Install all of Apache, PHP, PHPmyadmin, MySQL, and Wordpress on localhost and activate the dashboard for wordpress to edit and control the site as admin locally.
+1. Download and install [[www.wampserver.com][WAMP]]
+2. this will install on windows Apache, MySQL, and PHPmyadmin
+3. Download [[https://wordpress.org/download/][Wordpress]]
+4. unzip wordpress in =wamp directoru= under the =www= folder
+5. create a new empty database in MySQL with PHPmyadmin
+6. to do that access PHPmyadmin with WAMP/localhost
+7. then go to =http://localhost/<name of wordpress container in wwww/= in firefox
+8. this will activate the tutorial for install wordpress locally
+9. if problems occur try this [[http://sixrevisions.com/web-development/install-wordpress-on-your-computer-using-wampserver/][tutorial]]
+10. add wp-d3 plugin to wordpress to insert javascript code
+11. =Data= can be shared via MySQL or Media from wordpress
+
+
 * Firefox
 Accelerate Firefox with =about:config=. Activate GPL hardware acceleration ([[https://www.reddit.com/r/linux/comments/39q6xt/some_useful_firefox_tips_to_fix_choppy_scrolling/][here]])
 | Entry                                   | Value  |
