@@ -1019,6 +1019,13 @@ Install all of Apache, PHP, PHPmyadmin, MySQL, and Wordpress on localhost and ac
 9. if problems occur try this [[http://sixrevisions.com/web-development/install-wordpress-on-your-computer-using-wampserver/][tutorial]]
 10. add wp-d3 plugin to wordpress to insert javascript code
 11. =Data= can be shared via MySQL or Media from wordpress
+12. Change MySQL password on windows from PHPmyadmin (from [[http://www.ricocheting.com/how-to-install-on-windows/mysql-root-password][here]])
+    - in console =SET PASSWORD FOR root@localhost=PASSWORD('newpass');=
+13. Add MySQL user
+    - in console =CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';=
+    - Better to add user with all priviliges from PHPmyadmin
+14. 
+
 
 
 * Firefox

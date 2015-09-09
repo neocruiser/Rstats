@@ -67,14 +67,18 @@
 9. Preference in exon expression, between 2 conditions (exon-exon junctions + GLM model from DEXSeq for significance)
 10. [[id:624baea5-62b1-40b1-813f-8f7350966d50][Second set Bibliography (FPKM vs TPM)]]
 11. Use R BitSeq to estimate the number of actual transcribed genes
+    1. EdgeR too
+    2. BitSeq [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/26/bioinformatics.btv483.long][Hensman 2015]] =bioconductor=
 12. [[https://books.google.com/books?hl=en&lr=&id=LNScBAAAQBAJ&oi=fnd&pg=PA325&dq=qpx+parasite&ots=lGKB4qA7-h&sig=AK7xD5RGJhE-WzFRj2DY8HXbeJk#v=onepage&q=qpx%2520parasite&f=false][Text book]]
 13. use SNPeff to create a preliminary SNP list for GATK base calling. [[http://snpeff.sourceforge.net/protocol.html][tutorial]]
+    1. use RASER [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/29/bioinformatics.btv505.abstract][Ahn 2015]] to map reads specifically for SNP calling
 14. Serch for novel transcripts using special filters [[http://www.rna-seqblog.com/current-limitations-of-rna-seq-analysis-for-detection-of-novel-transcripts/][Weirick 2015]]
 15. Select common genes OR select by function:
     - immune genes
     - secretion proteins
     - transmembrane proteins
 16. Cluster analysis by pathway and gene-gene interaction (String database)
+    1. [[http://www.rna-seqblog.com/pathwayseq-pathway-analysis-for-rna-seq-data/][Pathway analysis from RNAseq data]]
 17. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
 
 *** Project IV: Cytometry and machine learning (unsupervised)
@@ -198,12 +202,26 @@ Firefox report.html
 
 Run quality controls on A1 A2 A3 samples
 #+BEGIN_SRC shell
-zcat 1_Index_1.A1_R1.fastq.gz | fastqc 1_Index_1.A1_R1.fastq.gz && \
-zcat 1_Index_2.A2_R1.fastq.gz | fastqc 1_Index_2.A2_R1.fastq.gz && \
-zcat 2_Index_8.A3_R1.fastq.gz | fastqc 2_Index_8.A3_R1.fastq.gz && \
-zcat HI.0615.001.Index_1.A1_R2.fastq.gz | fastqc HI.0615.001.Index_1.A1_R2.fastq.gz && \
-zcat HI.0615.001.Index_2.A2_R2.fastq.gz | fastqc HI.0615.001.Index_2.A2_R2.fastq.gz && \
-zcat HI.0615.002.Index_8.A3_R2.fastq.gz | fastqc HI.0615.002.Index_8.A3_R2.fastq.gz
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=02:10:00
+#PBS -N fastqc.out
+#PBS -e fastqc.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+oasis=/oasis/projects/nsf/sun108/
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+do
+    for j in 1 2
+    do
+zcat ${oasis}/silo/data/ganglia/br.${i}.R${j}.fastq.gz | \
+fastqc/fastqc ${oasis}/silo/data/ganglia/br.${i}.R${j}.fastq.gz \
+--outdir=${oasis}/silo/ganglia/fastqc/
+done
+done
 #+END_SRC
 
 *** Sampling
@@ -415,18 +433,101 @@ Or index the reference with samtools
 samtools faidx QPX_Genome_v017.fasta
 #+END_SRC
 **** QPX Trinity assembled transcriptome
+Get trinity (2.0.6) and bowtie 2 (2.2.6) and samtools. Build them all using =make=. And export PATH to bowtie and samtools directories. For more info on job scripts for big data visit [[http://www.psc.edu/index.php/trinity/753-trinity-example-files][here]].
+#+BEGIN_SRC shell
+wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/bowtie2-2.2.6-source.zip
+wget https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.6.tar.gz
+#+END_SRC
+
+Change names of fastq files. Rename files following the code below. The ganglia project. All samples were sequenced with =Illumina Truseq Stranded RNA kits=. Which means R1 contains Reverse (sense) reads and R2 contains (antisense) reads.
+#+BEGIN_SRC shell
+br.<1-24>.R<1-2>.fastq.gz
+gg.<1-24>.R<1-2>.fastq.gz
+#+END_SRC
+
+Merge =fastq.gz= files into =right.fastq.gz= and =left.fastq.gz= for R1 and R2 respectively. A combination assembly with trinity is superior to separate assembly. Create a reference transcriptome for contig alignment.
+#+BEGIN_SRC shell
+time find . -name "*R1*fastq.gz" | xargs zcat | gzip -c > test.fq.gz
+#+END_SRC
+
 We assemble a transcriptome to later annotate it.
 Using =trinity= I assemble the transcriptome with sequencing reads in =MMETSP0098=. Trimmomatic is integrated in trinity, so I use same default parameters used for the reference genome and transcriptome of Steve Roberts.
 #+BEGIN_SRC shell
-../trinityrnaseq/Trinity --seqType fq \
---left /media/Passport/MADL/QPX-RNA-Seq/MMETSP0098/MMETSP0098-Undescribed-sp--isolateNY0313808BC1.1.fastq.gz \
---right /media/Passport/MADL/QPX-RNA-Seq/MMETSP0098/MMETSP0098-Undescribed-sp--isolateNY0313808BC1.2.fastq.gz \
---quality_trimming_params "ILLUMINACLIP:~/data/Trimmomatic-0.33/adapters/TrueSeq3-PE-3.fa:2:30:10 TRAILING:3 MINLEN:36" \
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=5:ppn=16:native
+#PBS -l walltime=05:00:00
+#PBS -N trinity6.out
+#PBS -e trinity.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+oasis=/oasis/projects/nsf/sun108/
+
+trinity/Trinity --seqType fq \
+--SS_lib_type RF \
+--left ${oasis}/silo/data/ganglia/raw.all.R1.fq.gz \
+--right ${oasis}/silo/data/ganglia/raw.all.R2.fq.gz \
+--quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" \
 --normalize_max_read_cov 50 \
 --min_contig_length 200 \
---output ./trinity/ \
---max_memory 35G \
---CPU 10 \
+--output ./trinity/ganglia6/trinity/ \
+--CPU 16 \
+--bflyCPU 16 \
+--bflyGCThreads 16 \
+> trinity_output.log
+#+END_SRC
+
+When running trinity on large datasets it is best to cut jobs into phases.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=02:00:00
+#PBS -N trinity1.out
+#PBS -e trinity.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+# xsede directories
+oasis=/oasis/projects/nsf/sun108
+scratch=/oasis/scratch/silo/temp_project
+home=/home/silo
+# output directories for trinity
+jobid=test1
+workdir=${scratch}/ganglia/trinity/trinity_out_dir_${jobid}/
+mkdir -p ${workdir}
+cd ${workdir}
+# fastq raw files, reads
+sense=${scratch}/ganglia/data/gg.11.R1.fastq.gz
+antisense=${scratch}/ganglia/data/gg.11.R2.fastq.gz
+# maximum memory for jellyfish to use
+# ppn*8
+JM=10G
+
+## TRINITY
+## Phase 1: construct Kmers
+${home}/trinity/Trinity --seqType fq \
+--SS_lib_type RF \
+--left ${sense} \
+--right ${antisense} \
+--quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" \
+--normalize_max_read_cov 50 \
+--min_contig_length 200 \
+--output ${workdir} \
+--max_memory ${JM} \
+--CPU 16 \
+--bflyCPU 16 \
+--bflyGCThreads 16 \
+--no_run_chrysalis \
+>& ${home}/trinity.${jobid}_output.log
 #+END_SRC
 
 As of today =April-2015= Trinity uses java version 1.7. So must downgrade system to that version. I can comment out in =trinity.pl= java version check but under java v.1.8 trinity can introduce some errors.
@@ -495,7 +596,7 @@ Trimmomatic can be installed separately or used inside Trinity as a plugin.
 Download trimmomatic
 
 #+BEGIN_SRC shell
-$ curl -O -L http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.33.zip
+curl -O -L http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.33.zip
 #+END_SRC
 
 The trimming is based based on FastQC quality control reports. The reports can be found under the dir "~/data/QPX/Align/"
@@ -2300,6 +2401,8 @@ I need applications that load rna-seq data.
 25. Bpipe [[http://docs.bpipe.org/][documentation]]
 26. Emboss package for nucleotide seq analysis [[http://emboss.sourceforge.net/download/][(includes Transeq)]] for contig translation. Package includes [[http://emboss.sourceforge.net/apps/][a list of applications]]
 27. Reverse translate aligned peptides into DNA sequences [[http://www.cbs.dtu.dk/services/RevTrans-2.0/web/download.php][RevTrans]]
+28. Axel and aria2 alternatives for wget and curl [[http://www.cyberciti.biz/tips/download-accelerator-for-linux-command-line-tools.html][here]]
+29. Parallel computing in GNU [[http://figshare.com/articles/GNU_parallel_for_Bioinformatics_my_notebook/822138][here]]
 
 #+BEGIN_SRC shell
 sudo apt-get install libx11-dev libpulse-dev libxcomposite-dev \
@@ -2320,12 +2423,12 @@ We access to blacklight, comet, gordon, oasis, and supercell.
 ssh -l silo gordon.sdsc.xsede.org
 #+END_SRC
 
-Shared directory with bassem. Huge space.
+Shared directory with bassem. 3T of free space
 #+BEGIN_SRC shell
 cd /oasis/project/nsf/sun108
 #+END_SRC
 
-Transfer files
+Transfer files (upload)
 #+BEGIN_SRC shell
 scp file1 silo@gordon.sdsc.xsede.org:~/
 scp -r folder ...
