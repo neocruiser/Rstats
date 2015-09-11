@@ -439,13 +439,18 @@ wget http://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.2.6/bowtie2-2.2.
 wget https://github.com/trinityrnaseq/trinityrnaseq/archive/v2.0.6.tar.gz
 #+END_SRC
 
+Check md5sums with available md5 list for each sample before renaming.
+#+BEGIN_SRC shell
+md5sum -c md5sus.txt
+#+END_SRC
+
 Change names of fastq files. Rename files following the code below. The ganglia project. All samples were sequenced with =Illumina Truseq Stranded RNA kits=. Which means R1 contains Reverse (sense) reads and R2 contains (antisense) reads.
 #+BEGIN_SRC shell
 br.<1-24>.R<1-2>.fastq.gz
 gg.<1-24>.R<1-2>.fastq.gz
 #+END_SRC
 
-Merge =fastq.gz= files into =right.fastq.gz= and =left.fastq.gz= for R1 and R2 respectively. A combination assembly with trinity is superior to separate assembly. Create a reference transcriptome for contig alignment.
+Merge =fastq.gz= files into =right.fastq.gz= and =left.fastq.gz= for R1 and R2 respectively. A combination assembly with trinity is superior to separate assembly. Create a reference transcriptome for contig alignment. =n.b.= never chose an output file name that contain an =R1= or =R2= tag. This will create a loop and the merge wont ever end. Or just place the output file in a different folder.
 #+BEGIN_SRC shell
 time find . -name "*R1*fastq.gz" | xargs zcat | gzip -c > test.fq.gz
 #+END_SRC
@@ -479,7 +484,7 @@ trinity/Trinity --seqType fq \
 > trinity_output.log
 #+END_SRC
 
-When running trinity on large datasets it is best to cut jobs into phases.
+When running trinity on large datasets it is best to cut jobs into phases. Phase I (add =--no_run_chrysalis=) will construct K-mers. Phase II will run Chrysalis and Butterfly for K-mer/read clustering, building the DeGruijn graph, mapping. On oyster data, RNA are sequenced with Illumina TrueSeq stranded RNA kit. This will extract the second strand. So the sense-forward reads will figure in R2 and reverse reads are in R1.
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -q normal
@@ -498,7 +503,7 @@ ulimit -s unlimited
 set -x
 # xsede directories
 oasis=/oasis/projects/nsf/sun108
-scratch=/oasis/scratch/silo/temp_project
+
 home=/home/silo
 # output directories for trinity
 jobid=test1
@@ -528,6 +533,11 @@ ${home}/trinity/Trinity --seqType fq \
 --bflyGCThreads 16 \
 --no_run_chrysalis \
 >& ${home}/trinity.${jobid}_output.log
+#+END_SRC
+
+Get the number of contigs that have a length of 200 or more.
+#+BEGIN_SRC shell
+cat Trinity.fasta  | grep "^>TR" | awk '{print $2}' | sed 's/len=//g' | awk '{ if ($1 < 400) print $1 }' | wc -l
 #+END_SRC
 
 As of today =April-2015= Trinity uses java version 1.7. So must downgrade system to that version. I can comment out in =trinity.pl= java version check but under java v.1.8 trinity can introduce some errors.
@@ -956,7 +966,7 @@ do
 
 done
 #+END_SRC
-**** step 3
+nnnnn**** step 3
 Call SNPs with bcftools. See script one step above. When finished with calling SNPs with samtools, enumerate the number of SNPs called for each reference.
 #+BEGIN_SRC shell
 #for example
@@ -2403,6 +2413,7 @@ I need applications that load rna-seq data.
 27. Reverse translate aligned peptides into DNA sequences [[http://www.cbs.dtu.dk/services/RevTrans-2.0/web/download.php][RevTrans]]
 28. Axel and aria2 alternatives for wget and curl [[http://www.cyberciti.biz/tips/download-accelerator-for-linux-command-line-tools.html][here]]
 29. Parallel computing in GNU [[http://figshare.com/articles/GNU_parallel_for_Bioinformatics_my_notebook/822138][here]]
+30. QIIME for DNA sequencing data of microbiome analysis [[http://qiime.org/][website]]
 
 #+BEGIN_SRC shell
 sudo apt-get install libx11-dev libpulse-dev libxcomposite-dev \
