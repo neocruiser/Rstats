@@ -455,6 +455,12 @@ Merge =fastq.gz= files into =right.fastq.gz= and =left.fastq.gz= for R1 and R2 r
 time find . -name "*R1*fastq.gz" | xargs zcat | gzip -c > test.fq.gz
 #+END_SRC
 
+Count the number of reads after merging, both R1 and R2, to insure the merge was successful.
+#+BEGIN_SRC shell
+time zcat file.R1.fq.gz | grep -i "@acb052" | wc -l >& count_R1_output.log
+#+END_SRC
+
+
 We assemble a transcriptome to later annotate it.
 Using =trinity= I assemble the transcriptome with sequencing reads in =MMETSP0098=. Trimmomatic is integrated in trinity, so I use same default parameters used for the reference genome and transcriptome of Steve Roberts.
 #+BEGIN_SRC shell
@@ -535,7 +541,8 @@ ${home}/trinity/Trinity --seqType fq \
 >& ${home}/trinity.${jobid}_output.log
 #+END_SRC
 
-Get the number of contigs that have a length of 200 or more.
+
+Count the number of contigs that have a length of 200 or more.
 #+BEGIN_SRC shell
 cat Trinity.fasta  | grep "^>TR" | awk '{print $2}' | sed 's/len=//g' | awk '{ if ($1 < 400) print $1 }' | wc -l
 #+END_SRC
