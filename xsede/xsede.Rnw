@@ -1,0 +1,246 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results='hide'>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+Load packages.
+<<packages,results='hide'>>=
+pkgs <- c('xlsx','caret','leaps','glmnet','lattice',
+          'latticeExtra', 'dplyr', 'tidyr')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+\section{XSEDE benchmarking}
+\label{sec:bench}
+Files are labeled either with BR for gills and GG for ganglia.
+These are the two tissues used in this project.
+There is 48 files for each GG and BR.
+R1 and R2 files denote reverse reads and forward reads.
+There is 24 R1 files and 24 R2 files for GG.
+The same applies for BR.
+The first 12 R1 and R2 in GG or BR are for starved oysters.
+The rest is for normally fed oysters.
+These are the conditions used in this project.
+
+
+\subsection{Quality control checks}
+\label{subsec:qc}
+Quality controls were done separately for each R1 and R2 samples.
+<<quality>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 1)
+dat <- gather(dat, su, count, 2:3)
+dat
+ggplot(dat,
+       aes(x = file,
+           y = count,
+           fill = su)) +
+    geom_point(aes(color= su)) +
+    geom_line(data = dat) +
+    theme_bw() +
+    labs(x = "Number of files",
+         y = "Number of reads (x1000,000,000)")
+@ 
+
+\subsection{Trimming data}
+\label{subsec:trim}
+Trimming can be done automatically in trinity. But trimming was also tested outside of trinity with trimmomatic. The tests show trinity is faster by two hours per sample.
+<<trim>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 2)
+dat
+@ 
+
+\subsection{Counting reads}
+\label{subsec:count}
+Half the samples were counted. 
+Below is the time it takes to count R1 labeled files from GG samples.
+<<count>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 3)
+dat
+@ 
+
+
+\subsection{Merging samples}
+\label{subsec:merge}
+First, R1 and R2 files are always merged separately.
+Second, all GG and BR files are merged in a single fastq file.
+Third, all GG or BR files are merged in two separate fastq files.
+<<merge>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 4)
+dat
+@ 
+
+
+
+\subsection{Sampling}
+\label{subsec:sampling}
+Randomly sampling 80\% and 60\% of reads is done only on merged GG and BR fastq files.
+The file that contains both GG and BR is not sampled.
+Sampling jobs at 80\% failed when running on GORDON normal (native) cluster.
+These jobs are now running on GORDON virtual memory (Vsmp).
+<<sample>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 5)
+# first row is the failed GORDON test of 80% sampling
+# normal settings
+dat <- dat[-1, ]
+dat
+dat <- gather(dat, su, count, 3:4)
+ggplot(dat,
+       aes(x = percentage,
+           y = count,
+           fill = su)) +
+    theme_bw() +
+    geom_point(aes(color = su)) +
+    geom_line(data = dat) +
+    labs(x = 'Sample size by percentage of around 130 millions reads',
+         y = 'Time required to complete sampling')
+@ 
+
+
+\subsection{File size}
+\label{subsec:size}
+The size of each file is relative to its state either being compressed gzip or flat. 
+The difference between compressed and flat is 4 folds.
+All R1 BR and GG have 110 GB before compression and the size is reduced to 33 GB after compression.
+It will take almost 1 hour to decompress this amount of data.
+So it is best to keep a flat version of each file to speed up server jobs and avoid the 48 walltime termination on jobs that exceed this limit.
+At this stage, that is after sampling GG and BR at 80\% and 60\% and merging the corresponding files the total sum of disk size occupied by the flat files is almost 500 GB.
+
+
+
+\begin{table}[ht]
+  % \captionsetup{format=plain,justification=centerlast}
+  \centering
+  \caption{\bf Disk size}
+  \renewcommand{\arraystretch}{0.8}
+  % \small\addtolength{\tabcolsep}{-1pt}
+  \begin{tabular}{l l l}
+    \toprule
+    File & Size one file R1 & Total (R1+R2)+(BR+GG) \\
+    \midrule
+    60\% reads & 20 GB & 80 GB \\
+    80\% reads & 24 GB & 94 GB \\
+    100\% reads & 30 GB & 115 GB \\
+    All reads & 57 GB & 115 GB \\
+    Reads by sample$^*$ & 1 GB & 115 GB \\
+    \bottomrule
+  \end{tabular}
+  \vspace{-10pt}
+  \caption*{\scriptsize *Raw files generated by the sequencing platform separated by biological sample, condition, and tissue.}
+  \label{tab:disk}
+\end{table}
+
+
+\subsection{Butterfly: Final phase in transcriptome assembly}
+\label{subsec:bfly}
+Butterfly is the final phase of running trinity on raw reads sequencing data.
+On a single sample, which includes one R1 file and one R2 file, butterfly can complete 50\% of the analysis in 2 hours with 1 node and 64 cores at 900 GB.
+However, with little over 240 million reads, butterfly completes only 3\% of the mapping of contigs in 1 hour with 1 node and 64 cores at 900 GB.
+\marginnote{\small\color{blue}$\Lsh$ GG 60\% was used here for testing butterfly}[0.1cm]
+<<size>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 6)
+dat
+ggplot(dat,
+       aes(x = rMill,
+           y = inchMin,
+           fill = xsede)) + 
+    geom_point(aes(color = xsede)) +
+    geom_line(data = dat) + 
+    theme_bw() +
+    labs(x= 'Number of reads (x1000,000,000)',
+         y = 'Time in minutes for inchworm to complete')
+@ 
+
+Completion time for trinity, all phases, on 1 sample, that is one R1 and one R2.
+<<trinity>>=
+dat <- dat[1:4, ]
+dat <- gather(dat, trinity, count, 4:5)
+ggplot(dat,
+       aes(x = score,
+           y = count,
+           fill = trinity)) + 
+    geom_point(aes(color = trinity)) +
+    geom_line(data = dat) + 
+    theme_bw() +
+    labs(x = "Number of cores",
+         y = "Time in minutes")
+@ 
+
+Percentage of completion of butterfly.
+<<bfly>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 8)
+ggplot(dat,
+       aes(x = completed,
+           y = tMin)) +
+    theme_bw() +
+    geom_point(data = dat) +
+    geom_line(data = dat) +
+    labs(x = 'Percentage of completed butterfly contigs',
+         y = 'Total time in minutes')
+@ 
+
+\subsection{Assembly length of contigs}
+\label{subsec:contigs}
+What is the size of the assembled contigs if we randomly sample 100 K reads from each R1 and R2 of one sample?
+\marginnote{\small\color{blue}$\Lsh$ GG 11 was used for sampling}[.1cm]
+From a total of 200 K reads (R1 and R2) we can assemble 2842 contigs at a full size of 1,160,388 base.
+<<length>>=
+dat <- read.xlsx("./data/xsede.xlsx", sheetIndex = 9)
+ggplot(dat,
+       aes(x = count,
+           y = length)) +
+    theme_bw() +
+    geom_point(data = dat) +
+    geom_line(data = dat) +
+    labs(x = "Number of contigs assembled from 100K PE reads",
+         y = "Maximum length of contigs")
+@ 
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}

@@ -90,7 +90,8 @@ devtools::install_github("vqv/ggbiplot")
 Install Bioconductor packages
 #+BEGIN_SRC R
 source("http://bioconductor.org/biocLite.R")
-biocLite('GenABEL'
+biocLite('GenABEL')
+biocLite("topGO")
 #+END_SRC
 
 Install package =radiant= a shiny app that run in the browser for automated stats. not interactive.

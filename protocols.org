@@ -462,46 +462,22 @@ time zcat file.R1.fq.gz | grep -i "@acb052" | wc -l >& count_R1_output.log
 
 
 We assemble a transcriptome to later annotate it.
-Using =trinity= I assemble the transcriptome with sequencing reads in =MMETSP0098=. Trimmomatic is integrated in trinity, so I use same default parameters used for the reference genome and transcriptome of Steve Roberts.
+Using =trinity= I assemble the transcriptome with sequencing reads in =MMETSP0098=. Trimmomatic is integrated in trinity, so I use same default parameters used for the reference genome and transcriptome of Steve Roberts. The script below runs on =Comet= from Xsede at SDSC (San Diego Supercomputer). On Comet, jobs are submitted with =sbatch= and followed with =squeue=.
 #+BEGIN_SRC shell
 #!/bin/bash
-#PBS -q normal
-#PBS -l nodes=5:ppn=16:native
-#PBS -l walltime=05:00:00
-#PBS -N trinity6.out
-#PBS -e trinity.err
-#PBS -A sun108
-#PBS -M sleiman.bassim@stonybrook.edu
-#PBS -m abe
-#PBS -V
-oasis=/oasis/projects/nsf/sun108/
+#SBATCH --job-name="test"
+#SBATCH --output="test.%j.%N.out"
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=64
+#SBATCH --export=ALL
+#SBATCH -t 10:00:00
+#SBATCH --qos=large-shared-normal
+#SBATCH --partition=large-shared
+#SBATCH -A ddp232
+#SBATCH --reservation=large-testing
+#SBATCH --mem=1000G
 
-trinity/Trinity --seqType fq \
---SS_lib_type RF \
---left ${oasis}/silo/data/ganglia/raw.all.R1.fq.gz \
---right ${oasis}/silo/data/ganglia/raw.all.R2.fq.gz \
---quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" \
---normalize_max_read_cov 50 \
---min_contig_length 200 \
---output ./trinity/ganglia6/trinity/ \
---CPU 16 \
---bflyCPU 16 \
---bflyGCThreads 16 \
-> trinity_output.log
-#+END_SRC
-
-When running trinity on large datasets it is best to cut jobs into phases. Phase I (add =--no_run_chrysalis=) will construct K-mers. Phase II will run Chrysalis and Butterfly for K-mer/read clustering, building the DeGruijn graph, mapping. On oyster data, RNA are sequenced with Illumina TrueSeq stranded RNA kit. This will extract the second strand. So the sense-forward reads will figure in R2 and reverse reads are in R1.
-#+BEGIN_SRC shell
-#!/bin/bash
-#PBS -q normal
-#PBS -l nodes=1:ppn=16:native
-#PBS -l walltime=02:00:00
-#PBS -N trinity1.out
-#PBS -e trinity.err
-#PBS -A sun108
-#PBS -M sleiman.bassim@stonybrook.edu
-#PBS -m abe
-#PBS -V
 # set stack to unlimited
 # because of large datasets
 ulimit -s unlimited
@@ -509,22 +485,99 @@ ulimit -s unlimited
 set -x
 # xsede directories
 oasis=/oasis/projects/nsf/sun108
-
+scratch=/oasis/scratch/comet/silo/temp_project
 home=/home/silo
-# output directories for trinity
-jobid=test1
+##################################
+# output directories for trinity #
+##################################
+jobid=cometest
+fileid=test/gg.11
+
+########################
+# Dont change anything #
+########################
 workdir=${scratch}/ganglia/trinity/trinity_out_dir_${jobid}/
 mkdir -p ${workdir}
 cd ${workdir}
 # fastq raw files, reads
-sense=${scratch}/ganglia/data/gg.11.R1.fastq.gz
-antisense=${scratch}/ganglia/data/gg.11.R2.fastq.gz
+sense=${scratch}/ganglia/data/$fileid.R1.fastq
+antisense=${scratch}/ganglia/data/$fileid.R2.fastq
 # maximum memory for jellyfish to use
-# ppn*8
-JM=10G
+JM=1000G
 
-## TRINITY
+
+###########
+# TRINITY #
+###########
 ## Phase 1: construct Kmers
+#--no_run_chrysalis
+## Phase 2: cluster reads, DeBruijn, and map to kmers
+${home}/trinity/Trinity --seqType fq \
+--SS_lib_type RF \
+--left ${sense} \
+--right ${antisense} \
+--quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" \
+--normalize_max_read_cov 50 \
+--max_memory ${JM} \
+--bflyCPU 64 \
+--min_contig_length 200 \
+--output ${workdir} \
+>& ${home}/trinity.${jobid}_output.log
+
+## when running inchworm only
+## add CPU
+#--CPU 64
+
+## when running Butterfly
+## remove CPU
+#+END_SRC
+
+When running trinity on large datasets it is best to cut jobs into phases. Phase I (add =--no_run_chrysalis=) will construct K-mers. Phase II will run Chrysalis and Butterfly for K-mer/read clustering, building the DeGruijn graph, mapping. On oyster data, RNA are sequenced with Illumina TrueSeq stranded RNA kit. This will extract the second strand. So the sense-forward reads will figure in R2 and reverse reads are in R1. The script below runs on =Gordon= from Xsede using virtual memory because of the excess sequence reads. Over 400 million reads can break inchworm phase with trinity. Allocating around 900 GB of RAM in virtual memory solve the problem.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q vsmp
+#PBS -l nodes=1:ppn=256:vsmp
+#PBS -l walltime=20:00:00
+#PBS -N trinity_all_inchw
+#PBS -e trinity_all.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+# xsede directories
+oasis=/oasis/projects/nsf/sun108
+scratch=/oasis/scratch/silo/temp_project
+home=/home/silo
+##################################
+# output directories for trinity #
+##################################
+jobid=all
+fileid=raw.all
+
+########################
+# Dont change anything #
+########################
+workdir=${scratch}/ganglia/trinity/trinity_out_dir_${jobid}/
+mkdir -p ${workdir}
+cd ${workdir}
+# fastq raw files, reads
+sense=${scratch}/ganglia/data/$fileid.R1.fq.gz
+antisense=${scratch}/ganglia/data/$fileid.R2.fq.gz
+# maximum memory for jellyfish to use
+JM=900G
+
+###########
+# TRINITY #
+###########
+## Phase 1: construct Kmers
+#--no_run_chrysalis
+## Phase 2: cluster reads, DeBruijn, and map to kmers
 ${home}/trinity/Trinity --seqType fq \
 --SS_lib_type RF \
 --left ${sense} \
@@ -534,15 +587,15 @@ ${home}/trinity/Trinity --seqType fq \
 --min_contig_length 200 \
 --output ${workdir} \
 --max_memory ${JM} \
---CPU 16 \
---bflyCPU 16 \
---bflyGCThreads 16 \
+--CPU 64 \
+--bflyCPU 64 \
+--bflyGCThreads 30 \
 --no_run_chrysalis \
 >& ${home}/trinity.${jobid}_output.log
 #+END_SRC
 
 
-Count the number of contigs that have a length of 200 or more.
+Count the number of contigs that have a length of 200 or more. Too many contigs are reported with =Butterfly= if more than 1 million reads are used. This is correct, [[http://trinityrnaseq.github.io/trinity_faq.html#ques_why_so_many_transcripts][see]] what are the options.
 #+BEGIN_SRC shell
 cat Trinity.fasta  | grep "^>TR" | awk '{print $2}' | sed 's/len=//g' | awk '{ if ($1 < 400) print $1 }' | wc -l
 #+END_SRC
@@ -973,7 +1026,7 @@ do
 
 done
 #+END_SRC
-nnnnn**** step 3
+**** step 3
 Call SNPs with bcftools. See script one step above. When finished with calling SNPs with samtools, enumerate the number of SNPs called for each reference.
 #+BEGIN_SRC shell
 #for example
@@ -2421,6 +2474,9 @@ I need applications that load rna-seq data.
 28. Axel and aria2 alternatives for wget and curl [[http://www.cyberciti.biz/tips/download-accelerator-for-linux-command-line-tools.html][here]]
 29. Parallel computing in GNU [[http://figshare.com/articles/GNU_parallel_for_Bioinformatics_my_notebook/822138][here]]
 30. QIIME for DNA sequencing data of microbiome analysis [[http://qiime.org/][website]]
+31. [[http://www.genomebiology.com/2014/15/3/R46/abstract][Kraken]] for fast read classification for metganomics =taxonomy=
+32. List of sequence analysis [[https://en.wikipedia.org/wiki/List_of_sequence_alignment_software][packages]]
+33. [[https://www.gatb.fr/leon-read-compression/][Leon]] read compression of fastq/fasta files (up to 22 folds)
 
 #+BEGIN_SRC shell
 sudo apt-get install libx11-dev libpulse-dev libxcomposite-dev \
@@ -2518,6 +2574,34 @@ Obtaining queue properties of a job.
 qstat -q
 #+END_SRC
 
+*** Transfer big files with globus
+1. create globus account [[https://www.globus.org/][sign up]]
+2. add ssh public key to globus [[http://dev.globus.org/cli/][tutorial]]
+3. sign in
+   + =ssh <name>@cli.globusonline.org=
+4. Globus use cases [[https://www.xsede.org/software/globus#cli][here]]
+5. Globus help [[https://support.globus.org/forums/22861518?utm_source=xsede&utm_medium=website&utm_campaign=xsede-user-guide][CLI]]
+6. Activate endpoints on Globus before scp transfer [[https://www.globus.org/xfer/ActivateEndpoints][here]] =sdsc#oasis= and =xsede#comet=
+   + =ssh $USER@cli.globusonline.org endpoint-activate sdsc#oasis xsede#comet=
+7. Transfer
+   + =scp -r sdsc#oasis:/oasis/scratch/$USER/temp_project/... xsede#comet:/oasis/scratch-comet/$USER/temp_project/=
+8. Globus [[https://www.xsede.org/web/guest/data-transfers#table12][FTP endpoints]] for xsede (old)
+
+*** Deleting large files
+The traditional =rm -r= to delete millions of files inside a directory will fail.
+First option is to use =rsync=
+#+BEGIN_SRC shell
+# create empty directory
+## target directory contains million files
+mkdir empty
+rsync -a --delete empty target
+#+END_SRC
+
+Super fast option is with perl.
+#+BEGIN_SRC shell
+cd target
+perl -e 'for(<*>){((stat)[9]<(unlink))}'
+#+END_SRC
 
 *** Analysis
 Data are stored in :

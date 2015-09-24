@@ -1,0 +1,69 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results='hide'>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+Load packages.
+<<packages,results='hide'>>=
+pkgs <- c('xlsx','caret','leaps','glmnet','lattice',
+          'latticeExtra', 'dplyr', 'tidyr')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+Install \textbf{TopGO} from bioconductor \href{http://www.bioconductor.org/packages/release/bioc/html/topGO.html}{\color{blue}here}.
+<<packages2>>=
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("topGO")
+@ 
+
+
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}
