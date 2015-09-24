@@ -1,0 +1,1029 @@
+#+TITLE: Brain disease reseach
+#+AUTHOR: Sleiman Bassim, PhD
+#+DATE: University of Vermont, Human Genetics and Genomics
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:comment d:(not LOGBOOK) date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t toc:t todo:t |:t
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+KEYWORDS:
+
+
+* Brain diseases and human sciences
+** INTRODUCTION :noexport:
+I need to know where I'm headed before starting. What is the purpose of the
+study? What the objectives are? Define the scoop? What are the requirements that
+I should start with? The project plan should be easy, significant, interesting
+but not essentially special, it should be reasonable. I should not waist time
+making my project plan perfect. Finally someone should be able to read it and
+understand what I'm trying to accomplish.
+
+The subject is substance dependencies. Hypothesis 1 is that addiction is genetic
+with 75 % being hereditary.
+
+I've got 6000 samples assembled with GWAS data and physiological data and an
+other batch of 6000 data only assembled with physiological data. There is also 2
+populations either african or european. 
+
+I can either infer associations between the different physiological variables, do
+a meta-analysis summary of all populations and diseases or investigate the
+pleitrophic effect of genes. The latter is done under the assumption that these
+genes contain at least one SNP.
+
+The analysis will start with an unsupervised learning protocol to cluster
+different recurrent patterns in the data. The data consists of
+the GWAS dataset. This dataset contains clinical information and imputed rare
+SNPs. First exonic SNPs can be up-weighted and the data transposed. GWAS data
+can be used only with the descriptive clinical columns. Which means only the
+phenotypic data with a disease/or-not phenotypic variation. Through this approach the analysis
+will be fast, especially since the number of rows is relative to the number of
+SNPs to be analyzed. 
+
+Classification of the GWAS data can assume different weighting of regulatory
+regions (splice sites, transcription factor binding sites, promoters,
+enhancers/silencers), non-coding regions (intergenic, upstream/downstream,
+3'UTR/5'UTR), exonic coding regions (stop loss. stop gain, missense,
+frameshift). In addition GWAS related to mental illness can also be used to
+classify the exonic SNPs.
+
+Clustering can be from hierarchical or K-means and principal components, each
+one used in unsupervised learning.
+
+What are the significance of the results and their interest? First, after
+categorizing through clustering of the sampled data, shrinkage is used to
+eliminate irrelevant phenotypic (physiological and environmental factors)
+features and reduce noise. Every cluster will then be defined by a number of
+features less than the initial number used during supervised clustering.
+
+For annotation purposes of SNPs i might find ANOVAR or ENSEMBL rich databases
+for SNP classification and for mental disease data integration.
+
+Maybe i can integrate a population structuring after clustering.
+
+** PROJECTS :noexport:
+Before starting to build an approach it is best to consider the GOAL of the
+study, the HYPOTHESIS and its SIGNIFICANCE, the INNOVATION of the APPROACH, and
+
+1. Col25A1 and comorbid substance dependence
+2. Identify disease genes following the concept of common disease, unique variants
+3. SNPs that can cause a disease in a population but also prevent another
+4. Association between immune system and mental illness
+5. New method for the functional analysis of variants associated with mental disorder
+6. Unsupervised machine learning in childhood behavior for multiclass categorical data
+7. Meta analysis and comorbid substance dependence
+8. Full characterization of all genetic variants (statistical analysis of gVCF data)
+9. Estimate the total number of disease genes (SNP simulation)
+10. Predict how much heritability each SNP can have on a disease in a population
+11. Group categorical data by sparse and ridged group lasso for personalized modelling
+12. Combine genetic diseases related to mental illness while removing control for polygenic predictive analysis
+13. Network analysis for pleiotropy to combine information from GWAS data, pathways
+
+** Visualization
+1. 36 best tools for data visualization [[http://www.creativebloq.com/design-tools/data-visualization-712402][CreativeBlog]]
+2. Shiny for R interactive visualization [[http://shiny.rstudio.com/tutorial/][rStudio]] =tutorial=
+3. Plotly for ggplot2 within knitr and markdown [[http://www.r-bloggers.com/plot-with-ggplot2-and-plotly-within-knitr-reports/][r-bloggers]]
+4. ggViz an R package for interactive visualization [[http://ggvis.rstudio.com/][rStudio]]
+5. d3Network an R package for JSON data [[http://christophergandrud.github.io/d3Network/][github]]
+6. Data-projector for JSON data (PCA/SVD based projection) [[http://opensource.datacratic.com/data-projector/][datacratic]]
+7. Wordle to create a weighed word cloud [[http://www.wordle.net/advanced][wordle]]
+8. circos in Perl and as a webtool [[http://circos.ca/][circos]]
+9. Hive plots in R Perl or Julia
+10. Visual survey of text visualization techniques [[http://textvis.lnu.se/][textvis]]
+11. Network data integration [[http://www.cytoscape.org/][Cytoscape]] and [[http://cytoscapeweb.cytoscape.org/][Cytoscape web]]
+12. Data-driven documents in javascript [[http://d3js.org/][d3]]
+13. Database of miscellaneous data [[http://www.data.gov/][Data.org]]
+
+** Sequence and statistical tools
+1. Variant association tool [[http://varianttools.sourceforge.net/Association/HomePage][VAT]]
+2. High performance genomic feature operations [[https://github.com/bedops/bedops][BEDOPS]]
+3. Haplotype analysis [[http://www.broadinstitute.org/scientific-community/science/programs/medical-and-population-genetics/haploview/haploview][Haploview]]
+4. Shaun Purcells update of Plink for standard regression [[http://pngu.mgh.harvard.edu/~purcell/plink2/][version 2]] and [[http://pngu.mgh.harvard.edu/~purcell/plink/tutorial.shtml][version 1]]
+5. Random forest is implemented in [[https://github.com/liamgriffiths/random-jungle][Random Jungle]]
+6. Bayesian Partitioning for epistasis association mapping [[http://www.nature.com/ng/journal/v39/n9/full/ng2110.html][BEAM]]
+7. Bioconductor Manual for R [[http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#TOC-Factors][UCR]]
+8. Vectorization techniques in R [[http://www.burns-stat.com/pages/Tutor/R_inferno.pdf][R inferno]]
+9. Openhelix tutorials for the Genome browser of [[http://www.openhelix.eu/cgi/freeTutorials.cgi][UCSC]]
+10. AnoVAR
+11. EnsEMBL
+12. Platform to communicate and track research [[https://www.synapse.org/#][Synapse]]
+13. Locating ancestry based on SNPs [[http://genome.sph.umich.edu/wiki/LASER][LASER]]
+14. Simulating SNPs [[http://ccega.renci.org:8080/ccega_simulator/simulate][HapSample]] cited here [[http://archpsyc.jamanetwork.com/article.aspx?articleID%3D1859133][Nurnberger 2014]]
+
+** Bibliography
+*** Assessment of GWAS papers
+1. Quality control GWAS [[http://www.nature.com/nprot/journal/v5/n9/pdf/nprot.2010.116.pdf][Anderson 2010]] =tutorial=
+2. Basic analysis for GWAS [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3154648/][Clarke 2011]] =definitions= and =tutorial=
+3. How to interpret GWAS [[http://jama.jamanetwork.com/article.aspx?articleid%3D181647][Pearson 2008]] =definitions=
+4. Looking for common and rare variants in GWAS [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3198013/][Raychaudhuri 2012]] =rare SNPs=
+5. Statistical methods of GWAS [[http://ac.els-cdn.com/S0002929709005321/1-s2.0-S0002929709005321-main.pdf?_tid%3D56734ab4-8d0a-11e4-af46-00000aacb35e&acdnat%3D1419603806_94dae954e721f90b33b8f81bff383fd8][Canton 2009]]
+6. Population study for GWAS [[http://www.nature.com/nrg/journal/v7/n10/pdf/nrg1916.pdf][Balding 2006]]
+7. Standardization and variant reporting in GWAS [[https://www.acmg.net/StaticContent/SGs/ACMG_recommendations_for_standards_for.9.pdf][Richards 2008]]
+8. Future of GWAS [[http://www.annualreviews.org/doi/pdf/10.1146/annurev.publhealth.012809.103723][Witte 2010]]
+9. Guidelines for investigating causality in GWAS [[http://www.nature.com/nature/journal/v508/n7497/pdf/nature13127.pdf][McArthur 2014]]
+10. Computational challenges for GWAS [[http://bioinformatics.oxfordjournals.org/content/early/2010/01/06/bioinformatics.btp713.full.pdf%2Bhtml][Moore 2010]]
+11. Basic concepts of GWAS from disease study perspective [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2740629/?tool%3Dpubmed][Ding 2009]]
+12. Importance of GWAS [[http://www.nejm.org/doi/pdf/10.1056/NEJMra0905980][Manolio 2010]]
+
+*** High-dimensional categorical data with machine learning
+1. Different loci with shared association with 5 mental illness diseases in mega-analysis GWAS [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714010/pdf/nihms-470697.pdf][Smoller 2013]]
+2. Fixation index and association of common variant with disease and offers evolutionary benefit simultaneously in GWAS [[http://www.sciencemag.org/content/suppl/2010/07/14/science.1193032.DC1/Genovese.SOM.pdf][Genovese 2010]] =methodology=
+3. Classical GWAS with a nice story and attractive abstract [[http://www.nature.com/nature/journal/v461/n7262//full/nature08309.html#B16][Ge 2009]] =abstract= and =methodology=
+4. Genetic networks and Bayesian gene-based likelihoods [[http://www.nature.com/nature/journal/v515/n7526/pdf/nature13772.pdf][Rubeis 2014]] =methodology=
+5. Random forest is misleading when used with mixed data as in continuous and categorical for feature extraction [[http://www.biomedcentral.com/1471-2105/8/25][Strobl 2007]]
+6. Multifactorial analysis and interaction terms review [[http://www.nature.com/nmeth/journal/v11/n12/pdf/nmeth.3180.pdf][Kyrziwinski 2014]]
+7. Ridge regression better than repeated simple regression of GWAS [[http://downloads.hindawi.com/journals/bmri/aip/143712.pdf][Vlaming 2014]]
+8. Comparative analysis of predictive accuracies for lasso and RR [[http://www.biomedcentral.com/1753-6561/6/S2/S10][Ogutu 2012]]
+9. Twin study for individual genetic risk assessment for 24 diseases [[http://stm.sciencemag.org/content/4/133/133ra58.short][Roberts 2012]]
+10. Solution for sparsity with lasso [[http://www.jstor.org/discover/10.2307/25464748?sid%3D21105531960423&uid%3D2&uid%3D4&uid%3D3739808&uid%3D3739256][Meinshausen 2009]]
+11. Adaptive Lasso for sparse high dimensional data [[http://webdocs.cs.ualberta.ca/~mahdavif/ReadingGroup/Papers/tr374.pdf][Huang 2006]]
+12. Lasso can account for bias and sparsity in data [[http://www.jstor.org/stable/25464684][Zhang 2008]]
+13. Generalized linear mixed model with lasso and R package [[http://www.tandfonline.com/doi/abs/10.1080/10618600.2013.773239][Schelldorfer 2014]]
+14. Gradient lasso to predict traits using SNPs [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3651372/][Kim 2013]]
+15. Jointly analyzing dense markers, phenotypes, and pedigree with bayesian Lasso in R [[http://www.genetics.org/content/182/1/375.full.pdf%2Bhtml][Campos 2009]]
+16. Deep unsupervised learning in shell [[http://fastml.com/deep-learning-made-easy/][Ngiam 2013]]
+17. Bayesian lasso to predict phenotype based on SNPs while specific organ gene expressions increase accuracy [[http://www.plosone.org/article/info:doi/10.1371/journal.pone.0115532#s2][Takagi 2014]] =methods= for Gibbs sampling
+18. C score and the deleteriousness of a variant [[http://www.nature.com/ng/journal/v46/n3/pdf/ng.2892.pdf][Witten 2014]] =databases=
+19. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][Xiong 2014]]
+20. Overestimating the missing heritability and the interactive variant model [[http://www.pnas.org/content/109/4/1193.abstract][Zuk & Lander 2011]]
+21. VAAST for prioritizing variants and identifying disease genes [[http://www.ncbi.nlm.nih.gov/pubmed/23836555][Hu 2013]]
+22. Survey of tools: QC, alignment, identification, annotation, visualization  [[http://bib.oxfordjournals.org/content/15/2/256.full.pdf%2Bhtml][PAbinger 2013]]
+23. SVM for prediction of type I diabetes [[http://www.plosgenetics.org/article/info:doi/10.1371/journal.pgen.1000678#pgen-1000678-g003][Wei 2009]]
+24. Review and summary of many machine learning research papers [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3432206/][Kruppa 2012]]
+25. Bagging with ML models for multicategorical outcomes [[http://onlinelibrary.wiley.com/doi/10.1002/bimj.201300068/full][Kruppa 2014]] =theory=
+26. Probability estimation of multicategorical prediction ML [[http://onlinelibrary.wiley.com/doi/10.1002/bimj.201300077/abstract][Kruppa 2014]] =application=
+27. Use network topology to group SNP before ML [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3606427/#B18][Okser 2013]] =review=
+28. Group SNPs by gene-gene interactions [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3748153/][Mooney 2013]] =methodology=
+29. Sparse group lasso and multicategorical data [[http://arxiv.org/pdf/1205.1245.pdf][Vincent 2014]] =methodology=
+30. Higher number of SNPs for sparse prediction analysis can improve accuracy in risk estimation [[http://onlinelibrary.wiley.com/doi/10.1002/gepi.20509/full][Kooperberg 2010]]
+31. Controls can become cases if our criteria of classifying a disease trait changes [[http://www.pnas.org/content/early/2014/12/25/1411893111.short][Rosenquist 2014]]
+32. Rare variants and quality control review [[http://www.sciencedirect.com/science/article/pii/S0002929714002717][Lee 2014]]
+33. Pitfalls and limitations in SNP prediction studies [[http://www.nature.com/nrg/journal/v14/n7/pdf/nrg3457.pdf][Wray 2013]]
+34. How to increase the risk score of SNPs by polygenic analysis [[http://www.nature.com/ng/journal/v44/n5/full/ng.2232.html#supplementary-information][Stahl 2012]] =methods= for MCMC
+35. Using cases for genetically correlated diseases increase accuracy [[http://link.springer.com/article/10.1007/s00439-013-1401-5/fulltext.html][Li 2014]]
+36. Augmenting sample size for GWAS [[http://www.nature.com/ng/journal/v45/n11/full/ng.2758.html#methods][Zhan 2013]]
+37. A network for the human diseases [[http://www.pnas.org/content/104/21/8685.full][Goh 2007]]
+38. How to proceed in the post-GWAS era, Bayesian hierarchical, epistasis, & pathways, and dis/advantages of regression rules [[http://www.sciencedirect.com/science/article/pii/S0002929709005321][Cantor 2010]]
+39. The selfish ribosomes might be the reason DNA replicates [[http://www.sciencedirect.com/science/article/pii/S0022519314006778][Bernstein 2014]]
+** Quality control checks for GWAS
+1) =Quality control= Genotype call rates (remove high error call rates <95%) and HWE. Manhattan plot to confirm homogeneity of calls ([[http://scienceblogs.com/geneticfuture/2010/07/07/serious-potential-flaws-in-lon/#more][web article]])
+   - Removing genotypes with low call certainety introduce information missingness where low occuring alleles (rare homogenous) have low probabilities which reduces the correct allele frequencies
+   - Population stratification introduce a variance in allele frequency due to ancestry not to case-control status
+   - Sample heterozygosity outiliers (remove less than 5)
+   - A handfull of samples with high error rates can be removed to increase power (the per-individual approach)
+   - A certain percentage of makers can be removed to improve association [[http://www.nature.com/nprot/journal/v5/n9/pdf/nprot.2010.116.pdf][Anderson 2010]]
+   - Removing 1 marker is better than removing one sample (makers can be imputed back in the analysis)
+   - Calculate homozygosity rates between all X chromosome SNPs for each sample and comapre these with the expected rate
+   - Calculate the maximum relatedness between pair samples (it should be less than the second degree relative). Identity by state analysis on independent SNPs, ie, hogh LD SNPs eg, in the HLA region, are removed (IBS=1 are removed)
+   - Calculate for shared ancestry with the identity by decent IBD from the IBS (IBD>.1875 are removed)
+   - HWE are calculated on controls only, so not to remove disease associated loci
+   - Principal components and MDS can be used to adjust for population stratification
+   - Population stratification inflates the variance and increase median
+2) =Sample size= Low sample size means high variation.
+   - Study samples originate from outbred population and unrelated individuals
+   - Measure of the relative risk to identify the model of association of an allele (multiplicative, additive, AA, aa) in prospective studies (longitudinal) [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3154648/][Clarke 2011]]
+   - Odds ratio of a disease associated with a risk variant can measure the strength of the association. odds are usually modest 1.2-1.3 
+   - A chi squared test of association between rows and columns in a classical 2x3 contingency table with 2 degrees of freedom
+   - Likelihood ratios can be used for test of association
+   - In large smples the chi squared and the likelihod ratios are similar for test association.
+   - Logistic regression for association testing is used when more covariates are added
+   - Correction for mulptiple testing of the type one error of rejecting the null hypothesis and reducing FDR but decreasing power of detecting causality. bonferroni is conservative and assumes that variants are independently associated with the disease without acknowledging interaction between SNPs in LD
+   - Permutation correction for multiple testing
+   - Principal components can be added as covariates in a logisitc regression analysis [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3154648/][Clarke 2011]]
+3) =Confounder= Variables that can split data into case-controls but they are different from the already assigned case-control, they are associated with the response variable but they are not responsible. QQ-plot to show the chi squared disribution between the expected and observed values
+   - Get the origin of the population and adjust for population stratification (PCA and MDS)
+4) =Replication= Using other samples and other platform technologies, similar study to the orignal report, or use of related phenotypes as an extension, new and different populations, or different study designs.
+5) =Association= Association analysis usually use chi squared test or logistic regression.
+   - Multinomial logistic regression and univariate logit are used when genotypes have probabilitic measures, ie, from imputation or Z-scores
+   - Fishers exact test for association or Stouffers weighted Z-scores [[http://onlinelibrary.wiley.com/doi/10.1111/j.1420-9101.2005.00917.x/full][Whitlock 2005]]
+   - MDS and logisitic regression
+   - Conditional logistic regression adjusting for other variants in LD with the lead marker after fine mapping (densely genotyping the associated region)
+   - A marker with a large effect has high OR
+
+** Databases
+| Database                              | URL                     |                                         |
+|---------------------------------------+-------------------------+-----------------------------------------|
+| Repository for human disease mutation | [[https://www.ncbi.nlm.nih.gov/clinvar/][NCBI ClinVar]]            |                                         |
+| SNP-trait associations                | [[http://www.ebi.ac.uk/fgpt/gwas/][NHGRI GWAS catalog]]      |                                         |
+| Database of genotypes and phenotypes  | [[http://www.ncbi.nlm.nih.gov/gap?db%3Dgap][NCBI dbGaP]] and [[http://www.ncbi.nlm.nih.gov/projects/gap/tutorial/dbGaP_demo_1.htm][tutorial]] |                                         |
+| Lookup for all published GWAS         | [[http://hugenavigator.net/HuGENavigator/gWAHitStartPage.do][HuGE GWAS navigator]]     |                                         |
+| Catalog for published GWAS            | [[http://www.genome.gov/gwastudies/][NHGRI]]                   |                                         |
+| Associate genes with human diseases   | [[http://hapmap.ncbi.nlm.nih.gov/][HapMap]]                  |                                         |
+| UCSC table for Genome Browser         | [[http://genome.ucsc.edu/cgi-bin/hgTables?command%3Dstart][UCSC]]                    |                                         |
+| NCBI                                  | [[http://www.ncbi.nlm.nih.gov/SNP/][dbSNP]] database          |                                         |
+| gVCF                                  | [[https://www.broadinstitute.org/gatk/guide/article?id%3D4017][GATK]]                    |                                         |
+| 1000 Genomes                          | [[http://www.1000genomes.org/][Project]]                 | phase 3                                 |
+| EMBL Database of Genomic Variants     | [[http://www.ebi.ac.uk/dgva/][archive]]                 |                                         |
+| ENCODE (Encyclopedia of DNA Elements) | [[http://www.encodeproject.org][database]]                | human functional elements               |
+| GENCODE                               | [[http://www.gencodegenes.org/][genes]]                   | annotations for genes and variants      |
+| deCODE                                | [[http://www.decode.com/publications/][publication list]]        |                                         |
+| International HapMap                  | [[http://hapmap.ncbi.nlm.nih.gov/][project]]                 |                                         |
+| Kaiser Research Program               | [[https://rpgehportal.kaiser.org/][RPGEH]]                   |                                         |
+| Latvian Genome Database               | [[http://biomed.lu.lv/en/about-us/related-organisations/genome-centre/][database]]                |                                         |
+| NCBI                                  | [[http://www.ncbi.nlm.nih.gov/dbvar/][dbVar]]                   |                                         |
+| NCBI                                  | [[http://www.ncbi.nlm.nih.gov/refseq/][RefSeq]]                  |                                         |
+| Estonian                              | [[http://www.geenivaramu.ee/en/access-biobank][Biobank]]                 |                                         |
+| UK                                    | [[http://www.ukbiobank.ac.uk/][Biobank]]                 |                                         |
+| European human genome-phenome         | [[https://www.ebi.ac.uk/ega/home][archive]]                 |                                         |
+| Online Mendelian Inheritance in Man   | [[http://omim.org/][OMIM]]                    | association between genes and disorders |
+|                                       |                         |                                         |
+
+** MODELING
+*Random Forest*
+Better than Fishers exqct test for gene-gene interaction, especially when a marginal effect is small. Marginal effect is the instantaneous effect on a dependent variable when there is a change of an independent variable, when all othe variables are kept constant. RF is robust in the case of noisy datasets and in the presence of false positive SNPs. ReliefF is used before RF or MDR to filter genetic variation before epistasis analysis [[http://bioinformatics.oxfordjournals.org/content/26/4/445.full.pdf%2Bhtml][Moore 2010]].
+
+*ReliefF*
+Jason Moore uses it a lot with MDR for epistatis and as a filtering tool [[http://link.springer.com/protocol/10.1007/978-1-4939-2155-3_17#page-1][Moore 2014]]
+
+*Group LASSO*
+
+*Multidimensial reduction*
+Or multidimetial scaling [[http://www.statsoft.com/Textbook/Multidimensional-Scaling][MDS]]. It compliments the logistic regression and neural networks to detect interactions in the absence of marginal effect.
+
+*Factorial analysis*
+
+*k nearest neighbor*
+It calculates the minimum distance between a set of training cases and a new case.
+
+*Conditinal logistic regression*
+It is used in stratified data because it is able to adjust for the matching of the variables with each other.
+
+*Polymorphism interaction analysis*
+PIA examines all possible SNP combinatins to find the interaction that best preducts the risk of the disease. It used the Gini index and the percentage of misclassified subjects (wrong) to find interactions. It uses 10k CV.
+
+*SVM*
+They are trained to maximize accuracy.
+
+*LASSO*
+When analyzing categorical data, there is an inability to estimates the standard errors. Bootstrap can be used to calculate the standard errors and confidence intervals [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2795963/][D'Angelo 2009]].
+
+** KEYNOTES                                                          :Table:
+The scheduled analysis is either on the 1000 genomes project [[http://www.1000genomes.org/][(link]]) or on 6.8K
+GWAS for substance dependence.
+GWA studies are based on Linkage disequilibrium which hypothesize a non-random
+association between different loci. In the mean time the analysis involves
+genetic assays of the functional exome or whole-exome sequencing data; the
+variants in non-coding regions (regulomes) will be explored later on. The data
+is imputed with a gene mutability score. A high score with a high mutation rate
+lower the significance of a gene carrying a potential disruptive variant.
+
+OMIM catalogues more than 3750 Mendelian disorders [[/media/Data/Bibliography/Bibliography2017/lindblom2011bioinformatics.pdf][lindblom2011bioinformatics]],
+lists over 3500 diseases as genetically associated conditions, and over 4500
+SNPs associated to them [[[http://www.biomedcentral.com/content/pdf/gb-2011-12-9-227.pdf][ref1]], [[http://m.bib.oxfordjournals.org/content/15/2/256.full][ref2]]]. The dbSNP catalog contains more than 40
+million identified SNP [[/media/Data/Bibliography/Bibliography2017/de2013bioinformatics.pdf][de2013bioinformatics]]. Gathering data is not a problem.
+This is the time of big-data where whole-genomes are sequenced fast, acurretly,
+and at a lesser cost. However, data management, quality control (QC), and
+analysis are hard to implement both in Mendelian disorders (oligogenic, germline
+variants) and complex diseases (polygenic, somatic/cancer & mutlifactorial
+disorders) and either in genomic or transcriptomic pipelines. We can sequence,
+assemble, annotate, and visualize the results of a genome for example in a
+matter of months. However, there is still difficulities in assessing the major
+source of variance in this process [[[http://www.rna-seqblog.com/rna-seq-blog-poll-results-17/][poll results]]].
+
+Significance of variants will be additionally estimated through other genomic
+filters at the start of the analytical pipeline (\textit{to be updated}). The
+pipeline integrates unsupervised learning models to filter out irrelevant
+predictors. Consequently, this filtering approach reduces the
+high-dimensionality of the data. Moreover, the second part depends on supervised
+protocols to classify the patients on the basis of the nature of variants and
+the minor allele frequency (common MAF>5%, rare MAF<5%, de novo mutations. Finally, the analysis is split into descriptive and inferential
+statistics. The former explores the structure of the population and visualizes
+the trends and patterns of the variation in the data. The later depends on the
+association between variants and complex genetic traits; either through gene marker
+selection cf., [[*Genetic.factors][Genetic.factors]] or environmental assessment cf.,
+[[*Environmental.factors][Environmental.factors]]. Choosing which disease to be studied, depends on the
+available format of the data.
+
+
+Our research focuses either on *gene causality* or *haplotype characterization*.
+Gene causality is best described by an haplo-insufficiency of *special protein
+coding genes*. These genes would be associated with the developmental process of
+the CNS or are related to critical epistatic functions. The presence of variants
+in these genes contribute to a deleterious effect responsible for psychiatric
+disorders. For this reason individuals are predisposed with higher risks of
+complex genetic diseases because of relevant genomic elements. Although these
+variants are susepected to be involved in phenotypic traits, their causal effect
+is difficult to classify. First, the proximity of a gene to a suspicious variant
+can mislead the researcher into considering a false positive. Second, increasing
+the effect size of the variants improves greatly the power of the predictive
+models. Finally, genetic effects on phenotype variability do not originate
+solely from the heritbility of rare variants. Environmental factors are
+understimated in these studies, for this reason common and unique factors grant
+more insights for discovering of causal genes. Furthermore, disruptive variants
+also exist in *noncoding regions* [[http://www.pnas.org/content/111/17/6131.short][kellis2014]]. Although noncoding regions escape
+evolutionary conservation, recent studies corrobor the association between
+noncoding rare heritable variants and diseases [[http://www.sciencemag.org/content/342/6154/1235587.short][khurana2013]]. Besides, conserved
+regions of the human genome an show a lack in functionaliy and specialization. 
+
+In our case we have more samples than predictors (n>>p). This is usefull when
+using a linear model with low flexibility, ie. parametric and restricted to
+sample variance. Considering the variance-bias tradeoff, variance is defined by
+the difference between training sets and the bias is the difference between the
+estimated predictors and the *true* observed variance. The variance is also low
+at low flexibility but the bias is high. With less degrees of freedom comes less
+flexibility. However by further training an adjusted model to the sampled data,
+the bias drops faster than the increase in variance. The meeting point between
+the bias and the variance meet captures thus the smallest score for both the
+variance and bias. 
+
+Allele frequency measures the existence of an allele relatively to the other
+variants of a gene in a loci. SNPs can alter the allele frequency of a gene.
+Consequently, the penetrance (effect size) and expressivity of the gene will
+change in the population. This change in frequency can also come from selection,
+other form of mutation, and genetic drift. However in the case where these
+events are absent, a Hardey-Weinberg process can occur. At this stage, the new
+allele frequency remains constant for future generations.  
+
+SNP callers calculate the error of a SNP being a sequencing mismatch or a real
+fixed polymorphism. Base calling or imputation in GWA studies increase the
+prediction accuracy of trained model. Increasing the amount of information that
+can be learnt through adjusting a program improve SNP calling and associations.
+HapMap and the 1000 genomes project help with the imputation process. 
+
+The search for variants provides an understanding of both complex diseases,
+genetic genealogy, and ancestral origins. For example, haplotypes combine a
+number of alleles inherited together from one parent ([[http://www.wikiwand.com/en/Haplotype][definitions]]). These
+regions of the genome are in high linkage disequilibrium; SNPs tend to be
+inherited together due to low recombination rates. Close related haplotypes
+share common unique-event polymorphisms (UEP) like SNPs that designate
+haplogroups. The most studied UEPs are those found in the Y-chromosome (Y-DNA)
+haplogroups and mitochondrial lineages. These events are informative of the
+mutability of a gene and the ancesteral origins. By comparing haplotypes with
+new genomic data, we can distinguish between the derived and ancestral changes
+in the Y-DNA. Consequently we can map SNPs to a chromosomal haplogroup tree ([[http://daver.info/ysub/analyze_data.htm][ref
+here]]) using additional external sources. 
+
+SNP callers provide a p-value for every variant which describes the odd ratios
+of their risk association to the phenoytpe. This significance is calculated
+using a X²-test. For example, small odd ratios explain little of the
+heritability variation of the disease. This is problematic in SNP association
+studies. Imputation increases the power, significance, and speed of the association
+study. 
+
+Haplotypes assume allele correlation of inherited region in linkage
+disequilibrium (LD). For example, smaller regions of LD increase the genetic
+variance than bigger regions. Tag-SNPs are then identified in a haplotype, which
+assumes an associatioin between rare variants in LD and the disorder
+([[http://www.wikiwand.com/en/Tag_SNP][wiki]]1). Heritability analyses reveal first the chromosomal segment linked to
+the disease. Then a haplotype is significantly assigned to the particular
+genotype. Finally, uncommon or rare differential SNPs relative to that haplotype
+are assigned as risk-factors and there allele frequency studied. The HapMap and
+1000 genomes projects help imputate the studied genotype ([[http://www.wikiwand.com/en/International_HapMap_Project][wiki]]2). 
+
+#+CAPTION: Description of human genetic repositories 
+| Database                  | Description                                        |
+|---------------------------+----------------------------------------------------|
+| <25>                      | <50>                                               |
+| HapMap                    | haplotypes + risk variants                         |
+| 1000 genomes projects     | SNPs                                               |
+| OMIM                      | naming scheme for genetic diseases                 |
+| International classification of disease (ICD v10) | 240 hereditary diseases (from [[/media/Data/Bibliography/Bibliography2017/lindblom2011bioinformatics.pdf][lindblom2011bioinformatics]])                     |
+| DECIPHER                  | Database of Chromosomal Imbalance and Phenotype in Humans Using Ensembl Resources |
+| Human Variome Project ([[http://www.humanvariomeproject.org/][HVP]])   | ClinVar (US country node).                         |
+| National Human Genome Research Institute (NHGRI) | GWAS catalogs (1350 studies [[/media/Data/Bibliography/Bibliography2017/de2013bioinformatics.pdf][de2013bioinformatics]])  |
+|                           |                                                    |
+
+
+The pipeline goes as follows: (Survey of tools for variant calling
+(pabinger2014survey))
+1. Individual whole-exon sequencing (exome targeted enrichment + NGS) or pooled
+   sampled sequencing [[/media/Data/Bibliography/Bibliography2017/kim2010design.pdf][kim2010design]] (sometimes coupled with exon-capturing
+   techniques and resequencing of promising makers, cf Table 1 in
+   [[/media/Data/Bibliography/Bibliography2017/kim2010design.pdf][kim2010design]]). This includes a genotyping or a resequencing step.
+2. Quality assessment and filtering (choose high coverage depth ie, nb of reads
+   for each SNP and high variant calling confidence score). Error rate of
+   true/false variants can be estimated with likelyhood ratio tests
+   [[/media/Data/Bibliography/Bibliography2017/kim2010design.pdf][kim2010design]] or a Bayes approach (posterior for every variant assocation).
+   LD, haplotype, and imputation data from other studies can be incorporated to
+   improve performance. 
+3. Mapping of the alignment reads to a reference genome (UCSC and GRC genome
+   reference consortium) 
+4. Variant calling [[file:~/Downloads/Pabinger_et_al_Supplementary.pdf][(Table of tools)]] and the use of heuristic approaches to
+   distinguish between false and true positive variants. Under the
+   Hardy-Weinberg assumption a G-test can give allele frequency ratios
+   [[/media/Data/Bibliography/Bibliography2017/kim2010design.pdf][kim2010design]]. Kim 2010 showed that: "The agreement between callers was
+   larger for SNPs compared with INDELS and larger for germline than for somatic
+   mutations (tumor heterogeneity), respectively". It is best to use a consensus
+   approach (pabinger2014survey) thus running multiple callers to capture the most
+   of variants. 
+5. Variant annotation and association (SNP, indels, CNV like short tandem
+   repeats). Classification of variants is achieved by genomic annotation
+   (unclassified are those that are difficult to interpret and cannot be
+   unambiguously classified as pathogenic or neutral at the point of diagnosis
+   [[/media/Data/Bibliography/Bibliography2017/lindblom2011bioinformatics.pdf][lindblom2011bioinformatics]]). Although this can be done at the end for
+   discovery, it is done earlier for Machine Learning training. Discovery of
+   common and rare variants (eg through imputation taking into account the
+   sequencing technology and the experimental design, common variants used for
+   training and discovery of rare risk variants, pedigree information with
+   distantly related individuals (pabinger2014survey) &
+   l(indblom2011bioinformatics). This means combining variant exonic calls with
+   imputed data, phenotypic and pedigree information to find risk rare variants. 
+8. Visualization: finishing tool for genome assembly, genome browsers (mapping
+   of experimental data + annotation) or sequence alignments (comparative
+   viewers) 
+   
+After variant calling, those to be included in later steps are i- never observed
+in homogeneous form in the controls, ii- minor allele frequency. 
+
+A large sample size and a low P-value for GWA studies increase the odds ratios
+of identified loci [[/media/Data/Bibliography/Bibliography2017/citeulike:12250640.pdf][citeulike:12250640]]. Odds ratios represent the contribution of
+a loci to a disorder. Generally, odds ratios are low for each genetic locus.
+Moreover, percentages are the usual metric for quantitative traits. In addition
+the missing heritability (estimated metric) of a trait assigned to estimated
+variants is low. We can't explain all the variance of a disease due to
+confounding. However some studies admit that common variations can explain most
+of the heritability even when using quantitative trait [[/media/Data/Bibliography/Bibliography2017/yang2011genome.pdf][yang2011genome]]. 
+
+Genetics is hypothesis-free according to [[/media/Data/Bibliography/Bibliography2017/citeulike:12250640.pdf][citeulike:12250640]] but GWASs are not
+according to [[/media/Data/Bibliography/Bibliography2017/reich2001allelic.pdf][reich2001allelic]]. Common diseases are in part the result of common
+genetic variation. As stated here [[/media/Data/Bibliography/Bibliography2017/de2013bioinformatics.pdf][de2013bioinformatics]] a disease with 30 %
+heritability has a 30 % genetic effect. When the common variation have a small
+effect size on the disease but high heritability, multiple genetic factors are
+the cause. Common diseases like hypertension are shared through multiple
+susceptibility alleles. Common SNPs in these alleles are the basis of the common
+disease-common variant hypothesis. 
+
+#+CAPTION: Factors of the hypothesis testing approach ([[/media/Data/Bibliography/Bibliography2017/de2013bioinformatics.pdf][de2013bioinformatics]])
+| Factor                 | Element      | Description                                        |
+|------------------------+--------------+----------------------------------------------------|
+|                        | <12>         | <50>                                               |
+| Common variants        | SNP CNV      | effect on common complex diseases but are they mono or poly-alleles |
+| missing heritability   |              | adjust for confounding fact. multiple genetic factors + env factors |
+| Allele heritability    | MAF          | population structure function of the minor allele & its MAF |
+| Hereditary risk        |              | rare variants MAF<5% can play a role in diseases   |
+| Stratification         |              | Genetic diversity amongst humans                   |
+| Linkage disequilibrium | D' and r²    | classification of SNP. non-random association and observed frequency of 2 alleles that occur together |
+| Tag SNPs               | indirect association | classification of SNPS that are in strong LD with others surrounding them |
+| Imputation             | meta-analysis | nonlinear interaction between SNP                  |
+| Quantitative trait     | biobanks     | medical records, more phenotypic detail            |
+|                        |              |                                                    |
+** GOALS
+*** SUMMARY
+- =Questions= How to analyze heterogeneous data?
+- =Goal= Single-locus analysis?
+- =Hypothesis=
+- =Significance=
+- =Originality=
+- =Approach=
+- =Preliminary data=
+
++ How to merge data from sequencing, phenotypical, methylation and neuroimaging?
+  (environment, proteome, and transcriptiome not available but useful too)
++ *Should we validate with molecular studies after GWAS* SNPs associated to a
+  disease cannot be experimentally validated immediately 
+  after GWAS. The SNP might be the result of a close indirect interaction. A
+  nearby influential variant might be the reason of this effect.
++ *What should we adjust for during a GWAS* Results from GWAS should be adjusted
+  for ancestry-derived principal components that detects potential population
+  stratification.
++ *Is the data ethnically homogeneous*
++ *How to find pairs of subjects in our data that share excessive relatedness*
+  Using the individual-pairwise identity-by-state (IBS) estimates from Plink
+
+*** Causal rare variants & de novo mutations
+**** Trait variability
+- allelic spectrum [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][link]] (rare, common-SNPs or additive/non-additive genetic factors)
+- narrow-sense heritability (common SNP-based heritability)
+- individual risk-associated genes were identified from rare variation & de novo variation
+- the same SNPs & CNVs can confer risk similarly in Autism and Schizo
+- Two opportunities are presented, i) variants identified in the literature can be further prioritized or confirmed regarding their degree of variant causality, as Goldstein mentioned, ii) the existing sample diagnosis can be re-phenotyped to reflect their etiological similarity.
+- Common SNP confer 50% heritability to assess relation between individuals.
+- Rare SNPs confer 25% heritability to assess relation between individuals.
+- Filtering out related individuals increases variance in the population hence a low biased assoiation between *causal* variants and traits. [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][link]]
+- Loss of function mutations are under a weak purifying selection, meaning they are conserved and transmitted [[http://www.sciencemag.org/content/342/6154/1235587.short][khurana2013]].
+- Common allele are a good medium to compare between populations, especially in linkage disequilibrium studies [[/media/Data/Bibliography/Bibliography2017/reich2001linkage.pdf][reich2001linkage]]
+  - 
+**** Genetic.factors
+- additive factors (inherited common/rare SNPs)
+- non-additive factors (dominant, recessive, epistatic)
+- de novo mutations
+**** Environmental.factors
+- common (shared)
+- unique (stochastic)
+** Epigenetic  :noexport:
+*** Descriptive exploration
+**** Hereditary
+***** Gene expression and splicing
+gene expression and alternative splicing are independently the cause of difference due to a heterozygous variant.
+Variants can be ranked with their p-values to distinguish the top variant with the most influence on gene epression
+** Phenotype Definition  :noexport:
+- Life chart of the patients (discovery setting) [[http://www.nejm.org/doi/full/10.1056/NEJMoa1212444#t%3DarticleDiscussion][Chen2014]]
+** Repositories
+- 1000 genome
+- GEO
+- UCSC
+- ENCODE
+- REFSEQ
+- ENSEMBL
+- Contributing projects for the [[http://exac.broadinstitute.org/][Exome Aggregation Consortium]]
+  + 1000 Genomes
+  + Bulgarian Trios
+  + Finland-United States Investigation of NIDDM Genetics (FUSION)
+  + GoT2D
+  + Inflammatory Bowel Disease
+  + METabolic Syndrome In Men (METSIM)
+  + Myocardial Infarction Genetics Consortium:
+    * Italian Atherosclerosis, Thrombosis, and Vascular Biology Working Group
+    * Ottawa Genomics Heart Study
+    * Pakistan Risk of Myocardial Infarction Study (PROMIS)
+    * Precocious Coronary Artery Disease Study (PROCARDIS)
+    * Registre Gironi del COR (REGICOR)
+  + NHLBI-GO Exome Sequencing Project (ESP)
+  + National Institute of Mental Health (NIMH) Controls
+  + SIGMA-T2D
+  + Sequencing in Suomi (SISu)
+  + Swedish Schizophrenia & Bipolar Studies
+  + T2D-GENES
+  + Schizophrenia Trios from Taiwan
+  + The Cancer Genome Atlas (TCGA)
+  + Tourette Syndrome Association International Consortium for Genomics (TSAICG)
+
+** Terms   :noexport:
+- *expressions* complementary lines of evidence, elements under positive selection, allelic difference in heterozygous between haplotypes,
+- *words* perturbations, haploinsufficiency, hemizygous, multi-nucleotide polymorphism (MNP), haplogroup, imputation
+- *terms* deleterious variants, disruptive variants, purifying selection, spurious transcripts, DNase footprint, DNase hypersensitivity assays, genetic assays of function (my work), disease-relevant genomic elements, cellular circuitry, callset, heterozygous SNP, haplotype characterization, population variation, complex genetic trait, 
+- *Knowledge* defines, describes, identifies, knows, labels, lists, matches, names, outlines, recalls, recognizes, reproduces, selects, states, reveal,
+- *Comprehension* comprehends, converts, defends, distinguishes,estimates, explains, extends, generalizes, gives examples, infers, interprets, paraphrases, predicts, rewrites, summarizes, translates.
+- *Application* applies, changes, computes, constructs, demonstrates, discovers, manipulates, modifies, operates, predicts, prepares, produces, relates, shows, solves, uses, rely, produce, propose
+- *Analysis* analyzes, breaks down, compares, contrasts, diagrams, deconstructs, differentiates, discriminates, distinguishes, identifies, illustrates, infers, outlines, relates, selects, separates
+- *Synthesis* categorizes, combines, compiles, composes, creates, devises, designs, explains, generates, modifies, organizes, plans, rearranges, reconstructs, relates, reorganizes, revises, rewrites, summarizes, tells, writes
+- *Evaluation* appraises, compares, concludes, contrasts, criticizes, critiques, defends, describes, discriminates, evaluates, explains, interprets, justifies, relates, summarizes, supports, corroborate
+- *data science* Confounding (detect spurious correlations), munging (convert formats to more human readable), KPI (key performance indicator)
+
+** Workflow
+1. Acquire the 1000 genomes in a file format that depend on the tool(s) for pre-processing
+2. Preprocess the 1000 genomes for descriptive statistics (regressions, ordination stats)
+3. Filtering comprises of LD around core SNPs, common variant and heritability of quantitative traits, rare variants (MAF <= ??) and LD, etc.
+4. Post-processing for classification of variant types (novel, rare, and damaging)
+5. Search for association between variants and traits
+6. I need a Testing set (whatever dataset with samples and predictors) and a Validation set (already known outcomes for which complete observations are available,already clustered with description of a or multiple causal-effects. Either 2 classes, binomial, or i>2 for multivariate classification. This set is used to validate the reproducibility of the inferred clusters). The testing and validation sets can be split from one original study or they can have different origins. That is any library with structured predictors as classified outcomes (clustered phenotypes) can be used as a validation set.
+7. Copy number and SNP profiling. This choice is dependent on the genomic variant considered in the data.
+8. Variant association with genes at other sites of the genome. Generate a map of the variants CNVs or SNPs to examine their impact on the phenotypical variance. For example cis-acting variants are within 3Mb range surrounding the gene in question. Trans-acting are outside this range. cite{curtis2012genomic}
+9. The chosen variants can be used next as predictors to elucidate phenotype variance (patient, normal, etc.)
+10. Manipulate the weighting system (variant prioritization) either using the genes associated to disorders that have effect on one another, presence of indels near the polymorphism site, presence of regulation sites (TF binding sites TFBS, DNAaseI hypersensitive sites, ncRNAs, and enhancers [[http://www.sciencemag.org/content/342/6154/1235587.short][khurana2013]]). Additionally, TFBS for example can be divided into 2 more categories, proximal versus distal or cell-line-specific versus -nonspecific.
+11. Find the structure of the population, through combined principal analysis and clusterization.
+12. integration of additional data sets including RNA sequencing data, proteomics data and metabolomics data.
+
+
+1. Use phenotypic data for snp classification not for filtering. Phenotypic data might have bad quality thereby lowering the filtering process.
+2. Cases must share the same ethnicity. I can't compare cases and controls from different geographical areas.
+3. Heterogeneity in a dataset is a drawback. Covariate adjustment can reduce it.
+4. Samples added to a dataset must be independent
+5. Individual studies added must be build with a common genome [[/media/Data/Bibliography/Bibliography2017/de2013bioinformatics.pdf][de2013bioinformatics]]
+6. For imputation the reference panel (reference allele for the published data in Hapmap and 1000 genomes) and that of the study population (raw data) must be identical
+7. Missing heritability: confounding, epistatic effect (mutlimarker interactive effect), LD (association between snps), epigenetic ([[/media/Data/Bibliography/Bibliography2017/slatkin2009epigenetic.pdf][slatkin2009epigenetic]])
+** Multiple diagnoses   :noexport:
+\textit{Dawei: Our patient samples have multiple disgnoses (a total of 3000 variables). To cluster them into more homogeneous subgroups seems a chanllenge (even in the field) and we don't know how many subgroups they should be....  Do you think if we should implement this model (or some other models) on our phenotypes or it is really worthy to try?  or this can also be used for genotypes}
+
+Usually one can start with ordination analysis in order to visualize the variation in the dataset. For example principal component analysis (PCA) or constraint analysis (CCA, RDA). These methods will reduce the dimension of the dataset to better visualize the trends in the data.
+
+Next, one can either cluster (fuzzy soft clustering, or hard hierarchical clustering) or classify the features.
+Classification on the other hand is a complex and powerful technique. It will be either supervised or unsupervised. If one have a lot of patient samples (n>1000) unsupervised learning can be a nice choice. For this reason, the results will be clustered-like to show how patients are categorized regarding their features.
+They will be grouped together depending on patterns in their phenotype. One can use support vector machines (SVM), splines, polynomials, local regressions etc...
+Finally, to get most of the dataset, one implements new rules. For this, one can try some supervised learning protocols and extract the information out of those patterns.
+
+For future use, one can map those patterns to the patients. The patients with recognized candidate pattern to a specific phenotype (illness or resistance) can be further diagnosed. That means, if one find that Patients 1 through 5 carry a special gene, their families can be further studied in a simplex or multiplex sampling.
+
+** Table of tools
+[[/media/Data/Bibliography/Bibliography2017/pabinger2014survey_supp.pdf][pabinger2014survey_supp]] [[/media/Data/Bibliography/Bibliography2017/pabinger2014survey.pdf][pabinger2014survey]]
+** Generalities  :noexport:
+- 1K genome project was done with a low-depth geep sequencing
+- most GWAS loci lie in noncoding regions
+- I should consider the ancestry (European, Australian, African) of the sequenced data
+- 50% of the human genome is comprised of repetetive elements, often of high degeneracy
+- ~4000 genes have been associated with human disease
+- 4.5 deleterious mutations in every generation [[/media/Data/Bibliography/Bibliography2017/pabinger2014survey.pdf][pabinger2014survey]]
+- Each genome carries 165 homozygous protein-truncating or stop loss variants in genes representing a diverse set of pathways [[/media/Data/Bibliography/Bibliography2017/pelak2010characterization.pdf][pelak2010characterization]]. That is  any SNV that results in the gain of a stop codon, and any indel that results in a frameshift coding change.
+- Human genome is 3 Gb [[/media/Data/Bibliography/Bibliography2017/citeulike:12250640.pdf][citeulike:12250640]]
+*** Linkage disequilibrium
+The degree to which the allele of one SNP is observed with the allele of another
+within a population
+
+A non-random association between alleles at different loci. The human genome has a haplotype structure were neighbouring alleles correlate in LD [[/media/Data/Bibliography/Bibliography2017/citeulike:12250640.pdf][citeulike:12250640]]. Haplotype blocks extend less far in Africans than European descent.
+*** Linkage analysis                                             :noexport:
+The attempt to relate the transmission of an allele in families to the
+inheritance of a disease
+*** Odds ratio                                                   :noexport:
+It is the measure of the extent of the relationship under two case/control
+treatment conditions
+*** Chi-square
+Tests the null hypothesis that the distribution of the samples (responders) is
+the same under both treatment conditions, for quantitative data.
+*Contingency table for categorical data* is to test the null hypothesis that
+there is an association between variables (ie Population: African, European,
+American). If we refute the H0 than there is no association and there is no
+difference between observed and expected values. 
+*Degrees of freedom* is the number of categories minus one (ie Population:
+African, European, American, and 2 treatment conditions df= 3-1 * 2-1 = 2) for
+df=(r-1)*(c-1), r=rows, c=columns
+*** Function
+Function of a gene is defined differently relatively to the background of the interpreter [[http://www.pnas.org/content/111/17/6131.short][kellis2014]].
+- Genetic: phenotypic plasticity from inherited polymorphism, while considering the cell type and its condition
+- Evolutionary biology: interaction of selective constraints, while considering the environement effect on the phenotype
+- Molecular biology: measure the activity of a molecule and its interactions
+*** Sampling
+larger samples = increase in statistical power of rare variants
+*** Noncoding functional elements
+Promoters, enhancers, silencers, insulatrors, noncoding RNAs, microRNAs, piRNAs, exRNAs, structural RNAs, and regulatory RNAs
+*** Polymorphism
+SNP, indels, microsatellite, short tandem repeats (STR), multinucleotide polymorphism (MNP), heterogous sequence, named variants.
+*** Microsatellites
+Repeats in the dna sequence, usually found in non coding regions [[/media/Data/Bibliography/Bibliography2017/rosenberg2002genetic.pdf][rosenberg2002genetic]]
+*** Twin studies
+when working with twins, the monozygotic or dizygotic concepts should be considered [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][link]]
+*** Simplex vs multiplex studies
+simplex family, comprises of one affected subject within the set of first and second degree relatives. Multiplex family is equal to at least 2. Simplex families decrease heritability of a database.Multiplex families increase its heritability. The liability of autism-associated alleles is greater in multiplex families. [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][link]]
+*** CIGAR
+(infor from SAM/BAM file) 3M1I3M1D5M query aligned to a reference contains insertions (I) and deletions (D) http://goo.gl/2cKi2q
+*** Mutations
+loss of function (LoF) amorphic - gain of function (GoF) neomorphic - dominant negative antimorphic - indels (frameshift, stop loss, missense) - composite insertions - substitution events (transition, transversions) - synonymous mutation
+*** CNA
+Somatic copy number aberrations are acquired genomic changes, studied mainly in cancer. They can have a cis or trans impact on their own expression or other genes respectively.
+*** Linkage vs association 
+Linkage is actually looking at physical segments of the genome that are associated with given traits. Association studies go from the other direction, saying, given different pieces of the genome, can we then look for different traits that are associated with those different segments of genome? So we know that individuals don't have the same genetic makeup. They have the same DNA, but the DNA has different sequences or is expressed differently, and thats what causes differences among different individuals. So the question is that if we have a trait, particularly a disease trait, can we find and associate that with differences among individuals in the population? 
+
+So a linkage study is just saying, can we say that there is an association between pieces of the DNA and a trait of interest? Association studies are saying, what are the differences we see in order to find differences in the traits, particularly disease traits, among different individuals.
+*** Allele frequencies and effect of CNVs on their dynamics 
+If the frequency of an allele is 20% in a given population then among population members one in five chromosomes will carry that allele. Four out of five will be occupied by other variant of the gene. 
+
+\textbf{The dynamics of allele and gene frequencies are affected by several factors such as migration, mutation, genetic drift, population size, mating [...] (wikipedia)} This concept follows the Hardy-Weinberg equilibrium, ie, *stability of allele frequencies over time*. The HW principle assesses the Mendelian inheritance of alleles and their dynamics. So allele frequencies should be considered in terms of inherited variants not de novo mutations. 
+
+\textbf{[...] natural selection converts differences in fitness into changes in
+allele frequency in a population over successive generations (wikipedia)}
+Accordingly, genetic variants are fixed and propagated in terms of trait
+selection. Since disorders are phenotypically disadvantageous and dont confer fitness to a body, these CNVs will have deleterious effects on the phenotype and will reduce the frequency of an allele in the sampled population. (reverse genetic hitchhiking)
+
+If the frequency of an allele is 5% in a given population then 1 in 20 chromosomes will carry that allele, 19 out 20 will occupy other variant of the gene
+
+A SNP can be associated to multiple alleles. The less common allele is known to have a minor allele frequency.
+*** Low-depth whole genome sequencing
+low depth WGS with larger sample can be more powerful than deep sequencing with fewer samples.<Lee 2014>
+*** Hardy-Weinberg equilibrium
+The allele frequency in a population will remain constant from generation to generation in the absence of other evolutionary influences. That is mate choice, mutation, genetic drift, selection, gene flow, and meiotic drive.
+
+A random variation in the distribution of the allele frequency of a population. When the allele is present in a small number of copies, the effect of drift will be most important.
+*** Genetic hitchhiking
+*** UK10K exomes project
+*** CCDS project
+*** ENCODE project
+*** Autism Genome Project (AGP)
+*** Population-Based Autism Genetics and Environment Study (PAGES)
+*** Database of Genotypes and Phenotypes (dbGaP)
+*** National Institute of Mental Health (NIMH)
+*** KNN-like clustering http://m.sciencemag.org/content/344/6191/1492.full.pdf
+Test: Unsupervised learning model similar to K nearest neighbor (KNN) or support vector machines (SVM). 
+Q: How many clusters are sufficient to project the variation of all the dataset ?
+
+Sometimes we go with a subjective visual intuition to determine the number of clusters. Especially in fuzzy clustering (like in Bassim 2014b)
+
+In noisy datasets analysis can bring a lot of false positives and for specialized protocols (targeted studies based on genetic markers) the analysis will lose information due to discriminating outliers.
+We can't get enough information through sampling. Meaning one cant sample all the variation in a population. For this reason, outliers are not obligatory errors. There is only not enough information so the variation would be considered as a cluster
+*** Population Structure                                         :noexport:
+Look at the structure of the population through genomic data generated from multi-locus markers.
+The software found [[http://pritchardlab.stanford.edu/structure.html][here]].
+*** Repeat masking (idea from [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1955739/][Matukumalli2006]])
+Identification of [[http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD%3DWeb&PAGE_TYPE%3DBlastDocs&DOC_TYPE%3DFAQ#LCR][low and high complexity sequences]] of the genome. Artifacts can be associated with low complexity regions. For nucleotide queries it is determined by the [[http://www.ncbi.nlm.nih.gov/books/NBK1763/][DustMasker]] program.
+Identification of common repeats that are specific for every species.
+*** Sequence quality
+Polymorphic sites (containing possible variant calls) can be observed because of a poor quality sequencing (poor quality base).
+A relative polymophic region can be detected at either end of an alignment, which tend to be poor hence unreliable due to inherent limitations in current sequencing technologies [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1955739/][Matukumalli2006]].
+
+*** Formats
++ BAM (short-read binary alignment with position sorted, compressed, indexed, in binary form)
++ SAM (sequence aligment/map, human readable version)
++ BCF (Binary variant call format, likelihood of data given each possible genotype)
++ BAQ (base alignments quality)
++ VCF (variant call format, storing snps, short indels, and structural variations)
++ BEM (copy number variant map)
++ Fasta, FASTQ (genes and reference genomes)
++ MAPQ (contains the "phred-scaled posterior probability that the mapping position" is wrong)
+*** Manhattan plot
+It is used to draw association between SNPs, their chromosome location, and their effect on the phenotypic trait. [[https://en.wikipedia.org/wiki/Genome-wide_association_study#mediaviewer/File:Manhattan_Plot.png][image]]
+*** Technologies
+Illumina and Affymetrix [[/media/Data/Bibliography/Bibliography2017/ragoussis2009genotyping.pdf][ragoussis2009genotyping]]
+*** Bioconductor
+[[http://bioconductor.org/packages/release/bioc/html/FunciSNP.html][FunciSNP]]
+*** GenePattern
+the servername is not set with localhost
+*** Parallel computing
+Use doSNOW and foreach loops for parallel (not sequential computing)
+*** Resampling
+Use bootstrap and bagging, in addition to cross validation (even both) for iterating the variation of the population.
+*** Descriptive statistics
+**** CI
+For 95% of the time (probability) the population parameter (variation) will fall between the boundaries of the stochastic interval. (the population mean may be outside the boundaries)
+**** Phylogenetic tree visualization
+http://en.wikipedia.org/wiki/List_of_sequence_alignment_software
+*** Machine learning
+- *Definition*: It is adjusting learning processes to observed data for acquisitin of hidden patterns and relationships. It helps organize correlations of the different parts of the problem to predict trends in the declared variables.
+- *Classification*: sorting new observations through learning by adjusting of adaptive parameters that belong to already categorized data
+- *Neural network*: supervised (backpropagation) and unsupervised training is used to classify patterns and for other problems(approximation, optimization)
+- *Machine learning*: pattern discovery and inferences in order to extract relative decisions from them
+- *SVM*: methods that rely on supervised learning to categorize discovered patterns through classification or regression
+*** Linear regression 
+1K genome description analysis
+*** Phylogenetic tree
+ from the 1K genome SNP indels (cf. nature13679)
+*** treelet
+covariance smoothing [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][Gaugler2014]]
+*** PolyBayes
+probability to compute a posterior for each called SNP for a given prior if a variation was observed at that postition [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1955739/][Matukumalli2006]].
+*** Tool 1
+Improved exome prioritization of disease genes through cross-species  
+phenotype comparison
+*** Variant Master
+Simultaneous identification and prioritization of variants in  
+familial, de novo, and somatic genetic disorders with VariantMaster
+*** MindTheGap
+http://goo.gl/Ti5POK
+*** VSEAMS
+A pipeline for variant set enrichment analysis using summary GWAS data
+http://www.ncbi.nlm.nih.gov/pubmed/25170024
+*** GCTA
+- *use*: estimation of allele frequency using common SNPs
+- *method*: filter approach for patients using SNPs with minor allele frequency (MAF)
+- GCTA estimates the variance explained by all the SNPs on a chromosome or on the whole genome for a complex trait rather than testing the association of any particular SNP to the trait. cite{yang2011gcta}
+- Most genetic risk for autism resides with common variation, attached. See the Methods. You can use GCTA on our existing data as well. [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][Gaugler2014]]
+- estimate the heritability due to common variants (SNP-based heritability)
+- kinship greater than 5th-degree relatives are excluded
+*** GREAT
+Studying on-coding cis-acting regions, regulomes, assign function to cis-regulatory regions http://bejerano.stanford.edu/great/public/html/
+*** Tool set 2
+Plink, SNPtest, Beagle, Presto, *Mach*, ProbABEL, Impute, *datABEL*, GenABEL, R *ncdf* library (netcdf stored versions of the genotypes), gtool (for ped files)
+
+*** Multiple Sequence Alignments
+A natural extension from the pairwise alignments of BLAST – how are
+all those sequences you’ve identified in your search related to one
+another? In this session we’ll cover tools such as ClustalW and
+MUSCLE.
+*** HMMER
+More powerful sequence similarity searches and domain finding with
+Hidden Markov Models
+*** SAMtools
+- tutorial 1 http://samtools.sourceforge.net/mpileup.shtml
+*** Perl
+App::XLSperl is a perl module with basic line commands found [[https://metacpan.org/pod/distribution/XLSperl/bin/XLSperl][here]]. It is slow. I should try either building a perl script using several modules and regular expressions or use sysadmin single-line commands based on grep, sed, ag, and xargs.
+*** Shell
+**** Regular expressions                                           :Table:
+
+#+CAPTION: Basic and extended regex summary
+| RegEx            | Class    | Type          | Meaning                             |
+|------------------+----------+---------------+-------------------------------------|
+| .                | all      | Character Set | A single character (except newline) |
+| ^                | all      | Anchor        | Beginning of line                   |
+| $                | all      | Anchor        | End of line                         |
+| [...]            | all      | Character Set | Range of characters                 |
+| *                | all      | Modifier      | zero or more duplicates             |
+| \<               | Basic    | Anchor        | Beginning of word                   |
+| \>               | Basic    | Anchor        | End of word                         |
+| \(..\)           | Basic    | Backreference | Remembers pattern                   |
+| \1..\9           | Basic    | Reference     | Recalls pattern                     |
+| _+               | Extended | Modifier      | One or more duplicates              |
+| ?                | Extended | Modifier      | Zero or one duplicate               |
+| \{M,N\}          | Extended | Modifier      | M to N Duplicates                   |
+| (...\vert...)    | Extended | Anchor        | Shows alteration                    |
+| \(...\\vert...\) | EMACS    | Anchor        | Shows alteration                    |
+| \w               | EMACS    | Character set | Matches a letter in a word          |
+| \W               | EMACS    | Character set | Opposite of \w                      |
+
+*** Scenario one
+Taken from [[http://genomespot.blogspot.co.uk/2014/10/geneclouds-unconventional-genetics-data.html%20][this site]]. Script used to process data:
+awk '$6>0 && $8<0.05 {print $1,$8}' DESeq.xls \
+\vert awk '{printf "%4.3e\t%s\n", $3 , $2}' \
+\vert sed 's/e-/@/' \
+\vert cut -d '@' -f2- \
+\vert awk '{print $2":"$1}' > ups.txt
+
+awk '$6<0 && $8<0.05 {print $1,$8}' DESeq.xls \
+\vert awk '{printf "%4.3e\t%s\n", $3 , $2}' \
+\vert sed 's/e-/@/' \
+\vert cut -d '@' -f2- \
+\vert awk '{print $2":"$1}' > dns.txt
+*** Scenario two
+$ echo radar \vert sed 's/\([a-z]\)\([a-z]\)[a-z]\{3\}/\1/'
+*** Disorders
+**** Autism
+- Autism features are also associated with Fragile X, Down and Klinefelter syndromes
+- neurodevelopmental disorder, genetically typified by a mixture of de novo and inherited variation [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][link]].
+- Autism Spectrum Disorder (ASD) has a genetic association with heritable rare variants [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][{Gaugler 2014}]]
+- Clinical phenotypes can have an effect on the genetics of autism, for example IQ (higher vs lower functioning) [[http://www.nature.com/ng/journal/v46/n8/abs/ng.3039.html][Gaugler2014]]
+**** Schizophrenia
+- severe mood and behavioral psychiatric disturbances
+- dismorphic features (#toBeVerified)
+- mental retardation
+- genetic affiliation cite{wilson2006dna}
+- schizoaffective disorder
+**** Bipolar disorder
+- genetic affiliation acite{wilson2006dna}
+**** Parkinson
+*** Topics
+- Integration of mutliple sources (RNA-seq, GWAS, methylation)
+- Variant calling
+- Gene-environment interactions to explain the missing heritability in complex diseases
+** Resources
+- ~6,800 GWAS and imputed data for substance dependence (alcohol, cocaine, opiate, nicotine and marijuana). More exome chip data will be ready (currently in QC). In total, we have > 13,000 samples with well defined such phenotypes. Each sample has about 3,000 phenotypic columns if you count every measurements. Most of the samples are adult unrelated cases controls but 10-20% are family samples.
+- 1,500 GWAS data + brain images + phenotypes (children cognition/behavior diagnoses) from same samples.
+- A small size of DNA methylation data + phenotypes (brain concussion) + brain images
+- A few thousand of GWAS data + DNA methylation data + phenotypes (children behavior) + brain images: This is a longitudinal study, which means data from multiple time points are available.
+- GWAS data for a few other phenotypes, like schizophrenia, Parkinson's disease, alzheimers disease. We may design secondary data analysis, such as genome-wide meta-analysis or any other analyses..
+- next gen sequencing data, diseased or unknown phenotypes.
+- As you know, the publicly available data, such as the 1000 genome data, is also a great resource to explore ideas.
+
+- Our patient samples have multiple disgnoses (a total of 3000 variables). To cluster them into more homogeneous subgroups seems a chanllenge (even in the field) and we don't know how many subgroups they should be....  Do you think if we should implement this model (or some other models) on our phenotypes or it is really worthy to try?  or this can also be used for genotypes
+
+* HADOOP :noexport:
+** GENERAL
+- In our lab we have similar but non-google scale data (it is then wisely to use
+  HDFS technology)
+- HDFS aussmes locality for perfomance (ie the cluster of data nodes should be
+  situated in the same area, geographically)
+- Hadoop can be user through Cloudera's VM
+- To get started with Hadoop, first to setup a cluster and learn how to run a
+  program on it, then write MapReduce code to access the data nodes.
+- Using MapReduce i can manipulate the input/output file formats of my data.
+- MapReduce parallelizes large computations easily ([[http://static.googleusercontent.com/external_content/untrusted_dlcp/research.google.com/en//archive/mapreduce-osdi04.pdf][cite]])
+- Fault tolerance in MapReduce is designed to save completed tasks and reset the
+  failing worker (cluster). Then the remaining tasks are assigned to another
+  worker (reschedule remaining tasks)
+- MapReduce library can read data in many formats
+- MapReduce enable the user to produce a summary of the running tasks (status information)
+- Essential functions in MapReduce are the counter, grep, sort, and large scale indexing
+- Parallel programming is made easy with higher performance with MapReduce
+** CLOUDERA VM
+The Cloudera VM has the Hadoop ecosystem already installed and configured. ([[http://www.cloudera.com/content/cloudera/en/downloads.html][site]])
+** SETUP HADOOP
+*** STANDALONE ONE CLUSTER
+Follow this tutorial on how to install Hadoop and configure a local machine to
+run HDFS and the Hadoop ecosystem.
+*** HADOOP ECOSYSTEM
+Hive and Pig are analytics tools used to translate common SQL and text based
+commands into MapReduce jobs.
+* PLINK
+Download and setup PLINK from the [[http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml][main site]].
+#+BEGIN_SRC shell
+export PATH=$PATH:~/plink-1.07-x86_64
+plink
+#+END_SRC
+
+#+CAPTION: Number of iterated SNPs and 1 rare causal SNP 
+| Nb of SNPs    | Label | Freq low | Freq up | OR (Aa) | OR (AA/aa) |
+|---------------+-------+----------+---------+---------+------------|
+| 1             | rare  |        0 |       1 |       2 |          4 |
+| 1000--100,000 | null  |        0 |       1 |       1 |          1 |
+|               | snpA  |        0 |    0.05 |       1 |          1 |
+|               | snpB  |     0.05 |     0.1 |       1 |          1 |
+|               | snpC  |      0.1 |     0.2 |       1 |          1 |
+|               | snpD  |      0.2 |       1 |       1 |          1 |
+|               | rare  |        0 |       1 |       1 |          2 |
+|               |       |          |         |         |            |
+
+
+#+CAPTION: Scenarios for 100 simulations
+| Scenarios | Description | Simulations   |
+|-----------+-------------+---------------|
+| I         | SNP         | 1000--100,000 |
+|           | Case        | 1000          |
+|           | Control     | 1000          |
+| II        | SNP         | 1000--100,000 |
+|           | Case        | 1000--100,000 |
+|           | Control     | 1000--100,000 |
+| III       | SNP         | 100,000       |
+|           | Case        | 1000--100,000 |
+|           | Control     | 1000--100,000 |
+| IV        | SNP         | 100,000       |
+|           | Case        | 2000--200,000 |
+|           | Control     | 1000--100,000 |
+| V         | SNP         | 100,000       |
+|           | Case        | 1000--100,000 |
+|           | Control     | 2000--200,000 |
+| VI        | 3 stages    |               |
+| VII       | 4 stages    |               |
+
+Simulate data
+#+BEGIN_SRC shell
+plink --simulate gwas.sim --simulate-ncases 251 --simulate-ncontrols 200 --simulate-label POP1 --make-bed --out hapmap1
+#+END_SRC
+
+Recode simulated data (format in .bed .fam .bim) to .ped =optional=. Only if to be used with =GenABEL=
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --recode --tab --out hapmap1
+#+END_SRC
+
+Generate missing statistics for genotyping rates
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --missing --out miss_stat 
+#+END_SRC
+
+Generate statistics for allele frequencies
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --freq --out freq_stat 
+#+END_SRC
+
+Basic association analysis
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --assoc --out as1
+sort --key=7 -n as1.assoc | head
+#+END_SRC
+
+Correct for multiple testing and see the inflation factor
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --assoc --adjust --out as2
+cat as2.log
+#+END_SRC
+
+Calculate many tests for association (contingency tables, CATT...). If the genotypic 2x3 test is not generated run =--cell= command.
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --model --snp disease_96 --out mod1
+cat mod1.model
+#+END_SRC
+
+Stratification analysis
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --cluster --mc 2 --ppc 0.05 --out str1 
+#+END_SRC
+
+Association analysis accounting for clusters
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --mh --within str1.cluster2 --adjust --out aac1
+head aac1.cmh.adjusted
+#+END_SRC
+
+Pair up the most significant individuals
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --cluster --cc --ppc 0.01 --out version2
+#+END_SRC
+
+Set the number of cluster for the association testing (repeat the last 2 steps)
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --cluster --K 2 --out version3 
+plink --bfile hapmap1 --mh --within version3.cluster2 --adjust --out aac2
+head aac2.cmh.adjusted
+#+END_SRC
+
+Export to R
+#+BEGIN_SRC shell
+plink --bfile hapmap1 --cluster --matrix --out ibd_view
+#+END_SRC
+
+Plot a PCA
+#+BEGIN_SRC R
+m <- as.matrix(read.table("ibd_view.mibs"))
+mds <- cmdscale(as.dist(1-m))
+k <- c( rep("green",45) , rep("blue",44) )
+plot(mds,pch=20,col=k) 
+#+END_SRC
+
+*Script for simulating data*
+#+BEGIN_SRC shell
+#! /bin/sh
+
+
+# identify simulation properties
+echo "Name the simulation:"
+read SIM
+
+# simulate data
+# run association analysis
+# correct for multiple testing (generate pvals)
+./plink --simulate gwas.sim --assoc --adjust --out $SIM
+
+# show the first 10 lines of the association analysis
+#sort --key=7 -n $SIM.assoc | head
+#sort --key=7 -n $SIM.assoc.adjusted | head
+
+# copy the disease SNP line from sim.assoc
+ASSOC=$(gawk '/disease/ { $1=""; print $0 }' $SIM.assoc)
+# copy the disease SNP line from sim.assoc.adjusted
+ADJUST=$(gawk '/disease/ { $1=""; print $0 }' $SIM.assoc.adjusted)
+
+# extract the number of SNPs simulated in the .bim file
+SIMSNP=$(gawk '/bim file/ { print "  "$1 }' $SIM.log)
+# extract the adjusted genomic inflation estimation
+ADINFLATION=$(gawk '/inflation/ { print "  "$11 }' $SIM.log | sed 's/.$//')
+# extract the number of simulated cases
+CC=$(gawk '/cases/ {print "  "$4 "  "$8 }' $SIM.log)
+
+# file containing scores for association without correction
+echo "${SIM}${CC}${SIMSNP}${ASSOC}" >> uncorrected.txt
+# file containing scores for association with correction for multiple testing
+echo "${SIM}${CC}${SIMSNP}${ADJUST}${ADINFLATION}" >> corrected.txt
+
+#+END_SRC 
+
