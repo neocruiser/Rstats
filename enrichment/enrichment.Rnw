@@ -42,7 +42,7 @@ rm(list=ls())
 Load packages.
 \marginnote{\small\color{blue}$\Lsh$ MUST install topGO package}[.1cm]
 <<packages,results='hide'>>=
-pkgs <- c('topGO')
+pkgs <- c('topGO', 'dplyr','ggplot2', 'tidyr')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -50,6 +50,81 @@ Install \textbf{TopGO} from bioconductor \href{http://www.bioconductor.org/packa
 <<packages2>>=
 #source("http://bioconductor.org/biocLite.R")
 #biocLite("topGO")
+@ 
+
+\section{Merge all GO terms by genome}
+\label{sec:merge}
+<<merge1>>=
+aplke <- read.table("./data/merge/Aplke.txt")
+dim(aplke)
+auran <- read.table("./data/merge/auran.txt")
+dim(auran)
+aurli <- read.table("./data/merge/Aurli.txt")
+dim(aurli)
+fracy <- read.table("./data/merge/fracy.txt")
+dim(fracy)
+phatr <- read.table("./data/merge/Phatr.txt")
+dim(phatr)
+phyca <- read.table("./data/merge/Phyca.txt")
+dim(phyca)
+phyci <- read.table("./data/merge/Phyci.txt")
+dim(phyci)
+physo <- read.table("./data/merge/Physo.txt")
+dim(physo)
+pramo <- read.table("./data/merge/Pramorumv.txt")
+dim(pramo)
+psemu <- read.table("./data/merge/Psemu.txt")
+dim(psemu)
+schag <- read.table("./data/merge/Schag.txt")
+dim(schag)
+thaps <- read.table("./data/merge/Thaps.txt")
+dim(thaps)
+@ 
+
+Merge all data.
+<<merge2>>=
+all <- full_join(aplke, auran, by = "V2")
+all <- all[, c(2,1,3)]
+names(all) <- c("V2","aplke","auran")
+all <- full_join(all, aurli, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli")
+all <- full_join(all, fracy, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy")
+all <- full_join(all, phatr, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr")
+all <- full_join(all, phyca, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca")
+all <- full_join(all, phyci, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci")
+all <- full_join(all, physo, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci","physo")
+all <- full_join(all, pramo, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci","physo","pramo")
+all <- full_join(all, psemu, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci","physo","pramo","psemu")
+all <- full_join(all, schag, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci","physo","pramo","psemu","schag")
+all <- full_join(all, thaps, by = "V2")
+names(all) <- c("V2","aplke","auran","aurli","fracy",
+                "phatr","phyca",
+                "phyci","physo","pramo","psemu","schag",
+                "thaps")
+dim(all)
+head(all)
+
+write.table(all, "allGOs.txt", sep = "\t")
 @ 
 
 \section{Shell scripts}
