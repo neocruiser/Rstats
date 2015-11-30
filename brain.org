@@ -161,7 +161,7 @@ study, the HYPOTHESIS and its SIGNIFICANCE, the INNOVATION of the APPROACH, and
 16. Deep unsupervised learning in shell [[http://fastml.com/deep-learning-made-easy/][Ngiam 2013]]
 17. Bayesian lasso to predict phenotype based on SNPs while specific organ gene expressions increase accuracy [[http://www.plosone.org/article/info:doi/10.1371/journal.pone.0115532#s2][Takagi 2014]] =methods= for Gibbs sampling
 18. C score and the deleteriousness of a variant [[http://www.nature.com/ng/journal/v46/n3/pdf/ng.2892.pdf][Witten 2014]] =databases=
-19. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][Xiong 2014]] =torronto team=
+19. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][X1iong 2014]] =torronto team=
 
 20. Use SNPs to classify splice junctions as disease related [[http://www.sciencemag.org/content/347/6218/1254806][Xiong 2015]] =torronto team=
 

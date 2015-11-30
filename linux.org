@@ -20,18 +20,19 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
+* Cheat Sheets
+1. [[http://blog.serversaustralia.com.au/ultimate-list-of-cheatsheets-for-a-sysadmin?utm_campaign=Blog%2520post%2520series&utm_medium=social&utm_source=reddit][Sysadmin cheat sheets]]
 * INSTALL EMACS 24
-Latest version [[http://git.savannah.gnu.org/cgit/emacs.git/tree/][on git]]
+Latest version [[http://git.savannah.gnu.org/cgit/emacs.git/tree/][on git]] and how to build it on linux from [[http://ergoemacs.org/emacs/building_emacs_on_linux.html][ergoemacs]]. When installing on =eOS Freya= get emacs from the Software Market and install the one with =Lucid= style for it to work in version 24.
 #+BEGIN_SRC shell
-
-sudo apt-get update
-sudo apt-get install
-sudo apt-get purge emacs emacs-snapshot-common emacs-snapshot-bin-common emacs-snapshot emacs-snapshot-el emacs-snapshot-gtk emacs23 emacs23-bin-common emacs23-common emacs23-el emacs23-nox emacs23-lucid auctex apel emacs24 emacs24-bin-common emacs24-common emacs24-common-non-dfsg emacs24-el
-sudo add-apt-repository ppa:cassou/emacs
-sudo apt-get update
-sudo apt-get install emacs24 emacs24-el emacs24-common-non-dfsg
-
-
+sudo apt-get install build-essential
+sudo apt-get build-dep emacs24
+wget http://gnu.mirror.vexxhost.com/emacs/emacs-24.5.tar.gz
+tar xvf emacs-24.5.tar.gz
+cd emacs-24.5
+./configure
+make
+sudo make install
 #+END_SRC
 [ESS] copy ESS/ to /usr/share/emacs24/site-lisp/
 ** Markdown mode
@@ -92,6 +93,7 @@ Install Bioconductor packages
 source("http://bioconductor.org/biocLite.R")
 biocLite('GenABEL')
 biocLite("topGO")
+biocLite("clusterProfiler")
 #+END_SRC
 
 Install package =radiant= a shiny app that run in the browser for automated stats. not interactive.
@@ -721,7 +723,7 @@ latex sampleref.bib
 | gimp                  |                                                         |                                            |
 | *inkscape*            |                                                         |                                            |
 | *evince*              |                                                         |                                            |
-| *shotwell*            |                                                         |                                            |
+| *shotwell*            | sudo apt-get install shotwell shotwell-common           |                                            |
 | *gv*                  |                                                         |                                            |
 | gparted               |                                                         |                                            |
 | *vlc*                 |                                                         |                                            |
@@ -742,9 +744,10 @@ latex sampleref.bib
 |                       | with xclip                                              | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
 | liquidprompt          |                                                         | [[https://github.com/nojhan/liquidprompt][easy install]]                               |
 | bash                  | chsh -s /bin/bash                                       | use bash                                   |
-| *zsh*                 | chsh -s /bin/zsh                                        | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
+| *zsh*                 | chsh -s /bin/zsh ## logout then login                   | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
 |                       | echo $SHELL                                             | see what shell used                        |
 |                       | bash                                                    | switch between shells, write only the name |
+| *Fish*                | [[https://github.com/zsh-users/zsh-syntax-highlighting#with-oh-my-zsh][install from here]]                                       | Shell highlighting                         |
 | *oh-my-zsh*           |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/themes][themes]]                                     |
 |                       |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins][plugins]]                                    |
 |                       |                                                         | [[https://github.com/zsh-users/zsh-syntax-highlighting][Fish-highlighting]]                          |
@@ -822,6 +825,10 @@ latex sampleref.bib
 |                       | mount /dev/cdrom /mnt/                                  | Get full screen                            |
 |                       | cd /mnt/                                                |                                            |
 |                       | ./VBoxLinuxAdditions.run                                | reboot                                     |
+| pipes.sh              | git clone then make install                             | [[https://github.com/pipeseroni/pipes.sh][here (screensaver)]]                         |
+| ttystudio             | npm install -g ttystudio                                | [[https://github.com/chjj/ttystudio][here]] (gif maker)                           |
+| yank                  | make install                                            | [[https://github.com/mptre/yank][Github -- get stdin CLi]]                    |
+|                       |                                                         |                                            |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
@@ -1653,50 +1660,6 @@ function run_once(prg)
     end
     run_once("urxvt")
 #+END_SRC    
-
-* SYSADMIN UTILITIES
-** PROCESS MANAGER
-#+BEGIN_SRC shell
-top
-htop
-ps fauxwww
-ps aux | grep <pattern>
-parted <print free>
-df -h
-#+END_SRC
-*** SWAP FREE
-#+BEGIN_SRC shell
-free -m
-sudo su
-swapoff -a && swapon -a
-#+END_SRC
-*** MONITOR FREE MEMORY
-#+BEGIN_SRC shell
-watch -n 1 -d free -m
-#+END_SRC
-** FIND
-
-#+BEGIN_SRC shell
-find <where> -name <what>
-find / -name <what> 2>/dev/null (redirect the error messages)
-find / -mtime +60
-#+END_SRC
-
-** GREP
-Delete all files in a directory except selected ones.
-#+BEGIN_SRC shell
-ls * | grep -v "tex" | xargs rm -f
-#+END_SRC
-To delete files and directories alike.
-#+BEGIN_SRC shell
-ls * | grep -v "tex" | xargs rm -rf
-#+END_SRC
-
-** GENERAL COMMANDS
-Copy the content of one directory into another. (hint: no need to mkdir dir2)
-#+BEGIN_SRC shell
-cp -r dir1 dir2
-#+END_SRC
 
 * CHANGE BACKGROUND
 Install =feh= and set it up for an autostart. There is also =--bg-center= and

@@ -1,6 +1,13 @@
 \documentclass[9pt,english]{extarticle}
 \include{canevas_config}
 
+\makeatletter
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+
 \begin{document}
 \author{Sleiman Bassim, PhD}
 \title{R implementation}
@@ -42,7 +49,7 @@ rm(list=ls())
 Load packages.
 \marginnote{\small\color{blue}$\Lsh$ MUST install topGO package}[.1cm]
 <<packages,results='hide'>>=
-pkgs <- c('topGO', 'dplyr','ggplot2', 'tidyr')
+pkgs <- c('topGO', 'dplyr','ggplot2', 'tidyr', 'clusterProfiler')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -54,7 +61,7 @@ Install \textbf{TopGO} from bioconductor \href{http://www.bioconductor.org/packa
 
 \section{Merge all GO terms by genome}
 \label{sec:merge}
-<<merge1>>=
+<<merge1,results='hide'>>=
 aplke <- read.table("./data/merge/Aplke.txt")
 dim(aplke)
 auran <- read.table("./data/merge/auran.txt")
@@ -82,7 +89,7 @@ dim(thaps)
 @ 
 
 Merge all data.
-<<merge2>>=
+<<merge2,results='hide',echo=FALSE>>=
 all <- full_join(aplke, auran, by = "V2")
 all <- all[, c(2,1,3)]
 names(all) <- c("V2","aplke","auran")
@@ -190,6 +197,43 @@ cat Phatr2_bd_unmapped_goinfo_FilteredModels1.tab | grep -Fwf phatr2.go.txt - | 
 \end{lstlisting}
 
 
+
+\subsection{Create function to automate Fishers test}
+\label{subsec:function}
+Create a function.
+\marginnote{\small\color{blue}$\Lsh$ This function here can be copy/pasted in any R terminal. But first install topGO library}[.1cm]
+<<function>>=
+doFisher <- function(data, ontology, 
+                     algorithm="classic", 
+                     statistic="fisher",
+                     table=20,
+                     n=3){
+# function to find the most interesting GO terms
+    df <- readMappings(file = data)
+    df <- inverseList(df)
+    df <- inverseList(df)
+# create matrix
+# matrix must be a vector with 2 factors
+# that is: interesting and not interesting genes
+    geneNames <- names(df)
+    geneList <- factor(as.integer(geneNames %in% geneNames[-1]))
+    names(geneList) <- geneNames
+    GOdata <- new("topGOdata",
+              ontology = ontology,
+              allGenes = geneList,
+              annot = annFUN.gene2GO,
+              gene2GO = df)
+# Run Fishers test
+# show table of significant GO terms
+    results <- runTest(GOdata, algorithm=algorithm, statistic=statistic)
+    maps <- GenTable(GOdata, 
+                   classicFisher=results,
+                   orderBy="classicFisher",
+                   topNodes=table)
+    return(maps[, c(1:n)])
+}
+
+@ 
 \section{Photo: Auran}
 \label{sec:auran}
 Read in data.
@@ -222,145 +266,69 @@ Gomaps <- GenTable(GOdata,
                    classicFisher=resultFis,
                    orderBy="classicFisher",
                    topNodes=20)
-Gomaps
+Gomaps[,c(1:3)]
 @ 
 
 \section{Diatoms}
 \label{sec:diatoms}
+
 \subsection{FRACY}
 \label{subsec:fracy1}
-
-Read in data.
-<<read>>=
-fracy <- readMappings(file = "./data/diatome/fracy.txt")
-length(fracy)
-fracy[1:3]
-@ 
-
-Transform data into topGO data.
-<<transform>>=
-fracy <- inverseList(fracy)
-fracy[1]
-fracy <- inverseList(fracy)
-fracy[1]
-@ 
-
-Create an analysis matrix.
-<<matrix2>>=
-geneNames <- names(fracy)
-geneList <- factor(as.integer(geneNames %in% geneNames[-1]))
-names(geneList) <- geneNames
-GOdata <- new("topGOdata",
-              ontology = "MF",
-              allGenes = geneList,
-              annot = annFUN.gene2GO,
-              gene2GO = fracy)
-@ 
-
-Run Fishers Exact test.
-<<fishers2>>=
-resultFis <- runTest(GOdata, algorithm="classic", statistic="fisher")
-Gomaps <- GenTable(GOdata, 
-                   classicFisher=resultFis,
-                   orderBy="classicFisher",
-                   topNodes=20)
-Gomaps
-@ 
-
-
-\subsection{Create function to automate Fishers test}
-\label{subsec:function}
-Create a function.
-\marginnote{\small\color{blue}$\Lsh$ This function here can be copy/pasted in any R terminal. But first install topGO library}[.1cm]
-<<function>>=
-doFisher <- function(data, ontology, 
-                     algorithm="classic", 
-                     statistic="fisher",
-                     table=20){
-# function to find the most interesting GO terms
-    df <- readMappings(file = data)
-    df <- inverseList(df)
-    df <- inverseList(df)
-# create matrix
-# matrix must be a vector with 2 factors
-# that is: interesting and not interesting genes
-    geneNames <- names(df)
-    geneList <- factor(as.integer(geneNames %in% geneNames[-1]))
-    names(geneList) <- geneNames
-    GOdata <- new("topGOdata",
-              ontology = ontology,
-              allGenes = geneList,
-              annot = annFUN.gene2GO,
-              gene2GO = df)
-# Run Fishers test
-# show table of significant GO terms
-    results <- runTest(GOdata, algorithm=algorithm, statistic=statistic)
-    maps <- GenTable(GOdata, 
-                   classicFisher=results,
-                   orderBy="classicFisher",
-                   topNodes=table)
-    return(maps)
-}
-
-@ 
-
-\subsection{FRACY (continued)}
-\label{subsec:fracy1}
-
-Continue the fast analysis with Biological processes and Cellular components
-<<rest>>=
-doFisher(data = "./data/diatome/fracy.txt", ontology = "BP", algorithm = "classic",
-         statistic = "fisher", table = 20)
-@ 
-
-Cellular component.
+Cellular components
 <<cellular>>=
-doFisher(data = "./data/diatome/fracy.txt", ontology = "CC", algorithm = "classic",
-         statistic = "fisher", table = 20)
-
+doFisher(data = "./data/diatome/fracy.txt", 
+         ontology = "CC", algorithm = "classic",
+         statistic = "fisher", table = 20, n = 3)
 @ 
 
 
 
 \subsection{Phatr2 unmapped}
 \label{subsec:phatr}
-Biological process.
-<<bp3>>=
-doFisher(data = "./data/diatome/Phatr2.unmapped.txt", ontology = "BP", algorithm = "classic",
-         statistic = "fisher", table = 20)
-@ 
-
-Molecular Function
-<<mf3>>=
-doFisher(data = "./data/diatome/Phatr2.unmapped.txt", ontology = "MF", algorithm = "classic",
-         statistic = "fisher", table = 20)
-@ 
-
 Cellular component.
 <<cc3>>=
-doFisher(data = "./data/diatome/Phatr2.unmapped.txt", ontology = "CC", algorithm = "classic",
-         statistic = "fisher", table = 20)
+doFisher(data = "./data/diatome/Phatr2.unmapped.txt", 
+         ontology = "CC", algorithm = "classic",
+         statistic = "fisher", table = 20, n = 3)
 @ 
 
 \subsection{Phatr2 chromosomes}
 \label{subsec:phatr2ch}
-BP.
-<<bp4>>=
-doFisher(data = "./data/diatome/Phatr2.chromosomes.txt", ontology = "BP", algorithm = "classic",
-         statistic = "fisher", table = 20)
-@ 
-
-MF
-<<mf4>>=
-doFisher(data = "./data/diatome/Phatr2.chromosomes.txt", ontology = "MF", algorithm = "classic",
-         statistic = "fisher", table = 20)
-@ 
-
-CC.
+Cellular components.
 <<cc4>>=
-doFisher(data = "./data/diatome/Phatr2.chromosomes.txt", ontology = "CC", algorithm = "classic",
-         statistic = "fisher", table = 20)
+doFisher(data = "./data/diatome/Phatr2.chromosomes.txt", 
+         ontology = "CC", algorithm = "classic",
+         statistic = "fisher", table = 20, n = 3)
 @ 
+
+
+\subsection{Thaps}
+\label{subsec:thaps}
+<<thaps>>=
+doFisher(data = "./data/diatome/thaps3.txt", 
+         ontology = "CC", algorithm = "classic",
+         statistic = "fisher", table = 20, n = 3)
+@ 
+
+
+\section{Clustering of GO terms}
+\label{sec:clustering}
+Select one GO term from a Cellular Component analysis and use it to group all genes under that term by BP and MF. The script below will do just that.
+\begin{enumerate}
+\item Get genes related to 1 CC GO term
+\item Get BP GOs for all these genes
+\item Select BP GOs with at least 10 genes
+\item Restructure and label data
+\end{enumerate}
+\begin{lstlisting}
+cat Fracy1_goinfo_FilteredModels1.tab | grep "GO:0016020" | \
+awk '{print $1}' | grep -Fwf - Fracy1_goinfo_FilteredModels1.tab | \
+grep "biological_process" | cut -f 3 | sort - | uniq -c | \
+awk '{if ($1 >= 10) print $0}' | sort -n | \
+perl -pe 's/([0-9]) /\1\t/g' | \
+awk '{print $0,"\t","GO:0016020","\t","membrane","\t","fracy","\t","1"}' | nl -
+\end{lstlisting}
+
 
 
 

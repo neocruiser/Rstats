@@ -83,9 +83,8 @@ Trimming is done on paired ends on sequences sampled from the A1 A2 A3 data. Seq
 
 #+BEGIN_SRC shell
 #! /user/bin/bash
-
 :'
-this script accomplish 6 things:
+this script accomplishes 6 things:
 0. trimm reads
 1. map all paired end samples to reference with bwa
 2. sort the mapped reads with picard
@@ -93,33 +92,31 @@ this script accomplish 6 things:
 4. index reads with samtools
 5. count reads with htseq
 '
+sample[1]=B1
+sample[2]=B2
+sample[3]=B3
+ir=/media/madl/windows/analysis/nodule
+irr=/media/madl/windows/analysis/nodule/trimmed
+dir=/media/madl/windows/analysis/nodule/mapping_clam
+ddir=/media/madl/windows/analysis/nodule/rmdup_clam
 
-sample[1]=C1
-sample[2]=C2
-sample[3]=C3
+stats=/media/madl/windows/analysis/nodule/stats_clam
+#count=/media/sf_data/genomeSRv015/QPX_v015.gff3
 
-ir=/media/sf_data/nodule
-irr=/media/sf_data/nodule/trimmed
-
-dir=/media/sf_data/nodule/mapping
-ddir=/media/sf_data/nodule/rmdup
+mkdir $dir $ddir $stats
 
 extension=.trimmed.P.fastq.gz
-reference=/media/sf_data/genomeSRv015/QPX_v015.fasta
-
+reference=/media/madl/windows/analysis/nodule/clam/clam_60p_trinity.fa
 ## essential for calling SNPs
-RG[1]='@RG\tID:noduleC1\tSM:MA\tPL:illumina\tLB:noduleC1\tPU:genomeSRv015'
-RG[2]='@RG\tID:noduleC2\tSM:MA\tPL:illumina\tLB:noduleC2\tPU:genomeSRv015'
-RG[3]='@RG\tID:noduleC3\tSM:MA\tPL:illumina\tLB:noduleC3\tPU:genomeSRv015'
+RG[1]='@RG\tID:noduleA1\tSM:MA\tPL:illumina\tLB:noduleA1\tPU:transcriptome'
+RG[2]='@RG\tID:noduleA2\tSM:MA\tPL:illumina\tLB:noduleA2\tPU:transcriptome'
+RG[3]='@RG\tID:noduleA3\tSM:MA\tPL:illumina\tLB:noduleA3\tPU:transcriptome'
 
-stats=/media/sf_data/nodule/stats
-count=/media/sf_data/genomeSRv015/QPX_v015.gff3
-
-
+# Trim reads
 for i in 1 2 3
 do
     sample=${sample[${i}]}
-    java -Xmx10g -jar /home/neo/data/Trimmomatic-0.33/trimmomatic-0.33.jar PE \
+    time java -Xmx10g -jar /home/neo/data/Trimmomatic-0.33/trimmomatic-0.33.jar PE \
         ${ir}/${sample}R1.fastq.gz \
         ${ir}/${sample}R2.fastq.gz \
         ${irr}/${sample}.1.trimmed.P.fastq.gz \
@@ -139,32 +136,35 @@ done
 
 
 ## create dictionary and index of reference
-    java -jar /home/neo/data/picard/picard.jar \
+    time java -jar ~/picard-tools-1.140/picard.jar \
         CreateSequenceDictionary \
         R=${reference} \
-        O=/media/sf_data/genomeSRv015/QPX_v015.dict
+        O=/media/madl/windows/analysis/nodule/clam/clam_60p_trinity.dict
 
-    samtools faidx ${reference}
+    time samtools faidx ${reference}
+    # important to include
+    # when the script is ran in parallel only index once
+    time bwa index ${reference}
 
 ## Map | Sort | remove duplicates
 for i in 1 2 3
 do
     sample=${sample[${i}]}
     RG=${RG[${i}]}
-    bwa mem -M \
+    time bwa mem -M \
         -R ${RG} \
         -p ${reference} \
         ${irr}/${sample}.1${extension} \
         ${irr}/${sample}.2${extension} \
     > ${dir}/${sample}.sam
 
-    java -Xmx10g -jar /home/neo/data/picard/picard.jar \
+    time java -Xmx10g -jar ~/picard-tools-1.140/picard.jar \
         SortSam \
         INPUT=${dir}/${sample}.sam \
         OUTPUT=${dir}/${sample}.sorted.bam \
         SORT_ORDER=coordinate
 
-    java -Xmx10g -jar /home/neo/data/picard/picard.jar \
+    time java -Xmx10g -jar ~/picard-tools-1.140/picard.jar \
         MarkDuplicates \
         INPUT=${dir}/${sample}.sorted.bam \
         OUTPUT=${ddir}/${sample}.nodup.bam \
@@ -172,11 +172,11 @@ do
         REMOVE_DUPLICATES=true \
         ASSUME_SORTED=true
 
-    htseq-count --format=bam \
-        --stranded=no \
-        --type=CDS --order=pos \
-        --idattr=Name ${ddir}/${sample}.nodup.bam ${count} \
-        > ${stats}/${sample}.htseq.counts.nodup.txt
+#    htseq-count --format=bam \
+#        --stranded=no \
+#        --type=CDS --order=pos \
+#        --idattr=Name ${ddir}/${sample}.nodup.bam ${count} \
+#        > ${stats}/${sample}.htseq.counts.nodup.txt
 
 done
 #+END_SRC
@@ -207,7 +207,7 @@ samtools view -c -f 4 sample.bam
 
 Get the number of reads from paired ends where both the forward and reverse mate are mapped.
 #+BEGIN_SRC shell
-samtools -c -f 1 -F 12 sample.bam
+samtools view -c -f 1 -F 12 sample.bam
 #+END_SRC
 
 Get a summary on reads.
@@ -266,7 +266,7 @@ cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | sort 
 
 Calculate the total size of contigs in bp.
 #+BEGIN_SRC shell
-cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | head | awk '{sum+=$1}END{print "Total:", sum}out'
+cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | awk '{sum+=$1}END{print "Total:", sum}out'
 #+END_SRC
 
 * Gene Finding
@@ -305,25 +305,51 @@ Pfam can be searched using keywords and =accession= numbers can be extracted wit
 Using =Transeq= from Emboss. If an error occurs after the first =make install= try =ldconfig= then =make install= a second time. Make install can be replaced with =checkinstall= for creating a deb package that can be removed without =make uninstall=.
 #+BEGIN_SRC shell
 wget ftp://emboss.open-bio.org/pub/EMBOSS/old/6.5.0/EMBOSS-6.5.7.tar.gz
-./configure
+sudo apt-get install libplplot-dev
+./configure --without-x
 sudo make
-sudo make install
-sudo ldconfig
 sudo make install
 #+END_SRC
 
 Translate in 6 frames from fasta file. [[http://www.sacs.ucsf.edu/Documentation/emboss/transeq.html][Documentation]]
 #+BEGIN_SRC shell
-## correct name of each sequence
+## correct name of each sequence. OPTIONAL
 cat assembled.contigs.fasta | sed 's/|.*len/ len/g' > assembled.contigs.fa
 ## translate in 6 frames
-transeq assembled.contigs.fa peptides.fa -frame=6
+time transeq assembled.contigs.fa peptides.fa -frame=6
 #+END_SRC
 
 *** Annotating all peptides (pfam)
-Annotation of the 4 strains peptides against a Pfam v28 updated database. Here we have two choices, first, annotate against the whole pfam library, second, annotate against a subset of selected HMM profiles of PFAM. The latter is mostly beneficial if one wants to extract =contig= number to find SNPs. However its not a straightforward process. Refer to p.50 of the HMMER3 userguide.
+Annotation of the 4 strains peptides against a Pfam v28 updated database (June 2015). Here we have two choices, first option, annotate against the whole pfam library, second option, annotate against a subset of selected HMM profiles of PFAM (eg., virulence, temperature). The latter is mostly beneficial if one wants to extract =contig= number to find SNPs, the first being better for discovery. Refer to p.50 of the HMMER3 userguide.
 #+BEGIN_SRC shelle
-hmmscan Pfam-A.hmm ../extras/peptides.fa > file.pfamA.txt
+time hmmscan --domtblout C.txt --cpu 4 ../db/Pfam-A.hmm ./peptides/C.peptides.QPXv15.fa
+#+END_SRC
+
+How many contigs have been HMMER annotated?
+#+BEGIN_SRC shell
+cat $file.fa | grep "^[^#]" | wc -l
+#+END_SRC
+
+Get contig IDs from HMMER results with minimum e-value of e-10
+#+BEGIN_SRC shell
+cat $hmmerOutput | grep "^[^#]" | awk '{if ($7<=0.0000000001) print $4}' | sort - | uniq | sed 's/_.$//g' | uniq > $ids
+# Number of contigs (nb of genes and isoforms)
+cat $hmmerOutput | grep "^[^#]" | awk '{if ($7<=0.0000000001) print $4}' | sort - | uniq | sed 's/_.$//g' | uniq | wc -l
+# Number of peptides (1 contig with many translated frames)
+cat $hmmerOutput | grep "^[^#]" | awk '{if ($7<=0.0000000001) print $4}' | sort - | uniq | sed 's/.len.*$//g' | uniq | wc -l
+# Number of genes (without isoforms created with trinity)
+cat $hmmerOutput | grep "^[^#]" | awk '{if ($7<=0.0000000001) print $4}' | sort - | uniq | sed 's/.c.*$//g' | uniq | wc -l
+#+END_SRC
+
+Get nucleotide sequences from fasta file that contains all contigs annotated in HMMER. We take the contig not the isoforms because not all isoforms are annotated.
+#+BEGIN_SRC shell
+cat $trinityOutput.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' $ids - > $pfam.e10.fa
+#+END_SRC
+
+Compare =$ids= and =$pfam.e10.fa= to get if any sequences are missing
+#+BEGIN_SRC shell
+## show only entries unique to $ids
+comm -23 <(sort $ids) <(cat $pfam.e10.fa | grep "^>" | sed 's/^>//g' | sort -) | wc -l
 #+END_SRC
 
 *** BLAT
@@ -340,8 +366,6 @@ wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslPretty
 wget http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/pslStats
 chmod +x ./blat
 chmod +x ./faToTwoBit
-
-
 ## OR
 git clone https://github.com/neocruiser/blat.git
 #+END_SRC
@@ -365,6 +389,16 @@ Show the alignment in a human readable format.
 Get overall statistics.
 #+BEGIN_SRC shell
 ./pslStats -overallStats <psl file> <output>
+#+END_SRC
+
+How many contigs were mapped to reference with 0--1 gaps and where at least one of both gaps align to 200 or more nucleotide of the reference.
+#+BEGIN_SRC shell
+cat  $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=2) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=200 || $6>=200) print $0}' | wc -l
+#+END_SRC
+
+Extract the contigs with 4 gaps and at least 450 nucleotides aligned to reference for any of the blocks.
+#+BEGIN_SRC shell
+cat $trinityOutput.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=1) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=450||$6>=450||$7>=450||$8>=450||$9>=450) print $1}' | sort - | uniq) - > $contigs.fa
 #+END_SRC
 
 ** BLAST+

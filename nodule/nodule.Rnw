@@ -672,6 +672,57 @@ ggplot(interpro,
                       palette = 6)
 @ 
 
+
+
+\section{Removing clam genes from QPX inferred genes}
+\label{sec:clamGenes}
+For each sequenced we assembled a list of genes. A-list theoretically contains QPX genes, B- and C- contain mostly clam genes. Confidence in the A-list is only valid if clam genes were discarded from, and QPX only genes remained.
+
+The same strategy of contig assembly is carried out for clam. A, B, C raw reads are mapped to clam reference transcriptome. Only the mapped reads are used to assemble 3 lists of hypothetically clam genes. There is many genes so HMMER is used to select the ones containing significant protein domains. The selected genes are mapped to the clam reference and only the genes that map without any gap (on the aligned length) are kept.
+<<clam1>>=
+gapsA <- read.table("./data/A.e10.blat.gaps.clam.txt")
+gapsB <- read.table("./data/B.e10.blat.gaps.clam.txt")
+gapsC <- read.table("./data/C.e10.blat.gaps.clam.txt")
+df <- full_join(gapsA, gapsB, by="V2") %>%
+    full_join(gapsC, by="V2")
+colnames(df) <- c("A", "Gaps", "B", "C") 
+df[, c(2,1,3,4)] %>%
+    gather("Sample", "Count", 2:4) %>%
+    filter(Gaps<5) %>%
+    ggplot(aes(x = Gaps,
+               y = Count,
+               fill = Sample)) + 
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") + 
+    labs(x = "Number of Gaps (minus 1) over the aligned length between 2 contigs",
+         y = "Number of assembled contigs")
+@ 
+
+Get the number of clam contigs from A, B, and C that align to the clam reference. 
+\marginnote{\small\color{blue}$\Lsh$ One sample contig can map to several reference contigs. The latter are mainly length-isoforms of 1 gene.}[0cm]
+\begin{itemize}
+\item A contig can map entirely to a reference.
+\item A contig can align to 2 regions of a reference with 1 gap in between
+\item A contig can align to \textit{n} regions of a reference with \textit{n-1} gaps in between
+\end{itemize}
+The blocksize in the chart below is the length of the aligned region between contig and reference in case there is \textbf{no gap} (ie., 1) or there is \textbf{4 gaps} (ie., 5).
+\marginnote{\small\color{blue}$\Lsh$ We chose gaps=5 and blocksize=450}[0cm]
+<<clam2>>=
+read.table("./data/gaps.blocksize.clam.txt", header = T) %>%
+    ggplot(aes(x = Sample,
+               y = Count,
+               fill = factor(Blocksize))) + 
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap( ~ Gaps,
+               ncol = 2,
+               scales = "free") + 
+    labs(x = "Samples assembled into contigs",
+         y = "Number of contigs per sample without redundancy")
+@ 
+
 \section{System Information}
 \label{sec:sys_info}
 \noindent
