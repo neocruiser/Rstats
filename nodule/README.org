@@ -393,13 +393,24 @@ Get overall statistics.
 
 How many contigs were mapped to reference with 0--1 gaps and where at least one of both gaps align to 200 or more nucleotide of the reference.
 #+BEGIN_SRC shell
-cat  $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=2) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=200 || $6>=200) print $0}' | wc -l
+cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=2) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=200 || $6>=200) print $0}' | wc -l
 #+END_SRC
 
-Extract the contigs with 4 gaps and at least 450 nucleotides aligned to reference for any of the blocks.
+Extract clam contigs with max 4 gaps and at least 450 nucleotides aligned to reference for any of the blocks. These contigs are then mapped to QPX contigs. The common in both lists are considered than as clam genes.
 #+BEGIN_SRC shell
-cat $trinityOutput.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=1) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=450||$6>=450||$7>=450||$8>=450||$9>=450) print $1}' | sort - | uniq) - > $contigs.fa
+cat $trinityOutput.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=5) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=450||$6>=450||$7>=450||$8>=450||$9>=450) print $1}' | sort - | uniq) - > $contigs.fa
 #+END_SRC
+
+Clean QPX contigs from i- clam contigs, ii- non mapped contigs to QPX reference (blat), and iii- pfam low e-value domains. Then extract fasta sequence of QPX-only genes.
+#+BEGIN_SRC shell
+## remove clam contigs
+cat $trinity.fa | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(comm -23 <(grep "^>" $trinity.fa | sed 's/^>//g' | sed 's/.len.*$//g'| sort -) <(cat $QPXvsClam.blat.psl | awk 'NR>5' | awk '{print $10}' | sort - | uniq)) - > $noClam.fa
+## remove pfam domains > e.10-5
+cat $noClam.fa | sed 's/|.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $hmmer.out | grep "^[^#]" | awk '{if ($7<=0.00001) print $4}' | sort - | uniq | sed 's/_.$//g' | uniq) - $noClam.e5.fa
+## remove non mapped to QPX reference genome w/ max 4 gaps, min 100 Query size, min 250 blocksize
+cat $noClam.e5.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $QPX.blat.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=5) print$0}' | awk '{if($2>=100)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=250||$6>=250||$7>=250||$8>=250||$9>=250) print $1}' | sort - | uniq) - > $noClam.e5.True2Ref.fa
+#+END_SRC
+
 
 ** BLAST+
 Download NR library (protein database NCBI). Index it (this will generate .pin files. p for protein). If NT was downloaded and indexed .nin files will be generated. BLAST is set on xsede with every database used here.

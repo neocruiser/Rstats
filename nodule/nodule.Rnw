@@ -544,15 +544,16 @@ ggplot(reads.counts,
 
 @ 
 
+\subsection{QPX genes assembled without hosts genes}
+\label{subsec:mapped}
 Mapped reads to the QPX reference are than assembled into contigs (ie, the reads showing in the chart above).
 \marginnote{\small\color{blue}$\Lsh$ These contigs must be specific transcripts to QPX}[.1cm]
 <<counts3>>=
-reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 2)
-reads.counts <- gather(reads.counts, "category", "counts", 3:7)
-ggplot(reads.counts,
-       aes(x = sample,
-           y = counts,
-           fill = category)) + 
+read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 2) %>%
+    gather("category", "counts", 3:7) %>%
+      ggplot(aes(x = sample,
+                 y = counts,
+                 fill = sample)) + 
     geom_bar(stat = "identity") +
         theme_bw() +
             facet_wrap( ~ category, 
@@ -560,33 +561,33 @@ ggplot(reads.counts,
                        scales = "free") + 
                 theme(legend.position = "top") +
             labs(x = "Samples merged by genomic position",
-                 y = "Number of filtered reads")
+                 y = "Number of filtered reads") +
+    scale_fill_brewer(type = "qual", palette = 6)
 @ 
 
-All contigs were than aligned to the reference genome QPX. The chart shows the number of contigs (both genomic and mRNA sequenced) that align with an increasing length of 100>200>300>400>500.
+All contigs were than aligned to the reference genome QPX. The chart shows the number of contigs that align with an increasing length of 100>200>300>400>500.
 \marginnote{\small\color{blue}$\Lsh$ Helps discard misassembled contigs or non QPX ones}[.1cm]
 <<counts4>>=
-reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 4)
-reads.counts <- gather(reads.counts, "category", "count", 3:7)
-ggplot(reads.counts,
-       aes(x = sample,
+read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 4) %>%
+    gather("category", "count", 3:7) %>%
+      ggplot(aes(x = sample,
            y = count,
            fill = category)) +
     theme_bw() +
         geom_bar(stat = "identity",
                  position = "dodge") +
             facet_wrap( ~ blat, ncol = 1, scale = "free") +
-                scale_fill_manual(values = brewer.pal(5, "Greens")) +
+#                scale_fill_manual(values = brewer.pal(5, "Greens")) +
             labs(x = "Samples merged by genomic position",
-                 y = "Number of filtered reads")
+                 y = "Number of contigs") +
+    scale_fill_brewer(type = "qual", palette = 6)
 @ 
 
 All contigs were than translated to peptides in 6 frames. Each peptide was than aligned to the whole PFAM library (v28, date: Jul 14 2015).
 <<counts5>>=
-reads.counts <- read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 3)
-reads.counts <- gather(reads.counts, "category", "count", 3:5)
-ggplot(reads.counts,
-       aes(x = category,
+read.xlsx("./data/mappedNodules.xlsx", sheetIndex = 3) %>%
+    gather("category", "count", 3:5) %>%
+      ggplot(aes(x = category,
            y = count,
            fill = pfam)) +
     geom_bar(stat = "identity",
@@ -594,9 +595,9 @@ ggplot(reads.counts,
         theme_bw() + 
             facet_wrap( ~ sample, ncol = 1,
                        scales = "free") +
-                scale_fill_manual(values = brewer.pal(3, "Greens")) +
             labs(x = "Evalue for sequence similarity alignement to Pfam",
-                 y = "Number of domains or contigs")
+                 y = "Number of domains or contigs") + 
+    scale_fill_brewer(type = "qual", palette = 6)
 
 @
 
@@ -605,10 +606,9 @@ ggplot(reads.counts,
 BLAST is used at this step to align the contigs found to non redundant (NR), nucleotide (NT), and swissprot databases. Contigs were translated into peptide sequencing with EMBOSS \textit{transeq} in all 6 possible frames.
 All contigs were mapped to genome v15 of S. Roberts. Top hit sequences were filtered either with an evalue score, the percentage of identity between query and target sequences, and the number of mismatches found in the aligned region.
 <<blast1>>=
-blast <- read.xlsx("./data/blast.xlsx", sheetIndex = 1)
-blast <- gather(blast[, -c(13:14)], "options", "counts", 4:12)
-ggplot(blast,
-       aes(x = sample,
+read.xlsx("./data/blast.xlsx", sheetIndex = 1) %>%
+    gather("options", "counts", 4:12) %>%
+      ggplot(aes(x = sample,
            y = counts,
            fill = options)) + 
     geom_bar(stat = "identity",
@@ -632,11 +632,9 @@ ggplot(blast,
 Sequences from A, B, C samples are also aligned to 10 other databases. We used interpro accession numbers to get GO-terms too.
 We show below the number of contigs if we filter them only by e-value. The no-filter label represent the total number of sequences per database.
 <<interpro1>>=
-interpro <- read.xlsx("./data/interpro.xlsx", sheetIndex = 1)
-interpro <- gather(interpro, "filters", "value", 2:5)
-head(interpro)
-ggplot(interpro,
-       aes(x = sample,
+read.xlsx("./data/interpro.xlsx", sheetIndex = 1) %>%
+    gather("filters", "value", 2:5) %>%
+      ggplot(aes(x = sample,
            y = value,
            fill = filters)) + 
     geom_bar(stat = "identity",
@@ -653,23 +651,21 @@ ggplot(interpro,
 
 We show here the number of contigs annotated by database and filtered by both evalue and the length of the similarity between query and target sequences.
 <<interpro2, out.width='1\\linewidth'>>=
-interpro <- read.xlsx("./data/interpro.xlsx", sheetIndex = 2)
-interpro <- gather(interpro, "filters", "value", 3:7)
-head(interpro)
-ggplot(interpro, 
-       aes(x = database,
-           y = value,
-           fill = filters)) + 
-    theme_bw() +
-    geom_bar(stat = "identity",
-             position = "dodge") + 
-    facet_wrap( ~ sample + option, 
-               ncol = 3,
-               scales = "free") +
-    labs(x = "Database used for annotation",
-         y = "Number of annotated contigs") +
-        scale_fill_brewer(type = "qual",
-                      palette = 6)
+read.xlsx("./data/interpro.xlsx", sheetIndex = 2) %>%
+    gather("filters", "value", 3:7) %>%
+    ggplot(aes(x = database,
+               y = value,
+               fill = filters)) + 
+                   theme_bw() +
+                       geom_bar(stat = "identity",
+                                position = "dodge") + 
+                       facet_wrap( ~ sample + option, 
+                                  ncol = 3,
+                                  scales = "free") +
+                       labs(x = "Database used for annotation",
+                            y = "Number of annotated contigs") +
+                       scale_fill_brewer(type = "qual",
+                                         palette = 6)
 @ 
 
 
@@ -696,7 +692,8 @@ df[, c(2,1,3,4)] %>%
     geom_bar(stat = "identity",
              position = "dodge") + 
     labs(x = "Number of Gaps (minus 1) over the aligned length between 2 contigs",
-         y = "Number of assembled contigs")
+         y = "Number of assembled contigs") + 
+        scale_fill_brewer(type = "qual", palette = 6)
 @ 
 
 Get the number of clam contigs from A, B, and C that align to the clam reference. 
@@ -720,8 +717,61 @@ read.table("./data/gaps.blocksize.clam.txt", header = T) %>%
                ncol = 2,
                scales = "free") + 
     labs(x = "Samples assembled into contigs",
-         y = "Number of contigs per sample without redundancy")
+         y = "Number of contigs per sample without redundancy") + 
+        scale_fill_brewer(type = "qual", palette = 6)
 @ 
+
+\subsection{Preprocessing the clam transcriptome}
+\label{subsec:clamtrans}
+A, B, and C reads were merged and used to assemble one transcriptome (previous study, not here). The raw output transcriptome done in Trinity was then reduced by 40\% and 60\% using different strategy of quality controls (not here). 
+\marginnote{\small\color{blue}$\Lsh$ We used the transcriptome reduced by 40 \% only}[-0.7cm]
+Transcriptome size, N50, and contig length are shown below for each transcriptome.
+\marginnote{\small\color{blue}$\Lsh$ N50 is the mean length of contigs assembled from 50\% of sequenced nucleotides}[0.5cm]
+<<clam3>>=
+read.table("./data/clam.filtered.trxome.txt", header = T) %>%
+    gather("Category", "Count", 2:6) %>%
+    ggplot(aes(x = Version,
+               y = Count,
+               fill = Version)) + 
+        theme_bw() + 
+        geom_bar(stat = "identity",
+                 position = "dodge") + 
+        facet_wrap( ~ Category,
+                   ncol = 2,
+                   scales = "free") +
+        labs(x = "Different filtered version of the same clam transcriptome",
+             y = "Count") + 
+    scale_fill_brewer(type = "qual", palette = 6)
+@ 
+
+From the selected transcriptome (40\%) a guided Trinity assembly is done for each of sample which generated 3 separate clam transcriptomes. These 3 raw transcriptomes have lots of contigs, many of which can be discarded.
+<<clam4>>=
+read.table("./data/clam.trxome.txt", header = T) %>%
+    gather("Category", "Count", 2:6) %>%
+    ggplot(aes(x = Sample,
+               y = Count,
+               fill = Sample)) + 
+        theme_bw() + 
+        geom_bar(stat = "identity",
+                 position = "dodge") + 
+        facet_wrap( ~ Category,
+                   ncol = 2,
+                   scales = "free") +
+        labs(x = "Transcriptomes specific to each sequenced clam samples",
+             y = "Count") + 
+    scale_fill_brewer(type = "qual", palette = 6)
+@ 
+
+
+\section{QPX genes remaining after cleanup}
+\label{sec:cleanup}
+Raw reads of A, B, C samples are mapped to QPX reference genome. The true mapped reads are then assembled into contigs with Trinity genome guided approach. Number of genes resulted for each sample are shown in Section \ref{subsec:mapped}.
+These genes are then processed to select \textbf{932, 44, 0} genes/isoforms for QPX in sample A, B, and C respectively.
+\begin{enumerate}
+\item Remove redundant clam genes common with A, B, C clam assemblies
+\item Remove PFAM domains with an e-value higher than $10^{-5}$
+\item Remove non-mapped contigs to QPX reference genome that have more than 4 gaps, less than 100 in contig size, and less than 250 in blocksize (if gaps exist)
+\end{enumerate}
 
 \section{System Information}
 \label{sec:sys_info}
