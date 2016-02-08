@@ -20,12 +20,44 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
+=to be updated=
 
-This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/nodule/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/nodule/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/nodule/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
+This git repository includes the pipeline for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][the PDF]] of the compiled R file, the data =to be updated= used for generating the figures, and the scripts =to be updated= (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
 
 * Aims and resulting headlines
-(to be updated)
+1. Biological samples: Crassostrea gigas [[http://www.nature.com/nature/journal/v490/n7418/full/nature11413.html][genome of the Pacific oyster]]
+2. Samples from: visceral ganglia and gill, RNAseq in multiplex
+3. Aim 1: Generate RNAseq data, 2 conditions, 2 tissues
+4. Aim 2: Differential gene expression (edge R. see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]])
+5. Aim 3: Gene-gene interactions 
+6. Aim 4: Machine learning on SNPs and gene expression data 
+7. Hypothesis 1: gene-gene interaction is due to guilt-by-association
+8. Hypothesis 2: Multifunctionality among genes and between pathways
+9. Preference in exon expression, between 2 conditions (exon-exon junctions + GLM model from DEXSeq for significance)
+10. [[id:624baea5-62b1-40b1-813f-8f7350966d50][Second set Bibliography (FPKM vs TPM)]]
+11. Use R BitSeq to estimate the number of actual transcribed genes
+    1. EdgeR too
+    2. BitSeq [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/26/bioinformatics.btv483.long][Hensman 2015]] =bioconductor=
+12. [[https://books.google.com/books?hl=en&lr=&id=LNScBAAAQBAJ&oi=fnd&pg=PA325&dq=qpx+parasite&ots=lGKB4qA7-h&sig=AK7xD5RGJhE-WzFRj2DY8HXbeJk#v=onepage&q=qpx%2520parasite&f=false][Text book]]
+13. use SNPeff to create a preliminary SNP list for GATK base calling. [[http://snpeff.sourceforge.net/protocol.html][tutorial]]
+    1. use RASER [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/29/bioinformatics.btv505.abstract][Ahn 2015]] to map reads specifically for SNP calling
+14. Search for novel transcripts using special filters [[http://www.rna-seqblog.com/current-limitations-of-rna-seq-analysis-for-detection-of-novel-transcripts/][Weirick 2015]]
+    1. Or [[http://www.rna-seqblog.com/rna-enrich-gene-set-enrichment-gse-testing-for-rna-seq-data/][Gene enrichment]] from RnaSeq data =R=
+    2. [[http://www.rna-seqblog.com/isodot-differential-rna-isoform-expression/Isoform][Isoform]] classification
+    3. [[https://github.com/Reedwarbler/SpliceJumper][SpliceJumper]] for splice junctions
+    4. Select common genes OR select by function:
+       - immune genes
+       - secretion proteins
+       - transmembrane proteins
+    5. Annotate the structure of identified genes (CDS introns ..) [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4712544/][Bens 2016]]
+    6. Use [[http://www.ebi.ac.uk/gxa/about.html][Atlas]] to identify genes and tissues specificity
+15. Cluster analysis by pathway and gene-gene interaction (String database)
+    1. [[http://www.rna-seqblog.com/pathwayseq-pathway-analysis-for-rna-seq-data/][Pathway analysis from RNAseq data]]
+    2. Multivariate analysis [[http://www.rna-seqblog.com/detecting-multivariate-gene-interactions-in-rna-seq-data-using-optimal-bayesian-classification/][Optimal Bayesian classification]]
+    3. [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
+16. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
+
 
 * Quality controls
 #+BEGIN_SRC shell
