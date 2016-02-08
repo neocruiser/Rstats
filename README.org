@@ -24,6 +24,7 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 
 | Project                | Pipeline | Code       | Author    |    Year | University    |
 |------------------------+----------+------------+-----------+---------+---------------|
+| Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
 | QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
 | QPX nodules            | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
 | Databases              | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Tables]]   | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | Public    |    2015 | Stony Brook   |
