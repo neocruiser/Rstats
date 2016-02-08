@@ -1,0 +1,1155 @@
+#+TITLE: Network analysis of immunity genes in neural and respiratory cells
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+
+This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/nodule/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/nodule/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/nodule/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
+
+
+* Aims and resulting headlines
+(to be updated)
+
+* Quality controls
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=02:00:00
+#PBS -N fastqc.out
+#PBS -e fastqc.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+#export PATH="$PATH:/home/silo/blast/bin"
+#export BLASTDB="/oasis/projects/nsf/sun108/bassem/db/string"
+
+oasis=/oasis/projects/nsf/sun108/
+
+
+for i in {1..24}
+do
+    for j in 1 2
+    do
+
+zcat ${oasis}/silo/data/ganglia/gg.${i}.R${j}.fastq.gz | \
+fastqc/fastqc ${oasis}/silo/data/ganglia/gg.${i}.R${j}.fastq.gz \
+--outdir=${oasis}/silo/ganglia/fastqc/
+
+    done
+done
+#+END_SRC
+
+
+* Merge replication files and count the number of reads
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=15:00:00
+#PBS -N merge.gg.out
+#PBS -e merge.gg.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+# because of large datasets
+ulimit -s unlimited
+
+scratch=/oasis/scratch/silo/temp_project
+oasis=/oasis/projects/nsf/sun108/silo/data/ganglia
+home=/home/silo
+
+## merge all files
+## total to 48 files for each condition
+find ${oasis} -name "*gg*R1*gz" | xargs zcat | gzip -c9 > ${scratch}/ganglia/data/gg.all.R1.fq.gz
+find ${oasis} -name "*gg*R2*gz" | xargs zcat | gzip -c9 > ${scratch}/ganglia/data/gg.all.R2.fq.gz
+
+#r1=.R1.fastq.gz
+#r2=.R2.fastq.gz
+
+jobid=br.gg
+
+## count the number of reads
+
+## change the number of files
+echo -e "Concatenating gg files. Read counts for reverse seq R1:" >> $home/count_${jobid}_output.log
+zcat ${scratch}/ganglia/data/gg.all.R1.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
+echo -e "Concatenating gg files. Read counts for fwd seq R1:" >> $home/count_${jobid}_output.log
+zcat ${scratch}/ganglia/data/gg.all.R1.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
+
+echo -e "Concatenating gg files. Read counts for reverse seq R2:" >> $home/count_${jobid}_output.log
+zcat ${scratch}/ganglia/data/gg.all.R2.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
+echo -e "Concatenating gg files. Read counts for fwd seq R2:" >> $home/count_${jobid}_output.log
+zcat ${scratch}/ganglia/data/gg.all.R2.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
+
+#+END_SRC
+* Sample from the merged file
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q vsmp
+#PBS -l nodes=1:ppn=256:vsmp
+#PBS -l walltime=6:00:00
+#PBS -N sampling.80p.gg
+#PBS -e sampling.80p.gg.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+# xsede directories
+oasis=/oasis/projects/nsf/sun108
+scratch=/oasis/scratch/silo/temp_project
+home=/home/silo
+##################################
+
+##################################
+jobid=gg.80p
+fileid=gg.all
+workdir=${scratch}/ganglia/data
+# fastq raw files, reads
+sense=${scratch}/ganglia/data/$fileid.R1.fastq
+antisense=${scratch}/ganglia/data/$fileid.R2.fastq
+
+$home/seqtk/seqtk sample -s1234 $sense 166283796 > $workdir/$jobid.R1.fastq
+$home/seqtk/seqtk sample -s1234 $antisense 166283796 > $workdir/$jobid.R2.fastq
+#+END_SRC
+* Trimming, mapping, sorting by reference position, duplicate removal
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=4:ppn=16,walltime=4:00:00
+#PBS -N trim.all
+#PBS -q long
+#PBS -V
+
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+input=${scratch}/raw/ganglia
+output=${scratch}/ganglia/trimmed
+
+mkdir -p $output
+mkdir -p /gpfs/scratch/ballam/ganglia/trimmed
+
+sample[1]=br
+sample[2]=gg
+
+for s in {1..2}
+do
+    sample=${sample[${s}]}
+    for f in {1..24}
+    do
+	java -jar Trimmomatic-0.33/trimmomatic-0.33.jar PE \
+	    -phred33 \
+	    ${input}/$sample.$f.R1.fastq.gz \
+	    ${input}/$sample.$f.R2.fastq.gz \
+	    ${output}/$sample.$f.R1.P.fastq.gz \
+	    ${output}/$sample.$f.R1.U.fastq.gz \
+	    ${output}/$sample.$f.R2.P.fastq.gz \
+	    ${output}/$sample.$f.R2.U.fastq.gz \
+	    ILLUMINACLIP:adapters.fa:2:30:10 \
+	    LEADING:5 \
+	    TRAILING:5 \
+	    SLIDINGWINDOW:4:15 \
+	    MINLEN:36
+	done
+    done
+#+END_SRC
+
+* Trinity transcriptome assembly
+#+BEGIN_SRC shell
+#!/bin/bash
+#SBATCH --job-name="TRbr100"
+#SBATCH --output="trinity.%j.%N.out"
+#SBATCH --partition=compute
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=64
+#SBATCH --export=ALL
+#SBATCH -t 48:00:00
+#SBATCH --partition=large-shared
+#SBATCH -A sun108
+#SBATCH --mem=1450GB
+
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+
+# xsede directories
+oasis=/oasis/projects/nsf/sun108/silo/ganglia/trinity
+scratch=/oasis/scratch/comet/silo/temp_project
+home=/home/silo
+
+##################################
+# output directories for trinity #
+##################################
+jobid=br100
+fileid=100p/br.all
+
+########################
+# Dont change anything #
+########################
+#workdir=${scratch}/ganglia/trinity/trinity_out_dir_${jobid}
+#ssddir=/scratch/silo/$SLURM_JOBID/trinity_out_dir_$jobid
+workdir=$oasis/trinity_out_dir_${jobid}
+
+# fastq raw files, reads
+sense=${scratch}/ganglia/data/$fileid.R1.fastq
+antisense=${scratch}/ganglia/data/$fileid.R2.fastq
+
+############
+# Inchworm #
+############
+## Phase 1: construct Kmers
+# maximum memory for jellyfish to use
+# 10 GB * nb of nodes (64)
+JMi=10G
+nthreads=64
+
+${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMi} --CPU $nthreads --min_contig_length 200 --output $workdir --no_run_chrysalis --verbose >& ${home}/trinity.${jobid}_output.log
+
+## Backup inchworm directory
+#cd $oasis
+#tar -cvf $workdir.tar trinity_out_dir_$jobid
+#mv $workdir.tar $workdir.tar.inchworm
+
+## extract backed up inchworm
+#cd $oasis
+#mv $workdir.tar.inchworm $workdir.tar
+#tar -xvf $workdir.tar trinity_out_dir_$jobid
+#mv $workdir.tar $workdir.tar.inchworm
+####################### STOP ###########################
+
+
+JMc=1450G
+## Do not assemble the partitioned reads
+${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMc} --CPU $nthreads --min_contig_length 200 --output $workdir --no_distributed_trinity_exec --verbose >& ${home}/trinity.${jobid}_output.log
+
+## Backup chrysalis directory
+#cd $oasis
+#tar -cvf $workdir.tar trinity_out_dir_$jobid
+#mv $workdir.tar $workdir.tar.chrysalis
+
+## extract backed up chrysalis
+#cd $oasis
+#mv $workdir.tar.chrysalis $workdir.tar
+#tar -xvf $workdir.tar trinity_out_dir_$jobid
+#mv $workdir.tar $workdir.tar.chrysalis
+
+#############
+# Butterfly #
+#############
+## Phase 2: cluster reads, DeBruijn, and map to kmers
+
+JMb=1450G
+nthreads=16
+heap=350G
+gc=6
+init=2G
+
+${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMb} --CPU $nthreads --bflyCPU $nthreads --bflyHeapSpaceMax $heap --bflyHeapSpaceInit $init --bflyGCThreads $gc --min_contig_length 200 --output $workdir >& ${home}/trinity.${jobid}_output.log
+#+END_SRC
+
+* Get summary of the transcriptome content
+** Detonate
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=10:00:00
+#PBS -N detonate
+#PBS -e detonate.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+# xsede directories
+oasis=/oasis/projects/nsf/sun108
+scratch=/oasis/scratch/silo/temp_project
+home=/home/silo
+##################################
+# output directories for trinity #
+##################################
+jobid=gg60
+fileid=60p/gg.60p
+
+########################
+# Dont change anything #
+########################
+workdir=${scratch}/ganglia/detonate/trinity_stat_${jobid}/
+mkdir -p ${workdir}
+cd ${workdir}
+
+# fastq raw files, reads
+sense=${scratch}/ganglia/data/$fileid.R1.fastq
+antisense=${scratch}/ganglia/data/$fileid.R2.fastq
+target=$scratch/ganglia/omics/$jobid.contigs.fa
+
+module load R
+export PATH:"$PATH:/home/silo/detonate-1.10/rsem-eval"
+export PATH=$PATH:/home/silo/bowtie2
+
+# average length of transcipts
+average=560
+
+# memory used by samtools
+JM=48
+
+$home/detonate-1.10/rsem-eval/rsem-eval-calculate-score \
+--seed 3471609 \
+--samtools-sort-mem $JM \
+--bowtie2 \
+--strand-specific \
+--num-threads 16 \
+--time \
+--paired-end \
+$sense $antisense $target \
+gg60 \
+$average
+#+END_SRC
+** Bowtie
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=3:ppn=16,walltime=24:00:00
+#PBS -N bowtie.all.rscf
+#PBS -q long
+#PBS -V
+
+# set stack to unlimited
+# because of large datasets
+ulimit -s unlimited
+# echo stdout to output file
+set -x
+# IACS directories
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+##################################
+# output directories for trinity #
+##################################
+jobid=raw.all.rscf
+fileid=all/raw.all
+
+########################
+# Dont change anything #
+########################
+workdir=${scratch}/ganglia/bowtie/trinity_stat_${jobid}/
+mkdir -p ${workdir}
+cd ${workdir}
+
+# fastq raw files, reads
+sense=${scratch}/raw/$fileid.R1.fastq
+antisense=${scratch}/raw/$fileid.R2.fastq
+target=$scratch/ganglia/assembled/$jobid.contigs.fa
+
+# Run bowtie
+$home/trinityrnaseq-2.1.1/util/bowtie_PE_separate_then_join.pl --seqType fq --SS_lib_type RF --left $sense --right $antisense --target $target --aligner bowtie -- -p 4 --all --best --strata -m 300 >& $home/bowtie_stats_${jobid}_namesorted.txt
+
+# run trinity integrated stat algorithm
+$home/trinityrnaseq-2.1.1/util/SAM_nameSorted_to_uniq_count_stats.pl $workdir/bowtie_out/bowtie_out.nameSorted.bam >& $home/bowtie_stats_${jobid}_namesorted.txt
+#+END_SRC
+* Quantify assembled transcripts (R dependent)
+This will help remove false transcripts.
+Install [[https://pachterlab.github.io/kallisto/download.html][Kallisto]] for fast analysis. (To run it with trinity add Kallisto to PATH) Or [[http://bio.math.berkeley.edu/eXpress/][eXpress]] for alignment base analysis (bowtie required).
+#+BEGIN_SRC shell
+wget https://github.com/pachterlab/kallisto/releases/download/v0.42.4/kallisto_linux-v0.42.4.tar.gz
+#+END_SRC
+
+Run kallisto and/or eXpress and count the transcript per million reads (TPM)
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=8:ppn=16,walltime=20:00:00
+#PBS -N eXpress.all
+#PBS -q long
+#PBS -V
+
+## !! ##
+# 20h for 26 eXpress datasets
+
+nthreads=128
+
+method=eXpress
+
+# Files _CHANGE_
+file=raw.all
+exe=P.fastq.gz
+
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+project=$scratch/ganglia/abundance_${file}_$method
+reads=$scratch/ganglia/trimmed
+
+# _CHANGE_
+assembly=$scratch/ganglia/assembled/$file.rscf.contigs.fa
+abundance=$home/trinityrnaseq-2.1.1/util/align_and_estimate_abundance.pl
+
+time=$home/time
+jobid=$method.abundance
+start=$(date); echo "Job started at: $start" > $time/$file.$jobid.time
+
+## Express uses bowtie, so its slow
+## Kallisto is fast delivering short summary
+
+# run the alignment/estimation
+for f in gg
+do
+    for i in {1..24}
+    do
+	mkdir -p $project/$f$i
+	
+	perl $abundance --transcripts $assembly \
+	    --SS_lib_type RF --seqType fq \
+	    --left $reads/$f.${i}.R1.$exe \
+	    --right $reads/$f.${i}.R2.$exe \
+	    --est_method $method \
+	    --aln_method bowtie \
+	    --trinity_mode \
+	    --thread_count $nthreads \
+	    --output_dir $project/$f$i \
+	    --output_prefix $f$i.$method \
+	    --prep_reference    
+    done
+done
+
+
+end=$(date); echo "Job ended at: $end" >> $time/$file.$jobid.time
+#+END_SRC
+
+
+For Bowtie-based alignment with eXpress.
+#+BEGIN_SRC shell
+## Express uses bowtie, so its slow
+## Kallisto is fast delivering short summary
+
+method=eXpress
+# run the alignment/estimation
+for i in {1..2}
+do
+    perl $abundance --transcripts $assembly \
+	--SS_lib_type RF --seqType fq \
+	--left $reads/$file.${i}.R1.$exe \
+	--right $reads/$file.${i}.R2.$exe \
+	--est_method $method \
+	--aln_method bowtie \
+	--trinity_mode \
+	--thread_count $nthreads \
+	--output_dir $project \
+	--output_prefix $file$i.$method \
+	--prep_reference
+done
+#+END_SRC
+
+Get the amount of transcripts from 0 TPM to 3000 TPM
+#+BEGIN_SRC shell
+for f in {0..3200..200}; do cat $output.tsv | awk -vf="$f" '{if($5>=f) print $0}' | wc -l; done
+#+END_SRC
+
+Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =edgeR= installed. (Greenfield works)
+#+BEGIN_SRC shell
+matrix=$home/trinityrnaseq-2.1.1/util/abundance_estimates_to_matrix.pl
+count=$home/trinityrnaseq-2.1.1/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
+
+prefix=trans_counts
+
+# Create matrix
+cd $project
+
+perl $matrix --est_method $method \
+    --out_prefix $prefix \
+    --name_sample_by_basedir \
+     $project/br1/abundance.tsv \
+     $project/br2/abundance.tsv \
+
+# merge matrices accross samples to get shared TPM scores
+perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
+#+END_SRC
+
+Approximate the number of transcripts.
+#+BEGIN_SRC R
+data = read.table("genes_matrix.TPM.not_cross_norm.counts_by_min_TPM", header=T)
+plot(data, xlim=c(-100,0), ylim=c(0,100000), t='b')
+filt_data = data[data[,1] > -100 & data[,1] < -10,] 
+fit = lm(filt_data[,2] ~ filt_data[,1])
+print(fit)
+abline(fit, col='green', lwd=3)
+
+#+END_SRC
+* Merge all gene expression profiles into one matrix
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=4:ppn=16,walltime=4:00:00
+#PBS -N matrix.all.R
+#PBS -q short
+#PBS -V
+
+nthreads=64
+method=eXpress
+
+file=raw.all
+
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+project=$scratch/ganglia/abundance_${file}_$method
+
+matrix=$home/trinityrnaseq-2.1.1/util/abundance_estimates_to_matrix.pl
+count=$home/trinityrnaseq-2.1.1/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
+
+prefix=trans_counts
+
+# Create matrix
+cd $project
+
+## !! ##
+# results.xprs for eXpress
+# abundance.tsv for Kallisto
+
+perl $matrix --est_method $method \
+    --out_prefix $prefix \
+    --name_sample_by_basedir \
+     $project/br1/results.xprs \
+     $project/br2/results.xprs \
+     $project/br3/results.xprs ## ... put all files
+
+# merge matrices accross samples to get shared TPM scores
+perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
+#+END_SRC
+* Gene expression
+** Get differentially expressed genes from the matrix above (R analysis)
+Install R packages from =Bioconductor=. Packages needed =edgeR, limma, DESeq2, ctc, Biobase, ROTS, and qvalue. Reproducibility-optimized test statistic for ranking genes (ROTS) is installed as following.
+#+BEGIN_SRC shell
+wget http://www.utu.fi/en/units/sci/units/math/Research/biomathematics/projects/Documents/ROTS_1.1.1.tar.tar 
+R CMD INSTALL ROTS_1.1.1.tar.tar
+#+END_SRC
+
+This will run 4 different matrices for gene differential expression at 4 different p-value thresholds.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=168:00:00
+#PBS -N deg.all
+#PBS -q extended
+#PBS -V
+
+## Choose tissue br, gg, raw.all
+file=raw.all
+
+## DONT CHANGE
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+
+dir=$scratch/ganglia/deg.$file
+analyze=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl
+differential=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl
+
+## change matrices
+jobid[1]=tissue
+jobid[2]=tissue-diet
+jobid[3]=tissue-br
+jobid[4]=tissue-gg
+
+## RUN R
+## DONT CHANGE
+mkdir -p $dir 
+
+for method in kallisto eXpress
+do
+    for m in voom edgeR DESeq2
+    do
+	for i in {1..4}
+	do
+	    for pval in {1..6}
+	    do
+		for cfold in {1..2}
+		do
+	    project=$scratch/ganglia/abundance_${file}_$method
+
+	    jobid=${jobid[${i}]}
+
+	    matrix=$scratch/ganglia/matrix/$jobid.txt
+	    contrast=$scratch/ganglia/matrix/contrast.$jobid
+
+	    cd $project
+	    $analyze --matrix $project/trans_counts.counts.matrix --method $m --samples_file $matrix --output $dir/$m.$file.$method.$jobid.p$pval.c$cfold --contrasts $contrast
+
+	    cd $dir/$m.$file.$method.$jobid.p$pval.c$cfold
+	    $differential --matrix $project/trans_counts.TMM.EXPR.matrix -P 1e-$pval -C $cfold --samples $matrix
+	        done
+	    done
+	done
+    done
+done
+#+END_SRC
+** Get all differentially expressed gene IDs from R output 
+#+CAPTION The different tests done for gene expression
+| Alignment | Condition      | e-value | Fold change |
+|-----------+----------------+---------+-------------|
+| Kallisto  | tissue         |   10e-1 |         2^2 |
+| eXpress   | tissue x diet  |   10e-2 |         2^1 |
+|           | tissue gills   |   10e-3 |             |
+|           | tissue ganglia |   10e-4 |             |
+|           |                |   10e-5 |             |
+|           |                |   10e-6 |             |
+
+Get all gene IDs and output them without processing into file.
+#+BEGIN_SRC shell
+for f in *raw*; do cat ${f}/diffExpr*matrix.log2.dat >> $file | cut -f 1;done 
+#+END_SRC
+
+Get stats for each alignment, condition, e-value, and cFold.
+#+BEGIN_SRC shell
+#!/bin/bash
+
+out=summary.txt
+final=summary.raw.all.txt
+rm $final
+
+for m in kallisto eXpress
+do
+    for i in voom edgeR DESeq2
+    do
+	for t in tissue tissue.diet tissue.gg tissue.br
+	do
+	    for p in {1..6}
+	    do 
+		for c in {1..2}
+		do
+		    for f in $i*$m*$t.p$p.c$c
+		    do
+# Get the number of genes per abundance test
+cat ${f}/diffExpr*matrix.log2.dat | cut -f 1 >> raw.$m.$t.$p.$c
+# count number of raw and unique differentially expressed genes
+all=$(grep "^TRINITY" raw.$m.$t.$p.$c | wc -l)
+raw=$(grep "^TRINITY" raw.$m.$t.$p.$c | sort - | uniq | wc -l)
+paste <(printf "%s\n" "$f") <(printf "%s\n" "$all") <(printf "%s\n" "$all") >> $out
+# column names; trandform to tabulated format
+cat $out | sed -e 's/.br/-br/g' -e 's/.gg/-gg/g' -e 's/.diet/-diet/g' -e 's/\./\t/g' >> $final
+rm raw.$m.$t.$p.$c $out
+		    done
+		done
+	    done
+	done
+    done
+done
+#+END_SRC
+* Gene annotation
+** Databases
+#+CAPTION: Sequence databaases in public repositiories
+| database    | content    | tool  | function            | description                |
+|-------------+------------+-------+---------------------+----------------------------|
+| [[http://pfam.xfam.org/][Pfam]]        | protein    | hmmer | domain              | protein similarities       |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][NR]]          | protein    | blast | domain              | protein similarities       |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][NT]]          | nucleotide | blast | classification      | phylogeny                  |
+| [[ftp://ftp.ncbi.nih.gov/blast/db/][Swiss-prot]]  | protein    | blast | domain              | protein similarities       |
+| [[http://www.phi-base.org/release_notes.php][Phi-base]]    | protein    | hmmer | interactions        | virulence                  |
+| [[http://www.mgc.ac.cn/VFs/main.htm][VFDB]]        | prot/nucl  | blast | virulence           |                            |
+| [[http://string-db.org/newstring_cgi/show_download_page.pl?UserId%3D_yWWhZVtWw47&sessionId%3DDpBbN0jI1blB][STRING]]      | protein    | blast | interactions        | network analysis           |
+| [[http://thebiogrid.org/][BioGRID]]     |            | shell | interactions        |                            |
+| [[http://www.transcriptionfactor.org/index.cgi?Download][DBD]]         | protein    | shell | transcrption factor | acc. Pfam+superfamily      |
+| [[http://operondb.jp/][OperonDB]]    |            |       | operons             |                            |
+| [[http://www.ncbi.nlm.nih.gov/COG/][COG]]         | protein    |       | classification      | phylogeny                  |
+| [[http://phospho.elm.eu.org/][Pospho-elm]]  | protein    | shell | phosphorylation     | acc Uniprot+EnsEMBL        |
+| [[http://www.jcvi.org/cgi-bin/tigrfams/index.cgi][TIGRFAM]]     | protein    | blast | subfamilies         | classification             |
+| [[http://www.ebi.ac.uk/interpro/release_notes.html][InterPro]]    | nucl/prot  | IPS   | classification      | integrates 12 databases    |
+| [[http://prodom.prabi.fr/prodom/current/html/home.php][ProDom]]      | protein    | IPS   | families            | uniprot domains            |
+| [[http://hamap.expasy.org/][PANTHER]]     | protein    | IPS   | classification      | domain+pathways            |
+| [[http://supfam.cs.bris.ac.uk/SUPERFAMILY/][SUPERFAMILY]] | protein    | IPS   | classification      | domain+phylog+taxon        |
+| [[http://www.bioinf.manchester.ac.uk/dbbrowser/PRINTS/index.php][PRINTS]]      | protein    | IPS   | fingerprinting      | conserved motifs SwissProt |
+| [[http://pir.georgetown.edu/pirwww/dbinfo/pirsf.shtml][PIRSF]]       | protein    | IPS   | phylogeny           | domain classification      |
+| [[http://gene3d.biochem.ucl.ac.uk/Gene3D/][Gene3D]]      | protein    | IPS   | interactions        | domain families            |
+| [[http://www.ch.embnet.org/software/COILS_form.html][Coils]]       | protein    | IPS   | domains             | coiled-coil conformation   |
+| [[http://smart.embl-heidelberg.de/][SMART]]       | protein    | IPS   | domains             | SwissProt Trembl Ensembl   |
+| [[http://prosite.expasy.org/][PROSITE]]     | not used   | IPS   | domains             | +functions                 |
+| [[http://hamap.expasy.org/][HAMAP]]       | not used   | IPS   | classification      | uniprot classification     |
+*** Getting annotation hits from interpro scan
+Alignment hits are in a =tsv= output. Described [[https://code.google.com/p/interproscan/wiki/OutputFormats][here]].
+1. Protein Accession (e.g. P51587)
+2. Sequence MD5 digest (e.g. 14086411a2cdf1c4cba63020e1622579)
+3. Sequence Length (e.g. 3418)
+4. Analysis (e.g. Pfam / PRINTS / Gene3D)
+5. Signature Accession (e.g. PF09103 / G3DSA:2.40.50.140)
+6. Signature Description (e.g. BRCA2 repeat profile)
+7. Start location
+8. Stop location
+9. Score - is the e-value of the match reported by member database method (e.g. 3.1E-52)
+10. Status - is the status of the match (T: true)
+11. Date - is the date of the run
+12. (InterPro annotations - accession (e.g. IPR002093) - optional column; only displayed if -iprscan option is switched on)
+13. (InterPro annotations - description (e.g. BRCA2 repeat) - optional column; only displayed if -iprscan option is switched on)
+14. (GO annotations (e.g. GO:0005515) - optional column; only displayed if --goterms option is switched on)
+15. (Pathways annotations (e.g. REACT_71) - optional column; only displayed if --pathways option is switched on)
+
+
+Check if all hits are annotated.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($10 == "F") print $0 }' | wc -l
+#+END_SRC
+
+Get the name of the databases that contain hits. And the total number of unfiltered hits.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ print $4 }' | sort - | uniq -c | sort -n
+## output
+     14 ProDom
+     20 PIRSF
+     37 TIGRFAM
+    159 SMART
+    314 Coils
+    391 PRINTS
+    783 Pfam
+    788 SUPERFAMILY
+    874 Gene3D
+   1190 PANTHER
+#+END_SRC
+
+Get the number of hits per database at different e-values. Although the number of hits is filtered by evalue, it is not filtered by unique sequence entries. For example, a single contig translated in 6 different frames might be matched to 2 different domains because of 2 separate frames shifts.
+#+BEGIN_SRC shell
+## some databases dont include description of the accession number
+## accession numbers are registered under columns $8 or $9
+## so we must filter the $9 and $8 by evalue.
+## $4 is correct for all
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($9<=.0000000001) print $4}' | sort - | uniq -c | sort -n
+## and
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($8 <= .0000000001) print $4}' | sort - | uniq -c | sort -n
+
+#+END_SRC
+
+In interpro output 5 databases have the full number of columns (shown above) and 5 others dont. filtering should be separated if the options depend on the columns that come after the 4th.
+Create a list for each set of database.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($8 <= .0000000001) print $4}' | sort - | uniq > db.without.acc.txt 
+
+# AND
+cat A.interpro.all.tsv | sed 's/ /./g' | awk '{ if ($9 <= .0000000001) print $4}' | sort - | uniq > db.with.acc.txt
+#+END_SRC
+
+Use these lists to filter separately the contigs by evalue and the sequence length of alignment. =hint= the calculated =x= returns an absolute value of the equation =end position - start - position=. Negative numbers might occur if the alignment is on the opposite strand.
+#+BEGIN_SRC shell
+cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.without.acc.txt - | awk '{if($8 <= 0.00000000000000001) print $0}' | awk '{x=$6-$7?$7-$6:$6-$7; if(x>=10) print $4 }' | sort - | uniq -c | sort -n
+
+#AND 
+cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.with.acc.txt - | awk '{if($9 <= 0.00000000000000000001) print $0}' | awk '{x=$7-$8?$8-$7:$7-$8; if(x>=20) print $4 }' | sort - | uniq -c | sort -n
+#+END_SRC
+** Contig annotation with HMMER
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=80:ppn=16,walltime=8:00:00
+#PBS -N hmm.BR.large
+#PBS -q large
+#PBS -V
+
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+
+hmmscan=/gpfs/home/ballam/hmmer-3.1b2-linux-intel-x86_64/binaries/hmmscan
+
+## File names _CHANGE_
+file=br100
+input=$scratch/ganglia/peptides/$file.peptides.rscf.fa
+output=$scratch/ganglia/pfam/$file.pfam.rscf.txt
+db=$scratch/db/pfam/Pfam-A.hmm
+
+## START HMMER _DONT CHANGE_
+time=$home/time
+jobid=hmmGG
+start=$(date); echo "Job started at: $start" > $time/$file.$jobid.time
+
+#### !!!!! ####
+# its better to cut the original big file into smaller ones
+
+$hmmscan --domtblout $output $db $input
+
+end=$(date); echo "Job ended at: $end" >> $time/$file.$jobid.time
+#+END_SRC
+
+** Contig annotation with BLAST+
+Download NR, NT, and SwissProt databases from NCBI. Either the fasta-one-file database from the NCBI [[ftp://ftp.ncbi.nlm.nih.gov/][ftp]] or use the perl module below to download an already indexed database. The fasta-one-file needs to be loaded in =makeblastdb= to index it.
+
+=note= Download gene accession numbers ([[ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/][here]]) in case =taxdb= didnt work.
+
+Update databases, extract data and index.
+#+BEGIN_SRC shell
+perl $BLAST/bin/update_blsatdb.pl nt
+for f in *.tar; do tar xzvf $f; done
+makeblastdb -in nt.fasta -out nt -dbtype nucl -parse_seqids -max_file_sz 2GB
+#+END_SRC
+
+Set the database path.
+#+BEGIN_SRC shell
+export BLASTDB="/media/sf_data/db/nr"
+#+END_SRC
+
+Or write path in login profile.
+#+BEGIN_SRC shell
+cat >> ~/.profile
+BLASTDB=/media/sf_data/db:$BLASTDB; export BLASTDB
+BLASTDB=/media/sf_data/db/nr:$BLASTDB; export BLASTDB
+#+END_SRC
+
+*** Transcriptome quality assessment with blast and Swissprot
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=24:00:00
+#PBS -N NRblast.A
+#PBS -q long
+#PBS -V
+
+# Files _CHANGE_
+file=A.noClam.e5.True2Ref
+exe=fa
+extra=nodule/assembled/final
+db=nr
+ev=1e-20
+maxT=1
+
+scratch=/gpfs/scratch/$user
+home=/gpfs/home/$user
+project=$home/ganglia/blast
+tophit=$home/trinityrnaseq-2.1.1/util/analyze_blastPlus_topHit_coverage.pl
+mkdir -p $project
+###############
+# DONT CHANGE #
+###############
+# blast libraries
+export PATH="$PATH:/gpfs/home/$user/ncbi-blast-2.2.31+/bin"
+export BLASTDB="/gpfs/scratch/$user/db/swissprot"
+# supercomputing power
+nthreads=48
+# blast output format index
+n=6
+
+blastx \
+-db $db \
+-query $scratch/$extra/$file.$exe \
+-out $project/$file.$db.$ev.outfmt$n \
+-evalue $ev \
+-num_threads $nthreads \
+-max_target_seqs $maxT \
+-outfmt $n
+
+perl $tophit \
+$project/$file.$db.$ev.outfmt$n \
+$scratch/$extra/$file.$exe \
+$scratch/db/$db/$db \
+>& $project/$file.$db.$ev.tophit
+#+END_SRC
+*** Blast any database (NR, NT, Swissprot, String)
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=42:00:00
+#PBS -N strBblx.DEtistp4
+#PBS -j oe
+#PBS -q long
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+# DONT CHANGE #
+###############
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+project=$scratch/ganglia/blast
+mkdir -p $project
+pbs=$(echo $PBS_JOBID | cut -f 1 -d '.')
+# supercomputing power
+nthreads=$(expr 2 \* 16)
+
+# Files _CHANGE_
+db=string
+blast=blastx
+maxSeq=1
+#file=raw.all.nt  ##< Used for when splitting big contig file for parallel queues
+#exe=900000.fa
+#query=$scratch/ganglia/$file.split.fasta/${file}.$exe
+
+p=4
+c=2
+file=DESeq2.raw.all.eXpress.tissue.p$p.c$c
+log=$scratch/ganglia/deg.raw.all/$file/diffExpr.P1e-${p}_C${c}.matrix.log2.dat
+assembled=$scratch/ganglia/assembled/raw.all.rscf.contigs.fa
+# get gene ids and gene fasta sequences
+tmp=$project/tmp_$blast.$pbs
+mkdir $tmp
+cat $assembled | sed 's/.len*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $log | cut -f1 | grep "^TRINITY" | sort - | uniq) - > $tmp/$file.contigs.$pbs.fa
+
+query=$tmp/$file.contigs.$pbs.fa
+output=$project/$file.$db.$blast.$pbs.txt    
+
+# blast libraries
+export PATH="$PATH:/gpfs/home/ballam/ncbi-blast-2.2.31+/bin"
+export BLASTDB="/gpfs/scratch/ballam/db/$db"
+
+## Full blast
+time=$home/time
+jobid=$file.$db
+start=$(date); echo "Job started at: $start" > $time/$jobid.time
+
+cd $scratch/db/$db
+
+$blast -query $query -db $db -outfmt " 7 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore length pident nident mismatch gaps " -max_target_seqs $maxSeq -num_threads $nthreads -out $output
+
+rm -r $tmp
+end=$(date); echo "Job ended at: $end" >> $time/$jobid.time
+#+END_SRC
+*** Sequence homology analysis
+How many assembled contigs have been aligned to a SWISSPROT entry (NCBI) with a minimum of 10e-10 evalue, 80% sequence similarity, and 1 mismatch. Repeat for NT and NR. Only done on Blast output not hummer.
+#+BEGIN_SRC shell
+cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | awk '{if ($12 >= 80) print $0}' | awk '{if ($14 <= 1) print $0}' | cut -f 1 | sed 's/|.*$//g' | sort - | uniq | wc -l
+#+END_SRC
+
+** Contig annotation with InterPro
+Databases used =ProDom PANTHER TIGRFAM SUPERFAMILY PRINTS Gene3D PIRSF Pfam Coils SMART=
+
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=42:10:00
+#PBS -N ips.DEStisDietp5c2
+#PBS -j oe
+#PBS -q long
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+# DONT CHANGE #
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+ips=$scratch/db/ips/interproscan-5.16-55.0
+pbs=$(echo $PBS_JOBID | cut -f 1 -d '.')
+
+project=${scratch}/ganglia/interpro
+tmp=$project/temp_$pbs
+mkdir -p $tmp
+
+
+# Files _CHANGE_
+p=5
+c=2
+file=DESeq2.raw.all.eXpress.tissue.diet.p$p.c$c
+log=$scratch/ganglia/deg.raw.all/$file/diffExpr.P1e-${p}_C${c}.matrix.log2.dat
+assembled=$scratch/ganglia/assembled/raw.all.rscf.contigs.fa
+contigs=$tmp/$file.contigs.fa
+peptides=$tmp/$file.peptides.fa
+
+# Get gene ids (only differentially expressed)
+# Get gene sequences
+cat $assembled | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $log | cut -f1 | grep "^TRINITY" | sort - | uniq) - > $contigs
+# Translate
+transeq $contigs $peptides -frame=6 --clean=yes
+# Run interpro Scans
+$ips/interproscan.sh -t p \
+-i $peptides \
+-iprlookup -goterms --pathways \
+-f TSV, SVG, GFF3, XML, HTML \
+--tempdir $tmp -d $project
+#+END_SRC
+** Gene-gene interaction
+*** STRING networks
+The pipeline goes like this:
+1. Align contigs to STRING (protein sequences file)
+2. Get contigs and string IDs from =blastx= output
+3. Get string networks (protein links file)
+4. Get string actions (protein actions file)
+5. Get species ID (second column of protein sequences file)
+6. Get COG IDs (COG mappings file)
+7. Get protein name (COG mapping file)
+8. Get COG links to other orthologous groups (COG links file)
+
+Get NCBI annotation with GI ids. =gene2accession= is a daily updated file from NCBI.
+#+BEGIN_SRC shell
+cat <(grep "^TRINITY" $blasted_contigs) | grep -Ff <(cat $R_log_dat_file | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
+#+END_SRC
+
+* XSEDE
+** SDSC Gordon
+Login and connect through secure network.
+#+BEGIN_SRC shell
+ssh -l silo gordon.sdsc.xsede.org
+#+END_SRC
+
+Shared directory with bassem. Huge space.
+#+BEGIN_SRC shell
+cd /oasis/project/nsf/sun108
+#+END_SRC
+
+Transfer files
+#+BEGIN_SRC shell
+scp file1 silo@gordon.sdsc.xsede.org:~/
+scp -r folder ...
+scp -C file # compress for fast transfer
+#+END_SRC
+
+Download files. (no need to create the destination folder)
+#+BEGIN_SRC shell
+rsync -auv bassem@gordon.sdsc.xsede.org:~/folder/ ./destination
+#+END_SRC
+
+Show remaining allocations and accounts. On SDSC 1 compute node for 1 hour = 16 SU (service unit) = 60 Gb ram = 16 cores. [[https://portal.xsede.org/sdsc-gordon#modules][Visit here]] for more modules and compiling instructions.
+#+BEGIN_SRC shell
+xdusage
+show_accounts
+#+END_SRC
+
+Load modules. Packages that are installed.
+#+BEGIN_SRC shell
+module avail
+module load R
+module unload R
+#+END_SRC
+
+Create TORQUE batch file. 
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=1:00:00
+#PBS -N makeblastdb
+#PBS -o silo.out
+#PBS -e silo.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+export PATH="$PATH:/home/bassem/blast/bin"
+oasis=/oasis/projects/nsf/sun108
+makeblastdb -in ${oasis}/bassem/db/nt/nt.fasta -out ${oasis}/bassem/db/nt/nt -dbtype nucl -parse_seqids
+#+END_SRC
+
+Monitor jobs. =qdel= to delete a running job with the job ID number.
+#+BEGIN_SRC shell
+qstat -a -u silo
+qstat -f <job id>
+#+END_SRC
+
+Status of a job.
+#+BEGIN_SRC shell
+R = running
+Q = queued
+H = held
+C = completed after having run
+E = exiting after having run
+#+END_SRC
+
+Alter job properties. =important= One can reduce time remaining but not increase it.
+#+BEGIN_SRC shell
+qstat -a <job id>
+qalter -l walltime=9:00 <job id>
+qstat -a silo
+#+END_SRC
+
+Obtaining queue properties of a job.
+#+BEGIN_SRC shell
+qstat -q
+#+END_SRC
+** Analysis
+Data are stored in :
+#+BEGIN_SRC shell
+cd /oasis/projects/nsf/sun108/silo
+#+END_SRC
+
+Blastx on =NR= database (updated on July 2015). =important= When changing from nucleotide to peptide blast search the BLASTDB must be change too. The alternative is to merge all database files into one directory.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -q normal
+#PBS -l nodes=10:ppn=16:native
+#PBS -l walltime=48:00:00
+#PBS -N blastx.A
+#PBS -o blastxA.out
+#PBS -e blastxA.err
+#PBS -A sun108
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+
+export PATH="$PATH:/home/silo/blast/bin"
+export BLASTDB="/oasis/projects/nsf/sun108/bassem/db/nr"
+oasis=/oasis/projects/nsf/sun108
+
+blastx -query ${oasis}/silo/nodule/assembled/A.assembl.QPXgv15.fasta \
+-db nr \
+-outfmt " 7 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore length pident nident mismatch gaps staxids sscinames " \
+-max_target_seqs 10 \
+-out A.blastx.txt
+#+END_SRC
+
+* Bibliography
+** First set
+1. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][Xiong 2014]] =science=
+2. Difference in genome annotation (RefSeq, UCSC, Ensembl) is responsible for differences in read mapping to genes and transcription quantification [[http://www.biomedcentral.com/1471-2164/16/97][Zhao 2015]] =gene model=
+3. Non-parametric approach to detect DETs from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv119.abstract][Shi 2015]] =r friendly=
+4. Co-expression analysis require high number of samples [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/24/bioinformatics.btv118.full.pdf%2Bhtml][Ballouz 2015]] =metanalysis networks=
+5. Co-expression and network construction from rnaseq data [[http://bioinformatics.oxfordjournals.org/content/28/12/1592.short][Iancu 2012]]
+6. Multifunctionality is better than association for network inference [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0017258][Gillis 2011]] =Pavlidis amd machine learning + pleiotropy=
+7. SimSeq non parametric simulation engine for real rnaseq data [[http://bioinformatics.oxfordjournals.org/content/early/2015/02/26/bioinformatics.btv124.abstract][Benidt 2015]]
+8. Overlapping genes and analysis of rnaseq data [[http://www.biomedcentral.com/1471-2105/16/S1/S3][Sun 2015]]
+9. Phylogenetic analysis of the marine microbial transcriptome [[http://journals.plos.org/plosbiology/article?id%3D10.1371/journal.pbio.1001889][Keeling 2014]] =metagenomics=
+10. Detect rna editing events fron rnaseq data [[http://onlinelibrary.wiley.com/doi/10.1002/0471250953.bi1212s49/abstract][Picardi 2015]] =python=
+11. Orthologs from related species w/ rnaseq data [[http://www.biomedcentral.com/1471-2164/15/343?utm_source%3Ddlvr.it&utm_medium%3Dtumblr][Zhu 2014]] =vertebrates=
+12. Orthologs from rnaseq expression data clustering analysis [[http://www.biomedcentral.com/content/pdf/gb-2014-15-8-r100.pdf][Yan 2014]] =networks=
+13. Analysis of rnaseq expression data in Nature Protocols w/ R [[http://www.nature.com/nprot/journal/v8/n9/abs/nprot.2013.099.html][Anders 2013]] and [[http://link.springer.com/protocol/10.1007/978-1-4939-2444-8_24][Loraine 2015]] [[http://www.nature.com/nprot/journal/v7/n3/full/nprot.2012.016.html#ref12][Trapnell 2012]]=protocol=
+14. edgeR paper [[http://bioinformatics.oxfordjournals.org/content/26/1/139.short][Robinson 2009]] =R=
+15. Comparative paper of rnaseq packages [[http://www.nature.com/nmeth/journal/v8/n6/abs/nmeth.1613.html][Garber 2011]] =tools=
+16. Machine learning for predicting gene expression from epigenetic data [[http://lungcancernewstoday.com/2015/03/23/new-prediction-model-for-gene-expression-in-lung-cancer-based-on-epigenetics/][Li 2015]]
+17. Look for dsRNAs from rnaseq data after genome alignment [[http://rnajournal.cshlp.org/content/early/2015/03/24/rna.048801.114.full.pdf%2Bhtml][Whipple 2015]]
+18. Gene expression of virulence, metabolism, and growth of QPX are temperature dependent [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0074196][Vedrenne 2013]] =bad paper=
+19. Retrotransposons as effectors and transmittors of immune cancer cells in clam [[http://www.sciencemag.org/content/348/6231/170.full][Metzger 2015]]
+20. 
+
+** Second set
+1. How to characterize SNPs affected by the reference bias? Align reads to personalized genomes [[http://journals.plos.org/plosone/article?id%3D10.1371/journal.pone.0126911][Wood 2015]] =also ref. 26 and 28 inside=
+2. Genome and transcriptome sequencing of single cell [[http://www.nature.com/nmeth/journal/v12/n6/full/nmeth.3370.html][Macaulay 2015]]
+3. the next 20 years in genome research [[http://biorxiv.org/content/early/2015/06/02/020289.large.jpg?rss%3D1][Schatz 2015]]
+4. Basic strategy on annotating a genome [[http://www.nature.com/nrg/journal/v13/n5/full/nrg3174.html#B22][Yandall 2012]] =review=
+5. Terraformation of mars: importance of genome annotation and visualization [[http://motherboard.vice.com/read/darpa-we-are-engineering-the-organisms-that-will-terraform-mars][Jacksons lab]] =DARPA are engineering organisms=
+6. Reference transcriptome and database used for gene annotation both influence variant caling [[http://www.biomedcentral.com/1471-2164/16/S8/S2][Franckish 2015]]
+7. Cross sample contamination, viral, and pathogenic database contamination are real threat to sequencing data analysis [[http://jvi.asm.org/content/early/2015/06/11/JVI.00822-15.abstract][Kazemian 2015]]
+8. 5-formylCytosine a DNA modified sugar that regulates genes [[http://www.nature.com/nchembio/journal/vaop/ncurrent/full/nchembio.1848.html][Backman 2015]]
+9. Classification of reads between parasite and host [[http://www.plantmethods.com/content/11/1/34][Ikeue 2015]] =plant=
+10. Finding parasitic genes [[http://www.plantphysiol.org/content/166/3/1186.long][Ranjan 2014]] =plant=
+11. 2 SNPs linked to depression [[http://www.nature.com/nature/journal/vaop/ncurrent/full/nature14659.html#affil-auth][Converge consortium 2015]] =Nature=
+12. Comparison of interface-built pipelines for rna-seq data [[http://bib.oxfordjournals.org/content/early/2015/06/23/bib.bbv036.short][Poplawski 2015]] =review=
+13. Gene expression quantification by LFC [[http://nar.oxfordjournals.org/content/early/2015/07/08/nar.gkv696.short][Erhard 2015]] =estimate fold change=
+14. Transcript quantification, new fast pipeline [[http://www.biorxiv.org/content/early/2015/06/27/021592.abstract][Patro 2015]] =gene expression=
+15. The need to sequence C. virginica genome [[http://www.sciencedirect.com/science/article/pii/S1050464815002211][Gomez 2015]] =review=
+16. Crosstalk between snail and parasite [[http://www.sciencedirect.com/science/article/pii/S1050464815000509][Coustau 2015]] =review=
+17. How to recognize host-pathogen mechanisms [[http://ac.els-cdn.com/S0166685109000267/1-s2.0-S0166685109000267-main.pdf?_tid%3D58e521fa-2ef4-11e5-9802-00000aacb35d&acdnat%3D1437406450_c52e14fbc087a1152765fa0696a28730][Bayne 2009]] =review=
+18. FPKM (fragments per 1kb per million reads) vs TPM (transcripts per million) [[https://liorpachter.wordpress.com/2014/04/30/estimating-number-of-(transcripts-from-rna-seq-measurements-and-why-i-believe-in-paywall/][here]] and [[http://www.biomedcentral.com/1471-2105/12/323/][Li 2011]] =transcript quantification= (FPKM = depth of coverage + sum length of contigs, TPM = sum length of contigs + depth of coverage).
+19. Identified molecular involvement host-pathogen [[http://www.sciencedirect.com/science/article/pii/S1050464815002429][He 2015]] =virus-oyster=
+20. Normalization of rna-seq samples [[http://www.hindawi.com/journals/bmri/2015/621690/][Walczak 2015]] =review=
+** Generalities
+Lectins
+1. Interaction with the complement
+2. Key role in innate immune defense
+3. Central role in filter feeding processes
+4. Association with neurone morphology
+5. Reduce functionality or absence cause diesease
+
+Transposons
+miRNAs
+Virus
+
