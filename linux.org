@@ -44,6 +44,16 @@ sudo make install
 ** Themes
 [[http://pawelbx.github.io/emacs-theme-gallery/][gallery]] 
 * R
+** Server installation
+Download base version of R [[https://cran.rstudio.com/src/base/][here]]. Then create a new directory that will hold install packages.
+#+BEGIN_SRC shell
+./configure --prefix=/path/to/directory --with-readline=no --with-x=no
+make && make install
+mkdir package_directory
+cat >> .bashrc
+export R_LIBS=/path/to/package_directory
+export PATH=$PATH:/path/to/R/bin
+#+END_SRC
 ** Revolution R
 [[http://mran.revolutionanalytics.com/documents/rro/installation/#sysreq][Tutorial]]
 
@@ -102,7 +112,6 @@ install.packages("radiant", repos = "http://vnijs.github.io/radiant_miniCRAN/")
 #+END_SRC
 
 Plotly tutorials [[https://plot.ly/online-graphing/][free online graphing]].
-
 
 ** Add the lsos() function and disable save workspace
 #+BEGIN_SRC shell
@@ -828,7 +837,8 @@ latex sampleref.bib
 | pipes.sh              | git clone then make install                             | [[https://github.com/pipeseroni/pipes.sh][here (screensaver)]]                         |
 | ttystudio             | npm install -g ttystudio                                | [[https://github.com/chjj/ttystudio][here]] (gif maker)                           |
 | yank                  | make install                                            | [[https://github.com/mptre/yank][Github -- get stdin CLi]]                    |
-|                       |                                                         |                                            |
+| *parallel*            | ./configure && make                                     | [[https://www.gnu.org/software/parallel/][Home page GNU]]                              |
+|                       | sudo make install                                       |                                            |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
@@ -1149,8 +1159,13 @@ bye
 
 Database files can be updated automatically. See [[http://www.ncbi.nlm.nih.gov/books/NBK279680/][here]]
 
+Extract all tar files.
+#+BEGIN_SRC shell
+for f in *.tar; do tar xvf $f; done
+#+END_SRC
+
 ** Make a blast database
-mkdir first the folder containing the fasta file. This is usefull when subsetting a big database of just using a reference genome.
+mkdir first the folder containing the fasta file. This is usefull when subsetting a big database of just using a reference genome. =no need to index nt=
 #+BEGIN_SRC shell
 makeblastdb -in nt.fasta -out nt -dbtype nucl -parse_seqids -max_file_sz 2GB
 #+END_SRC

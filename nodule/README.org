@@ -20,6 +20,7 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
+
 This git repository includes [[https://github.com/neocruiser/Rstats/blob/master/nodule/README.org][the pipeline]] for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][the PDF]] of the compiled R file, [[https://github.com/neocruiser/Rstats/tree/master/nodule/data][the data]] used for generating the figures, and [[https://github.com/neocruiser/Rstats/tree/master/nodule/scripts][the scripts]] (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
 
@@ -220,7 +221,7 @@ QPX can be considered as gene-dense genome. =--jacard-clip= can be used. In this
 
 #+BEGIN_SRC shell
 wget http://sourceforge.net/projects/bowtie-bio/files/bowtie/1.1.2/bowtie-1.1.2-linux-x86_64.zip
-sudo ln -n /path/to/bowtie /usr/local/bin/bowtie
+sudo ln -s /path/to/bowtie /usr/local/bin/bowtie
 bowtie --help | less
 #+END_SRC
 
@@ -269,6 +270,222 @@ Calculate the total size of contigs in bp.
 cat mmetsp0098Cust.fasta | grep ">" | awk '{print $2}' | sed 's/len=//g' | awk '{sum+=$1}END{print "Total:", sum}out'
 #+END_SRC
 
+* Quantify assembled transcripts (R dependent)
+This will help remove false transcripts.
+Install [[https://pachterlab.github.io/kallisto/download.html][Kallisto]] for fast analysis. (To run it with trinity add Kallisto to PATH) Or [[http://bio.math.berkeley.edu/eXpress/][eXpress]] for alignment base analysis (bowtie required).
+#+BEGIN_SRC shell
+wget https://github.com/pachterlab/kallisto/releases/download/v0.42.4/kallisto_linux-v0.42.4.tar.gz
+#+END_SRC
+
+Run kallisto and count the transcript per million reads (TPM)
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=1:ppn=30
+#PBS -l walltime=4:00:00
+#PBS -N kallisto.all
+#PBS -A sun108
+#PBS -j oe
+#PBS -M sleiman.bassim@stonybrook.edu
+#PBS -m abe
+#PBS -V
+module load R
+
+nthreads=160
+
+method=kallisto
+
+# Files _CHANGE_
+scratch=/crucible/oc48n1p/bassim
+home=/home/bassim
+project=$scratch/ganglia/abundance_${file}_$method
+reads=$scratch/ganglia/trimmed
+exe=P.fastq.gz
+
+file=raw.all
+assembly=$scratch/ganglia/assembled/${file}.rscf.contigs.fa
+abundance=$home/trinity2/util/align_and_estimate_abundance.pl
+
+time=$home/time
+jobid=kallisto.abundance
+start=$(date); echo "Job started at: $start" > $time/$file.$jobid.time
+# run the alignment/estimation
+for f in br gg
+do
+    for i in {1..24}
+    do
+	mkdir -p $project/$file$i
+	
+	perl $abundance --transcripts $assembly \
+	    --SS_lib_type RF --seqType fq \
+	    --left $reads/$f.${i}.R1.$exe \
+	    --right $reads/$f.${i}.R2.$exe \
+	    --est_method $method \
+	    --trinity_mode \
+	    --thread_count $nthreads \
+	    --output_dir $project/$file$i \
+	    --output_prefix $f$i.$method
+  		--prep_reference    
+    done
+done
+
+end=$(date); echo "Job ended at: $end" >> $time/$time$jobid.time
+#+END_SRC
+
+
+For Bowtie-based alignment with eXpress.
+#+BEGIN_SRC shell
+## Express uses bowtie, so its slow
+## Kallisto is fast delivering short summary
+
+method=eXpress
+# run the alignment/estimation
+for i in {1..2}
+do
+    perl $abundance --transcripts $assembly \
+	--SS_lib_type RF --seqType fq \
+	--left $reads/$file.${i}.R1.$exe \
+	--right $reads/$file.${i}.R2.$exe \
+	--est_method $method \
+	--aln_method bowtie \
+	--trinity_mode \
+	--thread_count $nthreads \
+	--output_dir $project \
+	--output_prefix $file$i.$method \
+	--prep_reference
+done
+#+END_SRC
+
+Get the amount of transcripts from 0 TPM to 3000 TPM
+#+BEGIN_SRC shell
+for f in {0..3200..200}; do cat $output.tsv | awk -vf="$f" '{if($5>=f) print $0}' | wc -l; done
+#+END_SRC
+
+Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =edgeR= installed. (Greenfield works)
+#+BEGIN_SRC shell
+matrix=$home/trinityrnaseq-2.1.1/util/abundance_estimates_to_matrix.pl
+count=$home/trinityrnaseq-2.1.1/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
+
+prefix=trans_counts
+
+# Create matrix
+cd $project
+
+perl $matrix --est_method $method \
+    --out_prefix $prefix \
+    --name_sample_by_basedir \
+     $project/br1/abundance.tsv \
+     $project/br2/abundance.tsv \
+
+# merge matrices accross samples to get shared TPM scores
+perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
+#+END_SRC
+
+Approximate the number of transcripts.
+#+BEGIN_SRC R
+data = read.table("genes_matrix.TPM.not_cross_norm.counts_by_min_TPM", header=T)
+plot(data, xlim=c(-100,0), ylim=c(0,100000), t='b')
+filt_data = data[data[,1] > -100 & data[,1] < -10,] 
+fit = lm(filt_data[,2] ~ filt_data[,1])
+print(fit)
+abline(fit, col='green', lwd=3)
+
+#+END_SRC
+* Gene expression
+Install R packages from =Bioconductor=. Packages needed =edgeR, limma, DESeq2, ctc, Biobase, ROTS, and qvalue. Reproducibility-optimized test statistic for ranking genes (ROTS) is installed as following.
+#+BEGIN_SRC shell
+wget http://www.utu.fi/en/units/sci/units/math/Research/biomathematics/projects/Documents/ROTS_1.1.1.tar.tar 
+R CMD INSTALL ROTS_1.1.1.tar.tar
+#+END_SRC
+
+Get gene expression across biological conditions and samples
+#+BEGIN_SRC shell
+~/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl --matrix gg.kallisto.rscf.counts.matrix --method voom --samples_file gg.samples.txt
+#+END_SRC
+
+Extract differentially expressed genes
+#+BEGIN_SRC shell
+~/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl --matrix ../gg.kallisto.TMM.EXPR.matrix -P 1e-1 -C 2 --samples ../gg.samples.txt
+#+END_SRC
+
+Full code to run on a server that includes both previous codes. This will run 4 different matrices for gene differential expression at 4 different p-value thresholds.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=3:ppn=16,walltime=48:00:00
+#PBS -N deg4
+#PBS -q long
+#PBS -V
+
+## Choose tissue br, gg, raw.all
+file=raw.all
+
+## DONT CHANGE
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
+
+dir=$scratch/ganglia/deg4
+analyze=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl
+differential=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl
+
+## change matrices
+jobid[1]=tissue
+jobid[2]=tissue.diet
+jobid[3]=tissue.br
+jobid[4]=tissue.gg
+
+## RUN R
+## DONT CHANGE
+mkdir -p $dir 
+
+for method in kallisto eXpress
+do
+    for m in voom edgeR DESeq2
+    do
+  for i in {1..4}
+  do
+      for pval in {1..6}
+      do
+    for cfold in {1..2}
+    do
+      project=$scratch/ganglia/abundance_${file}_$method
+
+      jobid=${jobid[${i}]}
+      pval=${pval[${pval}]}
+
+      matrix=$scratch/ganglia/matrix/$jobid.txt
+      contrast=$scratch/ganglia/matrix/contrast.$jobid
+
+      cd $project
+      $analyze --matrix $project/trans_counts.counts.matrix --method $m --samples_file $matrix --output $dir/$m.$file.$method.$jobid.p$pval.c$cfold --contrasts $contrast
+
+      cd $dir/$m.$file.$method.$jobid.p$pval.c$cfold
+      $differential --matrix $project/trans_counts.TMM.EXPR.matrix -P 1e-$pval -C $cfold --samples $matrix
+          done
+      done
+  done
+    done
+done
+#+END_SRC
+
+*** Get all differentially expressed gene IDs from R output 
+#+CAPTION The different tests done for gene expression
+| Alignment | Condition      | e-value | Fold change |
+|-----------+----------------+---------+-------------|
+| Kallisto  | tissue         |   10e-1 |         2^2 |
+| eXpress   | tissue x diet  |   10e-2 |         2^1 |
+|           | tissue gills   |   10e-3 |             |
+|           | tissue ganglia |   10e-4 |             |
+|           |                |   10e-5 |             |
+|           |                |   10e-6 |             |
+
+Get all gene IDs and output them without processing into file.
+#+BEGIN_SRC shell
+for f in *raw*; do cat ${f}/diffExpr*matrix.log2.dat >> $file | cut -f 1;done 
+#+END_SRC
+
+Get stats for each alignment, condition, e-value, and cFold.
+#+BEGIN_SRC shell
+for f in edgeR*4.cn; do cat ${f}/diffExpr*matrix.log2.dat | cut -f 1 >> raw; done; grep "^TRINITY" raw | wc -l; grep "^TRINITY" raw | sort - | uniq | wc -l; rm raw
+#+END_SRC
 * Gene Finding
 ** Contig annotation with HMMER
 As a main strategy the functional annotation is done with HMMER, the alignment is based on hidden markov models that calculate posteriors to the similarity scores.
@@ -314,15 +531,13 @@ sudo make install
 Translate in 6 frames from fasta file. [[http://www.sacs.ucsf.edu/Documentation/emboss/transeq.html][Documentation]]
 #+BEGIN_SRC shell
 ## correct name of each sequence. OPTIONAL
-cat assembled.contigs.fasta | sed 's/|.*len/ len/g' > assembled.contigs.fa
-## translate in 6 frames
-time transeq assembled.contigs.fa peptides.fa -frame=6
+time transeq <(cat $contigs.fa | sed 's/|.*len/ len/g') $output.fa -frame=6
 #+END_SRC
 
 *** Annotating all peptides (pfam)
 Annotation of the 4 strains peptides against a Pfam v28 updated database (June 2015). Here we have two choices, first option, annotate against the whole pfam library, second option, annotate against a subset of selected HMM profiles of PFAM (eg., virulence, temperature). The latter is mostly beneficial if one wants to extract =contig= number to find SNPs, the first being better for discovery. Refer to p.50 of the HMMER3 userguide.
 #+BEGIN_SRC shelle
-time hmmscan --domtblout C.txt --cpu 4 ../db/Pfam-A.hmm ./peptides/C.peptides.QPXv15.fa
+time hmmscan --domtblout $output.txt --cpu 6 $Pfam-A.hmm $peptides.fa
 #+END_SRC
 
 How many contigs have been HMMER annotated?
@@ -396,7 +611,7 @@ How many contigs were mapped to reference with 0--1 gaps and where at least one 
 cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=2) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=200 || $6>=200) print $0}' | wc -l
 #+END_SRC
 
-Extract clam contigs with max 4 gaps and at least 450 nucleotides aligned to reference for any of the blocks. These contigs are then mapped to QPX contigs. The common in both lists are considered than as clam genes.
+Extract clam contigs with max 4 gaps and at least 450 nucleotides aligned to reference for any of the blocks. These contigs are then mapped to QPX contigs. The common in both lists are considered then as clam genes.
 #+BEGIN_SRC shell
 cat $trinityOutput.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $file.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=5) print$0}' | awk '{if($2>=250)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=450||$6>=450||$7>=450||$8>=450||$9>=450) print $1}' | sort - | uniq) - > $contigs.fa
 #+END_SRC
@@ -411,9 +626,17 @@ cat $noClam.fa | sed 's/|.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:ch
 cat $noClam.e5.fa | sed 's/.len.*$//g' | perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV' <(cat $QPX.blat.psl | awk 'NR>5' | awk '{print $10,$11,$15,$18,$19}'| awk '{if($4<=5) print$0}' | awk '{if($2>=100)print $0}' | sed 's/,/\t/g' |  awk '{if($5>=250||$6>=250||$7>=250||$8>=250||$9>=250) print $1}' | sort - | uniq) - > $noClam.e5.True2Ref.fa
 #+END_SRC
 
-
 ** BLAST+
-Download NR library (protein database NCBI). Index it (this will generate .pin files. p for protein). If NT was downloaded and indexed .nin files will be generated. BLAST is set on xsede with every database used here.
+Download NR, NT, and SwissProt databases from NCBI. Either the fasta-one-file database from the NCBI [[ftp://ftp.ncbi.nlm.nih.gov/][ftp]] or use the perl module below to download an already indexed database. The fasta-one-file needs to be loaded in =makeblastdb= to index it.
+
+=note= Download gene accession numbers ([[ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/][here]]) in case =taxdb= didnt work.
+
+Update databases, extract data and index.
+#+BEGIN_SRC shell
+perl $BLAST/bin/update_blsatdb.pl nt
+for f in *.tar; do tar xzvf $f; done
+makeblastdb -in nt.fasta -out nt -dbtype nucl -parse_seqids -max_file_sz 2GB
+#+END_SRC
 
 Set the database path.
 #+BEGIN_SRC shell
@@ -433,12 +656,60 @@ blastx -query nodule/assembled/C.assembl.QPXgv5.fasta \
 -db nr \
 -outfmt "7 qseqid qlen sseqid slen qstart qend sstart send evalue bitscore length pident nident mismatch gaps staxids sscinames " \
 -max_target_seqs 10 \
--out output.txt \n
+-out output.txt \
 -num_threads 16
 #+END_SRC
 
 Blast sequence similarity analysis are done with NR (protein), NT (nucleotide), SWISSPROT (protein).
 
+*** Transcriptome quality control with Blast
+The script below shows how many contigs can be found in ncbi libraries nr, nt, swissprot.
+#+BEGIN_SRC shell
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=24:00:00
+#PBS -N NRblast.A
+#PBS -q long
+#PBS -V
+
+# Files _CHANGE_
+file=A.noClam.e5.True2Ref
+exe=fa
+extra=nodule/assembled/final
+db=nr
+ev=1e-20
+maxT=1
+
+scratch=/gpfs/scratch/$user
+home=/gpfs/home/$user
+project=$home/ganglia/blast
+tophit=$home/trinityrnaseq-2.1.1/util/analyze_blastPlus_topHit_coverage.pl
+mkdir -p $project
+###############
+# DONT CHANGE #
+###############
+# blast libraries
+export PATH="$PATH:/gpfs/home/$user/ncbi-blast-2.2.31+/bin"
+export BLASTDB="/gpfs/scratch/$user/db/swissprot"
+# supercomputing power
+nthreads=48
+# blast output format index
+n=6
+
+blastx \
+-db $db \
+-query $scratch/$extra/$file.$exe \
+-out $project/$file.$db.$ev.outfmt$n \
+-evalue $ev \
+-num_threads $nthreads \
+-max_target_seqs $maxT \
+-outfmt $n
+
+perl $tophit \
+$project/$file.$db.$ev.outfmt$n \
+$scratch/$extra/$file.$exe \
+$scratch/db/$db/$db \
+>& $project/$file.$db.$ev.tophit
+#+END_SRC
 *** Sequence homology analysis
 How many assembled contigs have been aligned to a SWISSPROT entry (NCBI) with a minimum of 10e-10 evalue, 80% sequence similarity, and 1 mismatch. Repeat for NT and NR. Only done on Blast output not hummer.
 #+BEGIN_SRC shell
@@ -588,6 +859,22 @@ cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.without.acc.txt - | awk 
 #AND 
 cat A.interpro.all.tsv | sed 's/ /./g' | grep -Fwf ./db.with.acc.txt - | awk '{if($9 <= 0.00000000000000000001) print $0}' | awk '{x=$7-$8?$8-$7:$7-$8; if(x>=20) print $4 }' | sort - | uniq -c | sort -n
 #+END_SRC
+*** STRING networks
+The pipeline goes like this:
+1. Align contigs to STRING (protein sequences file)
+2. Get contigs and string IDs from =blastx= output
+3. Get string networks (protein links file)
+4. Get string actions (protein actions file)
+5. Get species ID (second column of protein sequences file)
+6. Get COG IDs (COG mappings file)
+7. Get protein name (COG mapping file)
+8. Get COG links to other orthologous groups (COG links file)
+
+Get NCBI annotation with GI ids. =gene2accession= is a daily updated file from NCBI.
+#+BEGIN_SRC shell
+cat <(grep "^TRINITY" $blasted_contigs) | grep -Ff <(cat $R_log_dat_file | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
+#+END_SRC
+
 * Create a database for structured data
 Ideas from [[http://sfg.stanford.edu/BLAST.html][here]] and [[https://trinotate.github.io/][here]]
 * XSEDE
