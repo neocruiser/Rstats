@@ -692,33 +692,7 @@ done
 #+END_SRC
 * Gene annotation
 ** Databases
-#+CAPTION: Sequence databaases in public repositiories
-| database    | content    | tool  | function            | description                |
-|-------------+------------+-------+---------------------+----------------------------|
-| [[http://pfam.xfam.org/][Pfam]]        | protein    | hmmer | domain              | protein similarities       |
-| [[ftp://ftp.ncbi.nih.gov/blast/db/][NR]]          | protein    | blast | domain              | protein similarities       |
-| [[ftp://ftp.ncbi.nih.gov/blast/db/][NT]]          | nucleotide | blast | classification      | phylogeny                  |
-| [[ftp://ftp.ncbi.nih.gov/blast/db/][Swiss-prot]]  | protein    | blast | domain              | protein similarities       |
-| [[http://www.phi-base.org/release_notes.php][Phi-base]]    | protein    | hmmer | interactions        | virulence                  |
-| [[http://www.mgc.ac.cn/VFs/main.htm][VFDB]]        | prot/nucl  | blast | virulence           |                            |
-| [[http://string-db.org/newstring_cgi/show_download_page.pl?UserId%3D_yWWhZVtWw47&sessionId%3DDpBbN0jI1blB][STRING]]      | protein    | blast | interactions        | network analysis           |
-| [[http://thebiogrid.org/][BioGRID]]     |            | shell | interactions        |                            |
-| [[http://www.transcriptionfactor.org/index.cgi?Download][DBD]]         | protein    | shell | transcrption factor | acc. Pfam+superfamily      |
-| [[http://operondb.jp/][OperonDB]]    |            |       | operons             |                            |
-| [[http://www.ncbi.nlm.nih.gov/COG/][COG]]         | protein    |       | classification      | phylogeny                  |
-| [[http://phospho.elm.eu.org/][Pospho-elm]]  | protein    | shell | phosphorylation     | acc Uniprot+EnsEMBL        |
-| [[http://www.jcvi.org/cgi-bin/tigrfams/index.cgi][TIGRFAM]]     | protein    | blast | subfamilies         | classification             |
-| [[http://www.ebi.ac.uk/interpro/release_notes.html][InterPro]]    | nucl/prot  | IPS   | classification      | integrates 12 databases    |
-| [[http://prodom.prabi.fr/prodom/current/html/home.php][ProDom]]      | protein    | IPS   | families            | uniprot domains            |
-| [[http://hamap.expasy.org/][PANTHER]]     | protein    | IPS   | classification      | domain+pathways            |
-| [[http://supfam.cs.bris.ac.uk/SUPERFAMILY/][SUPERFAMILY]] | protein    | IPS   | classification      | domain+phylog+taxon        |
-| [[http://www.bioinf.manchester.ac.uk/dbbrowser/PRINTS/index.php][PRINTS]]      | protein    | IPS   | fingerprinting      | conserved motifs SwissProt |
-| [[http://pir.georgetown.edu/pirwww/dbinfo/pirsf.shtml][PIRSF]]       | protein    | IPS   | phylogeny           | domain classification      |
-| [[http://gene3d.biochem.ucl.ac.uk/Gene3D/][Gene3D]]      | protein    | IPS   | interactions        | domain families            |
-| [[http://www.ch.embnet.org/software/COILS_form.html][Coils]]       | protein    | IPS   | domains             | coiled-coil conformation   |
-| [[http://smart.embl-heidelberg.de/][SMART]]       | protein    | IPS   | domains             | SwissProt Trembl Ensembl   |
-| [[http://prosite.expasy.org/][PROSITE]]     | not used   | IPS   | domains             | +functions                 |
-| [[http://hamap.expasy.org/][HAMAP]]       | not used   | IPS   | classification      | uniprot classification     |
+Detailed and summarized [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][here]]
 *** Getting annotation hits from interpro scan
 Alignment hits are in a =tsv= output. Described [[https://code.google.com/p/interproscan/wiki/OutputFormats][here]].
 1. Protein Accession (e.g. P51587)
