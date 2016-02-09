@@ -862,6 +862,12 @@ $scratch/$extra/$file.$exe \
 $scratch/db/$db/$db \
 >& $project/$file.$db.$ev.tophit
 #+END_SRC
+*** Splitting a FASTA file into multiple smaller files
+Use a fasta file first to count the number of sequences. Its best if the files are cut in increment of 1 (easier to automate).
+#+BEGIN_SRC shell
+echo "$(grep "^>" $file.fa | wc -l) / 8" | bc
+time awk -vf="filenames" -vn="100000" 'BEGIN {n_seq=0;} /^>/ {if(n_seq%n==0){file=sprintf(f"%d.fa",n_seq);} print >> file; n_seq++; next;} { print >> file; }' < $file.fa
+#+END_SRC
 *** Blast any database (NR, NT, Swissprot, String)
 #+BEGIN_SRC shell
 #!/bin/bash
@@ -920,11 +926,24 @@ $blast -query $query -db $db -outfmt " 7 qseqid qlen sseqid slen qstart qend sst
 rm -r $tmp
 end=$(date); echo "Job ended at: $end" >> $time/$jobid.time
 #+END_SRC
+*** Get gene annotations from NCBI accession IDs
+Access NCBI database at =ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/=
+Get NCBI annotation with GI ids. =gene2accession= is a daily updated file from NCBI.
+#+BEGIN_SRC shell
+cat <(grep "^TRINITY" $blasted_contigs) | grep -Ff <(cat $R_log_dat_file | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
+#+END_SRC
+
 *** Sequence homology analysis
 How many assembled contigs have been aligned to a SWISSPROT entry (NCBI) with a minimum of 10e-10 evalue, 80% sequence similarity, and 1 mismatch. Repeat for NT and NR. Only done on Blast output not hummer.
 #+BEGIN_SRC shell
 cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | awk '{if ($12 >= 80) print $0}' | awk '{if ($14 <= 1) print $0}' | cut -f 1 | sed 's/|.*$//g' | sort - | uniq | wc -l
 #+END_SRC
+
+How many differentially expressed genes are annotated (after whole transcriptome annotation with NT database)
+#+BEGIN_SRC shell
+cat <(grep "^TRINITY" $annotated_transcriptome | grep -Ff <(cat $diffExpr_log2_dat | awk 'NR>1{print $1}' | sort - | uniq) - | wc -l
+#+END_SRC
+
 
 ** Contig annotation with InterPro
 Databases used =ProDom PANTHER TIGRFAM SUPERFAMILY PRINTS Gene3D PIRSF Pfam Coils SMART=
@@ -983,9 +1002,14 @@ The pipeline goes like this:
 7. Get protein name (COG mapping file)
 8. Get COG links to other orthologous groups (COG links file)
 
-Get NCBI annotation with GI ids. =gene2accession= is a daily updated file from NCBI.
+Get full networks from =protein.links.full.v10= String file (private) with differentially expressed genes and annotated with =blastsx= at =e-val 10^-5=.
 #+BEGIN_SRC shell
-cat <(grep "^TRINITY" $blasted_contigs) | grep -Ff <(cat $R_log_dat_file | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
+time cat protein.links.full.v10.txt | grep -Ff <(cat $blastx_output | grep "^TRINITY" | awk '{if($9<=0.00001)print$0}' | cut -f3 | sort - | uniq) - | wc -l
+#+END_SRC
+
+From the same blast output get the =COG= network (Clusters of Orthologous proteins) from =COG.links.detailed.v10= String file.
+#+BEGIN_SRC shell
+time cat COG.links.detailed.v10.txt | grep -Ff <(cat $blastx_output | awk '{print$4}' | sort - | uniq) - | wc -l
 #+END_SRC
 
 * XSEDE
