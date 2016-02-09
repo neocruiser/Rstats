@@ -58,8 +58,8 @@ This git repository includes the pipeline for RNA-seq data processing and sequen
     3. [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
 16. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
 
-
-* Quality controls
+* Preprocessing RNA-seq data
+** Quality controls
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -q normal
@@ -90,9 +90,7 @@ fastqc/fastqc ${oasis}/silo/data/ganglia/gg.${i}.R${j}.fastq.gz \
     done
 done
 #+END_SRC
-
-
-* Merge replication files and count the number of reads
+** Merge replication files and count the number of reads
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -q normal
@@ -135,7 +133,7 @@ echo -e "Concatenating gg files. Read counts for fwd seq R2:" >> $home/count_${j
 zcat ${scratch}/ganglia/data/gg.all.R2.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
 
 #+END_SRC
-* Sample from the merged file
+** Sample from the merged file
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -q vsmp
@@ -169,7 +167,7 @@ antisense=${scratch}/ganglia/data/$fileid.R2.fastq
 $home/seqtk/seqtk sample -s1234 $sense 166283796 > $workdir/$jobid.R1.fastq
 $home/seqtk/seqtk sample -s1234 $antisense 166283796 > $workdir/$jobid.R2.fastq
 #+END_SRC
-* Trimming, mapping, sorting by reference position, duplicate removal
+** Trimming reads
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -l nodes=4:ppn=16,walltime=4:00:00
@@ -408,7 +406,8 @@ $home/trinityrnaseq-2.1.1/util/bowtie_PE_separate_then_join.pl --seqType fq --SS
 # run trinity integrated stat algorithm
 $home/trinityrnaseq-2.1.1/util/SAM_nameSorted_to_uniq_count_stats.pl $workdir/bowtie_out/bowtie_out.nameSorted.bam >& $home/bowtie_stats_${jobid}_namesorted.txt
 #+END_SRC
-* Quantify assembled transcripts (R dependent)
+* Gene expression
+** Quantify assembled transcripts (R dependent)
 This will help remove false transcripts.
 Install [[https://pachterlab.github.io/kallisto/download.html][Kallisto]] for fast analysis. (To run it with trinity add Kallisto to PATH) Or [[http://bio.math.berkeley.edu/eXpress/][eXpress]] for alignment base analysis (bowtie required).
 #+BEGIN_SRC shell
@@ -534,7 +533,7 @@ print(fit)
 abline(fit, col='green', lwd=3)
 
 #+END_SRC
-* Merge all gene expression profiles into one matrix
+** Merge all gene expression profiles into one matrix
 #+BEGIN_SRC shell
 #!/bin/bash
 #PBS -l nodes=4:ppn=16,walltime=4:00:00
@@ -573,7 +572,6 @@ perl $matrix --est_method $method \
 # merge matrices accross samples to get shared TPM scores
 perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
 #+END_SRC
-* Gene expression
 ** Get differentially expressed genes from the matrix above (R analysis)
 Install R packages from =Bioconductor=. Packages needed =edgeR, limma, DESeq2, ctc, Biobase, ROTS, and qvalue. Reproducibility-optimized test statistic for ranking genes (ROTS) is installed as following.
 #+BEGIN_SRC shell

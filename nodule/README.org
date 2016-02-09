@@ -74,7 +74,7 @@ zcat HI.0615.001.Index_2.A2_R2.fastq.gz | fastqc HI.0615.001.Index_2.A2_R2.fastq
 zcat HI.0615.002.Index_8.A3_R2.fastq.gz | fastqc HI.0615.002.Index_8.A3_R2.fastq.gz
 #+END_SRC
 
-* Trimming reads
+* Trimming, mapping, sorting by reference position, duplicate removal
 Run bwa over reference genome of QPX for every paired samples (A1 A2 A3). Forget not to index the reference with =bwa index= before mapping.
 
 Additional tools needed are HTSeq for sequence count (for reference) and samtools for conversion of sam bam files, indexing, removing duplications, and sorting reads (for samples).
