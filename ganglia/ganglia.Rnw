@@ -1,6 +1,7 @@
 \documentclass[9pt,english]{extarticle}
 \include{canevas_config}
 
+
 \begin{document}
 \author{Sleiman Bassim, PhD}
 \title{R implementation}
@@ -48,6 +49,7 @@ lapply(pkgs, require, character.only = TRUE)
 
 \section{Differentially expressed genes}
 \label{sec:deg}
+Differentially expressed genes are counted from mapping \textbf{both gills and ganglia} sequenced samples to reference transcriptome built from all samples.
 <<degs,out.width='1\\linewidth'>>=
 read.table("./data/summary.raw.all.txt") %>%
     ggplot(aes(
@@ -64,7 +66,113 @@ read.table("./data/summary.raw.all.txt") %>%
                       name = "P-value") +
     labs(x = "R packages for gene expression differential analysis",
          y = "Number of differentially expressed genes") +
-    theme(legend.position = "top")
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6))
+
+@ 
+
+Differentially expressed genes are counted from mapping \textbf{gills} sequenced samples to reference transcriptome built from all samples.
+<<degs2,out.width='.5\\linewidth'>>=
+read.table("./data/summary.gg.txt") %>%
+    ggplot(aes(
+    x = V2,
+    y = V8,
+    fill = V5)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap(~ V3 + V4 + V6,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+
+@ 
+
+Differentially expressed genes are counted from mapping \textbf{ganglia} sequenced samples to reference transcriptome built from all samples.
+<<degs3,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.txt") %>%
+    ggplot(aes(
+    x = V2,
+    y = V8,
+    fill = V5)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap(~ V3 + V4 + V6,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+@ 
+
+\subsection{Increasing DEG by changing the trimming rates of raw reads}
+\label{subsec:trim}
+Getting gene expression by mapping the original raw reads \textbf{without trimming} to the \textbf{gills} de novo transcriptome. 
+\marginnote{\small\color{blue}$\Lsh$ De novo assembly was carried out with trimmed reads though}[0cm]
+<<trimmed1,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br_35078.txt") %>%
+    ggplot(aes(
+    x = V2,
+    y = V8,
+    fill = V5)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap(~ V3 + V4 + V6,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+
+@ 
+
+\section{A linear representation of gene expression}
+\label{sec:linear}
+Only selected genes can be represented as follow. 
+\marginnote{\small\color{blue}$\Lsh$ Not more than 10 genes}[0cm]
+<<linear,out.width='1\\linewidth'>>=
+dat <- t(read.table("./data/test.txt"))
+dat <- data.frame(dat,
+                  sample = rownames(dat), 
+                  condition = gl(4,12,48, 
+                    labels=c("GG1","GG2","BR1","BR2")))
+dat %>%
+    gather("genes","expression",1:(dim(dat)[2]-2)) %>%
+    ggplot(aes(x = factor(sample, 
+                          c(paste("br",seq(1,24),sep=""),
+                            paste("gg",seq(1,24),sep=""))),
+               y = expression,
+               group = condition)) + 
+    theme_bw() + 
+    geom_line(size = .2) + 
+    geom_point(aes(x = factor(sample),
+                   y = expression,
+                   colour = condition)) +
+    facet_wrap(~ genes, 
+               ncol = 3, 
+               scales = "free") +
+    labs(x = "RNA-seq samples between tissues BR & GG",
+         y = "Log2 gene expression") +
+    theme(legend.position = "top",
+          axis.text.x = element_text(angle = 90,
+                                     vjust = .5,
+                                     size = 4)) +
+    scale_fill_brewer(type = "qual", palette = 6, 
+                      name = "Oyster tissues and Diet conditions")
 
 @ 
 

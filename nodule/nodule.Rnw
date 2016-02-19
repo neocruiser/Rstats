@@ -665,7 +665,12 @@ read.xlsx("./data/interpro.xlsx", sheetIndex = 2) %>%
                        labs(x = "Database used for annotation",
                             y = "Number of annotated contigs") +
                        scale_fill_brewer(type = "qual",
-                                         palette = 6)
+                                         palette = 6) + 
+        theme(legend.position = "top",
+          axis.text.x = element_text(angle = 90,
+                                     vjust = .5,
+                                     size = 4))
+
 @ 
 
 

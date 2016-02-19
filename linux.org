@@ -67,7 +67,7 @@ sudo rm -r /usr/lib64/rro
 
 *Important notice*
 In the next step I install =r-cran-rgl=. This will install an older version of R and it will be symlinked as the main R. I either have to reinstall RRO to resymlink it as main or use the =alternatives= linux command.
-** install rgl package for R
+** Install R on Ubuntu based linux
 #+BEGIN_SRC shell
 sudo apt-get install r-cran-rgl libX11-dev libglu1-mesa-dev mesa-common-dev
 #+END_SRC

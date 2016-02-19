@@ -133,6 +133,20 @@ echo -e "Concatenating gg files. Read counts for fwd seq R2:" >> $home/count_${j
 zcat ${scratch}/ganglia/data/gg.all.R2.fq.gz | grep -i "@acb052" | wc -l >> $home/count_${jobid}_output.log
 
 #+END_SRC
+
+Merge a specific number of files.
+#+BEGIN_SRC shell
+## merge 8 files from BR and GG. Total=16
+for f in br gg
+do
+    for i in {1..8}
+    do
+        zcat $f.$i.R1.P* | gzip -c >> $scratch/ganglia/merged.trimmed/R1.merged.fq.gz
+        zcat $f.$i.R2.P* | gzip -c >> $scratch/ganglia/merged.trimmed/R2.merged.fq.gz
+    done
+done
+#+END_SRC
+
 ** Sample from the merged file
 #+BEGIN_SRC shell
 #!/bin/bash
@@ -930,7 +944,7 @@ end=$(date); echo "Job ended at: $end" >> $time/$jobid.time
 Access NCBI database at =ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/=
 Get NCBI annotation with GI ids. =gene2accession= is a daily updated file from NCBI.
 #+BEGIN_SRC shell
-cat <(grep "^TRINITY" $blasted_contigs) | grep -Ff <(cat $R_log_dat_file | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
+cat <(grep "^TRINITY" $annotated_trx_by_blast) | grep -Ff <(cat $log_data | awk 'NR>1{print $1}' | sort - | uniq) - | cut -f3 | cut -f2 -d "|" | sort - | uniq | grep -Fwf - gene2accession > $output
 #+END_SRC
 
 *** Sequence homology analysis
@@ -941,10 +955,13 @@ cat A.swissprot.txt | grep "^GG" | awk '{if ($9 <= 0.0000000001) print $0}' | aw
 
 How many differentially expressed genes are annotated (after whole transcriptome annotation with NT database)
 #+BEGIN_SRC shell
-cat <(grep "^TRINITY" $annotated_transcriptome | grep -Ff <(cat $diffExpr_log2_dat | awk 'NR>1{print $1}' | sort - | uniq) - | wc -l
+cat <(grep "^TRINITY" $annotated_transcriptome | grep -Ff <(cat $log2_data | awk 'NR>1{print $1}' | sort - | uniq) - | wc -l
 #+END_SRC
 
-
+Get the differentially expressed gene description of Pfam domains
+#+BEGIN_SRC shell
+cat $pfam_annotated | grep -Ff <(cat $log2_data | awk 'NR>1{print $1}') - | awk '{gene=""; for(i=23;i<=NF;i++){gene=gene" "$i}; print $1"\t",gene}' | sort - | uniq | wc -l
+#+END_SRC
 ** Contig annotation with InterPro
 Databases used =ProDom PANTHER TIGRFAM SUPERFAMILY PRINTS Gene3D PIRSF Pfam Coils SMART=
 
