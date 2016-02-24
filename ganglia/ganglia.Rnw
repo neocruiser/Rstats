@@ -81,6 +81,13 @@ read.table("./data/summary.gg.txt") %>%
     fill = V5)) + 
     geom_bar(stat = "identity",
              position = "dodge") +
+    geom_text(aes(x = V2,
+                  y = V8,
+                  ymax = V8,
+                  label = V8,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
     facet_wrap(~ V3 + V4 + V6,
                ncol = 2,
                scales = "free") +
@@ -103,6 +110,13 @@ read.table("./data/summary.br.txt") %>%
     fill = V5)) + 
     geom_bar(stat = "identity",
              position = "dodge") +
+    geom_text(aes(x = V2,
+                  y = V8,
+                  ymax = V8,
+                  label = V8,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
     facet_wrap(~ V3 + V4 + V6,
                ncol = 2,
                scales = "free") +
@@ -127,6 +141,13 @@ read.table("./data/summary.br_35078.txt") %>%
     fill = V5)) + 
     geom_bar(stat = "identity",
              position = "dodge") +
+    geom_text(aes(x = V2,
+                  y = V8,
+                  ymax = V8,
+                  label = V8,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
     facet_wrap(~ V3 + V4 + V6,
                ncol = 2,
                scales = "free") +
