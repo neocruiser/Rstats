@@ -21,8 +21,8 @@ loadings=read.table("./gg.loadings")
 pdf("GG.pca.pdf",width=7,height=5)
 
 plot(scores[,1], scores[,2], xlab="PCA 1", ylab="PCA 2", type="n", xlim=c(min(scores[,1:2]), max(scores[,1:2])), ylim=c(min(scores[,1:2]), max(scores[,1:2])))
-arrows(0,0,loadings[,1]*1000,loadings[,2]*1000, length=0.1,angle=20, col="red")
-text(loadings[,1]*1000*1.2,loadings[,2]*1000*1.2, rownames(loadings), col="black", cex=0.7)
+arrows(0,0,loadings[,1]*100000,loadings[,2]*100000, length=0.1,angle=20, col="red")
+text(loadings[,1]*100000*1,loadings[,2]*100000*1, rownames(loadings), col="black", cex=0.7)
 dev.off()
 # plot 2
 plot(scores[,1]/sd[1], scores[,2]/sd[2], xlab="PCA 1", ylab="PCA 2", type="n")
@@ -34,7 +34,7 @@ biplot(p)
 biplot(scores[,1:2], loadings[,1:2],  cex=0.7)
 
 ## Veersion II
-fit <- princomp(dat, cor=TRUE)
+fit <- princomp(dat, cor=F)
 summary(fit) # print variance accounted for
 loadings(fit) # pc loadings
 plot(fit,type="lines") # scree plot
@@ -43,3 +43,13 @@ biplot(fit)
 ## Version III
 require(FactoMineR)
 result <- PCA(dat)
+
+setwd("/home/neo/data/Dropbox/R/amelie/")
+dat <- read.table("bacteria.genus.txt")
+head(dat)
+dat <- dat[-84, -c(1,3:4,7,9,12,13:15)]
+x <- apply(dat, 2, function(x) abs((x-dat[ ,7])))
+head(x)
+result <- PCA(x[, -7])
+
+dat=x
