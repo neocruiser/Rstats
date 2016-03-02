@@ -161,6 +161,67 @@ read.table("./data/summary.br_35078.txt") %>%
 
 @ 
 
+\subsection{Increasing DEGs by changing the normalization strategy}
+\label{subsec:normalization}
+The below graph shows the number of differentially expressed genes when raw reads were normalized \textbf{separately} for each biological sample.
+\marginnote{\small\color{blue}$\Lsh$ All the analyses before were done on normalized reads by grouping all biological samples together}[0cm]
+<<normalized,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.nonorm.txt") %>%
+    ggplot(aes(
+    x = V1,
+    y = V10,
+    fill = V7)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = V1,
+                  y = V10,
+                  ymax = V10,
+                  label = V10,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
+    facet_wrap(~ V4 + V5 + V6 + V8,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+@ 
+
+The below graph shows the number of differentially expressed genes when raw reads were \textbf{NOT} normalized.
+<<normalized2,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.norm.txt") %>%
+    ggplot(aes(
+    x = V1,
+    y = V10,
+    fill = V7)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = V1,
+                  y = V10,
+                  ymax = V10,
+                  label = V10,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
+    facet_wrap(~ V4 + V5 + V6 + V8,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+@ 
+
+
+
 \section{A linear representation of gene expression}
 \label{sec:linear}
 Only selected genes can be represented as follow. 
