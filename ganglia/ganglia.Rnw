@@ -161,7 +161,7 @@ read.table("./data/summary.br_35078.txt") %>%
 
 @ 
 
-\subsection{Increasing DEGs by changing the normalization strategy}
+\subsection{Increasing DEGs by changing the normalization strategy: Fast abundance quantification \textit{kallisto}}
 \label{subsec:normalization}
 The below graph shows the number of differentially expressed genes when raw reads were normalized \textbf{separately} for each biological sample.
 \marginnote{\small\color{blue}$\Lsh$ All the analyses before were done on normalized reads by grouping all biological samples together}[0cm]
@@ -220,6 +220,91 @@ read.table("./data/summary.br.norm.txt") %>%
          y = "Number of differentially expressed genes")
 @ 
 
+\subsection{Increasing DEGs by changing the normalization strategy: abundance quantification with alignment  \textit{express}}
+The R package \textit{eXpress} is solely used to quantify the abundance of differentially expressed genes from \textbf{NOT normalized} reads and aligned with \textbf{Bowtie 1}.
+<<normalized3,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.nonorm.44062.txt") %>%
+    ggplot(aes(
+    x = V1,
+    y = V10,
+    fill = V7)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = V1,
+                  y = V10,
+                  ymax = V10,
+                  label = V10,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
+    facet_wrap(~ V4 + V5 + V6 + V8,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+
+@ 
+
+The R package \textit{eXpress} is solely used to quantify the abundance of differentially expressed genes from \textbf{normalized} reads and aligned with \textbf{Bowtie 1}.
+<<normalized4,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.norm.44060.txt") %>%
+    ggplot(aes(
+    x = V1,
+    y = V10,
+    fill = V7)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = V1,
+                  y = V10,
+                  ymax = V10,
+                  label = V10,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
+    facet_wrap(~ V4 + V5 + V6 + V8,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+@ 
+
+The R package \textit{eXpress} is solely used to quantify the abundance of differentially expressed genes from \textbf{normalized} reads and aligned with \textbf{Bowtie 2}.
+<<normalized5,out.width='.5\\linewidth'>>=
+read.table("./data/summary.br.norm.44061.txt") %>%
+    ggplot(aes(
+    x = V1,
+    y = V10,
+    fill = V7)) + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = V1,
+                  y = V10,
+                  ymax = V10,
+                  label = V10,
+                  size = 1,
+                  hjust = 0),
+              position = position_dodge(width = 1)) +
+    facet_wrap(~ V4 + V5 + V6 + V8,
+               ncol = 2,
+               scales = "free") +
+    scale_fill_brewer(type = "qual", palette = 6) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     size = 6)) +
+    labs(x = "R packages for gene expression differential analysis",
+         y = "Number of differentially expressed genes")
+@ 
 
 
 \section{A linear representation of gene expression}
