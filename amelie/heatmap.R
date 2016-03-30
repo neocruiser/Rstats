@@ -7,11 +7,11 @@ palett<-brewer.pal(9,"Greens")
 ## Load SoftClustering Mfuzz package --- 12 clusters
 setwd("/home/neo/data/Dropbox/R/amelie")
 
-genre <- read.table("all.species.txt")
+genre <- read.table("./data/all.species.txt")
 colnames(genre) <- c("H1","DM1","H2","H3","DM2","D1","H4","D2","H5","DM3","D3","H6","SW1","SW2","SW3","C")
 head(genre)
 genre <- as.matrix(genre)
-heatmap.g <- heatmap(genre, Rowv=NA, Colv=NA, col=palett, margins=c(1,40), scale="row", labCol=c(seq(1:16)))
+heatmap.g <- heatmap(genre, Rowv=NA, Colv=NA, col=palette, margins=c(1,40), scale="row", labCol=c(seq(1:16)))
 
 
 ## HIERARCHICAL AND BOOTSTRAP ANALYSIS
@@ -42,8 +42,9 @@ mycolhc <- mycolhc[as.vector(mycl)]
 heatmap(rawdata, Rowv=as.dendrogram(hra), Colv=as.dendrogram(hca), col=my.colorFct(), scale="row", RowSideColors=mycolhc)
 
 ## BOOTSTRAPING
-n=200;a=0.95
-pvData <- pvclust(scale(t(rawdata)), method.dist="correlation", method.hclust="complete", nboot=n)
+n=20;a=0.95
+#pvData <- pvclust(scale(t(rawdata)), method.dist="correlation", method.hclust="complete", nboot=n)
+pvData <- pvclust(t(scaledata), method.dist="correlation", method.hclust="complete", nboot=n)
 plot(pvData, hang=-1)
 pvrect(pvData, alpha=a)
 

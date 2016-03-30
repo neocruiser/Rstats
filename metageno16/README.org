@@ -1,0 +1,173 @@
+#+TITLE: RNAseq and Machine Learning Protocols
+#+AUTHOR: Sleiman Bassim, PhD
+#+DATE: Marine Animal Disease Laboratory @ SoMAS
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t c:nil creator:comment d:(not LOGBOOK) date:t e:t
+#+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil stat:t tags:t
+#+OPTIONS: tasks:t tex:t timestamp:t toc:t todo:t |:t
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+KEYWORDS:
+
+This git repository includes the pipeline for metagenomics data processing and sequence classification (in =org= format for emacs. Can be imported as Markdown or viewed below), the R code for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), the PDF of the compiled R file, the data used for generating the figures, and the scripts (in bash) for shortgun reads pre-processing (detailed in the tutorial below).
+
+* Data
+* Metagenomics
+** Deploying classifier
+Install [[http://ccb.jhu.edu/software/kraken/MANUAL.html#introduction][Kraken]] and use it for fast alignment of sequencing reads. First, download NCBI =bacteria=, =virus=, and =plasmid= databases. Genomes can also be downloaded manually from =ftp.ncbi.nih.gov= under =/refseq/release= using the traditional recommended way.
+=notice= change the database location at NCBI SERVER to ftp://ftp.ncbi.nlm.nih.gov/refseq/release/ 
+=notice 2= [[http://www.cbcb.umd.edu/software/jellyfish/jellyfish-1.1.11.tar.gz][Jellyfish 1-1.1]] must be used and not the 2.0 version. 
+
+Export to =.bashrc=
+#+BEGIN_SRC shell
+export PATH="$PATH:/home/bassim/kraken-0.10.5-beta"
+export PATH="$PATH:/home/bassim/jellyfish-1.1.11/bin"
+#+END_SRC
+
+Run Kraken database build
+#+BEGIN_SRC shell
+## database names: bacteria, archae, virus, plasmid, invertebrate
+DBNAME=bacteria
+scratch=/pylon2/oc4ifip/bassim
+home=/home/bassim
+db=$scratch/db/kraken
+# RAM DISK for fast reading
+DEV=/dev/shm/$DBNAME
+lib=$DEV/library
+
+mkdir -p $lib && cd $lib
+# download taxonomy NCBi files
+kraken-build --download-taxonomy --db $DEV
+# download SINGLE library from NCBI
+wget ftp://ftp.ncbi.nlm.nih.gov/refseq/release/$DBNAME/* >& $home/kraken.build.out_log.$SLURM_JOBID
+gunzip -v *.gz >& $home/kraken.build.out_log.$SLURM_JOBID
+chmod -R u+x $DEV
+## build library
+kraken-build --threads 32 --build --jellyfish-hash-size 12800M --max-db-size 50 --db $DEV >& $home/kraken.build.out_log.$SLURM_JOBID
+## clean remaining files
+kraken-build --threads 16 --clean --db $DEV
+#+END_SRC
+
+** Shotgun classification
+Next, run =kraken= to generate reports. In case of =mmap error= run =chmod -R u+x= on all database file then repeat the database build. Create summary of =all= the samples.
+#+BEGIN_SRC shell
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -p LM
+#SBATCH -t 24:00:00
+#SBATCH --job-name="krakenIN"
+#SBATCH --output="kraken.%j.out"
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=sleiman.bassim@stonybrook.edu
+
+## FIRST____CHANGE
+## fungi, virus, plasmid, archae, invertebrate
+DBNAME=invertebrate
+
+## DONT____CHANGE
+# Load XSEDE modules
+module load java
+export CLASSPATH=$JAVA_HOME/bin:$CLASSPATH
+
+set echo
+scratch=/pylon2/oc4ifip/bassim
+home=/home/bassim
+location=$scratch/amelie/virome
+project=${scratch}/amelie/kraken/$DBNAME
+rm -r $project
+mkdir -p $project
+db=$scratch/db/kraken/$DBNAME
+DEV=/dev/shm/$DBNAME
+n=32
+
+time=$home/time
+start=$(date); echo "Job started at: $start" > $time/$SLURM_JOBID.$DBNAME.time
+################
+## RUN KRAKEN ##
+################
+
+cp -a $db /dev/shm
+
+for i in {1..13}
+do
+    output=$project/sample.$i.$SLURM_JOBID
+    result=$output/kraken
+    mkdir -p $output
+
+    kraken --threads $n --db $DEV --gzip-compressed --fastq-input --check-names --output $result\
+.out --paired $location/*S${i}_R1* $location/*S${i}_R2*
+    kraken-translate --db $DEV $result.out > $result.taxa
+
+    kraken-report --db $DEV $result.out > $result.report
+    kraken-mpa-report --db $DEV $result.out > $result.mpa.report
+done
+
+rm -r $DEV
+
+# get the proportion of classified and unclassified reads
+grep "class" $home/kraken.$SLURM_JOBID.out > $project/output.${DBNAME}_log
+# concatenate classified reads/phyla accross all samples
+cd $project
+out=summary.$DBNAME.txt
+final=summary.$DBNAME.txt
+rm $final
+
+for d in sample.{1..13}.*; do
+    for f in $d/kraken.mpa.report; do
+        abbrv=$(echo $d | cut -f2 -d '.')
+        sed -e 's/$/\t'$abbrv'/g' <(cat $f) >> $out
+    done
+done
+
+
+end=$(date); echo "Job ended at: $end" >> $time/$SLURM_JOBID.$DBNAME.time
+#+END_SRC
+
+** Coerce classification output
+Transform output to readable content in R.
+#+BEGIN_SRC R
+## Run in R
+## combine the results of all samples by phylum                                 
+require(tidyr)                                 
+require(dplyr)                                 
+dat <- read.table("./summary.txt", header = F) %>%                                
+    spread(V1,V2)                                 
+write.table(t(dat),"summary.txt",quote=F,sep="\t")
+#+END_SRC
+
+** Summarize the number of classified/unclassified reads
+Concatenate all output logs into a one file summary
+#+BEGIN_SRC shell
+paste <(cat $archae_log | awk '{print$1,$4}' | sed -e 's/(//g' -e 's/%)//g') <(cat $fungi_log | awk '{print$1,$4}' | sed -e 's/(//g' -e 's/%)//g') <(cat $plasmid_log | awk '{print$1,$4}' | sed -e 's/(//g' -e 's/%)//g') <(cat $invertebrate_log | awk '{print$1,$4}' | sed -e 's/(//g' -e 's/%)//g') <(cat $virus_log | awk '{print$1,$4}' | sed -e 's/(//g' -e 's/%)//g') | sed 's/ /\t/g' > $summary_all_outputs
+#+END_SRC
+
+Read file into R and execute data wrangling for later plotting and comparison
+#+BEGIN_SRC R
+df <- read.table("summary_all_outputs")
+colnames(df)=gl(10,2,10,labels=c("A","F","P","I","V"))
+df <- data.frame(samples = gl(26,2,26,labels=c("Ctrl",seq(1:12))),
+                 kraken=gl(2,1,26,labels=c("C","U")),
+                 df)
+df1 <- gather(df[, c(1:2,seq(3,12,by=2))],"Phyla","Sequence",3:7)
+df2 <- gather(df[, c(1:2,seq(4,12,by=2))],"Phyla","Percentage",3:7)
+dff <- data.frame(df1,Percentage=df2[,4])
+write.table(dff, "summary.all.outputs.compiled",sep = "\t",quote=F)
+#+END_SRC
+
