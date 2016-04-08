@@ -3,6 +3,7 @@ setwd("/home/neo/data/Dropbox/R/ganglia/data")
 
 setwd("/home/neo/data/Dropbox/R/amelie/")
 dat <- read.table("bacteria.family.txt")
+dat <- read.table("test.txt")
 dat1=dat
 head(dat1)
 dat=dat1[,13:24]
@@ -21,8 +22,8 @@ loadings=read.table("./gg.loadings")
 pdf("GG.pca.pdf",width=7,height=5)
 
 plot(scores[,1], scores[,2], xlab="PCA 1", ylab="PCA 2", type="n", xlim=c(min(scores[,1:2]), max(scores[,1:2])), ylim=c(min(scores[,1:2]), max(scores[,1:2])))
-arrows(0,0,loadings[,1]*100000,loadings[,2]*100000, length=0.1,angle=20, col="red")
-text(loadings[,1]*100000*1,loadings[,2]*100000*1, rownames(loadings), col="black", cex=0.7)
+arrows(0,0,loadings[,1]*50,loadings[,2]*50, length=0.1,angle=20, col="red")
+text(loadings[,1]*50*1.3,loadings[,2]*50*1.3, rownames(loadings), col="black", cex=0.9)
 dev.off()
 # plot 2
 plot(scores[,1]/sd[1], scores[,2]/sd[2], xlab="PCA 1", ylab="PCA 2", type="n")

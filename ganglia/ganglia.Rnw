@@ -343,6 +343,24 @@ dat %>%
 
 @ 
 
+Principal component analysis on testing data.
+<<testPCA>>=
+dat <- read.table("./data/test.txt")
+p = prcomp(dat, retx=T)
+scores = p$x
+loadings <- p$rotation
+sd <- p$sdev
+plot(scores[,1], scores[,2], 
+     xlab="PCA 1", ylab="PCA 2", 
+     type="n", xlim=c(min(scores[,1:2]), 
+                      max(scores[,1:2])), 
+     ylim=c(min(scores[,1:2]), 
+            max(scores[,1:2])))
+arrows(0,0,loadings[,1]*50,loadings[,2]*50, 
+       length=0.1,angle=20, col="red")
+text(loadings[,1]*50*1.3,loadings[,2]*50*1.3, 
+     rownames(loadings), col="black", cex=0.5)
+@ 
 \section{System Information}
 \label{sec:sys_info}
 \noindent
