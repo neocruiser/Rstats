@@ -225,96 +225,62 @@ do
 * Trinity transcriptome assembly
 #+BEGIN_SRC shell
 #!/bin/bash
-#SBATCH --job-name="TRbr100"
-#SBATCH --output="trinity.%j.%N.out"
-#SBATCH --partition=compute
+#SBATCH --partition=LM
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=64
-#SBATCH --export=ALL
 #SBATCH -t 48:00:00
-#SBATCH --partition=large-shared
-#SBATCH -A sun108
-#SBATCH --mem=1450GB
+#SBATCH --job-name="trinSepa"
+#SBATCH --output="trinity.%j.%N.out"
+#SBATCH --export=ALL
+#SBATCH --mail-user=sleiman.bassim@stonybrook.edu
 
-# set stack to unlimited
-# because of large datasets
+### Would finish in 40 hours for 400 million reads and 65h for 1 billion reads
+
+module load trinity
+module load java
+module load bowtie
+module load samtools
+
+# set stack to unlimited because of large datasets
 ulimit -s unlimited
-# echo stdout to output file
 set -x
+## direct temp files to scratch
+#export TMPDIR=$LOCAL
 
 # xsede directories
-oasis=/oasis/projects/nsf/sun108/silo/ganglia/trinity
-scratch=/oasis/scratch/comet/silo/temp_project
-home=/home/silo
+scratch=/pylon2/oc4ifip/bassim/
+home=/home/bassim
+backupdir=${scratch}/ganglia/trinity/trinity_out_dir_${SLURM_JOBID}
+workdir=/dev/shm/trinity_out_dir_${SLURM_JOBID}
+mkdir -p $workdir $backupdir
+cd $workdir
 
-##################################
-# output directories for trinity #
-##################################
-jobid=br100
-fileid=100p/br.all
-
-########################
-# Dont change anything #
-########################
-#workdir=${scratch}/ganglia/trinity/trinity_out_dir_${jobid}
-#ssddir=/scratch/silo/$SLURM_JOBID/trinity_out_dir_$jobid
-workdir=$oasis/trinity_out_dir_${jobid}
-
-# fastq raw files, reads
-sense=${scratch}/ganglia/data/$fileid.R1.fastq
-antisense=${scratch}/ganglia/data/$fileid.R2.fastq
-
-############
-# Inchworm #
-############
-## Phase 1: construct Kmers
-# maximum memory for jellyfish to use
-# 10 GB * nb of nodes (64)
-JMi=10G
-nthreads=64
-
-${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMi} --CPU $nthreads --min_contig_length 200 --output $workdir --no_run_chrysalis --verbose >& ${home}/trinity.${jobid}_output.log
-
-## Backup inchworm directory
-#cd $oasis
-#tar -cvf $workdir.tar trinity_out_dir_$jobid
-#mv $workdir.tar $workdir.tar.inchworm
-
-## extract backed up inchworm
-#cd $oasis
-#mv $workdir.tar.inchworm $workdir.tar
-#tar -xvf $workdir.tar trinity_out_dir_$jobid
-#mv $workdir.tar $workdir.tar.inchworm
-####################### STOP ###########################
-
-
-JMc=1450G
-## Do not assemble the partitioned reads
-${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMc} --CPU $nthreads --min_contig_length 200 --output $workdir --no_distributed_trinity_exec --verbose >& ${home}/trinity.${jobid}_output.log
-
-## Backup chrysalis directory
-#cd $oasis
-#tar -cvf $workdir.tar trinity_out_dir_$jobid
-#mv $workdir.tar $workdir.tar.chrysalis
-
-## extract backed up chrysalis
-#cd $oasis
-#mv $workdir.tar.chrysalis $workdir.tar
-#tar -xvf $workdir.tar trinity_out_dir_$jobid
-#mv $workdir.tar $workdir.tar.chrysalis
+# fastq raw files COMBINED (all R1 and all R2 files separately)
+sense=$(find ${scratch}/ganglia/merged.trimmed -name "r*all.R1*q")
+antisense=$(find ${scratch}/ganglia/merged.trimmed -name "r*all.R2*q")
+#sense=$(find $scratch/ganglia/raw.reads -name "*R1*gz" | paste -s -d,)
+#antisense=$(find $scratch/ganglia/raw.reads -name "*R2*gz" | paste -s -d,)
 
 #############
-# Butterfly #
+# TRINITY
 #############
-## Phase 2: cluster reads, DeBruijn, and map to kmers
-
-JMb=1450G
-nthreads=16
+JMb=3000G
+bthreads=32
+nthreads=32
 heap=350G
 gc=6
 init=2G
 
-${home}/trinity2/Trinity --seqType fq --SS_lib_type RF --left ${sense} --right ${antisense} --quality_trimming_params "ILLUMINACLIP:adapters.fa:2:30:10 LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36" --normalize_max_read_cov 50 --max_memory ${JMb} --CPU $nthreads --bflyCPU $nthreads --bflyHeapSpaceMax $heap --bflyHeapSpaceInit $init --bflyGCThreads $gc --min_contig_length 200 --output $workdir >& ${home}/trinity.${jobid}_output.log
+#--normalize_by_read_set
+#--normalize_max_read_cov 50
+#--quality_trimming_params "LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36"
+
+Trinity --seqType fq --SS_lib_type FR --left ${sense} --right ${antisense}  --normalize_max_read_cov 50 --max_memory ${JMb} --CPU $nthreads --bflyCPU $bthreads --bflyHeapSpaceMax $heap --bflyHeapSpaceInit $init --bflyGCThreads $gc --min_contig_length 200 --output $workdir >& ${home}/trinity.${SLURM_JOBID}_output.log
+
+mv $workdir/Trinity.fasta $backupdir
+mv $workdir/Trinity.timing $backupdir
+cd $workdir
+perl -e 'for(<*>){((stat)[9]<(unlink))}'
+rm -rf $workdir
 #+END_SRC
 
 * Get summary of the transcriptome content
@@ -428,88 +394,66 @@ Install [[https://pachterlab.github.io/kallisto/download.html][Kallisto]] for fa
 wget https://github.com/pachterlab/kallisto/releases/download/v0.42.4/kallisto_linux-v0.42.4.tar.gz
 #+END_SRC
 
-Run kallisto and/or eXpress and count the transcript per million reads (TPM)
+Run kallisto or Salmon (both without =--aln_method=) and/or eXpress and count the transcript per million reads (TPM). For Bowtie-based alignment with eXpress.
 #+BEGIN_SRC shell
 #!/bin/bash
-#PBS -l nodes=8:ppn=16,walltime=20:00:00
-#PBS -N eXpress.all
-#PBS -q long
-#PBS -V
+#SBATCH --partition=LM
+#SBATCH --nodes=1
+#SBATCH -t 48:00:00
+#SBATCH --job-name="abundance"
+#SBATCH --output="abundance.%j.%N.out" 
+#SBATCH --export=ALL
+#SBATCH --mail-user=sleiman.bassim@stonybrook.edu
 
 ## !! ##
 # 20h for 26 eXpress datasets
+module load trinity
+module load java
+module load bowtie
+module load samtools
 
-nthreads=128
+# CHANGE___FILE ID___METHOD eXpress kallisto salmon
+transcriptome=salmon
+method=salmon
+lib=RF
 
-method=eXpress
-
-# Files _CHANGE_
-file=raw.all
-exe=P.fastq.gz
-
-scratch=/gpfs/scratch/ballam
-home=/gpfs/home/ballam
-project=$scratch/ganglia/abundance_${file}_$method
-reads=$scratch/ganglia/trimmed
-
-# _CHANGE_
-assembly=$scratch/ganglia/assembled/$file.rscf.contigs.fa
-abundance=$home/trinityrnaseq-2.1.1/util/align_and_estimate_abundance.pl
+## DONT___CHANGE
+nthreads=64
+pbs=$SLURM_JOBID
+scratch=/pylon2/oc4ifip/bassim
+home=/home/bassim
+target=trinity_out_dir_$transcriptome
+project=$scratch/ganglia/trinity/$target/abundance_${method}
+reads=$scratch/ganglia/raw.reads
+assembly=$scratch/ganglia/trinity/$target/Trinity.fasta
+abundance=$home/trinityrnaseq-2.2.0/util/align_and_estimate_abundance.pl
 
 time=$home/time
-jobid=$method.abundance
-start=$(date); echo "Job started at: $start" > $time/$file.$jobid.time
+jobid=$transcriptome.$method.abundance
+start=$(date); echo "Job started at: $start" > $time/$jobid.time
 
-## Express uses bowtie, so its slow
+## Express uses bowtie, so its slow__ADD: --aln_method bowtie
 ## Kallisto is fast delivering short summary
-
-# run the alignment/estimation
-for f in gg
+#           --SS_lib_type $lib
+#	    --aln_method bowtie \
+for f in br gg
 do
     for i in {1..24}
     do
 	mkdir -p $project/$f$i
-	
 	perl $abundance --transcripts $assembly \
-	    --SS_lib_type RF --seqType fq \
-	    --left $reads/$f.${i}.R1.$exe \
-	    --right $reads/$f.${i}.R2.$exe \
+	    --SS_lib_type $lib --seqType fq \
+	    --left $reads/$f/$f.${i}.R1.fastq.gz \
+	    --right $reads/$f/$f.${i}.R2.fastq.gz \
 	    --est_method $method \
-	    --aln_method bowtie \
 	    --trinity_mode \
 	    --thread_count $nthreads \
 	    --output_dir $project/$f$i \
 	    --output_prefix $f$i.$method \
-	    --prep_reference    
+	    --prep_reference
     done
 done
-
-
-end=$(date); echo "Job ended at: $end" >> $time/$file.$jobid.time
-#+END_SRC
-
-
-For Bowtie-based alignment with eXpress.
-#+BEGIN_SRC shell
-## Express uses bowtie, so its slow
-## Kallisto is fast delivering short summary
-
-method=eXpress
-# run the alignment/estimation
-for i in {1..2}
-do
-    perl $abundance --transcripts $assembly \
-	--SS_lib_type RF --seqType fq \
-	--left $reads/$file.${i}.R1.$exe \
-	--right $reads/$file.${i}.R2.$exe \
-	--est_method $method \
-	--aln_method bowtie \
-	--trinity_mode \
-	--thread_count $nthreads \
-	--output_dir $project \
-	--output_prefix $file$i.$method \
-	--prep_reference
-done
+end=$(date); echo "Job ended at: $end" >> $time/$jobid.time
 #+END_SRC
 
 Get the amount of transcripts from 0 TPM to 3000 TPM
@@ -517,24 +461,69 @@ Get the amount of transcripts from 0 TPM to 3000 TPM
 for f in {0..3200..200}; do cat $output.tsv | awk -vf="$f" '{if($5>=f) print $0}' | wc -l; done
 #+END_SRC
 
-Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =edgeR= installed. (Greenfield works)
+Get differentially expressed genes. Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =DESeq2= =limma= and =edgeR= installed.
 #+BEGIN_SRC shell
-matrix=$home/trinityrnaseq-2.1.1/util/abundance_estimates_to_matrix.pl
-count=$home/trinityrnaseq-2.1.1/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
+#!/bin/bash
+#PBS -l nodes=2:ppn=16,walltime=20:00:00
+#PBS -N deg.br.eX.44062
+#PBS -q long
+#PBS -j oe
+#PBS -m abe
+#PBS sleiman.bassim@stonybrook.edu
+#PBS -V
 
-prefix=trans_counts
+## Choose tissue br, gg, raw.all
+file=br.100.nonorm
+id=44062
 
-# Create matrix
-cd $project
+## DONT CHANGE
+scratch=/gpfs/scratch/ballam
+home=/gpfs/home/ballam
 
-perl $matrix --est_method $method \
-    --out_prefix $prefix \
-    --name_sample_by_basedir \
-     $project/br1/abundance.tsv \
-     $project/br2/abundance.tsv \
+pbs=$(echo $PBS_JOBID | cut -f1 -d '.')
 
-# merge matrices accross samples to get shared TPM scores
-perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
+dir=$scratch/ganglia/deg.${file}_$id
+analyze=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl
+differential=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl
+
+
+## change matrices
+jobid[1]=tissue
+jobid[2]=tissue-diet
+jobid[3]=tissue-br
+jobid[4]=tissue-gg
+
+## RUN R
+## DONT CHANGE
+mkdir -p $dir 
+
+for method in eXpress
+do
+    for m in DESeq2 edgeR voom
+    do
+	for i in 3
+	do
+	    for pval in {1..6}
+	    do
+		for cfold in {1..2}
+		do
+	    project=$scratch/ganglia/abundance_${file}_${method}_$id
+
+	    jobid=${jobid[${i}]}
+
+	    matrix=$scratch/ganglia/matrix/$jobid.txt
+	    contrast=$scratch/ganglia/matrix/contrast.$jobid
+
+	    cd $project
+	    $analyze --matrix $project/trans_counts.counts.matrix --method $m --samples_file $matrix --output $dir/$m.$file.$method.$jobid.p$pval.c$cfold.$pbs --contrasts $contrast
+
+	    cd $dir/$m.$file.$method.$jobid.p$pval.c$cfold.$pbs
+	    $differential --matrix $project/trans_counts.TMM.EXPR.matrix -P 1e-$pval -C $cfold --samples $matrix
+	        done
+	    done
+	done
+    done
+done
 #+END_SRC
 
 Approximate the number of transcripts.
