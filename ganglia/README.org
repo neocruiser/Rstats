@@ -387,7 +387,7 @@ $home/trinityrnaseq-2.1.1/util/bowtie_PE_separate_then_join.pl --seqType fq --SS
 $home/trinityrnaseq-2.1.1/util/SAM_nameSorted_to_uniq_count_stats.pl $workdir/bowtie_out/bowtie_out.nameSorted.bam >& $home/bowtie_stats_${jobid}_namesorted.txt
 #+END_SRC
 * Gene expression
-** Quantify assembled transcripts (R dependent)
+** Abundance of transcripts from raw reads
 This will help remove false transcripts.
 Install [[https://pachterlab.github.io/kallisto/download.html][Kallisto]] for fast analysis. (To run it with trinity add Kallisto to PATH) Or [[http://bio.math.berkeley.edu/eXpress/][eXpress]] for alignment base analysis (bowtie required).
 #+BEGIN_SRC shell
@@ -461,69 +461,158 @@ Get the amount of transcripts from 0 TPM to 3000 TPM
 for f in {0..3200..200}; do cat $output.tsv | awk -vf="$f" '{if($5>=f) print $0}' | wc -l; done
 #+END_SRC
 
-Get differentially expressed genes. Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =DESeq2= =limma= and =edgeR= installed.
+** Quantify assembled transcripts (R dependent)
+Get differentially expressed genes. Compare shared transcripts and TPM between samples. If the script below is ran on a server an R module must be loaded first and =DESeq2= =limma= and =edgeR= installed.  Merge all gene expression profiles into one matrix. Get differentially expressed genes from the matrix. Install R packages from =Bioconductor=. Packages needed =edgeR, limma, DESeq2, ctc, Biobase, ROTS, and qvalue. Reproducibility-optimized test statistic for ranking genes (ROTS) is installed as following.
+#+BEGIN_SRC shell
+wget http://www.utu.fi/en/units/sci/units/math/Research/biomathematics/projects/Documents/ROTS_1.1.1.tar.tar 
+R CMD INSTALL ROTS_1.1.1.tar.tar
+#+END_SRC
+
+This will run 6 different matrices for gene differential expression at 6 different p-value thresholds, 2 fold changes, for any alignment methods (eXpress, kallisto, salmon) and for R packages (edgeR, DESeq2, limma).
 #+BEGIN_SRC shell
 #!/bin/bash
-#PBS -l nodes=2:ppn=16,walltime=20:00:00
-#PBS -N deg.br.eX.44062
-#PBS -q long
-#PBS -j oe
-#PBS -m abe
-#PBS sleiman.bassim@stonybrook.edu
-#PBS -V
+#SBATCH --partition=LM
+#SBATCH --nodes=1
+#SBATCH -t 48:00:00
+#SBATCH --job-name="degSalmon"
+#SBATCH --output="deg.%j.%N.out"
+#SBATCH --export=ALL
+#SBATCH --mail-user=sleiman.bassim@stonybrook.edu
 
-## Choose tissue br, gg, raw.all
-file=br.100.nonorm
-id=44062
+module load R
 
-## DONT CHANGE
-scratch=/gpfs/scratch/ballam
-home=/gpfs/home/ballam
+## CHANGE__PROJECT__ID
+transcriptome=salmon
 
-pbs=$(echo $PBS_JOBID | cut -f1 -d '.')
+## DONT__CHANGE
+version=trinityrnaseq-2.2.0
+scratch=/pylon2/oc4ifip/bassim
+home=/home/bassim
+pbs=$SLURM_JOBID
+target=trinity_out_dir_$transcriptome
+project=$(find $scratch/ganglia/trinity/$target -name "abundance_*")
+## Analyses
+analyze=$home/$version/Analysis/DifferentialExpression/run_DE_analysis.pl
+differential=$home/$version/Analysis/DifferentialExpression/analyze_diff_expr.pl
+join=$home/$version/util/abundance_estimates_to_matrix.pl
+TPM=$home/$version/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
+FPKM=$home/$version/util/misc/count_features_given_MIN_FPKM_threshold.pl
+prefix=trans_counts
 
-dir=$scratch/ganglia/deg.${file}_$id
-analyze=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl
-differential=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl
+# Get the alignment type and check if an abundance test is already done
+if [ ! -z "$project" ]; then
+    e=$(grep -oci "express" <(echo $project))
+    k=$(grep -oci "kallisto" <(echo $project))
+    s=$(grep -oci "salmon" <(echo $project))
+    if [ "$e" == 1 ]; then
+        method=eXpress
+        files=$(find $project -name "results.xprs" | paste -s -d' ')
+    elif [ "$k" == 1 ]; then
+        method=kallisto
+        files=$(find $project -name "abundance.tsv" | paste -s -d' ')
+    elif [ "$s" == 1 ]; then
+        method=salmon
+        files=$(find $project -name "quant.sf" | paste -s -d' ')
+    fi
+else
+    echo "An abundance test (abundance.sh) must be executed before running deg2.sh"
+    scancel $pbs
+fi
 
+# Join gene counts between samples
+cd $project
+if [ ! -f $prefix.TPM.not_cross_norm.counts_by_min_TPM_$method ]; then
+    perl $join --est_method $method --out_prefix $prefix --name_sample_by_basedir $files
+    # merge matrices accross samples to get shared TPM scores
+    perl $TPM $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_$method
+    # merge matrices accross samples to get shared FPKM scores
+    #perl $FPKM $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_FPKM_$method 
+    else
+    echo "Matrices have been already compiled"
+fi
 
-## change matrices
+## Choose__matrices [i]
 jobid[1]=tissue
 jobid[2]=tissue-diet
 jobid[3]=tissue-br
 jobid[4]=tissue-gg
+jobid[5]=tissue-br-females
+jobid[6]=tissue-gg-females
+jobid[7]=tissue-br-bucephalus
 
-## RUN R
-## DONT CHANGE
-mkdir -p $dir 
-
-for method in eXpress
+## Get differentially expressed genes
+dir=$scratch/ganglia/trinity/$target/deg.$method.$pbs
+mkdir -p $dir
+for align in $method
 do
-    for m in DESeq2 edgeR voom
+    for Rpack in DESeq2 edgeR voom
     do
-	for i in 3
+	for i in {1..7}
 	do
 	    for pval in {1..6}
 	    do
 		for cfold in {1..2}
 		do
-	    project=$scratch/ganglia/abundance_${file}_${method}_$id
-
+#	    project=$scratch/ganglia/trinity/$target/abundance_${method}
 	    jobid=${jobid[${i}]}
-
-	    matrix=$scratch/ganglia/matrix/$jobid.txt
-	    contrast=$scratch/ganglia/matrix/contrast.$jobid
+	    matrix=$scratch/ganglia/trinity/matrix/$jobid.txt
+	    contrast=$scratch/ganglia/trinity/matrix/contrast.$jobid
 
 	    cd $project
-	    $analyze --matrix $project/trans_counts.counts.matrix --method $m --samples_file $matrix --output $dir/$m.$file.$method.$jobid.p$pval.c$cfold.$pbs --contrasts $contrast
+	    $analyze --matrix $project/trans_counts.counts.matrix --method $Rpack --samples_file $matrix --output $dir/$Rpack.$align.$jobid.p$pval.c$cfold.$pbs --contrasts $contrast
 
-	    cd $dir/$m.$file.$method.$jobid.p$pval.c$cfold.$pbs
+	    cd $dir/$Rpack.$align.$jobid.p$pval.c$cfold.$pbs
 	    $differential --matrix $project/trans_counts.TMM.EXPR.matrix -P 1e-$pval -C $cfold --samples $matrix
 	        done
 	    done
 	done
     done
 done
+
+#--ROTS_B 250 --ROTS_K 1000
+
+
+# Create a table for the number of differentially expressed genes
+if [ -d "$dir" ]; then
+cd $dir
+
+for m in $method
+do
+    for i in DESeq2 edgeR voom
+    do
+        for t in tissue tissue-diet tissue-br tissue-gg tissue-br-females tissue-gg-females tissue-br-bucephalus
+        do
+            for p in {1..6}
+            do
+                for c in {1..2}
+                do
+                    for f in $i*$m*$t.p$p.c$c*
+                    do
+temp=summary.txt
+final=summary.$method.$pbs.txt
+summary=$scratch/ganglia/$target/$final
+rm $final
+
+# Get the number of genes per abundance test
+cat ${f}/diffExpr*matrix.log2.dat | cut -f 1 >> raw.$m.$t.$p.$c
+# count number of all and unique differentially expressed genes
+all=$(grep "^TRINITY" raw.$m.$t.$p.$c | wc -l)
+uniq=$(grep "^TRINITY" raw.$m.$t.$p.$c | sort - | uniq | wc -l)
+paste <(printf "%s\n" "$f") <(printf "%s\n" "$all") <(printf "%s\n" "$uniq") >> $temp
+# column names; trandform to tabulated format
+cat $temp | sed -e 's/\./\t/g' -e '/\*/d' >> $summary
+rm raw.$m.$t.$p.$c $temp
+                    done
+                done
+            done
+        done
+    done
+done
+
+else 
+    echo "A differential expression gene test must be executed first"
+    scancel $pbs
+fi
 #+END_SRC
 
 Approximate the number of transcripts.
@@ -534,111 +623,8 @@ filt_data = data[data[,1] > -100 & data[,1] < -10,]
 fit = lm(filt_data[,2] ~ filt_data[,1])
 print(fit)
 abline(fit, col='green', lwd=3)
-
-#+END_SRC
-** Merge all gene expression profiles into one matrix
-#+BEGIN_SRC shell
-#!/bin/bash
-#PBS -l nodes=4:ppn=16,walltime=4:00:00
-#PBS -N matrix.all.R
-#PBS -q short
-#PBS -V
-
-nthreads=64
-method=eXpress
-
-file=raw.all
-
-scratch=/gpfs/scratch/ballam
-home=/gpfs/home/ballam
-project=$scratch/ganglia/abundance_${file}_$method
-
-matrix=$home/trinityrnaseq-2.1.1/util/abundance_estimates_to_matrix.pl
-count=$home/trinityrnaseq-2.1.1/util/misc/count_matrix_features_given_MIN_TPM_threshold.pl
-
-prefix=trans_counts
-
-# Create matrix
-cd $project
-
-## !! ##
-# results.xprs for eXpress
-# abundance.tsv for Kallisto
-
-perl $matrix --est_method $method \
-    --out_prefix $prefix \
-    --name_sample_by_basedir \
-     $project/br1/results.xprs \
-     $project/br2/results.xprs \
-     $project/br3/results.xprs ## ... put all files
-
-# merge matrices accross samples to get shared TPM scores
-perl $count $prefix.TPM.not_cross_norm > $prefix.TPM.not_cross_norm.counts_by_min_TPM_${file}_$method
-#+END_SRC
-** Get differentially expressed genes from the matrix above (R analysis)
-Install R packages from =Bioconductor=. Packages needed =edgeR, limma, DESeq2, ctc, Biobase, ROTS, and qvalue. Reproducibility-optimized test statistic for ranking genes (ROTS) is installed as following.
-#+BEGIN_SRC shell
-wget http://www.utu.fi/en/units/sci/units/math/Research/biomathematics/projects/Documents/ROTS_1.1.1.tar.tar 
-R CMD INSTALL ROTS_1.1.1.tar.tar
 #+END_SRC
 
-This will run 4 different matrices for gene differential expression at 4 different p-value thresholds.
-#+BEGIN_SRC shell
-#!/bin/bash
-#PBS -l nodes=2:ppn=16,walltime=168:00:00
-#PBS -N deg.all
-#PBS -q extended
-#PBS -V
-
-## Choose tissue br, gg, raw.all
-file=raw.all
-
-## DONT CHANGE
-scratch=/gpfs/scratch/ballam
-home=/gpfs/home/ballam
-
-dir=$scratch/ganglia/deg.$file
-analyze=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/run_DE_analysis.pl
-differential=$home/trinityrnaseq-2.1.1/Analysis/DifferentialExpression/analyze_diff_expr.pl
-
-## change matrices
-jobid[1]=tissue
-jobid[2]=tissue-diet
-jobid[3]=tissue-br
-jobid[4]=tissue-gg
-
-## RUN R
-## DONT CHANGE
-mkdir -p $dir 
-
-for method in kallisto eXpress
-do
-    for m in voom edgeR DESeq2
-    do
-	for i in {1..4}
-	do
-	    for pval in {1..6}
-	    do
-		for cfold in {1..2}
-		do
-	    project=$scratch/ganglia/abundance_${file}_$method
-
-	    jobid=${jobid[${i}]}
-
-	    matrix=$scratch/ganglia/matrix/$jobid.txt
-	    contrast=$scratch/ganglia/matrix/contrast.$jobid
-
-	    cd $project
-	    $analyze --matrix $project/trans_counts.counts.matrix --method $m --samples_file $matrix --output $dir/$m.$file.$method.$jobid.p$pval.c$cfold --contrasts $contrast
-
-	    cd $dir/$m.$file.$method.$jobid.p$pval.c$cfold
-	    $differential --matrix $project/trans_counts.TMM.EXPR.matrix -P 1e-$pval -C $cfold --samples $matrix
-	        done
-	    done
-	done
-    done
-done
-#+END_SRC
 ** Get all differentially expressed gene IDs from R output 
 #+CAPTION The different tests done for gene expression
 | Alignment | Condition      | e-value | Fold change |
@@ -655,42 +641,8 @@ Get all gene IDs and output them without processing into file.
 for f in *raw*; do cat ${f}/diffExpr*matrix.log2.dat >> $file | cut -f 1;done 
 #+END_SRC
 
-Get stats for each alignment, condition, e-value, and cFold.
-#+BEGIN_SRC shell
-#!/bin/bash
 
-out=summary.txt
-final=summary.raw.all.txt
-rm $final
 
-for m in kallisto eXpress
-do
-    for i in voom edgeR DESeq2
-    do
-	for t in tissue tissue.diet tissue.gg tissue.br
-	do
-	    for p in {1..6}
-	    do 
-		for c in {1..2}
-		do
-		    for f in $i*$m*$t.p$p.c$c
-		    do
-# Get the number of genes per abundance test
-cat ${f}/diffExpr*matrix.log2.dat | cut -f 1 >> raw.$m.$t.$p.$c
-# count number of raw and unique differentially expressed genes
-all=$(grep "^TRINITY" raw.$m.$t.$p.$c | wc -l)
-raw=$(grep "^TRINITY" raw.$m.$t.$p.$c | sort - | uniq | wc -l)
-paste <(printf "%s\n" "$f") <(printf "%s\n" "$all") <(printf "%s\n" "$all") >> $out
-# column names; trandform to tabulated format
-cat $out | sed -e 's/.br/-br/g' -e 's/.gg/-gg/g' -e 's/.diet/-diet/g' -e 's/\./\t/g' >> $final
-rm raw.$m.$t.$p.$c $out
-		    done
-		done
-	    done
-	done
-    done
-done
-#+END_SRC
 * Gene annotation
 ** Databases
 Detailed and summarized [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][here]]
