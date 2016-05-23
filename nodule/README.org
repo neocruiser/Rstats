@@ -75,12 +75,11 @@ zcat HI.0615.002.Index_8.A3_R2.fastq.gz | fastqc HI.0615.002.Index_8.A3_R2.fastq
 #+END_SRC
 
 * Trimming, mapping, sorting by reference position, duplicate removal
-Run bwa over reference genome of QPX for every paired samples (A1 A2 A3). Forget not to index the reference with =bwa index= before mapping.
+Run bwa over reference genome of QPX for every paired samples (A1 A2 A3). Forget not to index the reference with =bwa index= before mapping. Additional tools needed are HTSeq for sequence count (for reference) and samtools for conversion of sam bam files, indexing, removing duplications, and sorting reads (for samples). Trimming is done on paired ends on sequences sampled from the A1 A2 A3 data. Sequencer is Illumina HiSEQ. Very important to choose the adapter sequences. The adapters that have been used here are saved under =TrueSeq3-PE-3.fa=. The code below allows a batch processing of all 9 sequenced samples As, Bs, and Cs.
 
-Additional tools needed are HTSeq for sequence count (for reference) and samtools for conversion of sam bam files, indexing, removing duplications, and sorting reads (for samples).
-
-
-Trimming is done on paired ends on sequences sampled from the A1 A2 A3 data. Sequencer is Illumina HiSEQ. Very important to choose the adapter sequences. The adapters that have been used here are saved under =TrueSeq3-PE-3.fa=. The code below allows a batch processing of all 9 sequenced samples As, Bs, and Cs.
+#+BEGIN_SRC shell
+wget http://downloads.sourceforge.net/project/bio-bwa/bwakit/bwakit-0.7.12_x64-linux.tar.bz2
+#+END_SRC
 
 #+BEGIN_SRC shell
 #! /user/bin/bash
@@ -198,7 +197,7 @@ time cat sample.htseq.counts.txt | awk '{s+=$2; print s}' | tail -n 1
 time samtools view -c sample.bam
 #+END_SRC
 
-Get the number of mapped reads.
+Get the number of mapped reads. [[https://broadinstitute.github.io/picard/explain-flags.html][Explain SAM flags]]
 #+BEGIN_SRC shell
 ## mapped
 samtools view -c -F 4 sample.bam
@@ -208,7 +207,7 @@ samtools view -c -f 4 sample.bam
 
 Get the number of reads from paired ends where both the forward and reverse mate are mapped.
 #+BEGIN_SRC shell
-samtools view -c -f 1 -F 12 sample.bam
+samtools view -c -f 0x02 -F 12 sample.bam
 #+END_SRC
 
 Get a summary on reads.
