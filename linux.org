@@ -538,11 +538,11 @@ git clone git://github.com/
 
 Create and push files to repository
 #+BEGIN_SRC shell
-echo "# tetst" >> README.md
+echo "$description" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
-git remote add origin https://github.com/neocruiser/tetst.git
+git remote add origin https://github.com/neocruiser/$reposittory_name
 git push -u origin master
 #+END_SRC
 
