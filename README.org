@@ -1,4 +1,3 @@
-
 #+TITLE: Summary of RNA-seq tutorials, R, MySQL, and D3.js
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
@@ -25,7 +24,7 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 
 | Project                | Pipeline | Code       | Author    |    Year | University    |
 |------------------------+----------+------------+-----------+---------+---------------|
-| RNA-seq pipelines      | [[https://github.com/neocruiser/shell][Repo]]     |            | S. Bassim |    2016 |               |
+| RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]] |            | S. Bassim |    2016 |               |
 | Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
 | QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
 | QPX nodules            | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
