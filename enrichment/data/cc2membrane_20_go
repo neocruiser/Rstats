@@ -1,0 +1,86 @@
+     1	     20	proteolysis 	 GO:0016020 	 membrane 	 aurli 	 1
+     2	     20	vesicle-mediated transport 	 GO:0016020 	 membrane 	 aurli 	 1
+     3	     23	cation transport 	 GO:0016020 	 membrane 	 aurli 	 1
+     4	     27	metabolic process 	 GO:0016020 	 membrane 	 aurli 	 1
+     5	     35	potassium ion transport 	 GO:0016020 	 membrane 	 aurli 	 1
+     6	     45	ion transport 	 GO:0016020 	 membrane 	 aurli 	 1
+     7	    166	transport 	 GO:0016020 	 membrane 	 aurli 	 1
+     1	     20	ion transport 	 GO:0016020 	 membrane 	 aplk 	 1
+     2	     20	metabolic process 	 GO:0016020 	 membrane 	 aplk 	 1
+     3	     22	cation transport 	 GO:0016020 	 membrane 	 aplk 	 1
+     4	     24	metal ion transport 	 GO:0016020 	 membrane 	 aplk 	 1
+     5	     32	regulation of protein metabolic process 	 GO:0016020 	 membrane 	 aplk 	 1
+     6	    145	transport 	 GO:0016020 	 membrane 	 aplk 	 1
+     1	     20	cation transport 	 GO:0016020 	 membrane 	 schag 	 1
+     2	     20	proteolysis 	 GO:0016020 	 membrane 	 schag 	 1
+     3	     28	metabolic process 	 GO:0016020 	 membrane 	 schag 	 1
+     4	     28	potassium ion transport 	 GO:0016020 	 membrane 	 schag 	 1
+     5	     39	ion transport 	 GO:0016020 	 membrane 	 schag 	 1
+     6	    133	transport 	 GO:0016020 	 membrane 	 schag 	 1
+     1	     22	vesicle-mediated transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     2	     23	ion transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     3	     25	metal ion transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     4	     25	proton transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     5	     27	cation transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     6	     28	lipid metabolic process 	 GO:0016020 	 membrane 	 fracy 	 1
+     7	     30	metabolic process 	 GO:0016020 	 membrane 	 fracy 	 1
+     8	     38	potassium ion transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     9	     39	multidrug transport 	 GO:0016020 	 membrane 	 fracy 	 1
+    10	     52	proteolysis 	 GO:0016020 	 membrane 	 fracy 	 1
+    11	    101	photosynthesis, light harvesting 	 GO:0016020 	 membrane 	 fracy 	 1
+    12	    231	transport 	 GO:0016020 	 membrane 	 fracy 	 1
+     1	     27	multidrug transport 	 GO:0016020 	 membrane 	 psemu 	 1
+     2	     30	proteolysis 	 GO:0016020 	 membrane 	 psemu 	 1
+     3	     57	photosynthesis, light harvesting 	 GO:0016020 	 membrane 	 psemu 	 1
+     4	    140	transport 	 GO:0016020 	 membrane 	 psemu 	 1
+     1	     21	metabolism 	 GO:0016020 	 membrane 	 thaps 	 1
+     2	     24	proteolysis and peptidolysis 	 GO:0016020 	 membrane 	 thaps 	 1
+     3	     29	amino acid transport 	 GO:0016020 	 membrane 	 thaps 	 1
+     4	     40	photosynthesis light harvesting 	 GO:0016020 	 membrane 	 thaps 	 1
+     5	     41	cation transport 	 GO:0016020 	 membrane 	 thaps 	 1
+     6	    102	transport 	 GO:0016020 	 membrane 	 thaps 	 1
+     1	     25	cation transport 	 GO:0016020 	 membrane 	 phatr 	 1
+     2	     28	amino acid transport 	 GO:0016020 	 membrane 	 phatr 	 1
+     3	     32	intracellular signaling cascade 	 GO:0016020 	 membrane 	 phatr 	 1
+     4	     39	photosynthesis light harvesting 	 GO:0016020 	 membrane 	 phatr 	 1
+     5	    110	transport 	 GO:0016020 	 membrane 	 phatr 	 1
+     1	     23	multidrug transport 	 GO:0016020 	 membrane 	 physo 	 1
+     2	     24	amino acid transport 	 GO:0016020 	 membrane 	 physo 	 1
+     3	     30	potassium ion transport 	 GO:0016020 	 membrane 	 physo 	 1
+     4	     32	cation transport 	 GO:0016020 	 membrane 	 physo 	 1
+     5	     32	proteolysis 	 GO:0016020 	 membrane 	 physo 	 1
+     6	     40	metal ion transport 	 GO:0016020 	 membrane 	 physo 	 1
+     7	     48	metabolic process 	 GO:0016020 	 membrane 	 physo 	 1
+     8	     54	carbohydrate transport 	 GO:0016020 	 membrane 	 physo 	 1
+     9	     82	ion transport 	 GO:0016020 	 membrane 	 physo 	 1
+    10	    288	transport 	 GO:0016020 	 membrane 	 physo 	 1
+     1	     22	amino acid transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     2	     22	multidrug transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     3	     30	potassium ion transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     4	     31	proteolysis 	 GO:0016020 	 membrane 	 phyci 	 1
+     5	     36	cation transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     6	     37	carbohydrate transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     7	     38	metal ion transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     8	     48	metabolic process 	 GO:0016020 	 membrane 	 phyci 	 1
+     9	     79	ion transport 	 GO:0016020 	 membrane 	 phyci 	 1
+    10	    271	transport 	 GO:0016020 	 membrane 	 phyci 	 1
+     1	     20	amino acid transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     2	     23	potassium ion transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     3	     25	proteolysis 	 GO:0016020 	 membrane 	 phyca 	 1
+     4	     30	cation transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     5	     35	metal ion transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     6	     39	metabolic process 	 GO:0016020 	 membrane 	 phyca 	 1
+     7	     42	ion transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     8	     45	carbohydrate transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     9	    199	carbohydrate metabolic process 	 GO:0016020 	 membrane 	 phyca 	 1
+    10	    238	transport 	 GO:0016020 	 membrane 	 phyca 	 1
+     1	     21	proteolysis and peptidolysis 	 GO:0016020 	 membrane 	 pramorum 	 1
+     2	     30	potassium ion transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     3	     34	electron transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     4	     35	metal ion transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     5	     42	ion transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     6	     50	carbohydrate transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     7	     51	metabolism 	 GO:0016020 	 membrane 	 pramorum 	 1
+     8	     86	amino acid transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+     9	     86	cation transport 	 GO:0016020 	 membrane 	 pramorum 	 1
+    10	    304	transport 	 GO:0016020 	 membrane 	 pramorum 	 1

@@ -1,0 +1,132 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/plot",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results='hide'>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+Load packages.
+<<packages,results='hide'>>=
+pkgs <- c('xlsx','lattice','ggplot2',
+          'latticeExtra', 'dplyr', 'tidyr')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+
+\section{Virus analysis}
+\label{sec:virus}
+\marginnote{\small\color{blue}$\Lsh$ Describe the sample preparation protocol}[0cm]
+
+\subsection{Classification of viruses and other phyla}
+\label{subsec:classification}
+Kraken is used for \textbf{read classification}. Deploying Kraken is documented 
+\href{https://github.com/neocruiser/Rstats/tree/master/metageno16#2-metagenomics}{in Github}.
+\marginnote{\small\color{blue}$\Lsh$ Add github link after creating repo}[0cm]
+Database used for classification are those of NCBI (date: 3/30/2016).
+
+Formatting the output of classified/unclassified reads with kraken
+<<rawdata>>=
+df <- read.table("./data/summary_all_outputs")
+colnames(df)=gl(12,2,12,labels=c("A","B","F","P","V","I"))
+df <- data.frame(samples = gl(26,2,26,labels=c("Ctrl",seq(1:12))),
+                 kraken=gl(2,1,26,labels=c("C","U")),
+                 df)
+df1 <- gather(df[, c(1:2,seq(3,14,by=2))],"Phyla","Sequence",3:8)
+df2 <- gather(df[, c(1:2,seq(4,14,by=2))],"Phyla","Percentage",3:8)
+dff <- data.frame(df1,Percentage=df2[,4])
+@ 
+
+Plot the proportions of shotgun sequences being classified by sample. NCBI databases are gathered since 03/31/2016.
+The \textit{control} shows aberrant classification. This can be do to bad sequencing reads due to aberrant nucleic acids in the control itself. No other sample exhibit this kind of over classification.
+\begin{itemize}
+\item Bacteria database (\textbf{B})
+\item Archaea database (\textbf{A})
+\item Plasmid database (\textbf{P})
+\item Fungi database (\textbf{F})
+\item Virus database (\textbf{V})
+\item Invertebrate database (\textbf{I})
+\end{itemize}
+<<proportions, out.width='.9\\linewidth'>>=
+summary(dff)
+filter(dff, kraken == "C") %>%
+    ggplot(aes(x = samples,
+               y = Percentage,
+               fill = Phyla)) +
+    geom_bar(stat = "identity",
+             position = "stack") + 
+    geom_text(aes(x = samples,
+                  y = Percentage,
+                  ymax = Percentage,
+                  label = Percentage,
+                  hjust = .5,
+                  vjust = 1,
+                  size = .5),
+              position = "stack") +
+    theme_bw() +
+    scale_fill_brewer(type = "qual",
+                      palette = 3) +
+    labs(x = "Oysters (1..6) are cdtA & Oysters (7..12) are cdtB",
+         y = "The percentage of classified Reads against NCBI databases")
+@ 
+
+What is the number of sequences.
+<<sequences, out.width='1\\linewidth'>>=
+filter(dff, kraken == "C") %>%
+    ggplot(aes(x = samples,
+               y = Sequence,
+               fill = Phyla)) +
+    geom_bar(stat = "identity") +
+    theme_bw() +
+    facet_wrap( ~ Phyla, 
+               ncol = 3,
+               scales = "free") +
+    labs(x = "Oysters 1-6 are cdtA & Oysters 7-12 are cdtB",
+         y = "Number of classified Reads against NCBI databases")
+@ 
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}

@@ -1,0 +1,123 @@
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Fracy 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Fracy 	 1
+      4	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Fracy 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Psemu 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Psemu 	 1
+      1	translation 	 BP 	 GO:0005739 	 mitochondria 	 Psemu 	 1
+      3	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Psemu 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Thaps 	 1
+      2	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Thaps 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Phatr 	 1
+      1	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Phatr 	 1
+      1	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Phatr 	 1
+      1	transport 	 BP 	 GO:0005739 	 mitochondria 	 Phatr 	 1
+      1	cellular iron ion homeostasis 	 BP 	 GO:0005739 	 mitochondria 	 Aplke 	 1
+      1	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Aplke 	 1
+      3	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Aplke 	 1
+      3	transport 	 BP 	 GO:0005739 	 mitochondria 	 Aplke 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      1	DNA repair 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      2	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      4	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      4	transport 	 BP 	 GO:0005739 	 mitochondria 	 Aurli 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Schag 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Schag 	 1
+      2	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Schag 	 1
+      3	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Schag 	 1
+      3	transport 	 BP 	 GO:0005739 	 mitochondria 	 Schag 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      1	caspase activation 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      1	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      1	induction of apoptosis 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      3	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      3	transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyca 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	caspase activation 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	induction of apoptosis 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      3	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Phyci 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      1	caspase activation 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      1	induction of apoptosis 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      1	protein complex assembly 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      2	electron transport 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      3	mitochondrial transport 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      3	transport 	 BP 	 GO:0005739 	 mitochondria 	 Physo 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+      2	regulation of transcription, DNA-dependent 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+      6	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+      6	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+      9	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+     19	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+     19	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Fracy 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      1	signal transduction 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      2	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      5	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      7	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      9	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+     16	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Psemu 	 1
+      1	DNA metabolism 	 BP 	 GO:0005694 	 chromosome 	 Thaps 	 1
+      1	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Thaps 	 1
+      1	DNA unwinding 	 BP 	 GO:0005694 	 chromosome 	 Thaps 	 1
+      1	electron transport 	 BP 	 GO:0005694 	 chromosome 	 Thaps 	 1
+      5	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Thaps 	 1
+      1	DNA metabolism 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      1	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      2	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      2	DNA unwinding 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      4	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Phatr 	 1
+      1	phosphate metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      2	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      2	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      4	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      9	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      9	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Aplke 	 1
+      1	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+      2	vesicle-mediated transport 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+      4	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+      4	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+     12	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+     15	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Aurli 	 1
+      1	electron transport 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      1	phosphate metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      1	signal transduction 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      2	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      4	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      4	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      9	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+     12	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Schag 	 1
+      1	DNA repair 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	post-translational protein modification 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	regulation of protein metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	regulation of transcription 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	transport 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	vesicle-mediated transport 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      4	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      4	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      7	innate immune response 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+     11	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Phyca 	 1
+      1	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      1	DNA repair 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      1	transport 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      3	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      4	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      9	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+     11	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Phyci 	 1
+      1	DNA modification 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      1	DNA repair 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      1	post-translational protein modification 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      1	regulation of protein metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      1	transport 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      3	DNA unwinding during replication 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      4	chromosome organization and biogenesis 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+      7	DNA topological change 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1
+     12	DNA metabolic process 	 BP 	 GO:0005694 	 chromosome 	 Physo 	 1

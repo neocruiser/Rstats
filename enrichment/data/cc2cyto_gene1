@@ -1,0 +1,26 @@
+      2	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Fracy 	 1
+      2	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Fracy 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Psemu 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Aplke 	 1
+      1	electron transport 	 BP 	 GO:0005856 	 cytosqueleton 	 Aplke 	 1
+      3	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Aplke 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Aurli 	 1
+      1	methylation 	 BP 	 GO:0005856 	 cytosqueleton 	 Aurli 	 1
+      3	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Aurli 	 1
+      3	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Aurli 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Schag 	 1
+      1	cell adhesion 	 BP 	 GO:0005856 	 cytosqueleton 	 Schag 	 1
+      1	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Schag 	 1
+      3	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Schag 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyca 	 1
+      1	metabolic process 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyca 	 1
+      5	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyca 	 1
+      7	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyca 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyci 	 1
+      2	signal transduction 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyci 	 1
+      3	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyci 	 1
+      9	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Phyci 	 1
+      1	actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Physo 	 1
+      1	signal transduction 	 BP 	 GO:0005856 	 cytosqueleton 	 Physo 	 1
+      3	regulation of actin filament polymerization 	 BP 	 GO:0005856 	 cytosqueleton 	 Physo 	 1
+      8	phagocytosis 	 BP 	 GO:0005856 	 cytosqueleton 	 Physo 	 1

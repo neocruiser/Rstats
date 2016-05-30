@@ -1,0 +1,53 @@
+     10	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     12	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     13	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     18	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     19	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     22	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     30	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     82	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     89	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     10	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     10	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     12	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     26	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     52	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     58	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     12	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     17	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     19	metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     12	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     13	metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     14	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     10	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     10	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     12	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     27	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     41	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     46	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     11	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     24	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     41	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     46	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     11	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     26	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     44	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     50	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     13	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     16	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     16	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     21	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     48	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     56	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     11	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     14	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     16	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     21	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     55	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     61	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     10	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     13	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     19	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     24	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     58	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     67	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1

@@ -1,0 +1,942 @@
+      1	amino acid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	aromatic amino acid family biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	C-terminal protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	'de novo' IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	'de novo' pyrimidine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	glutathione metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	lysosome organization and biogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	microtubule cytoskeleton organization and biogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	potassium ion transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	protein amino acid prenylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	purine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	removal of superoxide radicals 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	sphingolipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	UMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	cell adhesion 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	methylglyoxal biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	porphyrin biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	tetrapyrrole biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      2	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      3	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      4	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      5	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      6	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      6	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      7	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      7	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      7	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      8	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      9	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      9	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     10	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     12	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     13	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     18	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     19	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     22	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     30	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     82	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+     89	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Fracy 	 1
+      1	amino acid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	anaerobic glycolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	aromatic amino acid family biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	cell adhesion 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	cell communication 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	cellular carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	'de novo' IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	DNA replication 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	glutamate biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	intracellular signaling cascade 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	lysine biosynthetic process via diaminopimelate 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	mRNA transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	negative regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	nucleotide-excision repair 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	phosphoenolpyruvate-dependent sugar phosphotransferase system 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	porphyrin biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	positive regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	protein modification process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	purine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	regulation of ubiquitin-protein ligase activity during meiotic cell cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	tetrapyrrole biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	ubiquitin cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	phosphate transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	methylglyoxal biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      4	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      4	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      4	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      4	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      5	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      5	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      5	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      6	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      6	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      6	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      7	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      9	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     10	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     10	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     12	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     26	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     52	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+     58	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Psemu 	 1
+      1	amino acid biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	amino acid metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	antibiotic biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	aromatic amino acid family biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	aromatic amino acid family biosynthesis, shikimate pathway 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	aromatic amino acid family metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	asparagine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	ATP biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	D-amino acid catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	'de novo' IMP biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	fatty acid biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	galactose metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	glycolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	G-protein coupled receptor protein signaling pathway 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	histidine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	leucine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	main pathways of carbohydrate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	mannose biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	methionine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	methylglyoxal biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	nucleobase, nucleoside, nucleotide and nucleic acid metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	porphyrin biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	proline biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	purine base biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	threonine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	tricarboxylic acid cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	cysteine biosynthesis from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	glutathione metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	nitrogen compound metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	proteolysis and peptidolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	pyrimidine base biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      2	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	glycerol-3-phosphate catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	glycerol-3-phosphate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      4	carbohydrate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      4	glycine catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      4	microtubule-based movement 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      4	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      4	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      5	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      5	glucose metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      5	protein-nucleus import, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      5	protein polymerization 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      6	protein catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      7	arginine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      8	protein biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     12	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     17	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+     19	metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Thaps 	 1
+      1	ATP biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	cysteine biosynthesis via cystathione 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	D-amino acid catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	'de novo' IMP biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	galactose metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	glucose metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	glutathione metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	glycolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	histidine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	leucine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	main pathways of carbohydrate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	mannose biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	methionine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	mRNA transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	nucleobase, nucleoside, nucleotide and nucleic acid metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	porphyrin biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	purine base biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	threonine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	tricarboxylic acid cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	ubiquitin cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	amino acid biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	asparagine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	cysteine biosynthesis from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	glycerol-3-phosphate catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	glycerol-3-phosphate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	glycine catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	nitrogen compound metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	proline biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	protein metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	pyrimidine base biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      2	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	antibiotic biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	carbohydrate metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	proteolysis and peptidolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      4	amino acid metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      4	microtubule-based movement 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      4	protein polymerization 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      5	arginine biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      5	protein-nucleus import, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      6	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      6	protein catabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      7	protein biosynthesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     12	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     13	metabolism 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+     14	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phatr 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	DNA metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	DNA topological change 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	exocytosis 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	glucose catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	intracellular signaling cascade 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	lipopolysaccharide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	NAD biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	regulation of transcription 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	regulation of transcription, DNA-dependent 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	removal of superoxide radicals 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	transcription initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	tryptophan catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	vesicle docking 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	carbohydrate biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	cell communication 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      3	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      3	pantothenate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      3	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      3	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      4	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      5	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      5	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      5	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      6	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      8	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      9	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      9	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     10	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     10	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     12	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     27	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     41	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+     46	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aplke 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	glucose catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	glycolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	G-protein coupled receptor protein signaling pathway 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	histidine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	intracellular signaling cascade 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	lipopolysaccharide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	microtubule-based movement 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	mRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	NAD biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	nucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	pantothenate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	phosphate transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	response to stress 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	response to water 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	spliceosome assembly 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	tryptophan catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	carbohydrate biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	regulation of phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      4	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      4	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      4	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      6	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      7	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      8	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     11	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     24	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     41	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+     46	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Aurli 	 1
+      1	activation of protein kinase C activity 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	cellular carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	DNA metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	DNA topological change 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glucose catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glutamate biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glutathione metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	histidine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	histidine catabolic process to glutamate and formamide 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	lipopolysaccharide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	NAD biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	phosphate transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	proline catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	protein modification process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	regulation of phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	tryptophan catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	ubiquitin cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	carbohydrate biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	pantothenate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	regulation of transcription, DNA-dependent 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      3	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      3	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      3	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      4	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      4	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      4	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      5	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      5	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      5	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      5	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      6	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      6	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      7	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      7	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      8	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     11	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     26	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     44	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+     50	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Schag 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	aromatic amino acid family biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	cellular carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	'de novo' IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	exocytosis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	glutathione metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	histidine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	histidine catabolic process to glutamate and formamide 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	microtubule cytoskeleton organization and biogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	NAD biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	nucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	phosphate transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	phosphoenolpyruvate-dependent sugar phosphotransferase system 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	purine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	vesicle docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	microtubule-based movement 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	protein polymerization 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      3	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      4	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      4	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      4	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      4	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      5	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      5	GTP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      5	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      6	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      6	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      6	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      7	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     13	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     16	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     16	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     21	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     48	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+     56	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyca 	 1
+      1	apoptosis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	aromatic amino acid family biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	cell proliferation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	cellular carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	'de novo' IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	'de novo' pyrimidine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	exocytosis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	histidine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	histidine catabolic process to glutamate and formamide 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	immune response 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	isoprenoid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	lipopolysaccharide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	lysine biosynthetic process via diaminopimelate 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	methionine biosynthetic process from homoserine via O-succinyl-L-homoserine and cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	microtubule-based process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	mRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	mRNA transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	negative regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	oligopeptide transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	phosphatidylinositol metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	phosphoenolpyruvate-dependent sugar phosphotransferase system 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	positive regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	protein amino acid methylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	protein modification process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	protein ubiquitination 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	purine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	regulation of ubiquitin-protein ligase activity 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	regulation of ubiquitin-protein ligase activity during meiotic cell cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	RNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	spliceosome assembly 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	ubiquitin cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	ubiquitin-dependent protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	vesicle docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	nucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	protein polymerization 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      2	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      3	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      4	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      4	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      4	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      4	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      5	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      5	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      6	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      6	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      6	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      7	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     11	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     14	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     16	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     21	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     55	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+     61	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Phyci 	 1
+      1	aromatic amino acid family biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	aromatic compound biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	ATP synthesis coupled proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	autophagic vacuole formation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	autophagy 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	cellular carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	chromatin assembly or disassembly 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	D-amino acid catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	deadenylation-dependent decapping 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	'de novo' IMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	'de novo' pyrimidine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	deoxyribonucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	energy coupled proton transport, against electrochemical gradient 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	exocytosis 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	gluconeogenesis 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	glutamine metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	glutaminyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	glutathione metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	glycolipid transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	GMP biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	histidine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	histidine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	histidine catabolic process to glutamate and formamide 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	histidyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	leucine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	lipopolysaccharide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	lysine biosynthetic process via diaminopimelate 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	mannose biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	methionine biosynthetic process from homoserine via O-succinyl-L-homoserine and cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	microtubule-based process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	mRNA transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	NAD biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	nuclear mRNA splicing, via spliceosome 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	oligopeptide transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	pentose-phosphate shunt 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	peptidyl-citrulline biosynthetic process from peptidyl-arginine 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	phosphatidylinositol metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	phosphoenolpyruvate-dependent sugar phosphotransferase system 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	proline biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	protein amino acid phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	protein modification process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	protein ubiquitination 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	proton transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	purine base biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	purine nucleotide biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	purine ribonucleoside salvage 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	spliceosome assembly 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	sulfate assimilation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	threonine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      1	vesicle docking 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	antibiotic biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	arginine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	arginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	aromatic amino acid family metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	asparaginyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	glutamyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	glycerol-3-phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	glycine catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	isoleucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	leucyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	lysyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	methionine biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	methionyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	nucleoside metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	nucleotide catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	prolyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	protein amino acid dephosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	protein folding 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	protein import into nucleus 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	protein polymerization 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	seryl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	translational elongation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	tryptophanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	tyrosyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	ubiquitin cycle 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      2	valyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	alanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	carbohydrate phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	cysteine biosynthetic process from serine 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	cysteine biosynthetic process via cystathionine 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	cysteinyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	galactose metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	glycerol-3-phosphate catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	phenylalanyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	phosphorylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	threonyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      3	translational termination 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      4	amino acid biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      4	aspartyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      4	glycyl-tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      4	translational initiation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      5	amino acid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      5	carbohydrate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      5	transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      5	tRNA aminoacylation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      5	tRNA processing 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      6	biosynthetic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      6	cell redox homeostasis 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      6	protein catabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      6	proteolysis 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      7	electron transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+      8	lipid metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     10	protein import into nucleus, docking 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     13	intracellular protein transport 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     19	phosphate metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     24	metabolic process 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     58	tRNA aminoacylation for protein translation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
+     67	translation 	 BP 	 GO:0005737 	 cytoplasm 	 Physo 	 1
