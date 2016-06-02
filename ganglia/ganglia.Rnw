@@ -508,6 +508,33 @@ read.table("./data/parasite-panther.txt", header = T) %>%
 @ 
 
 
+\subsection{How many reads map by pair mates to each parasite genome?}
+\label{subsec:mates}
+Only pair reads where both mates map in a forward and reverse fashion are displayed.
+<<mates,out.width='0.95\\linewidth'>>=
+df <- read.table("./data/parasite.mates.mapping.txt", header = T)
+dfx <- sapply(df[,c(2:6)], function(x) {(x/df$Total)*100})
+dfx <- data.frame(dfx, df$Tissue, df$Sample)
+gather(dfx, "parasite", "counts", 1:5) %>% 
+    ggplot(aes(x = df.Sample,
+               y = counts,
+               fill = df.Tissue)) + 
+    theme_bw() + 
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap(~ parasite,
+               ncol = 2,
+               scales = "free") +
+    labs(x = "Oysters sequenced",
+         y = "Percentage of reads that align to each parasitic reference genome") +
+    theme(legend.position = "top",
+          axis.text.x = element_text(angle = 90,
+                                     vjust = .5, size = 7)) + 
+    scale_fill_brewer(type = "qual", palette = "Paired",
+                      name = "Sequenced oyster tissue")
+
+@ 
+
 \section{System Information}
 \label{sec:sys_info}
 \noindent
