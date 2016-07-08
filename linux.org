@@ -200,6 +200,8 @@ lapply(pkgs, require, character.only = TRUE)
 pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'ROAuth', 'SnowballC', 'wordcloud', 'xlsx','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
 
 sudo R CMD javareconf
+## choose an http server
+chooseCRANmirror()
 install.packages('rJava')
 #+END_SRC
 
@@ -220,6 +222,14 @@ source("http://bioconductor.org/biocLite.R")
 biocLite('GenABEL')
 biocLite("topGO")
 biocLite("clusterProfiler")
+#+END_SRC
+
+Install packages for adjacency matrix (co-expression analysis) [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#construct-adjacency-matrix][GitHub]]
+#+BEGIN_SRC R
+source("http://bioconductor.org/biocLite.R")
+biocLite("preprocessCore")
+biocLite("impute")
+biocLite('WGCNA')
 #+END_SRC
 
 Install package =radiant= a shiny app that run in the browser for automated stats. not interactive.
