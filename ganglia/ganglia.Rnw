@@ -48,6 +48,10 @@ pkgs <- c('xlsx','caret','leaps','glmnet','lattice',
 lapply(pkgs, require, character.only = TRUE)
 @
 
+\section{Summary of the workflow}
+\label{sec:pipeline}
+For pathway construction we will be using a full featured pipeline that implements i- gene network inference from RNA-seq gene expression data, ii- gene discovery after protein domain alignments to ten well cited protein databases, iii- gene interaction validation from inferred networks published in the European private String database, and finally iv- regularization analysis to eliminate to least probabilistic networks identified, however are less likely to be accurately constructed. Briefly, R script is used to calculate a weighted matrix for every gene discovered from the RNA-seq data of ganglia samples. This correlated matrix will be used to select genes with similar patterns of expression that will constitute an ensemble of gene modules. Each module includes eigengenes, which through the guilt-by-association method are identified to be signatures of a cell response at a precise moment after detection of a stimuli. These group of genes will go through a second set of analysis to calculate a probability of interaction at different error thresholds. Next step is to identify the actual genes for their protein functions, hence create an image of the interactions between biological processes specific to these functions. Moreover, validation of the gene networks will depend on the nature of these processes. There is many online sequence databases that deliver this information after acquiring gene names and protein functions. However, we will be using an approach that contains both statistical inference of gene interactions and functional association between processes. Therefore, after constructing gene-gene interaction networks we will compare them to already established networks inferred from all published data over many clades and between several closely related species. Finally, we will use machine learning methods, mainly regularization methods which are known to reduce the hyperspace of the data (that is reduce the number of candidates, eg., genes, networks) and let us focus on the most probabilistically accurate results by keeping the least biased gene networks. Overall the pipeline has already been tested on different datasets, databases are already been acquired and deployed on our servers, and the R code and many of the packages to be used have been tested and some published.
+
 \section{Differentially expressed genes}
 \label{sec:deg}
 Differentially expressed genes are counted from mapping \textbf{both gills and ganglia} sequenced samples to reference transcriptome built from all samples.
@@ -311,66 +315,6 @@ read.table("./data/summary.br.norm.44061.txt") %>%
 @ 
 
 
-\section{A linear representation of gene expression}
-\label{sec:linear}
-Only selected genes can be represented as follow. 
-\marginnote{\small\color{blue}$\Lsh$ Not more than 10 genes}[0cm]
-<<linear,out.width='1\\linewidth'>>=
-dat <- t(read.table("./data/test.txt"))
-dat <- data.frame(dat,
-                  sample = rownames(dat), 
-                  condition = gl(4,12,48, 
-                    labels=c("GG1","GG2","BR1","BR2")))
-dat %>%
-    gather("genes","expression",1:(dim(dat)[2]-2)) %>%
-    ggplot(aes(x = factor(sample, 
-                          c(paste("br",seq(1,24),sep=""),
-                            paste("gg",seq(1,24),sep=""))),
-               y = expression,
-               group = condition)) + 
-    theme_bw() + 
-    geom_line(size = .2) + 
-    geom_point(aes(x = factor(sample),
-                   y = expression,
-                   colour = condition)) +
-    facet_wrap(~ genes, 
-               ncol = 3, 
-               scales = "free") +
-    labs(x = "RNA-seq samples between tissues BR & GG",
-         y = "Log2 gene expression") +
-    theme(legend.position = "top",
-          axis.text.x = element_text(angle = 90,
-                                     vjust = .5, size = 4),
-          axis.text.y = element_text(vjust = .5, size = 6),
-          strip.text = element_text(size = 4),
-          axis.ticks = element_line(size = .2),
-          axis.ticks.length = unit(.05, "cm")) + 
-    scale_fill_brewer(type = "qual", palette = "Paired", 
-                      name = "Oyster tissues and Diet conditions")
-
-@ 
-
-Principal component analysis on testing data.
-<<testPCA>>=
-dat <- read.table("./data/test.txt")
-p = prcomp(dat, retx=T)
-scores = p$x
-loadings <- p$rotation
-sd <- p$sdev
-plot(scores[,1], scores[,2], 
-     xlab="PCA 1", ylab="PCA 2", 
-     type="n", xlim=c(min(scores[,1:2]), 
-                      max(scores[,1:2])), 
-     ylim=c(min(scores[,1:2]), 
-            max(scores[,1:2])))
-arrows(0,0,loadings[,1]*50,loadings[,2]*50, 
-       length=0.1,angle=20, col="red")
-text(loadings[,1]*50*1.3,loadings[,2]*50*1.3, 
-     rownames(loadings), col="black", cex=0.5)
-@ 
-
-
-
 \section{Identifying foreign transcripts in oyster cells}
 \label{sec:parasite}
 Microscopy protocols identified the presence of a form of parasitic worm in healthy oyster tissues. As a result we might have a parasitic contamination of our RNA-seq reads. Fortunately, this can give a chance to extract the foreign RNA reads, which are already sequenced, assemble them so we identify later on the parasitic species.
@@ -547,67 +491,37 @@ We will be using weighted genes co-expression analyses from Zhang and Horrath 20
 
 \subsection{Correlation annalysis}
 \label{subsec:correlation}
-Sample verification and clustering
+The analysis sill include: Sample verification and clustering. Similarity matrix between samples. Convertion of similarity matrix to adjacency matrix. Detection of co-expression modules.
 <<clustering>>=
 counts <- read.table("./data/diffExpr.P1e-4_C2.matrix.log2.dat", header = T)
-head(counts)
 heatmap.2(cor(counts), trace = 'none')
 @ 
 
-Generate a similarity matrix between samples.
-<<matrix>>=
-cordist <- function(dat) {
-    cor_matrix  <- cor(t(dat))
-
-    dist_matrix <- as.matrix(dist(dat, diag=TRUE, upper=TRUE))
-    dist_matrix <- log1p(dist_matrix)
-    dist_matrix <- 1 - (dist_matrix / max(dist_matrix))
-
-    sign(cor_matrix) * ((abs(cor_matrix) + dist_matrix)/ 2)
-}
-sim_matrix <- cordist(counts)
-heatmap_indices <- sample(nrow(sim_matrix), 500)
-
-heatmap.2(t(sim_matrix[heatmap_indices, heatmap_indices]),
-            col=redgreen(75),
-            labRow=NA, labCol=NA, 
-            trace='none', dendrogram='row',
-            xlab='Gene', ylab='Gene',
-            main='Similarity matrix',
-            density.info='none', revC=TRUE)
+\subsection{Network reconstruction}
+\label{subsec:network2}
+Plot number of nodes and edges after network construction at different power transformations of gene expression FPKMs, using different thresholds for significant cluster sizes.
+\smallskip
+Power transformation reduces low/false correlations between genes \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.471.9599&rep=rep1&type=pdf}{Zhang and Horvath (2005 PDF)}.
+<<networks>>=
+read.table("./data/network.stats.txt", header = TRUE) %>%
+    ggplot(aes(x = power_trans,
+               y = node)) +
+    theme_bw() +
+    geom_point(aes(color = factor(threshold),
+                   size = 10)) + 
+    labs(x = "Power transformation of gene expression matrix during clustering",
+         y = "Number of nodes (genes) per network that have a minimum of 1 edge") +
+    theme(legend.position = "top") +
+    scale_color_brewer(type = "qual", palette = "Paired",
+                      name = "Threshold for clustering genes")
 @ 
 
-Convert similarity matrix to adjacency matrix.
-<<adjency>>=
-allowWGCNAThreads()
-adj_matrix <- adjacency.fromSimilarity(sim_matrix, power=12, type='signed')
-rm(sim_matrix)
-gc()
-disableWGCNAThreads()
-gene_ids <- rownames(adj_matrix)
 
-adj_matrix <- matrix(adj_matrix, nrow=nrow(adj_matrix))
-rownames(adj_matrix) <- gene_ids
-colnames(adj_matrix) <- gene_ids
 
-heatmap.2(t(adj_matrix[heatmap_indices, heatmap_indices]),
-            col=redgreen(75),
-            labRow=NA, labCol=NA, 
-            trace='none', dendrogram='row',
-            xlab='Gene', ylab='Gene',
-            main='Adjacency matrix',
-            density.info='none', revC=TRUE)
-@ 
 
-Detect co-expression modules
-<<modules1>>=
-gene_tree <- hclust(as.dist(1-cor(t(adj_matrix), method="pearson")), method="complete")
-gene_tree <- hclust(as.dist(1 - adj_matrix), method="average")
-gc()
-module_labels <- cutreeDynamicTree(dendro=gene_tree, minModuleSize=15,
-                                   deepSplit=TRUE)
-module_colors <- labels2colors(module_labels)
-@
+
+
+
 
 
 
