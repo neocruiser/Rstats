@@ -433,24 +433,25 @@ ip[, 2]
 |                        |                         |
 
 #+CAPTION: Cheat sheet: Manipulation data objects
-| Function       | Description                                |
-|----------------+--------------------------------------------|
-| rm(list=ls())  | remove everything                          |
-| history()      |                                            |
-| ls.str()       |                                            |
-| lsos()         | list everything (personal)                 |
-| list.files()   | list files of the working directory        |
-| .Last.value    | results of the previous output             |
-| traceback()    | debugging                                  |
-| debug()        | debugging                                  |
-| undebug()      | debugging                                  |
-| object.size()  | ?memory-limits                             |
-| gc()           | reallocate RAM                             |
-| relevel        | restructure factors                        |
-| ifelse()       | vectorizing "if"                           |
-| colSums()      | faster than apply() + rowSums() rowMeans() |
-| replicate(n,r) | n=col; r=row; containing r values          |
-|                |                                            |
+| Function       | Description                                     |
+|----------------+-------------------------------------------------|
+| rm(list=ls())  | remove everything                               |
+| history()      |                                                 |
+| ls.str()       |                                                 |
+| lsos()         | list everything (personal)                      |
+| list.files()   | list files of the working directory             |
+| .Last.value    | results of the previous output                  |
+| traceback()    | debugging                                       |
+| debug()        | debugging                                       |
+| undebug()      | debugging                                       |
+| object.size()  | ?memory-limits                                  |
+| gc()           | reallocate RAM                                  |
+| relevel        | restructure factors                             |
+| ifelse()       | vectorizing "if"                                |
+| colSums()      | faster than apply() + rowSums() rowMeans()      |
+| replicate(n,r) | n=col; r=row; containing r values               |
+| sorting        | df$V1<-factor(df$V1,levels=df$V1[order(df$V2)]) |
+|                |                                                 |
 
 #+CAPTION: Cheat sheet: Vectorization fast functions
 | Function                                                    | Description                               |
