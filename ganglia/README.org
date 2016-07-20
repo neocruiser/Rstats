@@ -24,39 +24,64 @@
 
 This git repository includes the pipeline for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][the PDF]] of the compiled R file, the data =to be updated= used for generating the figures, and the scripts =to be updated= (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
-
-* Aims and resulting headlines
+* Aims and procedural headlines
 1. Biological samples: Crassostrea gigas [[http://www.nature.com/nature/journal/v490/n7418/full/nature11413.html][genome of the Pacific oyster]]
 2. Samples from: visceral ganglia and gill, RNAseq in multiplex
 3. Aim 1: Generate RNAseq data, 2 conditions, 2 tissues
-4. Aim 2: Differential gene expression (edge R. see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]])
-5. Aim 3: Gene-gene interactions 
-6. Aim 4: Machine learning on SNPs and gene expression data 
-7. Hypothesis 1: gene-gene interaction is due to guilt-by-association
-8. Hypothesis 2: Multifunctionality among genes and between pathways
-9. Preference in exon expression, between 2 conditions (exon-exon junctions + GLM model from DEXSeq for significance)
-10. [[id:624baea5-62b1-40b1-813f-8f7350966d50][Second set Bibliography (FPKM vs TPM)]]
-11. Use R BitSeq to estimate the number of actual transcribed genes
+4. Aim 2: Differential gene expression (edgeR/DESeq2/limma see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]], [[http://static-content.springer.com/image/art:10.1186/s12859-015-0847-y/MediaObjects/12859_2015_847_Fig4_HTML.gif][here]])
+5. Aim 3: Gene-gene interactions and clustering
+6. Aim 4: Splice junctions variation between tissues
+7. Aim 4: Machine learning on gene expression data 
+8. Core 1: gene-gene interaction is due to guilt-by-association
+9. Core 2: Multifunctionality among genes and between pathways
+10. Preference in exon expression, between 2 conditions (exon-exon junctions + GLM model from DEXSeq for significance)
+11. [[id:624baea5-62b1-40b1-813f-8f7350966d50][Second set Bibliography (FPKM vs TPM)]]
+12. Use R BitSeq to estimate the number of actual transcribed genes
     1. EdgeR too
-    2. BitSeq [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/26/bioinformatics.btv483.long][Hensman 2015]] =bioconductor=
-12. [[https://books.google.com/books?hl=en&lr=&id=LNScBAAAQBAJ&oi=fnd&pg=PA325&dq=qpx+parasite&ots=lGKB4qA7-h&sig=AK7xD5RGJhE-WzFRj2DY8HXbeJk#v=onepage&q=qpx%2520parasite&f=false][Text book]]
-13. use SNPeff to create a preliminary SNP list for GATK base calling. [[http://snpeff.sourceforge.net/protocol.html][tutorial]]
+    2. BitSeq and comparison between R packages [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/26/bioinformatics.btv483.long][Hensman 2015]] =bioconductor=
+13. [[https://books.google.com/books?hl=en&lr=&id=LNScBAAAQBAJ&oi=fnd&pg=PA325&dq=qpx+parasite&ots=lGKB4qA7-h&sig=AK7xD5RGJhE-WzFRj2DY8HXbeJk#v=onepage&q=qpx%2520parasite&f=false][Text book]]
+14. =on hold= use SNPeff to create a preliminary SNP list for GATK base calling. [[http://snpeff.sourceforge.net/protocol.html][tutorial]]
     1. use RASER [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/29/bioinformatics.btv505.abstract][Ahn 2015]] to map reads specifically for SNP calling
-14. Search for novel transcripts using special filters [[http://www.rna-seqblog.com/current-limitations-of-rna-seq-analysis-for-detection-of-novel-transcripts/][Weirick 2015]]
+15. Search for novel transcripts using special filters [[http://www.rna-seqblog.com/current-limitations-of-rna-seq-analysis-for-detection-of-novel-transcripts/][Weirick 2015]]
     1. Or [[http://www.rna-seqblog.com/rna-enrich-gene-set-enrichment-gse-testing-for-rna-seq-data/][Gene enrichment]] from RnaSeq data =R=
     2. [[http://www.rna-seqblog.com/isodot-differential-rna-isoform-expression/Isoform][Isoform]] classification
-    3. [[https://github.com/Reedwarbler/SpliceJumper][SpliceJumper]] for splice junctions
-    4. Select common genes OR select by function:
+    3. Isoform differential expression [[http://bib.oxfordjournals.org/content/early/2016/02/26/bib.bbw016.long][Dapas 2016]] (eXpress or RSEM)
+    4. [[https://github.com/Reedwarbler/SpliceJumper][SpliceJumper]] or [[http://majiq.biociphers.org/][MAJIQ]] or [[http://raetschlab.org/suppl/spladder][SplAdder]] for splice junctions (new or missing exons). Relate tissue specific splice variation to gene expression
+       1. Find out tissue dependent transcript isoforms
+       2. Find out which protein family is mostly affected
+    5. Select common genes OR select by function:
        - immune genes
        - secretion proteins
        - transmembrane proteins
-    5. Annotate the structure of identified genes (CDS introns ..) [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4712544/][Bens 2016]]
-    6. Use [[http://www.ebi.ac.uk/gxa/about.html][Atlas]] to identify genes and tissues specificity
-15. Cluster analysis by pathway and gene-gene interaction (String database)
+    6. Annotate the structure of identified genes (CDS introns ..) [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4712544/][Bens 2016]]
+    7. Use [[http://www.ebi.ac.uk/gxa/about.html][Atlas]] to identify genes and tissues specificity
+16. Cluster analysis by pathway and gene-gene interaction (String database) [[http://blog.graphcommons.com/analyzing-network-maps/][networks]]
     1. [[http://www.rna-seqblog.com/pathwayseq-pathway-analysis-for-rna-seq-data/][Pathway analysis from RNAseq data]]
-    2. Multivariate analysis [[http://www.rna-seqblog.com/detecting-multivariate-gene-interactions-in-rna-seq-data-using-optimal-bayesian-classification/][Optimal Bayesian classification]]
-    3. [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
-16. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
+    2. [[http://www.r-bloggers.com/reactomepa-an-rbioconductor-package-for-reactome-pathway-analysis-and-visualization/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Reactome pathway analysis with Bioconductor]]
+    3. Multivariate analysis [[http://www.rna-seqblog.com/detecting-multivariate-gene-interactions-in-rna-seq-data-using-optimal-bayesian-classification/][Optimal Bayesian classification]]
+    4. [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
+    5. [[http://mbio.asm.org/content/7/3/e00027-16.abstract][Fernandes 2016]] co-expression and similarity matrix [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#co-expression-network-construction][github]] =R=
+    6. We cannot use co-expression techniques made for microarrays on RNA-seq data because MA data have a continuous disttribution and RNA-seq data are discrete and dispersed. [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#log2-transformation][here]]
+17. Predict miRNA-pathway associations
+18. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
+19. Lectins
+    - Interaction with the complement
+    - Key role in innate immune defense
+    - Central role in filter feeding processes
+    - Association with neurone morphology
+    - Reduce functionality or absence cause disease
+20. Ongoing progress
+    - Gene expression (eXpress, kallisto) (limma, DESeq2, edgeR) (pval, cfolds) (5 different de novo assemblies)
+    - Protein domain annotations (HMM) w/ 10 databases
+    - GO-term annotation
+    - Pathway integration of annotated proteins (keggs)
+    - Weighted co-expression matrices from logged RNA-seq FPKMs
+    - Hierarchical clustering of weighted modules
+    - Gene-gene interactions (String database)
+    - Choosing which tissues and conditions to contrast
+    - Gene enrichment and GO clustering
+    - Gene validation with Blast annotations
+    - Machine learning (regularization)
 
 * Preprocessing RNA-seq data
 ** Quality controls
