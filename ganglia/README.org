@@ -667,7 +667,6 @@ for f in *raw*; do cat ${f}/diffExpr*matrix.log2.dat >> $file | cut -f 1;done
 #+END_SRC
 
 
-
 * Gene annotation
 ** Databases
 Detailed and summarized [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][here]]

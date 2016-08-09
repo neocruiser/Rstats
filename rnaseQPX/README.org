@@ -48,10 +48,11 @@ The data we have include 4 QPX transcriptomes generated from four multiclonal st
 12. Preferential substitution of SNPs was observed between strains.
 13. Contigs were annotated with Pfam domains.
 14. Differential distribution of SNPs inside and outside domains were investigated.
-16. Higher number of variants were found outside of virulence protein domains
-17. Higher number of variants were found inside of salinity protein domains
-18. What is the prevalence of QPX in relation to number of virulence genes? By area? For salinity and temperature?
-19. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX between populations.
+15. Higher number of variants were found outside of virulence protein domains
+16. Higher number of variants were found inside of salinity protein domains
+17. What is the prevalence of QPX in relation to number of virulence genes? By area? For salinity and temperature?
+18. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX between populations.
+19. Calling SNPs and annotating them without a reference genome [[http://nar.oxfordjournals.org/content/early/2016/07/25/nar.gkw655.full][Maestre 2016]] with [[http://kissplice.prabi.fr/TWAS/][KisSplice]]
 
 
 * Data

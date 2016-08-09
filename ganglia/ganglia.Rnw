@@ -44,7 +44,7 @@ Load packages.
 <<packages,results='hide'>>=
 pkgs <- c('xlsx','caret','leaps','glmnet','lattice',
           'latticeExtra', 'dplyr', 'tidyr', 'grid',
-          'gplots', 'WGCNA')
+          'gplots', 'WGCNA', 'reshape2','stringr')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -507,13 +507,15 @@ read.table("./data/network.stats.txt", header = TRUE) %>%
     ggplot(aes(x = power_trans,
                y = node)) +
     theme_bw() +
-    geom_point(aes(color = factor(threshold),
-                   size = 10)) + 
+    geom_point(aes(color = factor(threshold)),
+               shape = 16,
+               size = 5) + 
     labs(x = "Power transformation of gene expression matrix during clustering",
          y = "Number of nodes (genes) per network that have a minimum of 1 edge") +
     theme(legend.position = "top") +
     scale_color_brewer(type = "qual", palette = "Paired",
                       name = "Threshold for clustering genes")
+
 @ 
 
 
