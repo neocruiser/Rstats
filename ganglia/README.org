@@ -60,7 +60,7 @@ This git repository includes the pipeline for RNA-seq data processing and sequen
     2. [[http://www.r-bloggers.com/reactomepa-an-rbioconductor-package-for-reactome-pathway-analysis-and-visualization/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Reactome pathway analysis with Bioconductor]]
     3. Multivariate analysis [[http://www.rna-seqblog.com/detecting-multivariate-gene-interactions-in-rna-seq-data-using-optimal-bayesian-classification/][Optimal Bayesian classification]]
     4. [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
-    5. [[http://mbio.asm.org/content/7/3/e00027-16.abstract][Fernandes 2016]] co-expression and similarity matrix [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#co-expression-network-construction][github]] =R=
+    5. [[http://mbio.asm.org/content/7/3/e00027-16.abstract][Fernandes 2016]] co-expression and similarity matrix [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#co-expression-network-construction][github]] [[http://www.degruyter.com/abstract/j/sagmb.2005.4.issue-1/sagmb.2005.4.1.1128/sagmb.2005.4.1.1128.xml][Zhang and Horvath 2015]] =R=
     6. We cannot use co-expression techniques made for microarrays on RNA-seq data because MA data have a continuous disttribution and RNA-seq data are discrete and dispersed. [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#log2-transformation][here]]
 17. Predict miRNA-pathway associations
 18. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
@@ -70,7 +70,11 @@ This git repository includes the pipeline for RNA-seq data processing and sequen
     - Central role in filter feeding processes
     - Association with neurone morphology
     - Reduce functionality or absence cause disease
-20. Ongoing progress
+20. Unsupervised learning to extract the possible number of clusters from the data [[https://www.reddit.com/r/MachineLearning/comments/4wn1qt/what_unsupervised_learning_algorithms_exist_to/][reddit post]]
+    - Density Based Spatial Clustering of Applications with Noise [[https://cran.r-project.org/web/packages/dbscan/index.html][DBSCAN]] =R=
+    - K-means estimation of K [[http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters?answertab=votes#tab-top][stackoverfow post]] =R= [[http://blog.echen.me/2011/03/14/counting-clusters/][counting clusters]]
+    - Non-parametric Bayes with gaussian mixture model and Dirichlet process [[http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/][Link]] =R=
+21. Ongoing progress
     - Gene expression (eXpress, kallisto) (limma, DESeq2, edgeR) (pval, cfolds) (5 different de novo assemblies)
     - Protein domain annotations (HMM) w/ 10 databases
     - GO-term annotation
@@ -78,9 +82,9 @@ This git repository includes the pipeline for RNA-seq data processing and sequen
     - Weighted co-expression matrices from logged RNA-seq FPKMs
     - Hierarchical clustering of weighted modules
     - Gene-gene interactions (String database)
+    - Gene validation with Blast annotations
     - Choosing which tissues and conditions to contrast
     - Gene enrichment and GO clustering
-    - Gene validation with Blast annotations
     - Machine learning (regularization)
 
 * Preprocessing RNA-seq data
