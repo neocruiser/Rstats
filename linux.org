@@ -680,6 +680,7 @@ Correct remote url from =HTTPS= to =SSH=
 git remote set-url origin git@github.com:neocruiser/repo.git
 #+END_SRC
 * INSTALL DROPBOX
+Also install Dropbox CLI commands [[http://www.dropboxwiki.com/tips-and-tricks/using-the-official-dropbox-command-line-interface-cli][(link)]]
 #+BEGIN_SRC shell
 sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
 #+END_SRC
