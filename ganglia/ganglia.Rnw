@@ -503,13 +503,12 @@ Plot number of nodes and edges after network construction at different power tra
 \smallskip
 Power transformation reduces low/false correlations between genes \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.471.9599&rep=rep1&type=pdf}{Zhang and Horvath (2005 PDF)}.
 <<networks>>=
-read.table("./data/network.stats.txt", header = TRUE) %>%
+read.xlsx("./data/network.stats.xlsx", header = TRUE, sheetIndex = 1) %>% 
     ggplot(aes(x = power_trans,
                y = node)) +
     theme_bw() +
-    geom_point(aes(color = factor(threshold)),
-               shape = 16,
-               size = 5) + 
+    geom_line(aes(color = factor(threshold)),
+              size = 1  )+
     labs(x = "Power transformation of gene expression matrix during clustering",
          y = "Number of nodes (genes) per network that have a minimum of 1 edge") +
     theme(legend.position = "top") +
