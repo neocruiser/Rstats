@@ -23,18 +23,24 @@
 * Cheat Sheets
 1. [[http://blog.serversaustralia.com.au/ultimate-list-of-cheatsheets-for-a-sysadmin?utm_campaign=Blog%2520post%2520series&utm_medium=social&utm_source=reddit][Sysadmin cheat sheets]]
 * INSTALL EMACS 24
-Latest version [[http://git.savannah.gnu.org/cgit/emacs.git/tree/][on git]] and how to build it on linux from [[http://ergoemacs.org/emacs/building_emacs_on_linux.html][ergoemacs]]. When installing on =eOS Freya= get emacs from the Software Market and install the one with =Lucid= style for it to work in version 24.
+This is a snapshot of developmental version. =working=
 #+BEGIN_SRC shell
-sudo apt-get install build-essential
-sudo apt-get build-dep emacs24
-wget http://gnu.mirror.vexxhost.com/emacs/emacs-24.5.tar.gz
-tar xvf emacs-24.5.tar.gz
-cd emacs-24.5
-./configure
-make
-sudo make install
+sudo add-apt-repository ppa:ubuntu-elisp/ppa
+sudo apt-get update
+sudo apt-get install emacs-snapshot
 #+END_SRC
-[ESS] copy ESS/ to /usr/share/emacs24/site-lisp/
+** HELM
+From [[https://github.com/emacs-helm/helm#quick-install-from-git][here]]
+** ESS
+From [[http://ess.r-project.org/Manual/ess.html#Step-by-step-instructions][here]]
+** MAgit
+From [[https://magit.vc/][here]]. Update git (see below)
+#+BEGIN_SRC shell
+sudo add-apt-repository ppa:git-core/ppa -y
+sudo apt-get update
+sudo apt-get install git
+git --version
+#+END_SRC
 ** Markdown mode
 - install the package from melpa
 - download a parser http://daringfireball.net/projects/markdown/
