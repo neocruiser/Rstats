@@ -10,7 +10,7 @@
 <<setup, include=FALSE, cache=FALSE>>=
 # set global chunk options
 opts_chunk$set(dev="postscript",
-               fig.path="graphics/plot",
+               fig.path="graphics/",
                fig.lp= "",
                comment=NA,
                fig.keep="high",
@@ -42,7 +42,7 @@ rm(list=ls())
 
 Load packages.
 <<packages,results='hide'>>=
-pkgs <- c('xlsx','caret','leaps','glmnet','lattice',
+pkgs <- c('caret','leaps','glmnet','lattice',
           'latticeExtra', 'dplyr', 'tidyr', 'grid',
           'gplots', 'WGCNA', 'reshape2','stringr')
 lapply(pkgs, require, character.only = TRUE)
@@ -93,9 +93,10 @@ read.table("./data/summary.gg.txt") %>%
                   y = V8,
                   ymax = V8,
                   label = V8,
-                  size = 1,
-                  hjust = 0),
-              position = position_dodge(width = 1)) +
+                  vjust = .2),
+              position = position_dodge(width = 1),
+              size = 3.5,
+              hjust = 0) +
     facet_wrap(~ V3 + V4 + V6,
                ncol = 2,
                scales = "free") +
@@ -103,7 +104,7 @@ read.table("./data/summary.gg.txt") %>%
     theme_bw() +
     theme(legend.position = "top",
           axis.text.x = element_text(vjust = .5,
-                                     size = 6)) +
+                                     size = 10)) +
     labs(x = "R packages for gene expression differential analysis",
          y = "Number of differentially expressed genes")
 
@@ -503,7 +504,8 @@ Plot number of nodes and edges after network construction at different power tra
 \smallskip
 Power transformation reduces low/false correlations between genes \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.471.9599&rep=rep1&type=pdf}{Zhang and Horvath (2005 PDF)}.
 <<networks>>=
-read.xlsx("./data/network.stats.xlsx", header = TRUE, sheetIndex = 1) %>% 
+#read.xlsx("./data/network.stats.xlsx", header = TRUE, sheetIndex = 1) %>% 
+read.table("./data/network.stats.txt", header = TRUE) %>% 
     ggplot(aes(x = power_trans,
                y = node)) +
     theme_bw() +
@@ -518,13 +520,174 @@ read.xlsx("./data/network.stats.xlsx", header = TRUE, sheetIndex = 1) %>%
 @ 
 
 
+\subsection{Cluster composition}
+\label{subsec:cluster}
+After computing correlations between genes, networks were inferred. Networks are organized into clusters and each contain modules of highly correlated and co-functional genes.
+The selected network is based on \textbf{power transformation of 7} to avoid selecting low correlated scores, \textbf{threshold of 0.4} for significance, and \textbf{maximum number of genes per module of 100}.
+\smallskip
+Detail of the scores:
+\begin{itemize}
+\item \textbf{Nodes}, differentially expressed transcripts
+%\item Edges, connections between nodes
+\item \textbf{Modules}, group of genes per cluster (represented by different colors)
+\item \textbf{Shared modules}, genes corresponding to one module and appear in two clusters or more
+\item \textbf{Hubs25}, genes that have at least 25 edges (degree)
+\item \textbf{GO}, Gene Ontology terms and not inferred from electronic annotation
+\item \textbf{Reactome}, reactome IDs found
+\item \textbf{KEGG}, KEGG IDs found
+\item \textbf{NA}, non annotated contigs found in any of sequence database but still found differentially expressed
+\item \textbf{Isoforms}, transcripts that have been assembled similarly from the same read bins
+%\item IPS raw, annotations found in ProDom, TIGRFAM, SUPERFAMILY, PIRSF, Gene3D, Pfam, SMART, PROSITEPATTERNS, COILS, PANTHER, HAMAP, PRINTS (no e-value or frameshift preselection)
+\item \textbf{IPS e10}, annotations at a minimum e-value of $10^{-10}$
+\item \textbf{Frame1}, first frameshift annotations of translated transcripts at a minimum e-value of $10^{-10}$
+\item \textbf{Frame2}, second frameshift annotations of translated transcripts at a minimum e-value of $10^{-10}$
+\item \textbf{Frame3}, third frameshift annotations of translated transcripts at a minimum e-value of $10^{-10}$
+\item \textbf{PIRSF}, domain classification (\href{http://pir.georgetown.edu/pirwww/dbinfo/pirsf.shtml}{database}), e-value $10^{-10}$
+\item \textbf{TIGRFAM}, subfamilies classification (\href{http://www.jcvi.org/cgi-bin/tigrfams/index.cgi}{database}), e-value $10^{-10}$
+\item \textbf{SMART}, Swissprot, Trembl, and Ensembl domains (\href{http://smart.embl-heidelberg.de/}{database}), e-value $10^{-10}$
+\item \textbf{PROSITE}, functional domains (\href{http://prosite.expasy.org/}{database}), e-value $10^{-10}$
+\item \textbf{PRINTS}, conserved motifs in SwissProts, fingerprinting (\href{http://www.bioinf.manchester.ac.uk/dbbrowser/PRINTS/index.php}{database}), e-value $10^{-10}$
+\item \textbf{PFAM}, protein domains (\href{http://pfam.xfam.org/}{database}), e-value $10^{-10}$
+\item \textbf{COILS}, coiled coil confirmation (\href{http://www.ch.embnet.org/software/COILS_form.html}{database}), e-value $10^{-10}$
+\item \textbf{SUPERFAMILY}, domains, phylogeny and taxon (\href{http://supfam.cs.bris.ac.uk/SUPERFAMILY/}{database}), e-value $10^{-10}$
+\item \textbf{Gene3D}, domain families (\href{http://gene3d.biochem.ucl.ac.uk/Gene3D/}{database}), e-value $10^{-10}$
+\item \textbf{PANTHER}, domains and pathways (\href{http://www.pantherdb.org/}{database}), e-value $10^{-10}$
+%\item Max prot length, the maximum length of annotated proteins, e-value $10^{-10}$ (no frameshift preselection)
+\item \textbf{Min prot length}, the minimum length of annotated proteins, e-value $10^{-10}$ (no frameshift preselection)
+\end{itemize}
+
+<<cluster.stats, out.width='0.95\\linewidth',out.height='.8\\linewidth'>>=
+df <- read.table("./data/cluster.stats.txt", header = TRUE, sep = "\t")
+head(df)
+df$categories <- factor(df$categories, levels = df[, 1])
+gather(df[-c(25:27), ], "clusters", "counts", 2:8) %>%
+    ggplot(aes(x = categories,
+               y = counts,
+               fill = label)) +
+    theme_bw() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5, size = 6),
+          axis.text.y = element_text(vjust = .5, size = 6),
+          strip.text = element_text(size = 4)) +    
+    coord_flip() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = categories,
+                  y = counts,
+                  ymax = counts,
+                  label = counts,
+                  hjust = 0),
+              hjust = -.15,
+              size = 3.5) +
+    facet_wrap( ~ clusters,
+               ncol = 7) +
+    theme(legend.position = "top") +
+    scale_fill_brewer(type = "qual", palette = "Paired",
+                      name = "Network composition") + 
+    labs(y = "Number of assembled Crassostrea gigas transcripts",
+         x = "")
+@ 
 
 
+\subsection{Module composition}
+\label{subsec:modules}
+A module is a group of highly correlated genes. Each gene belong to one module. A module can appear in more than one cluster.
+Below is the composition of each cluster, each separated \textbf{based only on differentially expressed genes} between gills and ganglia oyster tissues.
+Hierachical clustering was done on each module separately to group genes within modules using 5000 bootstraps.
+\marginnote{\small\color{blue}$\Lsh$ Modules labeled in green contain less than 10 genes, thus hierarchical clustering cannot be done. They are although expressed in Ganglia except module 5.}[0cm]
+<<module.stats, out.width='0.95\\linewidth',out.height='.8\\linewidth'>>=
+df <- read.table("./data/module.stats.txt", header = T, sep = "\t", fill = T)
+df$modules <- as.factor(df$modules)
+gather(df, "clusters", "counts", 2:8) %>%
+    ggplot(aes(x = modules,
+               y = counts,
+               fill = network)) +
+    theme_bw() +
+#    coord_flip() +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5, size = 4.5),
+          axis.text.y = element_text(vjust = .5, size = 6)) +    
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    geom_text(aes(x = modules,
+                  y = counts,
+                  ymax = counts,
+                  label = counts),
+              position = position_dodge(width = 1),
+              size = 3,
+              vjust = -.2,
+              hjust = .5) +
+    labs(x = "Modules of differentially expressed genes",
+         y = "Number of genes found for each module") +
+    facet_wrap( ~ clusters, ncol = 2, scales = "free") +
+    scale_fill_brewer(type = "qual", palette = "Paired",
+                      name = "Cluster composition and differential gene expression")
+
+@ 
+
+Here we show a distribution of the number of edges per node as to showcase hubs and their degrees.
+<<degree.hubs>>=
+df <- read.table("./data/degree.stats.txt", header = T, sep = "\t")
+#boxplot(Degree~modules, data=df)
+
+df$modules <- as.factor(df$modules)
+ggplot(df, aes(x = modules, 
+               y = Degree)) +
+    geom_boxplot() +
+    geom_jitter(width = .2, size = .5) +
+    theme_bw() +
+    labs(x = "The 35 modules clustered from differential expressed genes",
+         y = "The number of connections (edges) for each gene (node)")
+
+@ 
 
 
+Each module consists of assembled transcripts and grouped together based on their gene expression. These genes have been annotated and assigned a pathway (if a hit score was found). At an e-value of $10^{-10}$ the top NR and HMM annotations were retained. One transcript can have one or more annotations within each database. The NR database of NCBI contains many uncharacterized genes or hypothetical protein functions.
+\begin{itemize}
+\item \textbf{GO}, Gene Ontology terms and not inferred from electronic annotation
+\item \textbf{Pathways}, involve either KEGG and/or reactome IDs
+\item \textbf{NonA}, non annotated transcripts in either NR or protein domain databases
+\item \textbf{Uncharacterized}, the NR database assign this label to genes that have not been assigned a function
+\item \textbf{Hypothetical}, the NR database assign this label to half-structured and potentially functional genes
+\item \textbf{NR}, Non redundant database from NCBI that contains gene names and species associations, annotations are based on the BLAST algorithm
+\item \textbf{HMM}, Hidden Markov Models that annotate peptides based on HMM aligned profiles against 12 protein databases (See Subsection \ref{subsec:cluster})
+\end{itemize}
+
+<<pies.per.module, out.width='0.95\\linewidth',out.height='.95\\linewidth'>>=
+par(mfrow=c(5,6), pin = c(.75, .75), mai = c(.5, .4, .4, .4))
+x <- c(1, 3:15,17,19,21:24,27:35)
+for (i in x){
+df <- read.table("./data/module.stats.txt", header = T, sep = "\t")
+df <- df[, -c(2:9)]    
+df <- gather(df[i,], "categories", "counts", c(4,7:12))
+df
+df$label <- paste(df$counts, df$categories, sep = " ")
+df$label[6] <- paste(df$label[6], " (", floor((df$counts[6]/df$Total[1])*100), "%)", sep = "")
+df$label[7] <- paste(df$label[7], " (", floor((df$counts[7]/df$Total[1])*100), "%)", sep = "")
+title.per.module <- paste("Module ", as.factor(df$modules[1]), " (", df$nodes[1], ")", sep = "")
+color.per.module <- c("#b2182b", "#ef8a62", "#fddbc7", "#f7f7f7", "#d1e5f0",
+                      "#67a9cf", "#2166ac")
+pie(df$counts, labels = df$label, 
+    cex = .8, main = title.per.module,
+    col = color.per.module)
+}
+@ 
 
 
-
+\subsection{GO-terms for all networks}
+\label{subsec:gos}
+From the 1233 genes connected in the network, 521 GO entries were found.
+<<go.terms, out.width='0.95\\linewidth',out.height='.95\\linewidth'>>=
+read.table("./data/counted.go.terms.inFull.networks.txt", header = F, sep = "") %>%
+    ggplot(aes(x = V2,
+               y = V1)) +
+    theme_bw() +
+    coord_flip() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    labs(x="", y = "Number of GO-terms found in 1233 connected genes") +
+    theme(axis.text.y = element_text(vjust = .5, size = 1.5))
+@ 
 
 \section{System Information}
 \label{sec:sys_info}

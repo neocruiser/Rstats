@@ -142,49 +142,6 @@ study, the HYPOTHESIS and its SIGNIFICANCE, the INNOVATION of the APPROACH, and
 11. Basic concepts of GWAS from disease study perspective [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2740629/?tool%3Dpubmed][Ding 2009]]
 12. Importance of GWAS [[http://www.nejm.org/doi/pdf/10.1056/NEJMra0905980][Manolio 2010]]
 
-*** High-dimensional categorical data with machine learning
-1. Different loci with shared association with 5 mental illness diseases in mega-analysis GWAS [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3714010/pdf/nihms-470697.pdf][Smoller 2013]]
-2. Fixation index and association of common variant with disease and offers evolutionary benefit simultaneously in GWAS [[http://www.sciencemag.org/content/suppl/2010/07/14/science.1193032.DC1/Genovese.SOM.pdf][Genovese 2010]] =methodology=
-3. Classical GWAS with a nice story and attractive abstract [[http://www.nature.com/nature/journal/v461/n7262//full/nature08309.html#B16][Ge 2009]] =abstract= and =methodology=
-4. Genetic networks and Bayesian gene-based likelihoods [[http://www.nature.com/nature/journal/v515/n7526/pdf/nature13772.pdf][Rubeis 2014]] =methodology=
-5. Random forest is misleading when used with mixed data as in continuous and categorical for feature extraction [[http://www.biomedcentral.com/1471-2105/8/25][Strobl 2007]]
-6. Multifactorial analysis and interaction terms review [[http://www.nature.com/nmeth/journal/v11/n12/pdf/nmeth.3180.pdf][Kyrziwinski 2014]]
-7. Ridge regression better than repeated simple regression of GWAS [[http://downloads.hindawi.com/journals/bmri/aip/143712.pdf][Vlaming 2014]]
-8. Comparative analysis of predictive accuracies for lasso and RR [[http://www.biomedcentral.com/1753-6561/6/S2/S10][Ogutu 2012]]
-9. Twin study for individual genetic risk assessment for 24 diseases [[http://stm.sciencemag.org/content/4/133/133ra58.short][Roberts 2012]]
-10. Solution for sparsity with lasso [[http://www.jstor.org/discover/10.2307/25464748?sid%3D21105531960423&uid%3D2&uid%3D4&uid%3D3739808&uid%3D3739256][Meinshausen 2009]]
-11. Adaptive Lasso for sparse high dimensional data [[http://webdocs.cs.ualberta.ca/~mahdavif/ReadingGroup/Papers/tr374.pdf][Huang 2006]]
-12. Lasso can account for bias and sparsity in data [[http://www.jstor.org/stable/25464684][Zhang 2008]]
-13. Generalized linear mixed model with lasso and R package [[http://www.tandfonline.com/doi/abs/10.1080/10618600.2013.773239][Schelldorfer 2014]]
-14. Gradient lasso to predict traits using SNPs [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3651372/][Kim 2013]]
-15. Jointly analyzing dense markers, phenotypes, and pedigree with bayesian Lasso in R [[http://www.genetics.org/content/182/1/375.full.pdf%2Bhtml][Campos 2009]]
-16. Deep unsupervised learning in shell [[http://fastml.com/deep-learning-made-easy/][Ngiam 2013]]
-17. Bayesian lasso to predict phenotype based on SNPs while specific organ gene expressions increase accuracy [[http://www.plosone.org/article/info:doi/10.1371/journal.pone.0115532#s2][Takagi 2014]] =methods= for Gibbs sampling
-18. C score and the deleteriousness of a variant [[http://www.nature.com/ng/journal/v46/n3/pdf/ng.2892.pdf][Witten 2014]] =databases=
-19. New tool in machine learning that finds splice junctions related to autism [[http://www.sciencemag.org/content/early/2014/12/17/science.1254806.short][X1iong 2014]] =torronto team=
-
-20. Use SNPs to classify splice junctions as disease related [[http://www.sciencemag.org/content/347/6218/1254806][Xiong 2015]] =torronto team=
-
-21. Overestimating the missing heritability and the interactive variant model [[http://www.pnas.org/content/109/4/1193.abstract][Zuk & Lander 2011]]
-22. VAAST for prioritizing variants and identifying disease genes [[http://www.ncbi.nlm.nih.gov/pubmed/23836555][Hu 2013]]
-23. Survey of tools: QC, alignment, identification, annotation, visualization  [[http://bib.oxfordjournals.org/content/15/2/256.full.pdf%2Bhtml][PAbinger 2013]]
-24. SVM for prediction of type I diabetes [[http://www.plosgenetics.org/article/info:doi/10.1371/journal.pgen.1000678#pgen-1000678-g003][Wei 2009]]
-25. Review and summary of many machine learning research papers [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3432206/][Kruppa 2012]]
-26. Bagging with ML models for multicategorical outcomes [[http://onlinelibrary.wiley.com/doi/10.1002/bimj.201300068/full][Kruppa 2014]] =theory=
-27. Probability estimation of multicategorical prediction ML [[http://onlinelibrary.wiley.com/doi/10.1002/bimj.201300077/abstract][Kruppa 2014]] =application=
-28. Use network topology to group SNP before ML [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3606427/#B18][Okser 2013]] =review=
-29. Group SNPs by gene-gene interactions [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3748153/][Mooney 2013]] =methodology=
-30. Sparse group lasso and multicategorical data [[http://arxiv.org/pdf/1205.1245.pdf][Vincent 2014]] =methodology=
-31. Higher number of SNPs for sparse prediction analysis can improve accuracy in risk estimation [[http://onlinelibrary.wiley.com/doi/10.1002/gepi.20509/full][Kooperberg 2010]]
-32. Controls can become cases if our criteria of classifying a disease trait changes [[http://www.pnas.org/content/early/2014/12/25/1411893111.short][Rosenquist 2014]]
-33. Rare variants and quality control review [[http://www.sciencedirect.com/science/article/pii/S0002929714002717][Lee 2014]]
-34. Pitfalls and limitations in SNP prediction studies [[http://www.nature.com/nrg/journal/v14/n7/pdf/nrg3457.pdf][Wray 2013]]
-35. How to increase the risk score of SNPs by polygenic analysis [[http://www.nature.com/ng/journal/v44/n5/full/ng.2232.html#supplementary-information][Stahl 2012]] =methods= for MCMC
-36. Using cases for genetically correlated diseases increase accuracy [[http://link.springer.com/article/10.1007/s00439-013-1401-5/fulltext.html][Li 2014]]
-37. Augmenting sample size for GWAS [[http://www.nature.com/ng/journal/v45/n11/full/ng.2758.html#methods][Zhan 2013]]
-38. A network for the human diseases [[http://www.pnas.org/content/104/21/8685.full][Goh 2007]]
-39. How to proceed in the post-GWAS era, Bayesian hierarchical, epistasis, & pathways, and dis/advantages of regression rules [[http://www.sciencedirect.com/science/article/pii/S0002929709005321][Cantor 2010]]
-40. The selfish ribosomes might be the reason DNA replicates [[http://www.sciencedirect.com/science/article/pii/S0022519314006778][Bernstein 2014]]
 ** Quality control checks for GWAS
 1) =Quality control= Genotype call rates (remove high error call rates <95%) and HWE. Manhattan plot to confirm homogeneity of calls ([[http://scienceblogs.com/geneticfuture/2010/07/07/serious-potential-flaws-in-lon/#more][web article]])
    - Removing genotypes with low call certainety introduce information missingness where low occuring alleles (rare homogenous) have low probabilities which reduces the correct allele frequencies

@@ -22,12 +22,17 @@
 
 * Cheat Sheets
 1. [[http://blog.serversaustralia.com.au/ultimate-list-of-cheatsheets-for-a-sysadmin?utm_campaign=Blog%2520post%2520series&utm_medium=social&utm_source=reddit][Sysadmin cheat sheets]]
-* INSTALL EMACS 24
-This is a snapshot of developmental version. =working=
+* INSTALL EMACS 24 and 25
+This is a snapshot of developmental version for the latest Emacs25. =working=
 #+BEGIN_SRC shell
 sudo add-apt-repository ppa:ubuntu-elisp/ppa
 sudo apt-get update
 sudo apt-get install emacs-snapshot
+#+END_SRC
+
+For Emacs24
+#+BEGIN_SRC shell
+sudo apt-get install emacs24
 #+END_SRC
 ** HELM
 From [[https://github.com/emacs-helm/helm#quick-install-from-git][here]]
@@ -166,16 +171,6 @@ git --version
 | C-;            | comment line                      | perl        |
 | Cu-C;          | delete comment                    | perl        |
 * R
-** Server installation
-Download base version of R [[https://cran.rstudio.com/src/base/][here]]. Then create a new directory that will hold install packages.
-#+BEGIN_SRC shell
-./configure --prefix=/path/to/directory --with-readline=no --with-x=no
-make && make install
-mkdir package_directory
-cat >> .bashrc
-export R_LIBS=/path/to/package_directory
-export PATH=$PATH:/path/to/R/bin
-#+END_SRC
 ** Revolution R
 [[http://mran.revolutionanalytics.com/documents/rro/installation/#sysreq][Tutorial]]
 
@@ -187,8 +182,27 @@ sudo rm -r /usr/lib64/rro
 1. Download and install RRO and MKL
 2. configure MKL.
 
+
+If problem occurs with dpkg and get an error about a package to be reinstalled first to be then uninstalled, do the following. Then search for the =package name= and finally delete the whole section of that package.
+#+BEGIN_SRC shell
+E: The package <package name> needs to be reinstalled, but I can’t find an archive for it’
+
+sudo cp /var/lib/dpkg/status status.bkp
+sudo emacs /var/lib/dpkg/status
+#+END_SRC
+
 *Important notice*
 In the next step I install =r-cran-rgl=. This will install an older version of R and it will be symlinked as the main R. I either have to reinstall RRO to resymlink it as main or use the =alternatives= linux command.
+** Server installation
+Download base version of R [[https://cran.rstudio.com/src/base/][here]]. Then create a new directory that will hold install packages.
+#+BEGIN_SRC shell
+./configure --prefix=/path/to/directory --with-readline=no --with-x=no
+make && make install
+mkdir package_directory
+cat >> .bashrc
+export R_LIBS=/path/to/package_directory
+export PATH=$PATH:/path/to/R/bin
+#+END_SRC
 ** Install R on Ubuntu based linux
 #+BEGIN_SRC shell
 sudo apt-get install r-cran-rgl libX11-dev libglu1-mesa-dev mesa-common-dev
@@ -197,24 +211,22 @@ sudo apt-get install r-cran-rgl libX11-dev libglu1-mesa-dev mesa-common-dev
 Some useful packages for data manipulation and wrangling, [[http://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html][here]]. For text mining [[https://github.com/arnab621/Text-Analysis-R-Aylien][here]]. and [[https://github.com/qinwf/awesome-R][awesome-R]]
 #+BEGIN_SRC R
 sudo R CMD javareconf
-sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev
+sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev
+install.packages('rJava')
 
 pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
 lapply(pkgs, install.packages)
 lapply(pkgs, require, character.only = TRUE)
 
 pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'ROAuth', 'SnowballC', 'wordcloud', 'xlsx','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
-
-sudo R CMD javareconf
-## choose an http server
-chooseCRANmirror()
-install.packages('rJava')
 #+END_SRC
 
 Install packages from github with devtools command.
 #+BEGIN_SRC R
 #options(unzip = 'internal')
 devtools::install_github("hadley/devtools")
+devtools::install_github("timelyportfolio/d3r")
+devtools::install_github("timelyportfolio/sunburstR")
 #+END_SRC
 
 Github packages
@@ -326,6 +338,8 @@ In R run:
 #+BEGIN_SRC R
 source("http://bioconductor.org/biocLite.R")
 biocLite()
+## UPDATE
+biocLite("BiocUpgrade")
 #+END_SRC
 ** Update CRAN packages in R
 #+BEGIN_SRC R
@@ -1748,3 +1762,6 @@ sudo mkdir /usr/share/fonts/opentype
 sudo git clone https://github.com/adobe-fonts/source-code-pro.git /usr/share/fonts/opentype/scp
 sudo fc-cache -f -v
 #+END_SRC
+
+
+
