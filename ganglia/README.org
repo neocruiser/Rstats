@@ -24,6 +24,100 @@
 
 This git repository includes the pipeline for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][the PDF]] of the compiled R file, the data =to be updated= used for generating the figures, and the scripts =to be updated= (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
+* Summary
+1. [9/12] Procedural aims
+   1. [X] Biological samples: Crassostrea gigas [[http://www.nature.com/nature/journal/v490/n7418/full/nature11413.html][genome of the Pacific oyster]]
+   2. [X] Samples from: visceral ganglia and gill, RNAseq in multiplex
+   3. [X] Aim 1: Generate RNAseq data, 2 conditions, 2 tissues
+   4. [X] Aim 2: Differential gene expression (edgeR/DESeq2/limma see difference [[http://www.nature.com/nprot/journal/v8/n9/full/nprot.2013.099.html][here]], [[http://static-content.springer.com/image/art:10.1186/s12859-015-0847-y/MediaObjects/12859_2015_847_Fig4_HTML.gif][here]])
+   5. [X] Aim 3: Gene-gene interactions and clustering
+   6. [ ] Aim 4: Splice junctions variation between tissues
+   7. [ ] Aim 5: Machine learning on gene expression data
+   8. [X] Core 1: gene-gene interaction is due to guilt-by-association
+   9. [X] Core 2: Multifunctionality among genes and between pathways
+   10. [X] Preference in exon expression, between 2 conditions (exon-exon junctions + GLM model from DEXSeq for significance)
+   11. [X] FPKM vs TPM
+   12. [ ] [[https://books.google.com/books?hl%3Den&lr%3D&id%3DLNScBAAAQBAJ&oi%3Dfnd&pg%3DPA325&dq%3Dqpx%2Bparasite&ots%3DlGKB4qA7-h&sig%3DAK7xD5RGJhE-WzFRj2DY8HXbeJk#v%3Donepage&q%3Dqpx%2520parasite&f%3Dfalse][Mucosal immunity]] in mollusks (google book)
+   13. [0/1] Parasites have been found in oyster samples
+       1. [4/4] Identify parasite
+          1. [X] Map available genomes to raw reads
+          2. [X] Assemble reads that map
+          3. [X] Annotate contigs
+          4. [X] Get gene expression of parasite contigs
+       2. [ ] Create gene networks and regulation schemes between host and parasite
+2. [1/2] Use R BitSeq to estimate the number of actual transcribed genes
+   1. [X] EdgeR too
+   2. [ ] BitSeq and comparison between R packages [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/26/bioinformatics.btv483.long][Hensman 2015]] =bioconductor=
+3. [0/1] =on hold= use SNPeff to create a preliminary SNP list for GATK base calling. [[http://snpeff.sourceforge.net/protocol.html][tutorial]]
+   1. [ ] use RASER [[http://bioinformatics.oxfordjournals.org/content/early/2015/08/29/bioinformatics.btv505.abstract][Ahn 2015]] to map reads specifically for SNP calling
+4. [1/5] Search for novel transcripts using special filters [[http://www.rna-seqblog.com/current-limitations-of-rna-seq-analysis-for-detection-of-novel-transcripts/][Weirick 2015]]
+   1. [ ] [[http://www.rna-seqblog.com/isodot-differential-rna-isoform-expression/Isoform][Isoform]] classification ([[http://bioinformatics.oxfordjournals.org/content/32/17/i421.long][Labuz1etta 2016]] alternative splicing and isoforms to predict phenotypes from RNA-seq data)
+   2. [ ] Isoform differential expression [[http://bib.oxfordjournals.org/content/early/2016/02/26/bib.bbw016.long][Dapas 2016]] (eXpress or RSEM)
+   3. [0/2] [[https://github.com/Reedwarbler/SpliceJumper][SpliceJumper]] or [[http://majiq.biociphers.org/][MAJIQ]] or [[http://raetschlab.org/suppl/spladder][SplAdder]] for splice junctions (new or missing exons). Relate tissue specific splice variation to gene expression
+      1. [ ] Find out tissue dependent transcript isoforms
+      2. [ ] Find out which protein family is mostly affected
+   4. [X] Select common genes OR select by function:
+      - immune genes [[http://www.sciencedirect.com/science/article/pii/S1050464816301310][McDowell 2016]]
+      - neuropeptides [[http://www.sciencedirect.com/science/article/pii/S0196978116301267][In 2016]] [[http://bmcgenomics.biomedcentral.com/articles/10.1186/1471-2164-15-840][Stewart 2014]]
+   5. [ ] Annotate the structure of identified genes (CDS introns ..) [[http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4712544/][Bens 2016]]
+   6. [ ] Use [[http://www.ebi.ac.uk/gxa/about.html][Atlas]] to identify genes and tissues specificity
+5. [2/5] Cluster analysis by pathway and gene-gene interaction (String database) [[http://blog.graphcommons.com/analyzing-network-maps/][networks]]
+   1. [ ] [[http://www.rna-seqblog.com/pathwayseq-pathway-analysis-for-rna-seq-data/][Pathway analysis from RNAseq data]]
+   2. [ ] [[http://www.r-bloggers.com/reactomepa-an-rbioconductor-package-for-reactome-pathway-analysis-and-visualization/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Reactome pathway analysis with Bioconductor]]
+   3. [ ] Multivariate analysis [[http://www.rna-seqblog.com/detecting-multivariate-gene-interactions-in-rna-seq-data-using-optimal-bayesian-classification/][Optimal Bayesian classification]]
+   4. [0/2] [[http://www.r-bloggers.com/tutorial-rna-seq-differential-expression-pathway-analysis-with-sailfish-deseq2-gage-and-pathview/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+RBloggers+(R+bloggers)][Kegg and Go]] with R and =gage= package for gene network
+      1. [ ] Or [[http://www.rna-seqblog.com/rna-enrich-gene-set-enrichment-gse-testing-for-rna-seq-data/][Gene enrichment]] from RnaSeq data =R= (maybe [[http://online.liebertpub.com/doi/abs/10.1089/omi.2011.0118][ClusterProfiler]], see papers that cited this paper)
+      2. [ ] Cytoscape plugins
+   5. [X] [[http://mbio.asm.org/content/7/3/e00027-16.abstract][Fernandes 2016]] co-expression and similarity matrix [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#co-expression-network-construction][github]] [[http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.471.9599&rep=rep1&type=pdf][Zhang and Horvath 2015]] =R=
+   6. [X] We cannot use co-expression techniques made for microarrays on RNA-seq data because MA data have a continuous disttribution and RNA-seq data are discrete and dispersed. [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#log2-transformation][here]]
+6. [3/5] Identify Lectins, neurohormones, and immune genes
+   - [X] Interaction with the complement
+   - [X] Key role in innate immune defense
+   - [X] Association with neurone morphology
+   - [ ] Literature discussing lectin sequence: [[http://www.sciencedirect.com/science/article/pii/S1050464806001203][Gourdine 2007]] [[http://www.nature.com/articles/srep10068?message-global=remove][Yang 2015]] [[http://www.sciencedirect.com/science/article/pii/S1050464814005166][Huang 2015]] [[http://www.sciencedirect.com/science/article/pii/S1050464809004112][Zhang 2011]] [[http://www.sciencedirect.com/science/article/pii/S1050464815001102][Li 2015]]
+   - [-] Machine learning
+     - [4/5] Strategy I
+       - [X] Infer gene expression
+       - [X] Create clusters
+       - [X] Create modules
+       - [X] Identify which samples belong to starved or fed animals
+       - [ ] Classify modules between starved and fed samples (artificial neural network)
+     - [2/8] Strategy II
+       - [X] Infer gene expression
+       - [ ] Remove low expressed genes
+       - [ ] Remove high expressed genes
+       - [ ] =optional= Add mannose related proteins to the list
+       - [ ] Create clusters
+       - [X] Add =STRING= data
+       - [ ] Identify which samples belong to starved of fed animals
+       - [ ] Classify modules (Regression, bagging, lasso)
+7. Predict miRNA-pathway associations
+8. Journals: [[http://bib.oxfordjournals.org/][Briefings in Bioinformatics (9.6)]]
+9. [0/3] Unsupervised learning to extract the possible number of clusters from the data [[https://www.reddit.com/r/MachineLearning/comments/4wn1qt/what_unsupervised_learning_algorithms_exist_to/][reddit post]]
+   - [ ] Density Based Spatial Clustering of Applications with Noise [[https://cran.r-project.org/web/packages/dbscan/index.html][DBSCAN]] =R=
+   - [ ] K-means estimation of K [[http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters?answertab=votes#tab-top][stackoverfow post]] =R= [[http://blog.echen.me/2011/03/14/counting-clusters/][counting clusters]]
+   - [ ] Non-parametric Bayes with gaussian mixture model and Dirichlet process [[http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/][Link]] =R=
+10. Optional strategy
+    - Reduce number of assembled transcripts (fast annotation)
+    - Get gene counts vs transcript counts (TPM)
+    - Cluster
+    - Annotate clusters that contain Lectins
+    - Get differential gene expression between clusters
+11. [9/12] Ongoing progress
+    - [X] Gene expression (eXpress, kallisto, Salmon) (limma, DESeq2, edgeR) (pval, cfolds) (5 different de novo assemblies)
+    - [X] Protein domain annotations (HMM) w/ 10 databases
+    - [X] GO-term annotation
+    - [X] Pathway integration of annotated proteins (keggs)
+    - [X] Weighted co-expression matrices from logged RNA-seq FPKMs
+    - [X] Hierarchical clustering of weighted modules
+    - [X] Gene-gene interactions (String database)
+    - [X] Gene validation with Blast annotations
+    - [X] Choosing which tissues and conditions to contrast
+    - [ ] Gene enrichment and GO clustering
+    - [ ] Machine learning (regularization)
+    - [ ] Create a d3heatmap for each cluster
+
+
 * Preprocessing RNA-seq data
 ** Quality controls
 #+BEGIN_SRC shell
