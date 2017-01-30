@@ -210,6 +210,8 @@ sudo apt-get install r-cran-rgl libX11-dev libglu1-mesa-dev mesa-common-dev
 ** INSTALL PACKAGES
 Some useful packages for data manipulation and wrangling, [[http://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html][here]]. For text mining [[https://github.com/arnab621/Text-Analysis-R-Aylien][here]]. and [[https://github.com/qinwf/awesome-R][awesome-R]]
 #+BEGIN_SRC R
+# only to install rJava and import excel sheets
+# an alternative is to use gdata package
 sudo R CMD javareconf
 sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev
 install.packages('rJava')
@@ -218,7 +220,7 @@ pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
 lapply(pkgs, install.packages)
 lapply(pkgs, require, character.only = TRUE)
 
-pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'ROAuth', 'SnowballC', 'wordcloud', 'xlsx','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
+pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'ROAuth', 'SnowballC', 'wordcloud', 'gdata','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
 #+END_SRC
 
 Install packages from github with devtools command.
