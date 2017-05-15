@@ -1160,7 +1160,7 @@ sudo sed -i 's/NoDisplay=true/NoDisplay=false/g' /etc/xdg/autostart/*.desktop
 * BLAST+
 1. Download from [[ftp://ftp.ncbi.nih.gov/blast/executables/blast%2B/LATEST/][ftp server]]
 #+BEGIN_SRC shell
-wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.2.31+-x64-linux.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz
 #+END_SRC
 
 Follow these instructions [[http://www.ncbi.nlm.nih.gov/books/NBK52640/][here]]. Write the export lines in $HOME .profile 

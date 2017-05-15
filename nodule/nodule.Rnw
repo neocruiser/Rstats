@@ -9,7 +9,7 @@
 <<setup, include=FALSE, cache=FALSE>>=
 # set global chunk options
 opts_chunk$set(dev="postscript",
-               fig.path="graphics/plot",
+               fig.path="graphics/",
                fig.lp= "",
                comment=NA,
                fig.keep="high",
@@ -39,7 +39,7 @@ rm(list=ls())
 Load packages.
 <<packages, results='hide'>>=
 pkgs <- c('gdata','caret','leaps','glmnet','lattice','latticeExtra',
-          'ggplot2', 'dplyr', 'tidyr')
+          'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -83,8 +83,7 @@ dotplot(c(trim$Total-trim$default)/100000 +
 
 Another way to visualize the discarded reads. A1 = yellow, A2 = orange, A3 = red.
 <<trim2>>=
-custom.colors <- c(col1 = "#ffeda0", col2 = "#feb24c", col3 = "#f03b20")
-
+custom.colors <- brewer.pal(3, name = "PRGn")
 barplot(as.matrix((trim$Total-trim[, -c(1:2)])/100000),
         horiz = TRUE,
         col = custom.colors,
@@ -131,11 +130,12 @@ Merge by reference position the length and number of mapped reads.
 <<mapx3>>=
 ref.genome.mix <- merge(genome1, ref.genome)
 head(ref.genome.mix)
+dim(ref.genome.mix)
 @ 
 
 Correlation between read length and number of mapped reads on the (testing) genome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
 <<map2>>=
-custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+custom.colors <- brewer.pal(3, name = "PRGn")
 key.variety <- list(space = "right", 
                     text = list(colnames(ref.genome.mix[, 3:5])),
                     col = custom.colors)
@@ -154,7 +154,7 @@ xyplot(A1 + A2 + A3 ~ length,
 
 Regression between reads and length of contigs in reference genome with (testing) adapters TrueSeq2 under default trimming settings.
 <<map3>>=
-custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+custom.colors <- brewer.pal(3, name = "PRGn")
 key.variety <- list(space = "right", 
                     text = list(colnames(ref.genome.mix[, 6:8])),
                     col = custom.colors)
@@ -211,7 +211,7 @@ head(ref.transcriptome.mix)
 
 Plot the correlation between read length and number of mapped reads on the transcriptome of QPX with the remaining reads from the default trimming with TrueSeq3 adapters.
 <<trans4>>=
-custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+custom.colors <- brewer.pal(3, name = "PRGn")
 key.variety <- list(space = "right", 
                     text = list(colnames(ref.transcriptome.mix[, 3:5])),
                     col = custom.colors)
@@ -230,7 +230,7 @@ xyplot(A1 + A2 + A3 ~ length,
 \label{subsec:density}
 Density plot between reference transcriptome and assembled contigs. The plot shows a high concentration of contigs under 2000 base pair. Trimming parameters are of default with TrueSeq3 adapters.
 <<trans1>>=
-custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+custom.colors <- brewer.pal(3, name = "PRGn")
 key.variety <- list(space = "right", 
                     text = list(colnames(ref.genome.mix[, 3:5])),
                     col = custom.colors)
@@ -249,7 +249,7 @@ densityplot(A1 + A2 + A3 ~ length,
 
 Plot correlation same as above but with TrueSeq2 adapters with default parameters.
 <<trans2x>>=
-custom.colors <- c('#d7191c', '#abdda4', '#2b83ba')
+custom.colors <- brewer.pal(3, name = "PRGn")
 key.variety <- list(space = "right", 
                     text = list(colnames(ref.genome.mix[, 6:8])),
                     col = custom.colors)
@@ -462,19 +462,13 @@ Plot the difference before and after duplicates were discarded. The number of ma
 Even though we did not plot length of contigs, the analyzes above demonstrate that length is linearly correlated to the number of mapped reads. Therefore, peaks indicate a specific preference that reads have to map to an assembled reference.
 \marginnote{\small\color{blue}$\Lsh$ A high resolution version of the plot below can be found in the Supplemental Information}[.1cm]
 <<summaryPlot2, results='hide'>>=
-custom.colors <- c(col1 = "#762a83", 
-                   col2 = "#1b7837", 
-                   col3 = "#ef8a62",
-                   col4 = "#2166ac",
-                   col5 = "#8c510a",
-                   col6 = "#e6ab02")
-
-histogram( ~ A1 + A2 + A3 | c('A1n', 'A2n', 'A3n'),
+custom.colors <- brewer.pal(6, name = "PRGn")
+histogram( ~ A1 + A2 + A3 ,
      data = allDF,
      nint = 50,
      scales = list(log = 2),
      type = "p",
-     ylim = c(0,25),
+     ylim = c(0,17),
      groups = allDF$reference,
      panel = function(...) panel.superpose(..., 
          panel.groups = panel.histogram,
@@ -484,8 +478,8 @@ histogram( ~ A1 + A2 + A3 | c('A1n', 'A2n', 'A3n'),
          rectangles = FALSE,
          col = custom.colors),
           main = 'Peaks indicate bias mapping to one contig length',
-          ylab = 'Percent of total number of mapped reads to the reference (%)',
-          xlab = 'Number of mapped reads for each reference contig (log10)'
+          ylab = 'Percent of total number of mapped reads (%)',
+          xlab = 'Contigs per reference (log2)*1000'
      )
 
 @ 
@@ -768,6 +762,164 @@ read.table("./data/clam.trxome.txt", header = T) %>%
 @ 
 
 
+\subsection{Differential gene expression of the clam}
+\label{subsec:diffclam}
+Three conditions were evaluated, 2 samples originated from infected animals but from different location, first a nodule and second a not inflamed tissue. 1 sample originated from a healthy animal.
+Also the transcriptome of the clam has been reduced in size by removing low aligned contigs and redundant isoforms. 
+Accordingly 40\% and 60\% of the contigs have been removed.
+
+<<diff-clam,out.width='.7\\linewidth',out.height='.7\\linewidth'>>=
+read.table("./data/summary.40p.txt", header = F) %>% 
+    cbind(size = c("40pRem-")) %>%
+    ggplot(aes(
+    x = V1,
+    y = V7,
+    fill = V4)) +
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap( ~ size + V5 + V2,
+              ncol = 3,
+               scales = "free") + 
+    scale_fill_brewer(type = "qual", palette = 6) +
+    labs(x = "R differential expression packages",
+         y = "Number of genes")
+
+@ 
+
+By removing 60\% of the contigs.
+<<diff-clam2,out.width='.7\\linewidth',out.height='.7\\linewidth'>>=
+read.table("./data/summary.60p.txt", header = F) %>% 
+    cbind(size = c("60pRem-")) %>%
+    ggplot(aes(
+    x = V1,
+    y = V8,
+    fill = V4)) +
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap( ~ size + V5 + V2,
+              ncol = 3,
+               scales = "free") + 
+    scale_fill_brewer(type = "qual", palette = 6) +
+    labs(x = "R differential expression packages",
+         y = "Number of genes")
+
+@ 
+
+Without reducing clam transcriptome by removing unnecessary isoforms and low abundant reads.
+<<diff-clam3,out.width='.7\\linewidth',out.height='.7\\linewidth'>>=
+read.table("./data/summary.100p.txt", header = F) %>% 
+    cbind(size = c("All")) %>%
+    ggplot(aes(
+    x = V1,
+    y = V8,
+    fill = V4)) +
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap( ~ size + V5 + V2,
+              ncol = 3,
+               scales = "free") + 
+    scale_fill_brewer(type = "qual", palette = 6) +
+    labs(x = "R differential expression packages",
+         y = "Number of genes")
+
+@ 
+
+Distribution of differential expression between R packages.
+<<pirateplot,out.width='.7\\linewidth',out.height='.7\\linewidth'>>=
+require("yarrr")
+df100 <- read.table("./data/summary.100p.txt", header = F) %>% cbind(size = c("All"))
+df60 <- read.table("./data/summary.60p.txt", header = F) %>% cbind(size = c("60p"))
+df40 <- read.table("./data/summary.40p.txt", header = F) %>% cbind(size = c("40p"))
+pdf("./graphics/pirateplot.norm.pdf")
+rbind(df100, df60, df40) %>%
+#    pirateplot(formula = V7 ~ V4 + V2 + V1,
+    pirateplot(formula = V8 ~ V2 + V1,
+          theme = 2,
+           pal = "basel",
+           avg.line.o = .5,
+           point.o = .35, point.pch = 21, point.bg = "white", 
+           point.col = "black", point.cex = 1.5,
+           hdi.o = .7,
+           inf.disp = "bean",
+           bean.b.o = .3,
+           jitter.val = .1)
+dev.off()
+@ 
+
+
+Distribution of differential expression between transcriptome sizes.
+<<pirateplot2,out.width='.7\\linewidth',out.height='.7\\linewidth'>>=
+df100 <- read.table("./data/summary.100p.txt", header = F) %>% cbind(size = c("All"))
+df60 <- read.table("./data/summary.60p.txt", header = F) %>% cbind(size = c("60p"))
+df40 <- read.table("./data/summary.40p.txt", header = F) %>% cbind(size = c("40p"))
+pdf("./graphics/pirateplot.size.pdf")
+rbind(df100, df60, df40) %>%
+    pirateplot(formula = V8 ~ V1 + size,
+           theme = 2,
+           pal = "basel",
+           point.o = .35, point.pch = 21, point.bg = "white", 
+           point.col = "black", point.cex = 1.5,
+           avg.line.o = .5,
+           hdi.o = .7,
+           bean.b.o = .4,
+           inf.disp = "bean",
+           jitter.val = .1)
+dev.off()
+@ 
+
+\subsection{Annotation of selected differentially expressed genes}
+\label{subsec:annot}
+The differentially expressed genes will be selected from edgeR at an adjusted p-value of 10$^{-3}$ with a fold change of 4 using the transcriptome that is reduced by only 40\% (137,022 contigs). 
+The annotated contigs are at an e-value of $10^{-10}$ from \textbf{protein domain alignment}.
+<<annot-clam>>=
+palette <- brewer.pal(12, name = "Paired")
+df <- read.table("./data/ips.clam.txt", header = F)
+df$Vp <- apply(df[, 1, drop = F], 2, function(x){round((x/sum(df$V1))*100, digits = 1)})
+colnames(df) <- c("counts", "db", "perc")
+df$laby <- paste(df$db," (",df$perc,"%)",sep = "")
+pie(x = df$counts, labels = df$laby, col = palette)
+@ 
+
+
+Most abundant species with domain annotations when comparing all samples simultaneously.
+This show clam genes.
+<<annot-clam-species>>=
+df <- read.table("./data/clam_40p.functions.panther.len20.eval10.abc.txt", header = F, sep = "\t")
+df$V3 <- factor(df$V3, levels = df[, 3])
+ggplot(df, aes(x = V3,
+               y = V1)) +
+    theme_bw() +
+    geom_point() +
+    theme(axis.text.x=element_text(angle = 30, vjust = 1, hjust = 1))
+@ 
+
+Most abundant species with domain annotations when comparing samples of infected animals only (A vs B).
+This show clam genes.
+<<annot-clam-species-ab>>=
+df <- read.table("./data/clam_40p.functions.panther.len20.eval10.ab.txt", header = F, sep = "\t") 
+df$V2 <- factor(df$V2, levels = df[, 2])
+ggplot(df, aes(x = V2,
+               y = V1)) +
+    theme_bw() +
+    geom_point() +
+    theme(axis.text.x=element_text(angle = 30, vjust = 1, hjust = 1))
+@ 
+
+Most abundant species with domain annotations when comparing infected samples A versus healthy animals C.
+This show clam genes.
+<<annot-clam-species-ac>>=
+df <- read.table("./data/clam_40p.functions.panther.len20.eval10.ac.txt", header = F, sep = "\t") 
+df$V2 <- factor(df$V2, levels = df[, 2])
+ggplot(df, aes(x = V2,
+               y = V1)) +
+    theme_bw() +
+    geom_point() +
+    theme(axis.text.x=element_text(angle = 30, vjust = 1, hjust = 1))
+@ 
+
 \section{QPX genes remaining after cleanup}
 \label{sec:cleanup}
 Raw reads of A, B, C samples are mapped to QPX reference genome. The true mapped reads are then assembled into contigs with Trinity genome guided approach. Number of genes resulted for each sample are shown in Section \ref{subsec:mapped}.
@@ -778,25 +930,24 @@ These genes are then processed to select \textbf{932, 44, 0} genes/isoforms for 
 \item Remove non-mapped contigs to QPX reference genome that have more than 4 gaps, less than 100 in contig size, and less than 250 in blocksize (if gaps exist)
 \end{enumerate}
 
-Differential gene expression between the three tissues.
+Differential gene expression between the three tissues at a minimum of 2 fold change.
 <<differential,out.width='.5\\linewidth',out.height='.45\\linewidth'>>=
 read.table("./data/summary.eXpress.729521.txt") %>%
     ggplot(aes(
-    x = V1,
+    x = V4,
     y = V8,
-    fill = V2)) + 
+    fill = V4)) + 
     geom_bar(stat = "identity",
              position = "dodge") +
-    geom_text(aes(x = V1,
+    geom_text(aes(x = V4,
                   y = V8,
                   ymax = V8,
                   label = V8,
                   size = 1,
                   hjust = 0),
               position = position_dodge(width = .5)) +
-    facet_wrap(~ V4,
-               ncol = 2,
-               scales = "free") +
+    facet_wrap(~ V1+V2,
+               ncol = 3)+
     scale_fill_brewer(type = "qual", palette = "Paired") +
     theme_bw() +
     theme(legend.position = "top",
@@ -807,6 +958,40 @@ read.table("./data/summary.eXpress.729521.txt") %>%
 
 @ 
 
+Annotations at an evalue of $10^{-10}$ of QPX transcripts assembled only from sample As. There is over 600 proteins found in PANTHER, but only 403 that have an alignment length of 20 aa between query and target.
+<<ips>>=
+read.table("./data/ips.txt", row.names = 1) %>%
+    ggplot(aes(
+    x = V3,
+    y = V2)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    theme_bw() +
+    labs(x = "Protein databases",
+         y = "Number of proteins found among QPX transcripts")
+@ 
+
+Distribution of species from PANTHER annotation at evalue of $10^{-10}$ and alignment 20 aa minimum.
+<<species>>=
+read.table("./data/A.peptides.fa.tsv.PANspecies.LEN20.EVAL10.tab", row.names = 1) %>%
+    ggplot(aes(
+    x = V3,
+    y = V2)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    theme_bw() +
+    labs(x = "Species names with highest protein hits from PANTHER",
+         y = "Number of proteins")
+@ 
+
+What are the enriched functional categories of the 312 differntially expressed genes between the QPX infected clam tissues and the healthy controls.
+<<pies>>=
+palette <- brewer.pal(12, name = "Paired")
+df <- read.table("./data/degs.pie.txt", header = T, sep = "")
+    pie(x = df$count, labels = df$fun, col = palette)
+@ 
 
 \section{System Information}
 \label{sec:sys_info}
