@@ -878,7 +878,7 @@ done
 #+END_SRC
 
 
-*** optional step, issues may occur during calling)
+*** optional step (issues may occur during calling)
 Create a probability per variant =vcf= file with samtools. Description of command line [[http://samtools.sourceforge.net/mpileup.shtml][here]].
 #+BEGIN_SRC shell
 #! /usr/bin/bash
