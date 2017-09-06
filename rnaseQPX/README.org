@@ -1,4 +1,4 @@
-#+TITLE: QPX strains in North America demonstrate high aggressiveness but low genotypic diversity in virulence genes -- QPX parasite exhibits low genetic diversity in virulence genes than local adaptation genes
+#+TITLE: SNP hot-spots in the clam parasite QPX
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
