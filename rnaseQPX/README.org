@@ -32,27 +32,24 @@ There is Pfam accession numbers and description IDs for the [[https://github.com
 Finally, we present GO-terms of the [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/5.list.sorted.counted.GO.txt][139 orthologs]] (virulence and adaptation genes) of the four QPX strains or the entire summary of the orthologs with Interpro accessions, Pfam names, UniProt description, and GO-terms [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/4.pfam.go.txt][here]].
 
 * Aims and resulting headlines
-The data we have include 4 QPX transcriptomes generated from four multiclonal strains of the parasite. Our aim is to comprehensively examine their evolutionary and functional relatedness. We also combined 4 separate assemblies for each transcriptome of the 4 QPX strains. We also acquired a published first draft of the QPX genome.
+The data we have include 4 QPX transcriptomes generated from four strains of the parasite. Our aim is to comprehensively examine their evolutionary and functional relatedness.
+We also acquired a published draft of the QPX genome.
 
-1. There is multiple levels of host resistance and many more levels of pathogen virulence
-2. Hypothesis 1: High virulent strains frequently strive on high resistant hosts
-3. Hypothesis 2: Trade-off exists between pathogen spread/transmission and levels of aggressiveness
-4. Hypothesis 3: High number of virulence genes can increase infectivity but reduce local adaption of the pathogen
-5. Hypothesis 4: The gene-for-gene concept associates every host resistance gene with a pathogen avirulence gene [[http://www.sciencemag.org/content/299/5613/1735.full][Thrall 2003]]
-6. Compare 4 QPX strains (transcriptomes) that derive from 3 geographically different locations
-7. First goal is to study the relatedness between strains (or closeness using SNP data)
-8. Hierarchical clustering was thus used for strain relatedness
-9. Preliminary results were significant
-10. Additional analysis were done on variant calling.
-11. Differential distribution of SNPs and indels was observed between strains.
-12. Preferential substitution of SNPs was observed between strains.
-13. Contigs were annotated with Pfam domains.
-14. Differential distribution of SNPs inside and outside domains were investigated.
-15. Higher number of variants were found outside of virulence protein domains
-16. Higher number of variants were found inside of salinity protein domains
-17. What is the prevalence of QPX in relation to number of virulence genes? By area? For salinity and temperature?
-18. Low genetic variation (low diversity) in virulence genes can be linked to a low spread (low disease incidence) of QPX between populations.
-19. Calling SNPs and annotating them without a reference genome [[http://nar.oxfordjournals.org/content/early/2016/07/25/nar.gkw655.full][Maestre 2016]] with [[http://kissplice.prabi.fr/TWAS/][KisSplice]]
+- There are multiple levels of host resistance and pathogen virulence.\\
+- Hypothesis 1: QPX is genetically diverse allowing the parasite to flourish in various environmental conditions.\\
+- Hypothesis 3: Trade-off exists between virulence and local adaption of the pathogen.\\
+- Compare four QPX strains (transcriptomes) that derive from different geographical locations\\
+- First goal is to study the relatedness between strains (or closeness using SNP data)\\
+- Hierarchical clustering was thus used for strain relatedness.\\
+- Preliminary results were significant.\\
+- Additional analyses were done on variant calling.\\
+- Differential distribution of SNPs and indels was observed between strains.\\
+- Preferential substitution of SNPs was observed between strains.\\
+- Contigs were annotated with Pfam domains.\\
+- Differential distribution of SNPs inside and outside domains were investigated.\\
+- Higher number of variants were found outside of virulence protein domains.\\
+- Higher number of variants were found inside salinity protein domains.\\
+- What is the prevalence of QPX in relation to the structure of virulence genes? By area? For salinity and temperature?\\
 
 
 * Data
