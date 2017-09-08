@@ -49,7 +49,6 @@ We also acquired a published draft of the QPX genome.
 - Differential distribution of SNPs inside and outside domains were investigated.\\
 - Higher number of variants were found outside of virulence protein domains.\\
 - Higher number of variants were found inside salinity protein domains.\\
-- What is the prevalence of QPX in relation to the structure of virulence genes? By area? For salinity and temperature?\\
 
 
 * Data
