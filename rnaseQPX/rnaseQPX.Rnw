@@ -30,7 +30,6 @@ options(formatR.arrow=TRUE,
 @ 
 
 \noindent
-\marginnote{\small\color{blue}$\Lsh$ Project started April 2015 - ended June 2015}[.1cm]
 
 Loaded functions:
 <<loading,results='hide'>>=
@@ -40,7 +39,7 @@ rm(list=ls())
 
 Load packages.
 <<pack,results='hide'>>=
-pkgs <- c('xlsx','lattice','latticeExtra',
+pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'vegan', 'tidyr',
           'ggbiplot')
 lapply(pkgs, require, character.only = TRUE)
@@ -183,7 +182,7 @@ SNPs were called either with samtools \textit{mpileup} function and the highest 
 \label{subsec:loding3}
 Number of SNPs called with either packages were counted. Calls were done after read duplicates were removed with Picard.
 <<loadcc32>>=
-counts.SNP <- read.xlsx("./data/snp.counts.xlsx", sheetIndex = 1)
+counts.SNP <- read.xls("./data/snp.counts.xlsx", sheet = 1)
 glimpse(counts.SNP)
 @ 
 
@@ -219,7 +218,7 @@ ggplot(counts.SNP,
 
 Another plot for cluster analysis between references and SNPs called. I find this useful for a fast check of outliers and errors in importing data. In \textit{comG3} com=combined assembly, G=genome reference, 3= x3 recalibration rounds.
 <<barplot11>>=
-dat <- read.xlsx("./data/snp.counts.xlsx", sheetIndex = 4)
+dat <- read.xls("./data/snp.counts.xlsx", sheet = 4)
 custom.colors <- c(col1 = "#b2182b",
                    col2 = "#ef8a62",
                    col3 = "#fddbc7",
@@ -263,7 +262,7 @@ x2 <- counts.SNP[counts.SNP$reference %in% "mmetsp0098CustGATKx1", ]
 Next, add the number of reads per QPX library. This is the count of non duplicate reads that mapped to each of all the references used.
 
 <<refreads>>=
-ref.reads <- read.xlsx("./data/refreads.xlsx", sheetIndex = 1)
+ref.reads <- read.xls("./data/refreads.xlsx", sheet = 1)
 head(ref.reads)
 y <- ref.reads[1:12, ]
 @ 
@@ -314,7 +313,7 @@ ggplot(ref.reads,
 Difference in SNPs called between the already assembled and the custom assembled \textit{mmetsp0098} reference.
 \marginnote{\small\color{blue}$\Lsh$ The custom assembled mmetsp0098 was done with trinity}[.1cm]
 <<mmetsp0098ref>>=
-dat <- read.xlsx("./data/snp.counts.xlsx", sheetIndex = 2)
+dat <- read.xls("./data/snp.counts.xlsx", sheet = 2)
 ggplot(dat,
        aes(x = factor(sample),
            y = counts,
@@ -328,7 +327,7 @@ ggplot(dat,
 
 Another way to show difference between GATK recalibration protocols and the way this strategy decreases the number of SNPs called by readjusting of nucleotide probabilities for each read. The plot shows also the difference in SNP called between mmetsp0098 custom (the first 3 bars) and original (the last 3 bars) assemblies.
 <<barplotGATK>>=
-dat <- read.xlsx("./data/snp.counts.xlsx", sheetIndex = 3)
+dat <- read.xls("./data/snp.counts.xlsx", sheet = 3)
 custom.colors <- c(col1 = "#b2182b",
                    col2 = "#ef8a62",
                    col3 = "#fddbc7",
@@ -365,7 +364,7 @@ GATK hard filtering removes SNPs with low quality or confidence. This is calcula
 Difference in called SNPs between QPX libraries mapped to 2 different references, the combined assembly (represented by lower bar labels) and the genome v15 of S. Roberts (represented by higher bar labels). \textit{A higher resolution bar can be found in Supplemental Information}.
 \marginnote{\small\color{blue}$\Lsh$ \textbf{Genome v15 S. Roberts} is used in the remaining tests}[.1cm]
 <<snphardfilter>>=
-dat <- read.xlsx("./data/hard.snps.xlsx", sheetIndex = 1)
+dat <- read.xls("./data/hard.snps.xlsx", sheet = 1)
 ggplot(dat,
        aes(x = factor(sample),
            y = snps,
@@ -390,7 +389,7 @@ ggplot(dat,
 
 Number of SNPs per strain at \textit{QD = 5}. SNPs called against \textit{SR genome v15}. The number of reads (approx 100 nt in size) per library has been counted and plotted previously, the data is in \textit{refreads.xlsx}.
 <<snphardfilter2>>=
-dat <- read.xlsx("./data/hard.snps.xlsx", sheetIndex = 1)
+dat <- read.xls("./data/hard.snps.xlsx", sheet = 1)
 dat <- dat[7:10, 1:2]
 dat$Treads <- ref.reads[c(19, 22, 20, 21), 2]
 dat$norm <- with(dat, (snps/Treads)*1000)
@@ -413,7 +412,7 @@ ggplot(dat,
 
 We can also do the same thing with indels.
 <<indelhardfilter>>=
-dat <- read.xlsx("./data/hard.snps.xlsx", sheetIndex = 1)
+dat <- read.xls("./data/hard.snps.xlsx", sheet = 1)
 ggplot(dat,
        aes(x = factor(sample),
            y = indels,
@@ -437,7 +436,7 @@ ggplot(dat,
 The combined assembly is already published. It is added here with the other references because it is heavily annotated and their contigs are extensively mapped. 
 Load in new mapped data to the combined reference:
 <<combined.loaded>>=
-combined <- read.xlsx("./data/snp.counts.xlsx", sheetIndex = 1)
+combined <- read.xls("./data/snp.counts.xlsx", sheet = 1)
 glimpse(combined)
 @ 
 
@@ -483,7 +482,7 @@ This following section shows the mean length of all sequences assembled from eac
 It is to note the number of predicted and identified rRNA features in each of these libraries is significantly low.
 Regress different variables on each others for visualization purposes.
 <<descriptive1>>=
-stats <- read.xlsx("./data/libraries.xlsx", sheetIndex = 1)
+stats <- read.xls("./data/libraries.xlsx", sheet = 1)
 rstats <- stats[complete.cases(stats), ]
 #rownames(rstats) <-  stats[, 1]
 
@@ -516,7 +515,7 @@ The plot shows the difference between QPX libraries according to the number of b
 
 \marginnote{\small\color{blue}$\Lsh$ The number of base pair must be multiplied by 1000 in this chart}[.1cm]
 <<descriptive3>>=
-stats <- read.xlsx("./data/libraries.xlsx", sheetIndex = 1)
+stats <- read.xls("./data/libraries.xlsx", sheet = 1)
 rstats <- stats[complete.cases(stats), ]
 rstats$bp <- rstats$bp/1000
 #rstats <- rename(rstats, bpx1000 = bp)
@@ -542,7 +541,7 @@ ggplot(rstats,
 
 Principal component analysis and diagnostics.
 <<pca1>>=
-stats <- read.xlsx("./data/libraries.xlsx", sheetIndex = 1)
+stats <- read.xls("./data/libraries.xlsx", sheet = 1)
 rownames(stats) <- stats$libraries
 rstats <- stats[complete.cases(stats), -1]
 rstats <- decostand(rstats, method = "range")
@@ -564,7 +563,7 @@ Like the title implies, identified and predicted annotations and protein feature
 
 Reshape data, transform columns into rows.
 <<predicted1>>=
-predicted <- read.xlsx("./data/libraries.xlsx", sheetIndex = 3)
+predicted <- read.xls("./data/libraries.xlsx", sheet = 3)
 predicted <- gather(predicted, "ko", "count", 3:8, na.rm = TRUE)
 summary(predicted)
 @ 
@@ -592,7 +591,7 @@ ggplot(predicted,
 
 In this next snippet subsystems are discussed. \href{http://www.nmpdr.org/FIG/wiki/view.cgi/FIG/FunctionalCoupling}{Functional coupling and chromosomal clusters} are shown for \textit{clustering-based subsytems} among other subsytems.
 <<predicted3>>=
-predicted <- read.xlsx("./data/libraries.xlsx", sheetIndex = 4)
+predicted <- read.xls("./data/libraries.xlsx", sheet = 4)
 predicted <- gather(predicted, "subsystems", "count", 3:8, na.rm= TRUE)
 ggplot(predicted,
        aes(x = lib,
@@ -615,7 +614,7 @@ ggplot(predicted,
 
 Finally, a taxonomic classification on sequence similarities gives insights on sequence relatedness or sample contamination. Five classes were selected, bacteria, fungi, algae, parasite, and bivalvia.
 <<predicted4>>=
-predicted <- read.xlsx("./data/libraries.xlsx", sheetIndex = 5)
+predicted <- read.xls("./data/libraries.xlsx", sheet = 5)
 predicted <- gather(predicted, "class", "count", c(3,5:9), na.rm = TRUE)
 ggplot(predicted,
        aes(x = lib,
@@ -766,7 +765,7 @@ customBiplot(closenessX, method = "range")
 MMETSP libraries are already been annotated. How many contigs, peptide and cds elements are indexed?
 \marginnote{\small\color{blue}$\Lsh$ Only \textbf{mmetsp} 98, 992, 1002, and 1433 are used in the remaining tests}[.1cm]
 <<aggregation1>>=
-contigs <- read.xlsx("./data/annot.stats.xlsx", sheetIndex = 1)
+contigs <- read.xls("./data/annot.stats.xlsx", sheet = 1)
 contigs <- gather(contigs, "elements", "counts", 2:4)
 ggplot(contigs,
        aes(x = factor(library),
@@ -986,7 +985,7 @@ ggplot(dat,
 \label{sec:protein}
 Get the number of protein domains that can be predicted from the MMETSP strains. First, assembled contigs must be translated into peptides. HMMER3.2b was used for annotation. Hidden Markov Models were generated on Pfam database. The table below lists old and new annotations against old and new Pfam v26 and v28 libraries. (> 2 years interval between versions).
 <<pfam1>>=
-pfam <- read.xlsx("./data/pfam.xlsx", sheetIndex = 1)
+pfam <- read.xls("./data/pfam.xlsx", sheet = 1)
 pfam
 @ 
 
@@ -1093,7 +1092,7 @@ ggplot(newpfam,
 Get the number of peptides that match a significant e-value domain.
 \marginnote{\small\color{blue}$\Lsh$ The new Pfam library will be used for the remaining tests}[.1cm]
 <<pfam6>>=
-pfam2 <- read.xlsx("./data/pfam.xlsx", sheetIndex = 2)
+pfam2 <- read.xls("./data/pfam.xlsx", sheet = 2)
 pfam2 <- filter(pfam2, annot == "contig")
 pfam2 <- gather(pfam2, "evalue", "count", 2:5)
 ggplot(pfam2,
@@ -1120,7 +1119,7 @@ ggplot(pfam2,
 How many \textit{unique} protein domains were found at different evalue significance.
 \marginnote{\small\color{blue}$\Lsh$ A higher resolution summary of these 2 plots can be found in the Manuscript}[.1cm]
 <<pfam7>>=
-pfam2 <- read.xlsx("./data/pfam.xlsx", sheetIndex = 2)
+pfam2 <- read.xls("./data/pfam.xlsx", sheet = 2)
 pfam2 <- filter(pfam2, annot == "domain")
 pfam2 <- gather(pfam2, "evalue", "count", 2:5)
 ggplot(pfam2,
@@ -1316,7 +1315,7 @@ ggplot(dat,
 
 How many SNPs can be found inside and outside domains between virulence, temperature, salinity and within strain?
 <<hotspots6>>=
-dat <- read.xlsx("./data/hotspots/snps.all.pfam.xlsx", sheetIndex = 1)
+dat <- read.xls("./data/hotspots/snps.all.pfam.xlsx", sheet = 1)
 dat <- gather(dat, "region", "count", 3:5)
 ggplot(dat,
        aes(x = lib,
@@ -1340,7 +1339,7 @@ ggplot(dat,
 
 Preferential substitution inside/outside domains, per Pfam subset, and for each strain.
 <<hotspots7, out.width='1.2\\linewidth'>>=
-dat <- read.xlsx("./data/hotspots/snps.all.pfam.xlsx", sheetIndex = 2)
+dat <- read.xls("./data/hotspots/snps.all.pfam.xlsx", sheet = 2)
 dat <- gather(dat, "mutation", "count", 3:14)
 dat$mutation <- gsub(".", ">", dat$mutation, fixed = TRUE)
 dat$pfam <- factor(dat$pfam, levels = c("virulence",
@@ -1364,7 +1363,7 @@ ggplot(dat,
 
 Frequency of SNPs inside Pfam domains for each strain, per 1 Kbp. Normalized by the total size of contigs for each strain.
 <<hotspots9>>=
-dat <- read.xlsx("./data/hotspots/snps.all.pfam.xlsx", sheetIndex = 1)
+dat <- read.xls("./data/hotspots/snps.all.pfam.xlsx", sheet = 1)
 inside <- c(593, 73, 216, 448)
 sizen <- c(425098, 46409, 242136, 337206)
 dat$inside <- with(dat, (inside/tsum)*1000)
