@@ -1,4 +1,4 @@
-#+TITLE: Interplay between the parasite and host immune defense systems
+#+TITLE: Network analysis of dual RNA-Seq reveals a conserved repertoire of virulence and survival mechanisms in the protistan parasite QPX
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
