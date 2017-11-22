@@ -213,7 +213,7 @@ Some useful packages for data manipulation and wrangling, [[http://www.computerw
 # only to install rJava and import excel sheets
 # an alternative is to use gdata package
 sudo R CMD javareconf
-sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev
+sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev 
 install.packages('rJava')
 
 pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
@@ -663,11 +663,6 @@ search for similarity between variables
 *** Self-organizing maps
 *** Independent component analysis
 *** spectral clustering
-* INSTALL GITHUB
-#+BEGIN_SRC shell
-sudo apt-get install git
-git clone git://github.com/
-#+END_SRC
 * GITHUB                                                              :TABLE:
 
 #+CAPTION: Most used commands
@@ -706,6 +701,8 @@ Also install Dropbox CLI commands [[http://www.dropboxwiki.com/tips-and-tricks/u
 #+BEGIN_SRC shell
 sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
 #+END_SRC
+
+Add to System Settings Startup the command =dropbox start -i=
 * INSTALL JAVA
 #+BEGIN_SRC shell
 
@@ -784,7 +781,7 @@ latex sampleref.bib
 |                       | git clone [[https://github.com/muennich/urxvt-perls][urxt-perls]]                                    | put git content in ~/.urxvt/ext            |
 |                       | https://github.com/muennich/urxvt-perls.git             |                                            |
 |                       | yaourt -S urxvt-perls                                   | to activate copy/pasting                   |
-|                       | with xclip                                              | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
+|                       | xclip -sel clip < file.txt                              | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
 | liquidprompt          |                                                         | [[https://github.com/nojhan/liquidprompt][easy install]]                               |
 | bash                  | chsh -s /bin/bash                                       | use bash                                   |
 | *zsh*                 | chsh -s /bin/zsh ## logout then login                   | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
@@ -873,6 +870,12 @@ latex sampleref.bib
 | yank                  | make install                                            | [[https://github.com/mptre/yank][Github -- get stdin CLi]]                    |
 | *parallel*            | ./configure && make                                     | [[https://www.gnu.org/software/parallel/][Home page GNU]]                              |
 |                       | sudo make install                                       |                                            |
+| *fzf*                 | clone from [[https://github.com/junegunn/fzf#using-git][github]]                                       | CLI fuzzifier search encgine               |
+| *haste*               | sudo gem install haste                                  | [[https://hastebin.com/about.md][Link]] create and share a CLI output         |
+| *xsel*                | sudo apt-get install xsel                               | copy std output                            |
+| *json*                | sudo apt-get install nodejs npm                         |                                            |
+|                       | ln -s /usr/bin/nodejs /usr/bin/node                     |                                            |
+|                       | sudo npm install -g json                                | [[https://github.com/trentm/json#readme][github website]]                             |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
@@ -1117,6 +1120,12 @@ export PATH="$PATH:/home/neo/.cabal/bin"
 #+BEGIN_SRC shell
 sudo apt-get update && sudo apt-get upgrade
 sudo apt-get dist-upgrade
+#+END_SRC
+
+Add new package sources
+#+BEGIN_SRC shell
+sudo nano /etc/apt/sources.list
+sudo nano /etc/apt/sources.list.d/*
 #+END_SRC
 * REMOVE UNWANTED APPS
 #+BEGIN_SRC shell
