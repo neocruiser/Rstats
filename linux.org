@@ -20,11 +20,71 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
+
+* AMD drivers and XMR-STAK and Ubuntu 16.04 installation
+[[http://support.amd.com/en-us/kb-articles/Pages/Installation-Instructions-for-amdgpu-Graphics-Stacks.aspx][Download ]]and Install [[https://help.ubuntu.com/community/RadeonDriver#Testing_the_driver][AMD drivers]]. [[https://askubuntu.com/questions/850281/opencl-on-ubuntu-16-04-intel-sandy-bridge-cpu][check]] and [[http://laanwj.github.io/2016/05/06/opencl-ubuntu1604.html][test]]
+drivers. [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][Troubleshooting]] and [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][test]]. Get =xmr-stak= from [[https://github.com/fireice-uk/xmr-stak/blob/master/doc/Linux_deployment.md][github]]
+#+BEGIN_SRC shell
+sudo apt update
+sudo apt dist-upgrade
+sudo reboot
+
+lspci | grep -i vga
+
+# check for errors and messages
+dmesg | egrep 'drm|radeon'
+
+sudo apt install clinfo
+clinfo
+
+# after installing AMD SDK from https://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
+# in case error occurs of "No rule to make target" 
+# during the build of xmr-stak
+cd $AMDAPPSDKROOT/lib/x86_64
+sudo ln -sf sdk/libOpenCL.so.1 libOpenCL.so
+export LD_LIBRARY_PATH=/opt/AMDAPPSDK-3.0/lib/x86_64
+
+sudo apt install fonts-inconsolata
+
+# install opencl and amd for Radeon 8xxx series R7/240
+sudo apt-get install mesa-opencl-icd
+wget https://www2.ati.com/drivers/linux/ubuntu/amdgpu-pro-17.50-511655.tar.xz
+./amdgpu-pro-install -y --opencl=legacy
+
+# test opencl
+wget http://laanwj.github.io/assets/2016/05/06/opencl-ubuntu1604/devices.c
+gcc devices.c -o test -O2 /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 
+./test
+
+export GPU_FORCE_64BIT_PTR=1
+export GPU_USE_SYNC_OBJECTS=1
+export GPU_MAX_ALLOC_PERCENT=100
+export GPU_SINGLE_ALLOC_PERCENT=100
+export GPU_MAX_HEAP_SIZE=100
+
+export -p
+#+END_SRC
+
+Ubuntu essentials
+#+BEGIN_SRC shell
+# install ccsm (Compiz Config Settings Manager)
+# change behavior of task switcher
+# swith to Static Application Switcher
+sudo apt-get install compizconfig-settings-manager compiz-plugins
+#+END_SRC
+
+* Synergy
+Remove synergy with package manager. Then remove settings. [[https://symless.com/forums/topic/4519-synergy-2-how-to-uninstall-and-reinstall/][Read more]]
+#+BEGIN_SRC shell
+rm -rf ~/.config/Synergy/
+rm -rf ~/.synergy/
+#+END_SRC
 * Cheat Sheets
 1. [[http://blog.serversaustralia.com.au/ultimate-list-of-cheatsheets-for-a-sysadmin?utm_campaign=Blog%2520post%2520series&utm_medium=social&utm_source=reddit][Sysadmin cheat sheets]]
 * INSTALL EMACS 24 and 25
 This is a snapshot of developmental version for the latest Emacs25. =working=
 #+BEGIN_SRC shell
+sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:ubuntu-elisp/ppa
 sudo apt-get update
 sudo apt-get install emacs-snapshot
@@ -878,6 +938,10 @@ latex sampleref.bib
 | *json*                | sudo apt-get install nodejs npm                         |                                            |
 |                       | ln -s /usr/bin/nodejs /usr/bin/node                     |                                            |
 |                       | sudo npm install -g json                                | [[https://github.com/trentm/json#readme][github website]]                             |
+| *gupg*                | sudo apt-get install gupg                               |                                            |
+|                       | gpg -c encrypt.file                                     |                                            |
+|                       | gpg -d decrypt.file                                     |                                            |
+| *nmap*                | nmap $ip_address                                        |                                            |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
