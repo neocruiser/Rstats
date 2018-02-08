@@ -24,6 +24,7 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 
 | Project                | Pipeline | Code       | Author    |    Year | University    |
 |------------------------+----------+------------+-----------+---------+---------------|
+| Affymetrix pipeline    | [[https://github.com/neocruiser/Rstats/tree/master/relapse][Repo]]     | [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.2.0.R][R]]          | S. Bassim |    2018 | UHN           |
 | RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]]     |            | S. Bassim |    2016 |               |
 | Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
 | QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |

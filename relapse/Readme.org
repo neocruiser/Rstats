@@ -1,0 +1,148 @@
+#+TITLE: Network analysis of dual RNA-Seq reveals a conserved repertoire of virulence and survival mechanisms in the protistan parasite QPX
+#+AUTHOR: Sleiman Bassim, PhD
+#+EMAIL: slei.bass@gmail.com
+
+#+STARTUP: content
+#+STARTUP: hidestars
+#+OPTIONS: toc:5 H:5 num:3
+#+LANGUAGE: english
+#+LaTeX_HEADER: \usepackage[ttscale=.875]{libertine}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LaTeX_HEADER: \sectionfont{\normalfont\scshape}
+#+LaTeX_HEADER: \subsectionfont{\normalfont\itshape}
+#+LATEX_HEADER: \usepackage[innermargin=1.5cm,outermargin=1.25cm,vmargin=3cm]{geometry}
+#+LATEX_HEADER: \linespread{1}
+#+LATEX_HEADER: \setlength{\itemsep}{-30pt}
+#+LATEX_HEADER: \setlength{\parskip}{0pt}
+#+LATEX_HEADER: \setlength{\parsep}{-5pt}
+#+LATEX_HEADER: \usepackage[hyperref]{xcolor}
+#+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+
+This git repository includes [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.h4h.pbs][the pipeline]] for Affymetrix HT2.0 microarray data processing
+and machine learning (in =org= format for emacs. Can be imported as
+Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table
+management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][the
+PDF]] of the compiled R file, and the scripts for data pre-processing (detailed in the tutorial below).
+
+* Overview
+- =keywords= dlbcl gene expression mutations classification machine learning
+- Clinical factors, status of disease, and gene mutations, all affect treatment outcome, and should be combined to provide optimum prognostics [[http://www.pathodiagnostik.de/de/downloads/pdf/2015/Lancet/PIIS1470-2045-15.pdf][Pastore 2015]]
+- An exciting era is now opening in deciphering the kinetics of transformation
+- Treatment for non-Hodgkin lymphoma may include chemotherapy, radiation therapy, monoclonal antibody therapy, bone marrow, stem cell transplant, steroids
+- Hodgkin affects men more than women
+- Risk factors for non-Hodgkins lymphoma (Age, sex, ethnicity, obesity, immunodefisciency, breast implants, chemicals, radiation, autoimune and viral diseases)
+- =COO= Cell of origin identification and classification
+- University of British Columbia-BCCA Research Ethics Board.
+- [[http://www.christie.nhs.uk/media/4755/molecular-analysis-of-circulating-tumor-cells-identifies-distinct-copy-number-profiles.pdf][Carter 2016]] classifying copy number variation
+- [[http://www.pathodiagnostik.de/de/downloads/pdf/2015/Lancet/PIIS1470-2045-15.pdf][Pastore2015]] [[http://www.bloodjournal.org/content/bloodjournal/129/20/2760.full.pdf?sso-checked%3Dtrue][Blood]] Classification strategies
+- [[https://www.dropbox.com/home/grants/banting?preview%3DInnovation%2BGrant_Scientific%2Babstract%2Brdg%2Bedits.doc][Abstract]] for the innovation scientific grant @UHN
+- Lymphomas with different cell type [[https://www.ncbi.nlm.nih.gov/pubmed/12075054?access_num=12075054&link_type=MED&dopt=Abstract][Rosewald 2002]] [[https://www.ncbi.nlm.nih.gov/pubmed/10676951?access_num=10676951&link_type=MED&sso-checked=true&dopt=Abstract][Alizadeh 2000]] [[https://www.ncbi.nlm.nih.gov/pubmed/10676951?access_num=10676951&link_type=MED&sso-checked=true&dopt=Abstract][Rosenwald 2003]]
+  - Genomic imbalances, comparative genomic hybridization (CGH)
+    has the potential to detect less-well-characterized chromosomal aberrations
+    in lymphomas that may play an important role in the development and
+    progression of the disease
+- [[http://asheducationbook.hematologylibrary.org/content/2012/1/402.full][Sehn 2014]] overview of all therapies and predictive analyses for
+  lymphoma
+
+* Design CNS relapse (affymetrix)
++ Lab [[https://github.com/kridel-lab/e4402][Github]] repository and working [[https://github.com/neocruiser/pipelines][repository]]
++ Parallel computing, Multicore analysis, support for large datasets
+  [[https://bioconductor.org/packages/release/bioc/vignettes/oligo/inst/doc/oug.pdf][oligo]] [[https://github.com/benilton/oligoOld/wiki/Getting-the-grips-with-the-oligo-Package][GitHub]]
++ Affymetrix comparison is within gene (not between genes) because the signal
+  designate an absolute expression
+  - All affy packages ('gcrma', 'simpleaffy', 'affyQCReport', 'plier',
+    "affycoretools", 'affy', 'affyPLM') cannot be used on HTA new
+    Affymetrix Chips. They require AffyBatch raw data
+  - Only =oligo= and =xps= can be used with HTA.2.0 chips. They rely HTAFeatureSets.
+  - Most normalization methods for AffyBatch data: GC-RMA, RMA, MAS5,
+    MAS5>GC-RMA, Plier
++ Quality Control
+  - [[http://bioconductor.org/packages/release/bioc/vignettes/affyPLM/inst/doc/QualityAssess.pdf][affyPLM]] to assess chip quality and RUSE method from [[https://bioconductor.org/packages/release/bioc/vignettes/oligo/inst/doc/oug.pdf][oligo]]
+  - [[http://aroma-project.org/][aroma]] and [[https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf][limma]]
+  - [[https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2816-x][EventPointer]] and FIRMA
+  - Cell of origin classification [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3931191/][Scott 2014]] and [[http://www.pnas.org/content/100/17/9991.full][Wright 2003]]
++ Normalization [[http://www.genopomii.unina.it/genohort/files/probe-level_data_normalisation.pdf][overview]] and visualization [[http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#visualization][options]]
+  - Affymetrix MA are one-color chips. With Perfect MAtch PM and
+    Mismatch MM probes
+  - Robust Multi-array Average (RMA) background correction using
+    [[http://homer.salk.edu/homer/basicTutorial/affymetrix.html][oligo]], only relies on PM, many false-negatives are lost
+    - RMA assumes positive signals since Affy chips give absolute signal
+    - Substracting high MMs from PM gives negative values
+    - Negative values are removed after background correction and
+      quantile normalization
+      - Intensities are combined
+      - Chips are nomalized to their median
+      - Genes are nomalized to their median
+      - Normalizations are iterated until congergance 
+  - MAS only sensitive to high expression changes.
+    - Relies on PMs and only on the MMs that are not higher than PMs
+  - GeneChip GC-RMA relies on all PMs and MMs
+    - By substracting MM from PM non-specfic bindings NSB are removed
+    - MMs are adjusted based on probe affinity
+    - At low expression variance is not detected
+    - Gives less false positives than MAS 
+  - Multtest and limma
++ Annotation of genes
+  - Using [[https://bioconductor.org/packages/release/data/annotation/manuals/pd.hta.2.0/man/pd.hta.2.0.pdf][pd.hta.2.0]] already compiled with pdinfobuild
+  - [[http://bioconductor.org/packages/release/bioc/vignettes/annotate/inst/doc/annotate.pdf][annotate]] package for human hgu95
++ Differntial expression
+  - [[http://darwin.biochem.okstate.edu/gpap/faq.html#b-stat][B-statisitc]] in empirical Bayes
+  - [[http://darwin.biochem.okstate.edu/gpap/faq.html#t][t-statistic]] in moderated student analysis
+  - =Avg-Exp= is the ordinary arithmetic average of the log2-expression
+    values for the probe, across all arrays in the experiment.
++ Alternative splicing
+  - [[https://academic.oup.com/bib/article/18/2/260/2562746][Dapas 2017]] comapring RNAseq and exon arrays isoforms using eXpress
+    and [[http://bgx.org.uk/software/mmbgx.html][Multi-Mapping Bayesian Gene eXpression (MMBGX)]]. =many dependencies=
++ Data wrangling
+  - ABCLikelihood and Prediction of =CNR1039T1= and =CNR1045T1= was
+    set to 0.5 and Unclassified.
+  - Controls were assigned the correct ABClikelihoods and Predictions
+| Parameter          | Score |
+|--------------------+-------|
+| B-statistic        | >=1   |
+| adjusted P-value   | <=.01 |
+| LogFC high         | >=1   |
+| LogFC low          | <=-1  |
+| Average expression | >=10  |
+|                    |       |
+
+* Strategy
++ [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
++ Pleiotropy and epistasis
+  + Modifier genes
++ Visualization inside pipeline
+  + Genome plotting [[https://bioconductor.org/packages/release/bioc/html/Gviz.html][GViz]] [[https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html][GenomicRanges]] [[http://www.tengfei.name/ggbio/][GGBIO]] [[http://circos.ca/][Circos]] [[https://cran.r-project.org/web/packages/RCircos/index.html][Rcircos]] [[http://circos.ca/][KaryoplotR]]
+  + Clustering [[https://blog.omictools.com/top-gene-clustering-tools/][methods]]
+  + [[http://www.gettinggeneticsdone.com/2015/12/tutorial-rna-seq-differential.html][Pathway analysis]] and expression with Sailfish DESEq2 Pathview
++ Pipeline automation
+  + [[http://blog.byronjsmith.com/snakemake-analysis.html][Snakewake]] pipeline design with different scripts and different languages.
+
+** Machine learning and [[https://github.com/donnemartin/data-science-ipython-notebooks#keras-tutorials][Github notebooks]] [0/4]
+  - Machine learning challenge [[https://www.reddit.com/r/MachineLearning/comments/6vceas/p_a_new_kind_of_data_challenge_100k_to_help_build/][reddit]] [[https://concepttoclinic.drivendata.org/][project]] [[http://blog.drivendata.org/2017/08/08/a-new-kind-of-data-challenge/][blog]] [[http://stm.sciencemag.org/content/9/403/eaan2415][paper]]
+  - [[http://randomekek.github.io/deep/deeplearning.html][Deep learning]] Cheat Sheet (Highlights) and [[https://becominghuman.ai/cheat-sheets-for-ai-neural-networks-machine-learning-deep-learning-big-data-678c51b4b463][code summary]] of many packages.
+  - [[http://onlinelibrary.wiley.com/doi/10.1002/cam4.650/full][Zhao 2016]] DLBCL patient classification with 8 genes
+    - A Cox proportional hazards model was used for multivariate analysis
+    - Decision tree, Random forest, support vector machine, Fisher discriminant analysis, Nearest Neighbor, Bagging, and Adaboost
+  - [[http://data.conferenceworld.in/GSMCOE/P271-278.pdf][Sharma 2016]] information from patient IPIs was used to fit a basic Bayesian classifier
+  - [[http://w3.ualg.pt/~mfutschik/publications/futsulreekasabi03.pdf][Futschnik 2003]] for prediction of treatment outcome and disease prognosis
+    - classifier accuracy of 87.5% for certainty in DLBCL patients mortality
+    - Both classifiers were combined in an ensemble learning model
+      - Evolving Fuzzy Neural Network classifier on expression data
+      - Basic bayesian classifier on IPI
+  - [[https://medium.com/towards-data-science/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe][Dimension reduction]] using Tensorflow for deep learning (PCA, tSNE, auto encoders)
+  - [[https://www.r-bloggers.com/building-meaningful-machine-learning-models-for-disease-prediction/][tutorial]] integration of R and [[http://docs.h2o.ai/h2o/latest-stable/index.html][H2O]] to do deep learning (context at the 56% of the page). H2O has a rich multi-language [[http://docs.h2o.ai/h2o/latest-stable/index.html][documentation]] (cited 20+)
+  - [[https://cran.r-project.org/web/packages/darch/index.html][darsh]] R package to construct multi-layer deep networks and [[https://mxnet.incubator.apache.org/api/r/index.html][Mxnet]], flexible for building neural architecture from scratch with tutorials (cited 100+)
+  - [[http://topepo.github.io/caret/index.html][caret]] R package which includes many tutorials and [[http://topepo.github.io/caret/available-models.html][models]] (cited 600+)
+  - [[https://keras.io/][keras]] recently hyped deep learning package in python with [[https://keras.io/getting-started/sequential-model-guide/][guides]] and [[https://wrosinski.github.io/keras-pipelines/][pipelines]]
+  - [[http://www.datasciencecentral.com/profiles/blogs/search-for-the-fastest-deep-learning-framework-supported-by-keras][Comparison]] of tensor, keras, Mxnet
+  - [[https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/?utm_content%3Dbuffer847f5&utm_medium%3Dsocial&utm_source%3Dtwitter.com&utm_campaign%3Dbuffer][Imputation]] with R using MICE amelia missForest Hmisc mi
+  - [ ] K-means estimation of K [[http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters?answertab=votes#tab-top][stackoverfow post]] =R= [[http://blog.echen.me/2011/03/14/counting-clusters/][counting clusters]]
+  - [ ] Use prior for weighting or correct modularity of network
+  - [ ] Iterative inferential of networks
+    - [[http://biorxiv.org/content/early/2017/06/13/149492][Ashitani 2017]] centrality measures and unsupervised clustering to rank nodes
+  - [ ] Evaluate your algorithm performance with the Matthews correlation coefficient (MCC) or the Precision-Recall curve
+  - Dimension reduction
+    - [ ] [[https://www.biorxiv.org/content/early/2017/11/10/217554][Ricard 2017]] unsupervised dimensionality reduction for multi omics

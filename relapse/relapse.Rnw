@@ -1,0 +1,247 @@
+\documentclass[9pt,english]{extarticle}
+\include{canevas_config}
+
+\begin{document}
+\author{Sleiman Bassim, PhD}
+\title{R implementation}
+\maketitle
+\begin{linenumbers}
+<<setup, include=FALSE, cache=FALSE>>=
+# set global chunk options
+opts_chunk$set(dev="postscript",
+               fig.path="graphics/",
+               fig.lp= "",
+               comment=NA,
+               fig.keep="high",
+               fig.show='hold',
+               fig.align='center', 
+               out.width='.49\\textwidth',
+               tidy.source=TRUE,
+               crop=TRUE,
+               results="markup",
+               warnings=FALSE,
+               error=FALSE,
+               message=FALSE)
+options(formatR.arrow=TRUE,
+        width=70,
+        digits = 3,
+        scipen = 6)
+@ 
+
+\noindent
+Loaded functions:
+<<loading,results='hide'>>=
+#source("/media/Data/Dropbox/humanR/01funcs.R")
+rm(list=ls())
+#setwd("/media/Data/Dropbox/humanR/PD/")
+#setwd("~/Dropbox/humanR/PD/")
+###load("PD.Rdata", .GlobalEnv)
+#lsos(pat="")
+@ 
+
+Load packages.
+<<packages,results='hide'>>=
+pkgs <- c('gdata','caret','leaps','glmnet','lattice','latticeExtra',
+          'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
+          'DescTools')
+lapply(pkgs, require, character.only = TRUE)
+@
+
+
+\section{Data structure}
+\label{sec:structure}
+Data is from patients with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some patients show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
+<<summary_full>>=
+metadata <- read.table("data/phenodata", sep = "\t", header = T)
+head(metadata)
+
+@ 
+
+In the first steps of the analysis, the samples will be classified (supervised) into the following categories.
+<<summary_selected>>=
+metadata <- read.table("data/phenodata", sep = "\t", header = T) %>%
+    dplyr::select(SAMPLE_ID, Timepoint, GROUP, SITE, Score, Prediction, ABClikelihood) %>%
+    filter(Timepoint != "T2") %>%
+    mutate(Groups = case_when(GROUP %in% c("CNS_RELAPSE_RCHOP",
+                                            "CNS_RELAPSE_CHOPorEQUIVALENT",
+                                            "CNS_DIAGNOSIS") ~ "CNS",
+                               GROUP %in% c("TESTICULAR_NO_CNS_RELAPSE", "NO_RELAPSE") ~ "NOREL",
+                               GROUP == "SYTEMIC_RELAPSE_NO_CNS" ~ "SYST",
+                               TRUE ~ "CTRL")) %>%
+    mutate(ABClassify = case_when(ABClikelihood >= .9 ~ "ABC",
+                                  ABClikelihood <= .1 ~ "GCB",
+                                  TRUE ~ "U")) %>%
+    mutate(ABCScore = case_when(Score > 2412 ~ "ABC",
+                                Score <= 1900 ~ "GCB",
+#                                Score == NA ~ "NA",
+                                TRUE ~ "U")) %>%
+    mutate(Nodes = case_when(SITE == "LN" ~ "LN",
+                             SITE == "TO" ~ "LN",
+                             SITE == "SP" ~ "LN",
+                             TRUE ~ "EN")) %>%
+    mutate(Lymphnodes = case_when(Nodes == "LN" ~ 1, TRUE ~ 0))
+
+# make sure all samples preserve their ID
+metadata$Groups <- as.factor(metadata$Groups)
+metadata$ABClassify <- as.factor(metadata$ABClassify)
+metadata$ABCScore <- as.factor(metadata$ABCScore)
+metadata$Nodes <- as.factor(metadata$Nodes)
+metadata$Lymphnodes <- as.factor(metadata$Lymphnodes)
+
+summary(metadata)
+@ 
+
+Difference in cases being indexed based on their \textit{cell-of-origin} association subtypes using either of the following features: prediction, ABClassify, ABCScore.
+<<cells_difference, warning=FALSE>>=
+x <- metadata %>%
+    select(Prediction, ABClassify, ABCScore) %>%
+    summary
+
+@ 
+
+
+Distribution of samples with different treatments.
+<<treatmens_bar>>=
+metadata %>% 
+    select(GROUP) %>%
+    ggplot(aes(x = GROUP)) +
+    geom_histogram(stat = "count") +
+    labs(y = "Number of lymphoma cases",
+         x = "Patients diagnosis") +
+    theme_bw() +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@
+
+Or as a pie chart.
+<<treatments_pie>>=
+palette.pies <- brewer.pal(12, name = "Set3")
+palette.pies.adj <- colorRampPalette(palette.pies)(length(unique(metadata$GROUP)))
+pie(table(metadata$GROUP), col=palette.pies.adj)
+@ 
+
+Distribution of samples with different cells of origin subtypes.
+<<subtypes_bar>>=
+metadata %>% 
+    select(Prediction) %>%
+    ggplot(aes(x = Prediction)) +
+    geom_histogram(stat = "count") +
+    labs(y = "Number of Cell-of-origin subtypes",
+         x = "Patients Cell-of-origin classification") +
+    theme_bw() +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@
+
+Or as pie chart.
+<<subtypes_pie>>=
+palette.pies <- brewer.pal(12, name = "Set3")
+palette.pies.adj <- colorRampPalette(palette.pies)(length(unique(metadata$Prediction)))
+pie(table(metadata$Prediction), col=palette.pies.adj)
+@ 
+
+Distribution of samples with different lymphnodes and extranodal cancer metastasis.
+<<nodes_bar>>=
+par(mfrow=c(2,2))
+metadata %>% 
+    select(SITE) %>%
+    ggplot(aes(x = SITE)) +
+    geom_histogram(stat = "count") +
+    labs(y = "Number of Nodata origins",
+         x = "Patients lymphnodes and extranodal tumor presence") +
+    theme_bw() +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@
+
+Or as a pie chart.
+<<nodes_pie>>=
+palette.pies <- brewer.pal(12, name = "Set3")
+palette.pies.adj <- colorRampPalette(palette.pies)(length(unique(metadata$SITE)))
+pie(table(metadata$SITE), col=palette.pies.adj)
+@ 
+
+\section{Differential expression}
+\label{sec:expression}
+Genes have been fitted in a model that is based on an Empirical Bayes approach. Ranking of the genes determine if they are statistically significant. Bonferroni correction is used to control the false discovery rate (FDR). Moderated t-statistics, FDR, and fold change (log2) are implemented to reduce selection of false positives.
+
+\begin{itemize}
+\item \textbf{adjpval} is the adjusted P-value to control the FDR using Bonferroni correction. \textbf{Genes selected here based on their adjpval are also greater than or equal to the bstat threshold}.
+\item \textbf{avgex} is the average expression the ordinary arithmetic average of the log2-expression values for the probe, across all arrays. \textbf{Genes selected here based on their avgex are also greater than or equal to the bstat threshold}.
+\item \textbf{bstat} is the moderated t-statistics using an Empirical Bayes approach generating B-statistics scores. 
+\end{itemize}
+
+<<summary_expression>>=
+expression <- read.table("data/summary.full.90800.txt", sep = "\t", header = T) %>%
+    select(Design, Model, Bthreshold, adjPval, Category, Parameter, Transcripts) %>%
+    filter(Category == "total")
+summary(expression)
+
+@ 
+
+Number of transcripts when comparing B-statistics scores, which represent confidence in selecting each significantly expressed gene.
+<<transcripts_bval>>=
+aggregate( Transcripts ~ Bthreshold, data=expression, FUN=range)
+
+@ 
+
+Number of transcripts when samples are classed into groups, which are based on clinical data (e.g., cell-of-origin, CNS relapse, and nodal/extranodal tumor transmission).
+<<transcripts_model>>=
+aggregate( Transcripts ~ Model, data=expression, FUN=range)
+
+@ 
+
+Number of transcripts found when comparing different sample cases indexed based on their clinical data.
+<<transcripts_design>>=
+aggregate( Transcripts ~ Design, data=expression, FUN=range)
+@ 
+
+
+Number of genes that respond to treatment, cell subtypes, and nodal transmission.
+<<expression_bval,out.width='5in'>>=
+
+expression %>%
+    ggplot(aes(
+        x = Design,
+        y = Transcripts,
+        fill = factor(Bthreshold))) +
+    theme_bw() +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    facet_wrap( ~ Model,
+              ncol = 2,
+               scales = "free") + 
+    scale_fill_brewer(type = "qual", palette = 6) +
+    labs(x = "Samples being compared",
+         y = "Number of genes") +
+    theme(legend.position = "top",
+          axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@ 
+
+
+
+
+
+
+\section{System Information}
+\label{sec:sys_info}
+\noindent
+The version number of R and packages loaded for generating the vignette were:
+<<sessionInfo>>=
+###save(list=ls(pattern=".*|.*"),file="PD.Rdata")
+sessionInfo()
+@ 
+
+
+
+\end{linenumbers}
+\end{document}
