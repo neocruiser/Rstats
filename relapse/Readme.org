@@ -1,4 +1,4 @@
-#+TITLE: Network analysis of dual RNA-Seq reveals a conserved repertoire of virulence and survival mechanisms in the protistan parasite QPX
+#+TITLE: Identifying genetic CNS risk markers in DLBCL relapsed patients using machine learning, gene networks, and classification
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
