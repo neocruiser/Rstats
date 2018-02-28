@@ -31,6 +31,10 @@ There is Pfam accession numbers and description IDs for the [[https://github.com
 
 Finally, we present GO-terms of the [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/5.list.sorted.counted.GO.txt][139 orthologs]] (virulence and adaptation genes) of the four QPX strains or the entire summary of the orthologs with Interpro accessions, Pfam names, UniProt description, and GO-terms [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/data/IPS/4.pfam.go.txt][here]].
 
+
+Licence: MIT Licence
+
+
 * Aims and resulting headlines
 The data we have include 4 QPX transcriptomes generated from four strains of the parasite. Our aim is to comprehensively examine their evolutionary and functional relatedness.
 We also acquired a published draft of the QPX genome.

@@ -22,6 +22,9 @@
 
 This git repository includes RNA-seq data analysis pipelines, protocols, R code, figures, and supplemental information of peer-reviewed manuscripts.
 
+Licence: MIT Licence
+
+
 | Project                | Pipeline | Code       | Author    |    Year | University    |
 |------------------------+----------+------------+-----------+---------+---------------|
 | Affymetrix pipeline    | [[https://github.com/neocruiser/Rstats/tree/master/relapse][Repo]]     | [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.2.0.R][R]]          | S. Bassim |    2018 | UHN           |

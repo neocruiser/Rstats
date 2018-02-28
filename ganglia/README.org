@@ -24,6 +24,10 @@
 
 This git repository includes the pipeline for RNA-seq data processing and sequence annotation (in =org= format for emacs. Can be imported as Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][the PDF]] of the compiled R file, the data =to be updated= used for generating the figures, and the scripts =to be updated= (in bash) for RNA-seq reads pre-processing (detailed in the tutorial below).
 
+
+Licence: MIT Licence
+
+
 * Summary
 1. [9/12] Procedural aims
    1. [X] Biological samples: Crassostrea gigas [[http://www.nature.com/nature/journal/v490/n7418/full/nature11413.html][genome of the Pacific oyster]]
