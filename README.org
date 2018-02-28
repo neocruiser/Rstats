@@ -25,30 +25,30 @@ This git repository includes RNA-seq data analysis pipelines, protocols, R code,
 Licence: MIT Licence
 
 
-| Project                | Pipeline | Code       | Author    |    Year | University    |
-|------------------------+----------+------------+-----------+---------+---------------|
-| Affymetrix pipeline    | [[https://github.com/neocruiser/Rstats/tree/master/relapse][Repo]]     | [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.2.0.R][R]]          | S. Bassim |    2018 | UHN           |
-| RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]]     |            | S. Bassim |    2016 |               |
-| Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
-| QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| QPX nodules            | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]] | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| Databases              | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Tables]]   | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | Public    |    2015 | Stony Brook   |
-| Plink GWAS simulations |          | [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Shell]]      | S. Bassim |    2015 | Vermont       |
-| Brain disease GWAS     | [[https://github.com/neocruiser/Rstats/blob/master/brain.org][Research]] |            | S. Bassim | 2014-15 | Vermont       |
-| Algae                  |          | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| Bibliographies         | [[https://github.com/neocruiser/bilbiographies][Tutorial]] |            | S. Bassim |         |               |
-| Unsupervised learning  |          | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][R]]          | S. Bassim |    2014 | Quebec (UQAR) |
-| Cluster analysis       |          | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Bayesian networks      |          | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Microarray processing  |          | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Statistical learning   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#statistical-learning-summary][Summary]]  |            | S. Bassim |    2013 |               |
-| Blast+                 |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#blast][shell]]      | S. Bassim |    2015 |               |
-| Linux special addons   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#additional-linux-apps][Table]]    |            | S. Bassim |         |               |
-| Linux configurations   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#collection-of-information][Software]] |            | S. Bassim |    2015 |               |
-| D3.js summary          |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#g3js-dataviz][javascript]] | S. Bassim |         |               |
-| R summary functions    | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#r-short-summary][Table]]    |            | S. Bassim |         |               |
-| Emacs key-bindings     | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#emacs-keybindings][Table]]    |            | S. Bassim |         |               |
-| Archlinux configs      |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#archlinux][shell]]      | S. Bassim |         |               |
+| Project                | Pipeline          | Code       | Author    |    Year | University    |
+|------------------------+-------------------+------------+-----------+---------+---------------|
+| Affymetrix pipeline    | [[https://github.com/neocruiser/pipelines][Repo]] and [[https://github.com/neocruiser/Rstats/tree/master/relapse][Tutorial]] |            | S. Bassim |    2018 | UHN           |
+| RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]]              |            | S. Bassim |    2016 |               |
+| Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
+| QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
+| QPX nodules            | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
+| Databases              | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Tables]]            | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | Public    |    2015 | Stony Brook   |
+| Plink GWAS simulations |                   | [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Shell]]      | S. Bassim |    2015 | Vermont       |
+| Brain disease GWAS     | [[https://github.com/neocruiser/Rstats/blob/master/brain.org][Research]]          |            | S. Bassim | 2014-15 | Vermont       |
+| Algae                  |                   | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
+| Bibliographies         | [[https://github.com/neocruiser/bilbiographies][Tutorial]]          |            | S. Bassim |         |               |
+| Unsupervised learning  |                   | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][R]]          | S. Bassim |    2014 | Quebec (UQAR) |
+| Cluster analysis       |                   | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
+| Bayesian networks      |                   | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
+| Microarray processing  |                   | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
+| Statistical learning   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#statistical-learning-summary][Summary]]           |            | S. Bassim |    2013 |               |
+| Blast+                 |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#blast][shell]]      | S. Bassim |    2015 |               |
+| Linux special addons   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#additional-linux-apps][Table]]             |            | S. Bassim |         |               |
+| Linux configurations   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#collection-of-information][Software]]          |            | S. Bassim |    2015 |               |
+| D3.js summary          |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#g3js-dataviz][javascript]] | S. Bassim |         |               |
+| R summary functions    | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#r-short-summary][Table]]             |            | S. Bassim |         |               |
+| Emacs key-bindings     | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#emacs-keybindings][Table]]             |            | S. Bassim |         |               |
+| Archlinux configs      |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#archlinux][shell]]      | S. Bassim |         |               |
 
 * Mentions
 - Empirical Bayes Estimation of Dynamic Bayesian Networks (ebdbNet) on CRAN [[https://cran.r-project.org/web/packages/ebdbNet/NEWS][(updates]]).
