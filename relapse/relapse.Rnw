@@ -29,6 +29,8 @@ options(formatR.arrow=TRUE,
 @ 
 
 \noindent
+\marginnote{\small\color{blue}$\Lsh$ Project started Dec 10 2017}[.1cm]
+
 Loaded functions:
 <<loading,results='hide'>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
@@ -92,8 +94,8 @@ summary(metadata)
 @ 
 
 Difference in cases being indexed based on their \textit{cell-of-origin} association subtypes using either of the following features: prediction, ABClassify, ABCScore.
-<<cells_difference, warning=FALSE>>=
-x <- metadata %>%
+<<cells_difference>>=
+metadata %>%
     select(Prediction, ABClassify, ABCScore) %>%
     summary
 
@@ -182,7 +184,6 @@ expression <- read.table("data/summary.full.90800.txt", sep = "\t", header = T) 
     select(Design, Model, Bthreshold, adjPval, Category, Parameter, Transcripts) %>%
     filter(Category == "total")
 summary(expression)
-
 @ 
 
 Number of transcripts when comparing B-statistics scores, which represent confidence in selecting each significantly expressed gene.
@@ -214,6 +215,7 @@ expression %>%
     theme_bw() +
     geom_bar(stat = "identity",
              position = "dodge") +
+    coord_flip() +
     facet_wrap( ~ Model,
               ncol = 2,
                scales = "free") + 
@@ -221,9 +223,454 @@ expression %>%
     labs(x = "Samples being compared",
          y = "Number of genes") +
     theme(legend.position = "top",
-          axis.text.x = element_text(vjust = .5,
-                                     angle = 45,
-                                     size = 8))
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+\section{Networks}
+\label{sec:networks}
+The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse patient cases).
+An adjacency matrix is then constructed by weighting the previously inferred measures.
+The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).
+
+\begin{itemize}
+\item \textbf{MaxEdgesPerGene}, maximum number of correlations per genes
+\item \textbf{NbNodes}, number of genes found for each edge connection bracket
+\item \textbf{Normalization}, method that focuses on creating complete clusters. We tested methods ranging from Complete clustering, Average, and Ward. \href{https://stat.ethz.ch/R-manual/R-devel/library/stats/html/hclust.html}{Each method is detailed here.} Only Complete clustering was retained. All other methods overfitted the data.
+  \marginnote{\small\color{blue}$\Lsh$Overfitting is a source of bias.}[0cm]
+\item \textbf{Correlation}, finding ranges from linear to non-linear trends. We tested Pearson and Spearman correlation.
+  \marginnote{\small\color{blue}$\Lsh$Effect of correlation methods is seen on module content}[0cm]
+\item \textbf{Standardization}, data transformation method. We tested transformation by Hellinger, Standardize, Range, and Logarithmic scaling. \href{http://cc.oulu.fi/~jarioksa/softhelp/vegan/html/decostand.html}{Each method is detailed here.}
+\item \textbf{MaxGenePerModule}, how many genes assigned by cluster (module)
+\item \textbf{SimilaritySize}, number of initial differentially expressed genes
+\item \textbf{EdgeThreshold}, parameter to limit the weight of the edges
+\item \textbf{CorrelationPower}, power transformation of the data
+\end{itemize}
+<<networks_summary>>=
+ns <- read.table("./data/networks.summary.104795.txt", header = T)
+summary(ns)
+@ 
+
+\marginnote{\small\color{blue}$\Lsh$Test graphs}[0cm]
+Difference between methods used for network inference. Are we able to generate convergence of the output of all iterations across all methods?
+<<nodes_networks_summary_steps,out.width='5in'>>=
+
+ns %>%
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+Showing the number of modules per network and the number of genes per module. Each module contains differing number of nodes based on their correlation strength. Each cluster contains at least one module. Each network contains at least one cluster. One module can be assigned to nodes that belong to more than one cluster. The Lowess curves show if the trend in the data is linear or not. The wave around Lowess curves represents the level of confidence of the data points (the narrower the interval the better, less variability = more accuracy).
+\marginnote{\small\color{blue}$\Lsh$Points=iterations. With less iterations comes high variability of the curve}[0cm]
+<<nodes_modules_summary>>=
+
+read.table("./data/modules.summary.104795.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+
+@ 
+
+\subsection{Network analysis for Spearman-related correlations}
+\label{subsec:spearman}
+Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
+\begin{itemize}
+\item \textbf{Average Expression}: 5
+\item \textbf{Adjusted P-value}: equal or less than 0.045
+\item \textbf{Log Fold Change}: 1
+\item \textbf{B-statisitcs}: 1.5
+\end{itemize}
+
+
+\subsubsection{Nodal versus extra-nodal lymphoma}
+\label{subsec:nodal}
+
+Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
+<<nodes_networks_summary_spearman,out.width='5in'>>=
+
+read.table("./data/networks.summary.104859.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+Showing the number of modules per network and the number of genes per module. 
+<<nodes_modules_summary_spearman>>=
+
+read.table("./data/modules.summary.104859.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+
+\subsubsection{Relapsed versus no CNS relapsed cases}
+\label{subsec:relapsespearman}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<relapse_networks_summary_spearman,out.width='5in'>>=
+
+read.table("./data/networks.summary.114018.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<relapse_modules_summary_spearman>>=
+
+read.table("./data/modules.summary.114018.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+\subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
+\label{subsec:coospearmanstringent}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<coo_prediction_networks_summary_spearman,out.width='5in'>>=
+
+read.table("./data/networks.summary.114017.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<coo_prediction_modules_summary_spearman>>=
+
+read.table("./data/modules.summary.114017.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+
+\subsection{Network analysis for Pearson-related correlations}
+\label{subsec:pearson}
+\marginnote{\small\color{blue}$\Lsh$With pearson, we can only raise the data to power 10. All are discarded after 10.}[0cm]
+Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
+\begin{itemize}
+\item \textbf{Average Expression}: 5
+\item \textbf{Adjusted P-value}: equal or less than 0.045
+\item \textbf{Log Fold Change}: 1
+\item \textbf{B-statisitcs}: 1.5
+\end{itemize}
+
+
+\subsubsection{Nodal versus extra-nodal lymphoma}
+\label{subsec:nodal}
+
+Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
+<<nodes_networks_summary_pearson,out.width='5in'>>=
+
+read.table("./data/networks.summary.104862.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+\marginnote{\small\color{blue}$\Lsh$Since Lowess ranks by confidence, Log transformation seems the best, ie, low variability. For this, Log is removed from further tests.}[0cm]
+Showing the number of modules per network and the number of genes per module. 
+<<nodes_modules_summary_pearson>>=
+
+read.table("./data/modules.summary.104862.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+\subsubsection{Relapsed versus no CNS relapsed cases}
+\label{subsec:relapse}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<relapse_networks_summary_pearson,out.width='5in'>>=
+
+read.table("./data/networks.summary.104863.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<relapse_modules_summary_pearson>>=
+
+read.table("./data/modules.summary.104863.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+\subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
+\label{subsec:coo}
+Genetic networks from differentially expressed genes selected by comparing sample cases with cell of origin classification based on ABC or GCB subtypes.
+<<coo_prediction_networks_summary_pearson,out.width='5in'>>=
+
+read.table("./data/networks.summary.104864.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<coo_prediction_modules_summary_pearson>>=
+
+read.table("./data/modules.summary.104864.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
 
 @ 
 
@@ -231,6 +678,368 @@ expression %>%
 
 
 
+\subsection{Network analysis for Spearman-related correlations}
+\label{subsec:spearman}
+Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
+\marginnote{\small\color{blue}$\Lsh$Same analysis with more stringent parameters}[0cm]
+\begin{itemize}
+\item \textbf{Average Expression}: 10
+\item \textbf{Adjusted P-value}: equal or less than 0.030
+\item \textbf{Log Fold Change}: 1
+\item \textbf{B-statisitcs}: 2
+\end{itemize}
+
+
+\subsubsection{Nodal versus extra-nodal lymphoma}
+\label{subsec:nodal}
+Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
+<<nodes_networks_summary_spearman_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119759.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+Showing the number of modules per network and the number of genes per module. 
+<<nodes_modules_summary_spearman_stringent>>=
+
+read.table("./data/modules.summary.119759.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+
+\subsubsection{Relapsed versus no CNS relapsed cases}
+\label{subsec:relapsespearman}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<relapse_networks_summary_spearman_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119760.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<relapse_modules_summary_spearman_stringent>>=
+
+read.table("./data/modules.summary.119760.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+
+\subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
+\label{subsec:relapsespearman}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<coo_prediction_networks_summary_spearman_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119758.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<coo_prediction_modules_summary_spearman_stringent>>=
+
+read.table("./data/modules.summary.119758.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+
+
+\subsection{Network analysis for Pearson-related correlations}
+\label{subsec:pearson}
+Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
+\marginnote{\small\color{blue}$\Lsh$Same analysis with more stringent parameters}[0cm]
+\begin{itemize}
+\item \textbf{Average Expression}: 10
+\item \textbf{Adjusted P-value}: equal or less than 0.030
+\item \textbf{Log Fold Change}: 1
+\item \textbf{B-statisitcs}: 2
+\end{itemize}
+
+
+\subsubsection{Nodal versus extra-nodal lymphoma}
+\label{subsec:nodal}
+
+Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
+<<nodes_networks_summary_pearson_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119755.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+Showing the number of modules per network and the number of genes per module. 
+<<nodes_modules_summary_pearson_stringent>>=
+
+read.table("./data/modules.summary.119755.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+\subsubsection{Relapsed versus no CNS relapsed cases}
+\label{subsec:relapse}
+Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
+<<relapse_networks_summary_pearson_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119754.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<relapse_modules_summary_pearson_stringent>>=
+
+read.table("./data/modules.summary.119754.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
+
+\subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
+\label{subsec:coo}
+Genetic networks from differentially expressed genes selected by comparing sample cases with cell of origin classification based on ABC or GCB subtypes.
+<<coo_prediction_networks_summary_pearson_stringent,out.width='5in'>>=
+
+read.table("./data/networks.summary.119757.txt", header = TRUE) %>% 
+    ggplot(aes(
+        x = MaxEdgesPerGene,
+        y = NbNodes,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_step(aes(color = Standardization),
+              stat = "identity") +
+    facet_wrap( ~ CorrelationPower,
+               ncol = 2,
+               scales = "free") + 
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of potential connections per gene",
+         y = "Number of genes per Network") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+
+Showing the number of modules per network and the number of genes per module. 
+<<coo_prediction_modules_summary_pearson_stringent>>=
+
+read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
+    ggplot(aes(
+        x = NbModules,
+        y = MaxGenesPerModule,
+        fill = Standardization)) +
+    theme_bw() +
+    geom_point(aes(shape = Standardization)) +
+    scale_color_brewer(type = "qual", palette = 6) +
+    labs(x = "Number of modules per network",
+         y = "Number of genes per module") +
+    facet_wrap( ~ Standardization,
+               ncol = 2,
+               scales = "free") + 
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank")) +
+    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+
+@ 
 
 \section{System Information}
 \label{sec:sys_info}

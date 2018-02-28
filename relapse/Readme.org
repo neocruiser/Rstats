@@ -109,7 +109,7 @@ PDF]] of the compiled R file, and the scripts for data pre-processing (detailed 
 | Average expression | >=10  |
 |                    |       |
 
-* Strategy
+* Analytical pipeline
 + [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
 + Pleiotropy and epistasis
   + Modifier genes

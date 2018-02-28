@@ -282,8 +282,16 @@ lapply(pkgs, require, character.only = TRUE)
 
 pkgs = c('doParallel', 'lattice', 'doSNOW', 'ggplot2', 'MASS', 'Matrix', 'caret', 'nnet', 'plyr', 'dplyr', 'formatR', 'evaluate', 'foreach', 'Hmisc', 'rbenchmark', 'RColorBrewer', 'reshape', 'reshape2', 'gdata','kernlab','randomForest','glmulti','leaps','vegan','scatterplot3d','glmnet', 'tidyr')
 
-pkgs = c('devtools', 'd3r', 'sunburstR', 'ggbiplot', 'topGO', 'clusterProfiler', 'impute', 'WGCNA', 'radiant', 'gdata','caret','leaps','glmnet','lattice','latticeExtra', 'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph')
+pkgs = c('devtools', 'd3r', 'sunburstR', 'ggbiplot', 'topGO', 'clusterProfiler', 'impute', 'WGCNA', 'radiant', 'gdata','caret','leaps','glmnet','lattice','latticeExtra', 'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph', 'sjmisc')
 #+END_SRC
+
+The =clusterfy= package for clustering and special dependencies, uses
+[[http://www.ggobi.org/][Gobbi]] for high-dimensional viz.
+#+BEGIN_SRC shell
+sudo apt install libgtk2.0-dev ggobi jags
+pkgs = c("RGtk2","rggobi","classify")
+#+END_SRC
+
 
 Install packages from github with devtools command.
 #+BEGIN_SRC R
