@@ -31,6 +31,13 @@ options(formatR.arrow=TRUE,
 \noindent
 \marginnote{\small\color{blue}$\Lsh$ Project started Dec 10 2017}[.1cm]
 
+
+\maketitle
+\tableofcontents
+\pagebreak
+
+
+
 Loaded functions:
 <<loading,results='hide'>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
@@ -1040,6 +1047,18 @@ read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
     geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
 
 @ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{System Information}
 \label{sec:sys_info}

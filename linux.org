@@ -950,6 +950,11 @@ latex sampleref.bib
 |                       | gpg -c encrypt.file                                     |                                            |
 |                       | gpg -d decrypt.file                                     |                                            |
 | *nmap*                | nmap $ip_address                                        |                                            |
+| zcash wallet          | sudo apt-get install zcash                              | [[https://z.cash/download.html][instructions]] and [[https://github.com/zcash/zcash/wiki/1.0-User-Guide][CLI guide]]                 |
+| gifsicle              |                                                         | Lossy Gif compressor [[https://kornel.ski/lossygif][LINK]]                  |
+| TermRecord            | sudo pip install TermRecord                             | [[http://xmodulo.com/record-replay-terminal-session-linux.html][tutorial]]                                   |
+| dfc                   | sudo apt-get install dfc                                | Similar to df but with better visuals      |
+|                       |                                                         |                                            |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
