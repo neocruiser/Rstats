@@ -3,7 +3,7 @@
 
 \begin{document}
 \author{Sleiman Bassim, PhD}
-\title{R implementation}
+\title{Descriptive analysis}
 \maketitle
 \begin{linenumbers}
 <<setup, include=FALSE, cache=FALSE>>=
@@ -28,17 +28,15 @@ options(formatR.arrow=TRUE,
         scipen = 6)
 @ 
 
-\noindent
-\marginnote{\small\color{blue}$\Lsh$ Project started Dec 10 2017}[.1cm]
-
 
 \maketitle
 \tableofcontents
 \pagebreak
 
 
-
-Loaded functions:
+\noindent
+\marginnote{\small\color{blue}$\Lsh$ Project started Dec 10 2017, updated \today}[.1cm]
+Loaded functions.
 <<loading,results='hide'>>=
 #source("/media/Data/Dropbox/humanR/01funcs.R")
 rm(list=ls())
@@ -48,11 +46,11 @@ rm(list=ls())
 #lsos(pat="")
 @ 
 
-Load packages.
+Loaded packages.
 <<packages,results='hide'>>=
-pkgs <- c('gdata','caret','leaps','glmnet','lattice','latticeExtra',
+pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
-          'DescTools')
+          'DescTools', 'scales')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -62,8 +60,7 @@ lapply(pkgs, require, character.only = TRUE)
 Data is from patients with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some patients show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
 <<summary_full>>=
 metadata <- read.table("data/phenodata", sep = "\t", header = T)
-head(metadata)
-
+colnames(metadata)
 @ 
 
 In the first steps of the analysis, the samples will be classified (supervised) into the following categories.
@@ -99,6 +96,10 @@ metadata$Lymphnodes <- as.factor(metadata$Lymphnodes)
 
 summary(metadata)
 @ 
+
+\subsection{Featured data and groups of sample cases}
+\label{subsec:groups}
+
 
 Difference in cases being indexed based on their \textit{cell-of-origin} association subtypes using either of the following features: prediction, ABClassify, ABCScore.
 <<cells_difference>>=
@@ -176,7 +177,9 @@ palette.pies.adj <- colorRampPalette(palette.pies)(length(unique(metadata$SITE))
 pie(table(metadata$SITE), col=palette.pies.adj)
 @ 
 
-\section{Differential expression}
+
+
+\section{Differential expression of microarray Affymetrix data}
 \label{sec:expression}
 Genes have been fitted in a model that is based on an Empirical Bayes approach. Ranking of the genes determine if they are statistically significant. Bonferroni correction is used to control the false discovery rate (FDR). Moderated t-statistics, FDR, and fold change (log2) are implemented to reduce selection of false positives.
 
@@ -238,26 +241,148 @@ expression %>%
 
 @ 
 
+\subsection{Cleaning and removing non-essential genes}
+\label{subsec:subsetting}
+\marginnote{\small\color{blue}$\Lsh$ $\sigma^2$ is the average of the squared differences from the $\mu$}[0cm]
+Subsetting the data by reducing the number of gene profiles improves interpretation and reduces noise. Each array contains probes of 75,523 different RNAs. Either ncRNA, mRNA, and non annotated genes. More than 53.32\% of the probes are non-coding. For interpretation purpose, ncRNAs profiles were discarded before fitting the expressions. In addition, the variation from the mean of each transcript was assessed and the spread of expression were all used to discard top and bottom variants. Individual genes that vary widely from the mean of the array were removed thus reducing the spread of the expression across profiles. Transcripts with potential biased high expressions were thus flagged and discarded thus improving correlation of other transcripts.
+Subsetting was done after normalization of all datasets, all arrays. This would reduce technical errors appearing significant when comparing arrays between each others. Data was transformed (standardization protocol) before calculating means and variances. This helps a better signal recovery from a large dataset with potential expression bias.
+\marginnote{\small\color{blue}$\Lsh$ Each array correspond to a DLBCL patient's case}[0cm]
 
-\section{Networks}
+\subsubsection{Variance optimization for each array}
+\label{subsec:variance}
+Full probe list accounting for 75,523 genes ({\color{red} red horizontal line}). The full line represents the variance after being adjusted by iteratively discarding top/low variant expression profiles. The dotted line represent the original variance before discarding genes.
+\marginnote{\small\color{blue}$\Lsh$ The smaller the variance, the better}[0.3cm]
+<<variance_w_ncrna_subsetting>>=
+read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
+    select(dimension, meanVariance, adj.meanVariance) %>%
+    gather("variance", "count", 2:3) %>%
+    ggplot(aes(x = count,
+               y = dimension)) +
+    theme_bw() +
+    geom_line(aes(linetype = as.factor(variance))) +
+    geom_point() +
+    scale_x_continuous(trans = "reverse",
+                       breaks = scales::pretty_breaks(n = 10)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    geom_hline(aes(yintercept = 75523), colour = "red") +
+    labs(y = "Number of selected genes",
+         x = "Variance") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+Same plot description as above however we removed ncRNA which account for 53.32\% of the probes. The total number of transcripts is now 35,253 (46\%, {\color{red} red horizontal line}). The {\color{blue} blue horizontal line} represents the threshold that was selected for subsequent analysis.
+\marginnote{\small\color{blue}$\Lsh$ 29,207 genes were selected for clustering and nets}[0cm]
+<<variance_wo_ncrna_subsetting>>=
+read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>%
+    select(dimension, meanVariance, adj.meanVariance) %>%
+    gather("variance", "count", 2:3) %>%
+    ggplot(aes(x = count,
+               y = dimension)) +
+    theme_bw() +
+    geom_line(aes(linetype = as.factor(variance))) +
+    geom_point() +
+    scale_x_continuous(trans = "reverse",
+                       breaks = scales::pretty_breaks(n = 8)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    geom_hline(aes(yintercept = 35253), color = "red") +
+    geom_hline(aes(yintercept = 29207), color = "blue") +
+    labs(y = "Number of selected genes",
+         x = "Variance") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+
+@ 
+
+
+\subsubsection{Standard deviation optimization for each array }
+\label{subsec:deviation}
+The spread of the gene expression scores is dependent on their variance, their deviation from each array's mean (population mean). By removing potentially noisy expressions we are reducing the spread of the arrays numbers, hence improving recognition of rare gene regulations.
+Below shows how the standard deviation, \textbf{spread} of the data, is getting smaller, more we discard genes with high/low variance.
+\marginnote{\small\color{blue}$\Lsh$ Best if small spread between 2 SDs}[0cm]
+
+All array probes with all RNAs.
+<<deviation_w_ncrna_subsetting>>=
+
+read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
+    select(discarded, meanSD, adj.meanSD) %>%
+    gather("sd", "count", 2:3) %>%
+    ggplot(aes(x = count,
+               y = discarded)) +
+    theme_bw() +
+    geom_line(aes(linetype = as.factor(sd))) +
+    geom_point() +
+    scale_x_continuous(trans = "reverse",
+                       breaks = scales::pretty_breaks(n = 8)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    labs(y = "Number of discarded genes with high variance",
+         x = "Standard deviation") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+Without the ncRNAs. {\color{blue} Blue horizontal line} is the threshold that was selected for later analysis.
+<<deviation_wo_ncrna_subsetting>>=
+read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>%
+    select(discarded, meanSD, adj.meanSD) %>%
+    gather("sd", "count", 2:3) %>%
+    ggplot(aes(x = count,
+               y = discarded)) +
+    theme_bw() +
+    geom_line(aes(linetype = as.factor(sd))) +
+    geom_point() +
+    geom_hline(aes(yintercept = 1198), colour = "blue") +
+    scale_x_continuous(trans = "reverse",
+                       breaks = scales::pretty_breaks(n = 8)) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    labs(y = "Number of discarded genes with high variance",
+         x = "Standard deviation") +
+    theme(legend.position = "top",
+          strip.background = element_rect(linetype = "blank", 
+                                          fill = "white"),
+          panel.border = element_rect(linetype = "blank", 
+                                      fill = NA),
+          panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+\section{Clustering and network analyses}
 \label{sec:networks}
 The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse patient cases).
 An adjacency matrix is then constructed by weighting the previously inferred measures.
 The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).
 
+  \marginnote{\small\color{blue}$\Lsh$Overfitting is a source of bias.}[0cm]
 \begin{itemize}
 \item \textbf{MaxEdgesPerGene}, maximum number of correlations per genes
 \item \textbf{NbNodes}, number of genes found for each edge connection bracket
 \item \textbf{Normalization}, method that focuses on creating complete clusters. We tested methods ranging from Complete clustering, Average, and Ward. \href{https://stat.ethz.ch/R-manual/R-devel/library/stats/html/hclust.html}{Each method is detailed here.} Only Complete clustering was retained. All other methods overfitted the data.
-  \marginnote{\small\color{blue}$\Lsh$Overfitting is a source of bias.}[0cm]
 \item \textbf{Correlation}, finding ranges from linear to non-linear trends. We tested Pearson and Spearman correlation.
-  \marginnote{\small\color{blue}$\Lsh$Effect of correlation methods is seen on module content}[0cm]
 \item \textbf{Standardization}, data transformation method. We tested transformation by Hellinger, Standardize, Range, and Logarithmic scaling. \href{http://cc.oulu.fi/~jarioksa/softhelp/vegan/html/decostand.html}{Each method is detailed here.}
 \item \textbf{MaxGenePerModule}, how many genes assigned by cluster (module)
 \item \textbf{SimilaritySize}, number of initial differentially expressed genes
 \item \textbf{EdgeThreshold}, parameter to limit the weight of the edges
 \item \textbf{CorrelationPower}, power transformation of the data
 \end{itemize}
+\marginnote{\small\color{blue}$\Lsh$Effect of correlation methods is seen on module content}[0cm]
 <<networks_summary>>=
 ns <- read.table("./data/networks.summary.104795.txt", header = T)
 summary(ns)
@@ -318,7 +443,7 @@ read.table("./data/modules.summary.104795.txt", header = TRUE) %>%
 
 @ 
 
-\subsection{Network analysis for Spearman-related correlations}
+\subsection{Network analysis for Spearman-related correlations (relaxed)}
 \label{subsec:spearman}
 Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
 \begin{itemize}
@@ -499,7 +624,7 @@ read.table("./data/modules.summary.114017.txt", header = TRUE) %>%
 
 
 
-\subsection{Network analysis for Pearson-related correlations}
+\subsection{Network analysis for Pearson-related correlations (relaxed)}
 \label{subsec:pearson}
 \marginnote{\small\color{blue}$\Lsh$With pearson, we can only raise the data to power 10. All are discarded after 10.}[0cm]
 Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
@@ -685,7 +810,7 @@ read.table("./data/modules.summary.104864.txt", header = TRUE) %>%
 
 
 
-\subsection{Network analysis for Spearman-related correlations}
+\subsection{Network analysis for Spearman-related correlations (stringent)}
 \label{subsec:spearman}
 Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
 \marginnote{\small\color{blue}$\Lsh$Same analysis with more stringent parameters}[0cm]
@@ -867,7 +992,7 @@ read.table("./data/modules.summary.119758.txt", header = TRUE) %>%
 
 
 
-\subsection{Network analysis for Pearson-related correlations}
+\subsection{Network analysis for Pearson-related correlations (stringent)}
 \label{subsec:pearson}
 Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
 \marginnote{\small\color{blue}$\Lsh$Same analysis with more stringent parameters}[0cm]
@@ -1047,13 +1172,6 @@ read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
     geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
 
 @ 
-
-
-
-
-
-
-
 
 
 
