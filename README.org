@@ -27,7 +27,7 @@ Licence: MIT Licence
 
 | Project                | Pipeline          | Code       | Author    |    Year | University    |
 |------------------------+-------------------+------------+-----------+---------+---------------|
-| Affymetrix pipeline    | [[https://github.com/neocruiser/pipelines][Repo]] and [[https://github.com/neocruiser/Rstats/tree/master/relapse][Tutorial]] |            | S. Bassim |    2018 | UHN           |
+| Affymetrix pipeline    | [[https://github.com/neocruiser/pipelines][Repo]] and [[https://github.com/neocruiser/Rstats/tree/master/relapse][Tutorial]] | (in repo)   | S. Bassim |    2018 | UHN           |
 | RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]]              |            | S. Bassim |    2016 |               |
 | Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
 | QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |

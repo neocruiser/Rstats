@@ -48,27 +48,40 @@ Licence: MIT Licence
 - [[http://asheducationbook.hematologylibrary.org/content/2012/1/402.full][Sehn 2014]] overview of all therapies and predictive analyses for
   lymphoma
 
-* Design CNS relapse (affymetrix)
+* Analytical pipeline
++ Pipeline automation
+  + [[http://blog.byronjsmith.com/snakemake-analysis.html][Snakewake]] pipeline design with different scripts and different languages.
++ [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
++ Pleiotropy and epistasis
+  + Modifier genes
++ Visualization inside pipeline
+  + Genome plotting [[https://bioconductor.org/packages/release/bioc/html/Gviz.html][GViz]] [[https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html][GenomicRanges]] [[http://www.tengfei.name/ggbio/][GGBIO]] [[http://circos.ca/][Circos]] [[https://cran.r-project.org/web/packages/RCircos/index.html][Rcircos]] [[http://circos.ca/][KaryoplotR]]
+  + Clustering [[https://blog.omictools.com/top-gene-clustering-tools/][methods]]
+  + [[http://www.gettinggeneticsdone.com/2015/12/tutorial-rna-seq-differential.html][Pathway analysis]] and expression with Sailfish DESEq2 Pathview
+
+** Gene expression (affymetrix) [2/2]
 + Lab [[https://github.com/kridel-lab/e4402][Github]] repository and working [[https://github.com/neocruiser/pipelines][repository]]
-+ Parallel computing, Multicore analysis, support for large datasets
++ [[https://www.dropbox.com/s/748rijk29k89yv1/data%2520desription.txt?dl%3D0][Methods]] on dropbox
++ [X] Parallel computing, Multicore analysis, support for large datasets
   [[https://bioconductor.org/packages/release/bioc/vignettes/oligo/inst/doc/oug.pdf][oligo]] [[https://github.com/benilton/oligoOld/wiki/Getting-the-grips-with-the-oligo-Package][GitHub]]
-+ Affymetrix comparison is within gene (not between genes) because the signal
-  designate an absolute expression
-  - All affy packages ('gcrma', 'simpleaffy', 'affyQCReport', 'plier',
++ [X] Affymetrix comparison
+  + Within gene (not between genes) because the signal
+    designate an absolute expression
+  + All affy packages ('gcrma', 'simpleaffy', 'affyQCReport', 'plier',
     "affycoretools", 'affy', 'affyPLM') cannot be used on HTA new
     Affymetrix Chips. They require AffyBatch raw data
-  - Only =oligo= and =xps= can be used with HTA.2.0 chips. They rely HTAFeatureSets.
-  - Most normalization methods for AffyBatch data: GC-RMA, RMA, MAS5,
+  + Only =oligo= and =xps= can be used with HTA.2.0 chips. They rely HTAFeatureSets.
+  + Most normalization methods for AffyBatch data: GC-RMA, RMA, MAS5,
     MAS5>GC-RMA, Plier
-+ Quality Control
-  - [[http://bioconductor.org/packages/release/bioc/vignettes/affyPLM/inst/doc/QualityAssess.pdf][affyPLM]] to assess chip quality and RUSE method from [[https://bioconductor.org/packages/release/bioc/vignettes/oligo/inst/doc/oug.pdf][oligo]]
-  - [[http://aroma-project.org/][aroma]] and [[https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf][limma]]
-  - [[https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2816-x][EventPointer]] and FIRMA
-  - Cell of origin classification [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3931191/][Scott 2014]] and [[http://www.pnas.org/content/100/17/9991.full][Wright 2003]]
-+ Normalization [[http://www.genopomii.unina.it/genohort/files/probe-level_data_normalisation.pdf][overview]] and visualization [[http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#visualization][options]]
-  - Affymetrix MA are one-color chips. With Perfect MAtch PM and
++ [25%] Quality Control
+  - [ ] [[http://bioconductor.org/packages/release/bioc/vignettes/affyPLM/inst/doc/QualityAssess.pdf][affyPLM]] to assess chip quality and RUSE method from [[https://bioconductor.org/packages/release/bioc/vignettes/oligo/inst/doc/oug.pdf][oligo]]
+  - [X] [[http://aroma-project.org/][aroma]] and [[https://bioconductor.org/packages/release/bioc/vignettes/limma/inst/doc/usersguide.pdf][limma]]
+  - [ ] [[https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-2816-x][EventPointer]] and FIRMA
+  - [ ] Cell of origin classification [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3931191/][Scott 2014]] and [[http://www.pnas.org/content/100/17/9991.full][Wright 2003]]
++ [20%] Normalization [[http://www.genopomii.unina.it/genohort/files/probe-level_data_normalisation.pdf][overview]] and visualization [[http://manuals.bioinformatics.ucr.edu/home/R_BioCondManual#visualization][options]]
+  - [ ] Affymetrix MA are one-color chips. With Perfect MAtch PM and
     Mismatch MM probes
-  - Robust Multi-array Average (RMA) background correction using
+  - [X] Robust Multi-array Average (RMA) background correction using
     [[http://homer.salk.edu/homer/basicTutorial/affymetrix.html][oligo]], only relies on PM, many false-negatives are lost
     - RMA assumes positive signals since Affy chips give absolute signal
     - Substracting high MMs from PM gives negative values
@@ -77,79 +90,124 @@ Licence: MIT Licence
       - Intensities are combined
       - Chips are nomalized to their median
       - Genes are nomalized to their median
-      - Normalizations are iterated until congergance 
-  - MAS only sensitive to high expression changes.
+      - Normalizations are iterated until congergance
+  - [ ] MAS only sensitive to high expression changes.
     - Relies on PMs and only on the MMs that are not higher than PMs
-  - GeneChip GC-RMA relies on all PMs and MMs
+  - [ ] GeneChip GC-RMA relies on all PMs and MMs
     - By substracting MM from PM non-specfic bindings NSB are removed
     - MMs are adjusted based on probe affinity
     - At low expression variance is not detected
-    - Gives less false positives than MAS 
-  - Multtest and limma
-+ Annotation of genes
-  - Using [[https://bioconductor.org/packages/release/data/annotation/manuals/pd.hta.2.0/man/pd.hta.2.0.pdf][pd.hta.2.0]] already compiled with pdinfobuild
-  - [[http://bioconductor.org/packages/release/bioc/vignettes/annotate/inst/doc/annotate.pdf][annotate]] package for human hgu95
-+ Differntial expression
-  - [[http://darwin.biochem.okstate.edu/gpap/faq.html#b-stat][B-statisitc]] in empirical Bayes
-  - [[http://darwin.biochem.okstate.edu/gpap/faq.html#t][t-statistic]] in moderated student analysis
-  - =Avg-Exp= is the ordinary arithmetic average of the log2-expression
+    - Gives less false positives than MAS
+  - [ ] Multtest and limma
++ [100%] Annotation of genes
+  - [X] Using [[https://bioconductor.org/packages/release/data/annotation/manuals/pd.hta.2.0/man/pd.hta.2.0.pdf][pd.hta.2.0]] already compiled with pdinfobuild
+  - [X] [[http://bioconductor.org/packages/release/bioc/vignettes/annotate/inst/doc/annotate.pdf][annotate]] package for human hgu95
++ [100%]Differntial expression
+  - [X] [[http://darwin.biochem.okstate.edu/gpap/faq.html#b-stat][B-statisitc]] in empirical Bayes
+  - [X] [[http://darwin.biochem.okstate.edu/gpap/faq.html#t][t-statistic]] in moderated student analysis
+  - [X] =Avg-Exp= is the ordinary arithmetic average of the log2-expression
     values for the probe, across all arrays in the experiment.
-+ Alternative splicing
-  - [[https://academic.oup.com/bib/article/18/2/260/2562746][Dapas 2017]] comapring RNAseq and exon arrays isoforms using eXpress
++ [0%] Alternative splicing
+  - [ ] [[https://academic.oup.com/bib/article/18/2/260/2562746][Dapas 2017]] comapring RNAseq and exon arrays isoforms using eXpress
     and [[http://bgx.org.uk/software/mmbgx.html][Multi-Mapping Bayesian Gene eXpression (MMBGX)]]. =many dependencies=
 + Data wrangling
   - ABCLikelihood and Prediction of =CNR1039T1= and =CNR1045T1= was
     set to 0.5 and Unclassified.
   - Controls were assigned the correct ABClikelihoods and Predictions
-| Parameter          | Score |
-|--------------------+-------|
-| B-statistic        | >=1   |
-| adjusted P-value   | <=.01 |
-| LogFC high         | >=1   |
-| LogFC low          | <=-1  |
-| Average expression | >=10  |
-|                    |       |
-
-* Analytical pipeline
-+ [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
-+ Pleiotropy and epistasis
-  + Modifier genes
-+ Visualization inside pipeline
-  + Genome plotting [[https://bioconductor.org/packages/release/bioc/html/Gviz.html][GViz]] [[https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html][GenomicRanges]] [[http://www.tengfei.name/ggbio/][GGBIO]] [[http://circos.ca/][Circos]] [[https://cran.r-project.org/web/packages/RCircos/index.html][Rcircos]] [[http://circos.ca/][KaryoplotR]]
-  + Clustering [[https://blog.omictools.com/top-gene-clustering-tools/][methods]]
-  + [[http://www.gettinggeneticsdone.com/2015/12/tutorial-rna-seq-differential.html][Pathway analysis]] and expression with Sailfish DESEq2 Pathview
-+ Pipeline automation
-  + [[http://blog.byronjsmith.com/snakemake-analysis.html][Snakewake]] pipeline design with different scripts and different languages.
-
-** Machine learning and [[https://github.com/donnemartin/data-science-ipython-notebooks#keras-tutorials][Github notebooks]] [0/4]
-  - Machine learning challenge [[https://www.reddit.com/r/MachineLearning/comments/6vceas/p_a_new_kind_of_data_challenge_100k_to_help_build/][reddit]] [[https://concepttoclinic.drivendata.org/][project]] [[http://blog.drivendata.org/2017/08/08/a-new-kind-of-data-challenge/][blog]] [[http://stm.sciencemag.org/content/9/403/eaan2415][paper]]
-  - [[http://randomekek.github.io/deep/deeplearning.html][Deep learning]] Cheat Sheet (Highlights) and [[https://becominghuman.ai/cheat-sheets-for-ai-neural-networks-machine-learning-deep-learning-big-data-678c51b4b463][code summary]] of many packages.
-  - [[http://onlinelibrary.wiley.com/doi/10.1002/cam4.650/full][Zhao 2016]] DLBCL patient classification with 8 genes
-    - A Cox proportional hazards model was used for multivariate analysis
-    - Decision tree, Random forest, support vector machine, Fisher discriminant analysis, Nearest Neighbor, Bagging, and Adaboost
+    | Parameter          | Score |
+    |--------------------+-------|
+    | B-statistic        | >=1   |
+    | adjusted P-value   | <=.01 |
+    | LogFC high         | >=1   |
+    | LogFC low          | <=-1  |
+    | Average expression | >=10  |
+    |                    |       |
+** Clustering [2/2]
+- [X] [[http://cran.cnr.berkeley.edu/web/views/Cluster.html][CRAN]] repository for hierachical, partial and model-based clustering
+- [X] Automate pipeline (QC, multi-method tracking, output cleaning)
+- [100%] Iterate testing between contrasts
+  - [X] Clonal ABC vs GCB
+  - [X] CNS vs systemic relapse
+  - [X] Nodal vs extranodal involvment
+- [0%] Ordination analysis
+  - [ ] NMDS vs RDA =interpretability=
+  - [ ] CCA vs PCA =significance=
+** Networks [1/2]
+- [[https://www.pmgenomics.ca/bhklab/publications][Publication]] records for the BHK Lab =gene networks=
+- [X] Weighted networks
+- [ ] Bayesian networks
+- [50%] Module selection based on clustering techniques
+  - [X] Hierarchical clustering
+  - [ ] Fuzzy clustering
+- [33%] Gene annotation
+  - [X] Affymetrix HTA2.0 chip probe annotation
+  - [ ] Metadata integration into networks
+  - [ ] Expression data integration
+- [100%] Automation
+  - [X] Pipeline design
+  - [6/6] intergration of multiple methods
+    - [X] Data transformation
+    - [X] Correlation metrics
+    - [X] Module size thresholds and confidence scoring
+    - [X] Data extraction
+    - [X] Functional basic metadata integration
+    - [X] Documentation
+  - [100%] Automation with stingent parameters
+    - [X] QC pipeline robustness
+    - [X] QC data reproducibility
+** Machine learning and [[https://github.com/donnemartin/data-science-ipython-notebooks#keras-tutorials][Github notebooks]] [0/0]
+- Machine learning challenge [[https://www.reddit.com/r/MachineLearning/comments/6vceas/p_a_new_kind_of_data_challenge_100k_to_help_build/][reddit]] [[https://concepttoclinic.drivendata.org/][project]] [[http://blog.drivendata.org/2017/08/08/a-new-kind-of-data-challenge/][blog]] [[http://stm.sciencemag.org/content/9/403/eaan2415][paper]]
+- [[http://randomekek.github.io/deep/deeplearning.html][Deep learning]] Cheat Sheet (Highlights) and [[https://becominghuman.ai/cheat-sheets-for-ai-neural-networks-machine-learning-deep-learning-big-data-678c51b4b463][code summary]] of many packages.
+- [[http://onlinelibrary.wiley.com/doi/10.1002/cam4.650/full][Zhao 2016]] DLBCL patient classification with 8 genes
+  - A Cox proportional hazards model was used for multivariate analysis
   - [[http://data.conferenceworld.in/GSMCOE/P271-278.pdf][Sharma 2016]] information from patient IPIs was used to fit a basic Bayesian classifier
-  - [[http://w3.ualg.pt/~mfutschik/publications/futsulreekasabi03.pdf][Futschnik 2003]] for prediction of treatment outcome and disease prognosis
-    - classifier accuracy of 87.5% for certainty in DLBCL patients mortality
-    - Both classifiers were combined in an ensemble learning model
-      - Evolving Fuzzy Neural Network classifier on expression data
-      - Basic bayesian classifier on IPI
-  - [[https://medium.com/towards-data-science/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe][Dimension reduction]] using Tensorflow for deep learning (PCA, tSNE, auto encoders)
-  - [[https://www.r-bloggers.com/building-meaningful-machine-learning-models-for-disease-prediction/][tutorial]] integration of R and [[http://docs.h2o.ai/h2o/latest-stable/index.html][H2O]] to do deep learning (context at the 56% of the page). H2O has a rich multi-language [[http://docs.h2o.ai/h2o/latest-stable/index.html][documentation]] (cited 20+)
-  - [[https://cran.r-project.org/web/packages/darch/index.html][darsh]] R package to construct multi-layer deep networks and [[https://mxnet.incubator.apache.org/api/r/index.html][Mxnet]], flexible for building neural architecture from scratch with tutorials (cited 100+)
-  - [[http://topepo.github.io/caret/index.html][caret]] R package which includes many tutorials and [[http://topepo.github.io/caret/available-models.html][models]] (cited 600+)
-  - [[https://keras.io/][keras]] recently hyped deep learning package in python with [[https://keras.io/getting-started/sequential-model-guide/][guides]] and [[https://wrosinski.github.io/keras-pipelines/][pipelines]]
-  - [[http://www.datasciencecentral.com/profiles/blogs/search-for-the-fastest-deep-learning-framework-supported-by-keras][Comparison]] of tensor, keras, Mxnet
-  - [[https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/?utm_content%3Dbuffer847f5&utm_medium%3Dsocial&utm_source%3Dtwitter.com&utm_campaign%3Dbuffer][Imputation]] with R using MICE amelia missForest Hmisc mi
-  - [ ] K-means estimation of K [[http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters?answertab=votes#tab-top][stackoverfow post]] =R= [[http://blog.echen.me/2011/03/14/counting-clusters/][counting clusters]]
-  - [ ] Use prior for weighting or correct modularity of network
+- [[http://w3.ualg.pt/~mfutschik/publications/futsulreekasabi03.pdf][Futschnik 2003]] for prediction of treatment outcome and disease prognosis
+  - classifier accuracy of 87.5% for certainty in DLBCL patients mortality
+  - Both classifiers were combined in an ensemble learning model
+    - Evolving Fuzzy Neural Network classifier on expression data
+    - Basic bayesian classifier on IPI
+- [66%] Dimension reduction
+  - [X] Remove all probes related to RNAs (ncRNA particularly). They
+    account for over 53.32% of the arrays (35,253 mRNAs and 40,270 ncRNA of 75,523 probes)
+  - [X] Variability between data transformation methods
+  - [X] Variability in variance range reduction
+    - Variance small and SD not too spread out
+  - [X] [[https://cran.r-project.org/web/packages/mRMRe/index.html][mRMR]] ensemble feature selection =discarded=
+  - [ ] [[https://www.biorxiv.org/content/early/2017/11/10/217554][Ricard 2017]] unsupervised dimensionality reduction for multi omics
+  - [ ] [[https://medium.com/towards-data-science/reducing-dimensionality-from-dimensionality-reduction-techniques-f658aec24dfe][Dimension reduction]] using Tensorflow for deep learning (PCA, tSNE, auto encoders)
+- [20%] Fit the right classifiers
+  - [X] [[http://topepo.github.io/caret/index.html][caret]] R package which includes many tutorials and [[http://topepo.github.io/caret/available-models.html][models]] (cited 600+)
+  - [ ] [[https://cran.r-project.org/web/packages/darch/index.html][darsh]] R package to construct multi-layer deep networks
+  - [ ] [[https://mxnet.incubator.apache.org/api/r/index.html][Mxnet]], flexible for building neural architecture from scratch with tutorials (cited 100+)
+  - [ ] [[https://www.r-bloggers.com/building-meaningful-machine-learning-models-for-disease-prediction/][tutorial]] integration of R and [[http://docs.h2o.ai/h2o/latest-stable/index.html][H2O]] to do deep learning (context
+    at the 56% of the page). H2O has a rich multi-language
+    [[http://docs.h2o.ai/h2o/latest-stable/index.html][documentation]] (cited 20+)
+  - [ ] [[https://keras.io/][keras]] recently hyped deep learning package in python with [[https://keras.io/getting-started/sequential-model-guide/][guides]] and [[https://wrosinski.github.io/keras-pipelines/][pipelines]]
+  - [0%] [[http://www.datasciencecentral.com/profiles/blogs/search-for-the-fastest-deep-learning-framework-supported-by-keras][Comparison]] of tensor, keras, Mxnet
+    - [ ] [[https://developers.google.com/machine-learning/crash-course/prereqs-and-prework][Tensorflow]] crash course from google
+    - [[https://blogs.technet.microsoft.com/machinelearning/2018/03/14/comparing-deep-learning-frameworks-a-rosetta-stone-approach/][Comparing]] Deep learning methods
+- [50%] Tuning the Hyper Parameters
+  - [ ] Decision tree, Random forest
+  - [ ] support vector machine, Nearest Neighbor
+  - [X] Bagging, and Adaboost in =ensemble=
+  - [X] Neural nets
+- [25%] Integration of networks into ML classifer
+  - [X] Use prior for weighting or correct modularity of network
   - [ ] Iterative inferential of networks
     - [[http://biorxiv.org/content/early/2017/06/13/149492][Ashitani 2017]] centrality measures and unsupervised clustering to rank nodes
-  - [ ] Evaluate your algorithm performance with the Matthews correlation coefficient (MCC) or the Precision-Recall curve
-  - Dimension reduction
-    - [ ] [[https://www.biorxiv.org/content/early/2017/11/10/217554][Ricard 2017]] unsupervised dimensionality reduction for multi omics
+  - [ ] K-means estimation of K [[http://stackoverflow.com/questions/15376075/cluster-analysis-in-r-determine-the-optimal-number-of-clusters?answertab=votes#tab-top][stackoverfow post]] =R= [[http://blog.echen.me/2011/03/14/counting-clusters/][counting clusters]]
+  - [ ] Evaluate algorithm performance with the Matthews correlation
+    coefficient (MCC) or the Precision-Recall curve
+- [0%] Missing data (optional)
+  - [ ] [[https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/?utm_content%3Dbuffer847f5&utm_medium%3Dsocial&utm_source%3Dtwitter.com&utm_campaign%3Dbuffer][Imputation]] with R using MICE amelia missForest Hmisc mi
+- [50%] Automation
+  - [1/3] Pipeline functional on server (all packages working)
+    - [X] R packages
+    - [ ] Tensorflow
+    - [ ] Keras
+  - [X] Pipeline tracking (measures for performance)
+  - [ ] Pipeline documentation
 
-
-
-
-
+** Clonal evolution
+- [[https://github.com/Illumina/strelka][Strelka]] or GATK for variant calling
 
