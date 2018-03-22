@@ -1,4 +1,4 @@
-#+TITLE: Summary of RNA-seq tutorials, R, MySQL, and D3.js
+#+TITLE: Repository for RNA-seq and microarray pipelines
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -20,9 +20,16 @@
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
 
-This git repository includes RNA-seq data analysis pipelines, protocols, R code, figures, and supplemental information of peer-reviewed manuscripts.
+This git repository includes RNA-seq data analysis pipelines,
+protocols, strategies, figures, and supplemental information
+of peer-reviewed manuscripts. 
 
 Licence: MIT Licence
+
+* Language prerequesites
+Shell/bash, Python, R, MySQL, D3.js
+
+
 
 
 | Project                | Pipeline          | Code       | Author    |    Year | University    |
