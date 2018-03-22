@@ -1,4 +1,4 @@
-#+TITLE: Identifying genetic CNS risk markers in DLBCL relapsed patients using machine learning, gene networks, and classification
+#+TITLE: New biomarkers for prediction of central nervous system relapse in lymphoma patients
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -19,17 +19,86 @@
 #+LATEX_HEADER: \usepackage[colorlinks=true,urlcolor=SteelBlue4,linkcolor=Firebrick4]{hyperref}
 #+EXPORT_SELECT_TAGS: export
 #+EXPORT_EXCLUDE_TAGS: noexport
-This git repository includes [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.h4h.pbs][the pipeline]] for Affymetrix HT2.0 microarray data processing
+This git repository includes the pipeline for Affymetrix HT2.0 microarray data processing
 and machine learning (in =org= format for emacs. Can be imported as
-Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.Rnw][the R code]] for graphing and data table
-management (in LaTeX-knitr format. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][the
+Markdown or viewed below), [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.Rnw][the R code]] for graphing and data table
+management (descriptive analysis in LaTeX-knitr notebook. Can be imported with RStudio), [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][the
 PDF]] of the compiled R file, and the scripts for data pre-processing (detailed in the tutorial below).
-
 
 Licence: MIT Licence
 
-* Overview
-- =keywords= dlbcl gene expression mutations classification machine learning
+
+* Pipelines in interpreted languages (~2000 lines)
+1. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.h4h.pbs][Affymetrix sample automation]] in bash
+2. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.2.0.R][Affymetrix normalization and expression analyses]] in R
+3. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.summary.h4h.sh][Automation to create summary report of all expression analyses]] in bash
+4. [[https://github.com/neocruiser/pipelines/blob/master/r/weighted.nets.h4h.pbs][Clustering and network automation]] in bash
+5. [[https://github.com/neocruiser/pipelines/blob/master/r/weighted.nets.affymetrix.R][Network inference based on weighted scoring and different
+   correlation and data transformation methods]] in R
+6. [[https://github.com/neocruiser/pipelines/blob/master/r/heatmaps.3.0.R][Clustering automation with different expression aggregation methods
+   and bootstrapping]] in R
+7. [[https://github.com/neocruiser/pipelines/blob/master/r/classification.R][Machine learning to classify by bagging and ensemble learning for
+   risk factor predictions]] in R
+
+* Background
+** Significance and impact on the field
+Diffuse large B-cell lymphoma (DLBCL) is the most common subtype of
+Non-Hodgkin lymphoma with more than 4000 new cases a year in
+Canada. Majority of patients are cured using modern chemotherapeutic
+regimens. Except for a certain 5% developing on average 5 months from
+diagnosis, a central nervous system (CNS) relapse. This pathology is
+quickly and always fatal. At present, CNS prophilaxis exists and
+consists of agents with high CNS penetration. Treatement however is
+highly toxic to be administered early on. While most people with
+lymphoma do not require this type of therapeutic intervention, risk
+factors for predicting CNS relapse and its progression are a
+requirement. 
+
+Previous studies investigating various strategies for early detection
+were unsuccessful when only accounting for the clinical aspects of the
+disease. Still, a higher risk of CNS involvement was suspected for
+patients with specific lymphoma and cell-of-origin
+subtypes. Consequently, based on there clinical data, an International
+Prognostic Index (IPI) was designed to assign a risk score to CNS
+relapse patients (Schmitz et., al 2016). Yet, IPI categorization
+produces divergent relapse estimates when considering cell-of-origin
+or Myc and Bcl-2 gene expressions. In contrast, since most CNS relapse
+cases occurred early during therapy, a subclinical or hidden genetic
+involvment at diagnosis was suggested. As such, the index have to be
+improved with more markers to raise sensitivity for high-risk
+patients. 
+
+Different pathogenetic mechanisms are involved in the development of
+DLBCL. It is recognized that treatments attempting to suppress certain
+mechanisms (e.g., Bcl-2) trigger a feedback network of oncogenes that
+provide tumor clones with death resistance properties. By treating one
+marker, there is a chance of oncogene switching mechanisms (e.g.,
+activation of another anti-apoptotic pathway, Bcl-6). To save precious
+time and improve risk assessment of lymphoma patients, we are set to
+improve upon the accuracy obtained from previous studies and build a
+scalable test that will be used with clinical data of DLBCL patients
+to find those with high-risk of CNS relapse at first diagnosis.  
+
+** Feasability and innovation
+Our available data cover 240 whole-genome microarrays from newly
+diagnosed patients, presenting several forms of CNS relapse. The
+expression profiles of selected 500-1000 genes will be inferred into
+genetic networks by including clinical patients profiles, for example
+cell-of-origin subtypes (activated B-cell, ABC or nongerminal center
+B-cell, GCB) or tumor invasion sites (nodal or extranodal
+tissue). Each network, with different enriched pathways, will be used
+with artificial intelligence prediction libraries. These algorithms
+are designed to extract linear and non-linear patterns, setting new
+standards in classification studies. Independent public data, will be
+used to validate the accuracy of the classifier. Markers, necessary
+for CNS relapse, will be taken forward for development as clinical
+predictors. The goal is to develop an assay that has the potential to
+penetrate routine clinical practices.  
+
+
+* Project overview
+- =keywords= DLBCL, gene expression, mutations, gene networks,
+  cell-of-origin, classification, machine learning
 - Clinical factors, status of disease, and gene mutations, all affect treatment outcome, and should be combined to provide optimum prognostics [[http://www.pathodiagnostik.de/de/downloads/pdf/2015/Lancet/PIIS1470-2045-15.pdf][Pastore 2015]]
 - An exciting era is now opening in deciphering the kinetics of transformation
 - Treatment for non-Hodgkin lymphoma may include chemotherapy, radiation therapy, monoclonal antibody therapy, bone marrow, stem cell transplant, steroids
