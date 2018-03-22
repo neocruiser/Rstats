@@ -29,18 +29,23 @@ Licence: MIT Licence
 * Language prerequesites
 Shell/bash, Python, R, MySQL, D3.js
 
+* Genetic analyses and published projects
+1. [[https://github.com/neocruiser/pipelines][Repository of automated sequence analyses, statistics, and machine
+   learning on high performance clusters]] (Bassim 2013-2018)
+2. [[https://github.com/neocruiser/Rstats/tree/master/relapse][Central nervous system relapse in lymphoma patients with Affymetrix
+   microarrays]] at University Health Network (Bassim 2018) [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][PDF]]
+3. [[https://github.com/neocruiser/Rstats/tree/master/nodule][Networks of a cross-talk between host and pathogenic parasite with
+   dual RNA-seq]] at New York University (Bassim 2017) [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][PDF]]
+4. [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Difference in networks between neural and respiratory cells with
+   RNA-seq data]] at New York University (Bassim 2016) [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][PDF]]
+5. [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Hotspots for variants in pathogenic parasite with RNA-seq data]] at
+   New York University (Bassim 2015) [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][PDF]]
+6. [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Functional domain curated databases for gene annotation]]
+   (Bassim 2015) best used with [[https://github.com/neocruiser/pipelines/blob/master/mining/automated_analyses.sh][the automated aggregation of gene
+   metadata script]] (Bassim 2017)
+7. [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Variant annotation and frequency in Parkinson's disease]] from
+   clinical data (Bassim 2015) 
 
-
-
-| Project                | Pipeline          | Code       | Author    |    Year | University    |
-|------------------------+-------------------+------------+-----------+---------+---------------|
-| CNS relapse in DLBCL   | [[https://github.com/neocruiser/Rstats/tree/master/relapse][Tutorial]]          |            |           |         |               |
-| Affymetrix pipeline    | [[https://github.com/neocruiser/pipelines][Repo]] and [[https://github.com/neocruiser/Rstats/tree/master/relapse][Tutorial]] | (in repo)  | S. Bassim |    2018 | UHN           |
-| RNA-seq pipelines      | [[https://github.com/neocruiser/pipelines][Repo]]              |            | S. Bassim |    2016 |               |
-| Ganglia                | [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][R]]          | S. Bassim |    2016 | Stony Brook   |
-| QPX strains            | [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| QPX nodules            | [[https://github.com/neocruiser/Rstats/tree/master/nodule][Tutorial]]          | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| Databases              | [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Tables]]            | [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][R]]          | Public    |    2015 | Stony Brook   |
 | Plink GWAS simulations |                   | [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Shell]]      | S. Bassim |    2015 | Vermont       |
 | Brain disease GWAS     | [[https://github.com/neocruiser/Rstats/blob/master/brain.org][Research]]          |            | S. Bassim | 2014-15 | Vermont       |
 | Algae                  |                   | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
