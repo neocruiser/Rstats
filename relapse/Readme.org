@@ -67,7 +67,7 @@ disease. Still, a higher risk of CNS involvement was suspected for
 patients with specific lymphoma and cell-of-origin
 subtypes. Consequently, based on there clinical data, an International
 Prognostic Index (IPI) was designed to assign a risk score to CNS
-relapse patients (Schmitz et., al 2016). Yet, IPI categorization
+relapse patients ([[http://ascopubs.org/doi/full/10.1200/JCO.2015.65.6520][Schmitz et., al 2016]]). Yet, IPI categorization
 produces divergent relapse estimates when considering cell-of-origin
 or Myc and Bcl-2 gene expressions. In contrast, since most CNS relapse
 cases occurred early during therapy, a subclinical or hidden genetic
