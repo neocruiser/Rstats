@@ -26,44 +26,50 @@ of peer-reviewed manuscripts.
 
 Licence: MIT Licence
 
-* Language prerequesites
+* Language prerequisites
 Shell/bash, Python, R, MySQL, D3.js
 
 * Genetic analyses and published projects
 1. [[https://github.com/neocruiser/pipelines][Repository of automated sequence analyses, statistics, and machine
    learning on high performance clusters]] (Bassim 2013-2018)
 2. [[https://github.com/neocruiser/Rstats/tree/master/relapse][Central nervous system relapse in lymphoma patients with Affymetrix
-   microarrays]] at University Health Network (Bassim 2018) [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][PDF]]
+   microarrays]] at the University Health Network (Bassim 2018) [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][PDF]]
 3. [[https://github.com/neocruiser/Rstats/tree/master/nodule][Networks of a cross-talk between host and pathogenic parasite with
-   dual RNA-seq]] at New York University (Bassim 2017) [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][PDF]]
+   dual RNA-seq]] at the New York University (Bassim 2017) [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][PDF]]
 4. [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Difference in networks between neural and respiratory cells with
-   RNA-seq data]] at New York University (Bassim 2016) [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][PDF]]
+   RNA-seq data]] at the New York University (Bassim 2016) [[https://github.com/neocruiser/Rstats/blob/master/ganglia/ganglia.pdf][PDF]]
 5. [[https://github.com/neocruiser/Rstats/tree/master/rnaseQPX][Hotspots for variants in pathogenic parasite with RNA-seq data]] at
-   New York University (Bassim 2015) [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][PDF]]
+   the New York University (Bassim 2015) [[https://github.com/neocruiser/Rstats/blob/master/rnaseQPX/rnaseQPX.pdf][PDF]]
 6. [[https://github.com/neocruiser/Rstats/tree/master/nodule#gene-gene-interaction][Functional domain curated databases for gene annotation]]
    (Bassim 2015) best used with [[https://github.com/neocruiser/pipelines/blob/master/mining/automated_analyses.sh][the automated aggregation of gene
    metadata script]] (Bassim 2017)
-7. [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Variant annotation and frequency in Parkinson's disease]] from
-   clinical data (Bassim 2015) 
+7. [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][Descriptive analysis between algae species]] at the New York
+   University (Bassim 2015)
+8. [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Variant annotation and frequency in Parkinson's disease]] from
+   clinical data at the University of Vermont (Bassim 2015) [[https://github.com/neocruiser/Rstats/blob/master/humanR/PD/parkinsons.pdf][PDF]]
+9. [[https://github.com/neocruiser/Rstats/blob/master/brain.org][Brain disease repository including databases and workflows]] at the
+   University of Vermont (Bassim 2015)
+10. [[https://github.com/neocruiser/bibliographies][Aggregated bibliographies]] in machine learning, deep learning,
+    brain disease methods, and non-model species bioinformatics
+11. [[https://github.com/neocruiser/thesis2014/tree/master][Bassim PhD thesis]] involving [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][microarray analyses]], [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][Bayesian
+    networks]], [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][clustering]], and [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][machine learning]] at the University of
+    Quebec (Bassim 2014)
 
-| Plink GWAS simulations |                   | [[https://github.com/neocruiser/Rstats/blob/master/brain.org#2-plink][Shell]]      | S. Bassim |    2015 | Vermont       |
-| Brain disease GWAS     | [[https://github.com/neocruiser/Rstats/blob/master/brain.org][Research]]          |            | S. Bassim | 2014-15 | Vermont       |
-| Algae                  |                   | [[https://github.com/neocruiser/Rstats/blob/master/algae/algae.pdf][R]]          | S. Bassim |    2015 | Stony Brook   |
-| Bibliographies         | [[https://github.com/neocruiser/bilbiographies][Tutorial]]          |            | S. Bassim |         |               |
-| Unsupervised learning  |                   | [[https://github.com/neocruiser/thesis2014/blob/master/Paper3/paper3.R][R]]          | S. Bassim |    2014 | Quebec (UQAR) |
-| Cluster analysis       |                   | [[https://github.com/neocruiser/thesis2014/blob/master/mfuzz/mfuzz.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Bayesian networks      |                   | [[https://github.com/neocruiser/thesis2014/blob/master/ebdbn/ebdbn.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Microarray processing  |                   | [[https://github.com/neocruiser/thesis2014/blob/master/microarrays/preProcessing_detailed.R][R]]          | S. Bassim |    2013 | Quebec (UQAR) |
-| Statistical learning   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#statistical-learning-summary][Summary]]           |            | S. Bassim |    2013 |               |
-| Blast+                 |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#blast][shell]]      | S. Bassim |    2015 |               |
-| Linux special addons   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#additional-linux-apps][Table]]             |            | S. Bassim |         |               |
-| Linux configurations   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#collection-of-information][Software]]          |            | S. Bassim |    2015 |               |
-| D3.js summary          |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#g3js-dataviz][javascript]] | S. Bassim |         |               |
-| R summary functions    | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#r-short-summary][Table]]             |            | S. Bassim |         |               |
-| Emacs key-bindings     | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#emacs-keybindings][Table]]             |            | S. Bassim |         |               |
-| Archlinux configs      |                   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#archlinux][shell]]      | S. Bassim |         |               |
+* Relevant material
 
-* Mentions
+| Subject              | Repo     | Code       | Author    | Year |
+|----------------------+----------+------------+-----------+------|
+| Statistical learning | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#statistical-learning-summary][Summary]]  |            | S. Bassim | 2013 |
+| Blast+               |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#blast][shell]]      | S. Bassim | 2015 |
+| Linux special addons | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#additional-linux-apps][Table]]    |            | S. Bassim |      |
+| Linux configurations | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#collection-of-information][Software]] |            | S. Bassim | 2015 |
+| D3.js summary        |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#g3js-dataviz][javascript]] | S. Bassim |      |
+| R summary functions  | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#r-short-summary][Table]]    |            | S. Bassim |      |
+| Emacs key-bindings   | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#emacs-keybindings][Table]]    |            | S. Bassim |      |
+| Archlinux configs    |          | [[https://github.com/neocruiser/Rstats/blob/master/linux.org#archlinux][shell]]      | S. Bassim |      |
+
+
+* Author mentions
 - Empirical Bayes Estimation of Dynamic Bayesian Networks (ebdbNet) on CRAN [[https://cran.r-project.org/web/packages/ebdbNet/NEWS][(updates]]).
 - Google Scholar [[https://scholar.google.com/citations?user=mDJZY3oAAAAJ&hl=en][personal page]] for published papers.
 - Linkedin [[https://www.linkedin.com/profile/view?id=AAMAAAD-CVIBL2ksOX7KT3k7ZUYPiE7A5XB7QFA&trk=hp-identity-name][profile]] for ongoing projects.
