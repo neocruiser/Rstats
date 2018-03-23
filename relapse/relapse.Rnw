@@ -251,7 +251,9 @@ Subsetting was done after normalization of all datasets, all arrays. This would 
 \subsubsection{Variance optimization for each array}
 \label{subsec:variance}
 Full probe list accounting for 75,523 genes ({\color{red} red horizontal line}). The full line represents the variance after being adjusted by iteratively discarding top/low variant expression profiles. The dotted line represent the original variance before discarding genes.
-\marginnote{\small\color{blue}$\Lsh$ The smaller the variance, the better}[0.3cm]
+\marginnote{\small\color{blue}$\Lsh$ The smaller the variance, the better}[0.5cm]
+
+The graph below shows that by discarding highly variant expressions and subsetting the dataset to 1613 genes for example, the mean variance of the whole array is higher (0.27) than a dataset of 10,811 with a mean variance of 0.09. Ideally, is to reduce the dataset based on the whole array mean variance and mean standard deviation.
 <<variance_w_ncrna_subsetting>>=
 read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
     select(dimension, meanVariance, adj.meanVariance) %>%
@@ -280,6 +282,9 @@ read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>
 
 Same plot description as above however we removed ncRNA which account for 53.32\% of the probes. The total number of transcripts is now 35,253 (46\%, {\color{red} red horizontal line}). The {\color{blue} blue horizontal line} represents the threshold that was selected for subsequent analysis.
 \marginnote{\small\color{blue}$\Lsh$ 29,207 genes were selected for clustering and nets}[0cm]
+
+
+By discarding 1198 transcripts from the 35,253 the top outliers with high variance are not included in the clustering process. More rare expression signals will get distinguished. Also, the size of the dataset was reduced to 29,207 by removing transcripts with little deviation from the mean of each array. The total number of transcripts by array was kept above 25k to increase the sizes of the clusters (modules and networks) in later analyses. For example, network analysis on 20k transcripts generated network sizes between 200 and 500. At 29k networks have a total size over 700 nodes.
 <<variance_wo_ncrna_subsetting>>=
 read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>%
     select(dimension, meanVariance, adj.meanVariance) %>%
