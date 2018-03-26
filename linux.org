@@ -21,9 +21,9 @@
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
 
-* AMD drivers and XMR-STAK and Ubuntu 16.04 installation
+* AMD drivers om Ubuntu 16.04 installation
 [[http://support.amd.com/en-us/kb-articles/Pages/Installation-Instructions-for-amdgpu-Graphics-Stacks.aspx][Download ]]and Install [[https://help.ubuntu.com/community/RadeonDriver#Testing_the_driver][AMD drivers]]. [[https://askubuntu.com/questions/850281/opencl-on-ubuntu-16-04-intel-sandy-bridge-cpu][check]] and [[http://laanwj.github.io/2016/05/06/opencl-ubuntu1604.html][test]]
-drivers. [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][Troubleshooting]] and [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][test]]. Get =xmr-stak= from [[https://github.com/fireice-uk/xmr-stak/blob/master/doc/Linux_deployment.md][github]]
+drivers. [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][Troubleshooting]] and [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][test]]. 
 #+BEGIN_SRC shell
 sudo apt update
 sudo apt dist-upgrade
@@ -39,7 +39,6 @@ clinfo
 
 # after installing AMD SDK from https://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
 # in case error occurs of "No rule to make target" 
-# during the build of xmr-stak
 cd $AMDAPPSDKROOT/lib/x86_64
 sudo ln -sf sdk/libOpenCL.so.1 libOpenCL.so
 export LD_LIBRARY_PATH=/opt/AMDAPPSDK-3.0/lib/x86_64
