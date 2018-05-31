@@ -50,7 +50,7 @@ Loaded packages.
 <<packages,results='hide'>>=
 pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
-          'DescTools', 'scales')
+          'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -58,12 +58,58 @@ lapply(pkgs, require, character.only = TRUE)
 \section{Data structure}
 \label{sec:structure}
 Data is from patients with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some patients show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
+\marginnote{\small\color{blue}$\Lsh$OR: Odds ratio. HR: Hazard ratio}[0cm]
 <<summary_full>>=
-metadata <- read.table("data/phenodata", sep = "\t", header = T)
-colnames(metadata)
+#read.table("data/phenodata", sep = "\t", header = T) %>%
+#    dplyr::select(SAMPLE_ID, Timepoint, 
+#    GROUP, SITE, Score, Prediction, ABClikelihood) %>%
+#    brotools::describe()
+
+print_summary_table <- function(features, dependent, df, execute = TRUE) {
+    if ( execute == TRUE ) {
+        x <- df %>%
+            summary_factorlist(dependent, features, p=FALSE, add_dependent_label=TRUE)
+        ## print latex table
+        Hmisc::latex(x, file = "", booktabs = TRUE, title = "")
+    } else {
+        cat("LaTeX summary table printed\n")
+    }
+}
+
+dfs <- read.table("data/phenodata", sep = "\t", header = T)
+print_summary_table(features= c("Score", "ABClikelihood", "GROUP"), 
+                    dependent= c("Prediction"), 
+                    df = dfs, 
+                    execute = F)
 @ 
 
-In the first steps of the analysis, the samples will be classified (supervised) into the following categories.
+
+\begin{table}[!h]
+\begin{center}
+\small\addtolength{\tabcolsep}{-2pt}
+\begin{tabular}{llllll}
+\toprule
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Dependent: Prediction}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{ABC}&\multicolumn{1}{c}{GCB}&\multicolumn{1}{c}{U}\tabularnewline
+\midrule
+10&Score&Mean (SD)&3156.3 (475.5)&506.4 (721.1)&2162.8 (143.6)\tabularnewline
+1&ABClikelihood&Mean (SD)&1 (0)&0 (0)&0.5 (0.4)\tabularnewline
+2&GROUP&CNS DIAGNOSIS&4 (33.3)&6 (50.0)&2 (16.7)\tabularnewline
+3&&CNS RELAPSE CHOP or EQUIVALENT&6 (60.0)&3 (30.0)&1 (10.0)\tabularnewline
+4&&CNS RELAPSE RCHOP&17 (44.7)&13 (34.2)&8 (21.1)\tabularnewline
+5&&NO RELAPSE&27 (28.1)&52 (54.2)&17 (17.7)\tabularnewline
+6&&NORMAL ABC CONTROL&2 (100.0)&0 (0.0)&0 (0.0)\tabularnewline
+7&&NORMAL GCB CONTROL&0 (0.0)&4 (100.0)&0 (0.0)\tabularnewline
+8&&SYTEMIC RELAPSE NO CNS&31 (48.4)&25 (39.1)&8 (12.5)\tabularnewline
+9&&TESTICULAR NO CNS RELAPSE&9 (75.0)&0 (0.0)&3 (25.0)\tabularnewline
+\bottomrule
+\end{tabular}\end{center}
+\end{table}
+
+
+\subsection{Data reformating}
+\label{subsec:reformating}
+
+In the first steps of the analysis, the samples will be labeled (supervised) into the following categories (based on patients diagnosis).
 <<summary_selected>>=
 metadata <- read.table("data/phenodata", sep = "\t", header = T) %>%
     dplyr::select(SAMPLE_ID, Timepoint, GROUP, SITE, Score, Prediction, ABClikelihood) %>%
@@ -93,14 +139,133 @@ metadata$ABClassify <- as.factor(metadata$ABClassify)
 metadata$ABCScore <- as.factor(metadata$ABCScore)
 metadata$Nodes <- as.factor(metadata$Nodes)
 metadata$Lymphnodes <- as.factor(metadata$Lymphnodes)
-
-summary(metadata)
+#brotools::describe(metadata)
+print_summary_table(c("ABCScore", "ABClassify", "GROUP"), c("Nodes"), metadata, execute = F)
 @ 
+
+\begin{table}[!h]
+\begin{center}
+\small\addtolength{\tabcolsep}{-2pt}
+\begin{tabular}{lllll}
+\toprule
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Dependent: Nodes}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{EN}&\multicolumn{1}{c}{LN}\tabularnewline
+\midrule
+4&ABCScore&ABC&34 (37.0)&58 (63.0)\tabularnewline
+5&&GCB&36 (35.0)&67 (65.0)\tabularnewline
+6&&U&16 (39.0)&25 (61.0)\tabularnewline
+1&ABClassify&ABC&37 (35.9)&66 (64.1)\tabularnewline
+2&&GCB&38 (32.5)&79 (67.5)\tabularnewline
+3&&U&11 (68.8)&5 (31.2)\tabularnewline
+7&GROUP&CNS DIAGNOSIS&7 (63.6)&4 (36.4)\tabularnewline
+8&&CNS RELAPSE CHOP or EQUIVALENT&5 (62.5)&3 (37.5)\tabularnewline
+9&&CNS RELAPSE RCHOP&20 (51.3)&19 (48.7)\tabularnewline
+10&&NO RELAPSE&30 (31.2)&66 (68.8)\tabularnewline
+11&&NORMAL ABC CONTROL&2 (NA)&0 (0.0)\tabularnewline
+12&&NORMAL GCB CONTROL&0 (0.0)&4 (100.0)\tabularnewline
+13&&SYTEMIC RELAPSE NO CNS&10 (15.6)&54 (84.4)\tabularnewline
+14&&TESTICULAR NO CNS RELAPSE&12 (100.0)&0 (0.0)\tabularnewline
+\bottomrule
+\end{tabular}\end{center}
+\end{table}
+
+\subsubsection{Regression analyses to quantify diagnosis connections}
+\label{subsec:regression}
+Logistic regression of binomial factoring between nodal/extranodal diagnosis and patients labels for cell-of-origin classification and CNS relapse or systemic relapse.
+Regression model summary with odds ratio with 95\% confidence interval to quantify how much nodal and extranodal diagnosis is associated with the cell-of-origin ABC or GCB nature in DLBCL patients with CNS, systemic or no relapse.
+<<tabulated_summary_logistic>>=
+fit_summary_table <- function(features, dependent, df, method, execute = TRUE) {
+    if ( execute == TRUE ) {
+        if ( method == "glm" || method == "cox" ) {
+            x <- df %>%
+                finalfit(dependent, features)
+        } else if ( execute == "glmer" ) {
+            x <- df %>%
+                finalfit(dependent, features, 
+                         mixed, random_effect)
+        }
+        ## print latex table
+        Hmisc::latex(x, file = "", booktabs = TRUE, title = "")
+    } else {
+        cat("LaTeX summary table printed\n")
+    }
+}
+
+
+fit_summary_table(features= c("ABCScore", "ABClassify", "GROUP"),
+                  dependent= c("Nodes"), 
+                  df = metadata,
+                  method = "glm",
+                  execute = F)
+@ 
+
+
+
+
+\begin{table}[!h]
+\begin{center}
+\small\addtolength{\tabcolsep}{-5pt}
+\begin{tabular}{lllllll}
+\toprule
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Dependent: Nodes}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{EN}&\multicolumn{1}{c}{LN}&\multicolumn{1}{c}{OR (univariable)}&\multicolumn{1}{c}{OR (multivariable)}\tabularnewline
+\midrule
+4&ABCScore&ABC&34 (39.5)&58 (38.7)&-&-\tabularnewline
+5&&GCB&36 (41.9)&67 (44.7)&1.09 (0.61-1.96, p=0.771)&0.44 (0.06-3.23, p=0.408)\tabularnewline
+6&&U&16 (18.6)&25 (16.7)&0.92 (0.43-1.97, p=0.820)&0.96 (0.25-4.74, p=0.952)\tabularnewline
+1&ABClassify&ABC&37 (43.0)&66 (44.0)&-&-\tabularnewline
+2&&GCB&38 (44.2)&79 (52.7)&1.17 (0.67-2.04, p=0.591)&1.61 (0.24-10.98, p=0.615)\tabularnewline
+3&&U&11 (12.8)&5 (3.3)&0.25 (0.08-0.76, p=0.018)&0.52 (0.07-2.97, p=0.473)\tabularnewline
+7&GROUP&CNS DIAGNOSIS&7 (8.1)&4 (2.7)&-&-\tabularnewline
+8&&CNS RELAPSE CHOP or EQUIVALENT&5 (5.8)&3 (2.0)&1.05 (0.15-7.08, p=0.960)&0.97 (0.13-6.76, p=0.979)\tabularnewline
+9&&CNS RELAPSE RCHOP&20 (23.3)&19 (12.7)&1.66 (0.43-7.21, p=0.470)&1.71 (0.42-7.73, p=0.461)\tabularnewline
+10&&NO RELAPSE&30 (34.9)&66 (44.0)&3.85 (1.08-15.64, p=0.042)&3.40 (0.91-14.2, p=0.074)\tabularnewline
+11&&NORMAL ABC CONTROL&2 (2.3)&0 (0.0)&0.00 (NA-NA, p=0.995)&0.00 (NA-NA, p=0.995)\tabularnewline
+12&&NORMAL GCB CONTROL&0 (0.0)&4 (2.7)&74.56 (0.00-NA, p=0.993)&79.25 (0.00-NA, p=0.993)\tabularnewline
+13&&SYTEMIC RELAPSE NO CNS&10 (11.6)&54 (36.0)&9.45 (2.42-NA, p=0.002)&8.07 (1.98-NA, p=0.004)\tabularnewline
+14&&TESTICULAR NO CNS RELAPSE&12 (14.0)&0 (0.0)&0.00 (0.00-NA, p=0.988)&0.00 (0.00-NA, p=0.988)\tabularnewline
+\bottomrule
+\end{tabular}\end{center}
+\end{table}
+
+
+
+Mixed effects multilevel logistic regression model fit to find connections between patients (CNS relapse, systemic, and no relapse) and cell-of-origin predictions (ABC, GCB likelihoods), while considering nodal and extranodal involvement in the relapse (diagnosed tissue sites with cancer invasion).
+<<tabulated_summary_mixed>>=
+mixed = c("GROUP")
+random_effect = c("SITE")
+fit_summary_table(features= c("Prediction", "GROUP"),
+                  dependent= c("Nodes"),
+                  df = metadata,
+                  method = "glmer",
+                  execute = F)
+
+@ 
+
+
+\begin{table}[!h]
+\begin{center}
+\small\addtolength{\tabcolsep}{-5pt}
+\begin{tabular}{lllllll}
+\toprule
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{Dependent: Nodes}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{EN}&\multicolumn{1}{c}{LN}&\multicolumn{1}{c}{OR (univariable)}&\multicolumn{1}{c}{OR (multilevel)}\tabularnewline
+\midrule
+9&Prediction&ABC&34 (40.5)&58 (38.7)&-&-\tabularnewline
+10&&GCB&36 (42.9)&67 (44.7)&1.09 (0.61-1.96, p=0.771)&-\tabularnewline
+11&&U&14 (16.7)&25 (16.7)&1.05 (0.48-2.32, p=0.908)&-\tabularnewline
+1&GROUP&CNS DIAGNOSIS&7 (8.1)&4 (2.7)&-&-\tabularnewline
+2&&CNS RELAPSE CHOP or EQUIVALENT&5 (5.8)&3 (2.0)&1.05 (0.15-7.08, p=0.960)&0.38 (0.00-NA, p=0.989)\tabularnewline
+3&&CNS RELAPSE RCHOP&20 (23.3)&19 (12.7)&1.66 (0.43-7.21, p=0.470)&0.49 (0.00-NA, p=0.988)\tabularnewline
+4&&NO RELAPSE&30 (34.9)&66 (44.0)&3.85 (1.08-15.64, p=0.042)&1.70 (0.00-NA, p=0.989)\tabularnewline
+5&&NORMAL ABC CONTROL&2 (2.3)&0 (0.0)&0.00 (NA, p=0.995)&0.00 (0.00-Inf, p=1.000)\tabularnewline
+6&&NORMAL GCB CONTROL&0 (0.0)&4 (2.7)&NA (0.00-NA, p=0.993)&285412.87 (0.00-Inf, p=0.999)\tabularnewline
+7&&SYTEMIC RELAPSE NO CNS&10 (11.6)&54 (36.0)&9.45 (2.42-42.22, p=0.002)&1.76 (0.00-NA, p=0.989)\tabularnewline
+8&&TESTICULAR NO CNS RELAPSE&12 (14.0)&0 (0.0)&0.00 (0.00-NA, p=0.988)&0.00 (0.00-Inf, p=1.000)\tabularnewline
+\bottomrule
+\end{tabular}\end{center}
+\end{table}
+
 
 \subsection{Featured data and groups of sample cases}
 \label{subsec:groups}
-
-
 Difference in cases being indexed based on their \textit{cell-of-origin} association subtypes using either of the following features: prediction, ABClassify, ABCScore.
 <<cells_difference>>=
 metadata %>%
@@ -244,7 +409,10 @@ expression %>%
 \subsection{Cleaning and removing non-essential genes}
 \label{subsec:subsetting}
 \marginnote{\small\color{blue}$\Lsh$ $\sigma^2$ is the average of the squared differences from the $\mu$}[0cm]
-Subsetting the data by reducing the number of gene profiles improves interpretation and reduces noise. Each array contains probes of 75,523 different RNAs. Either ncRNA, mRNA, and non annotated genes. More than 53.32\% of the probes are non-coding. For interpretation purpose, ncRNAs profiles were discarded before fitting the expressions. In addition, the variation from the mean of each transcript was assessed and the spread of expression were all used to discard top and bottom variants. Individual genes that vary widely from the mean of the array were removed thus reducing the spread of the expression across profiles. Transcripts with potential biased high expressions were thus flagged and discarded thus improving correlation of other transcripts.
+Subsetting the data by reducing the number of gene profiles improves interpretation and reduces noise. It is well established that many machine learning models used for classification can be sensitive to high number of \textit{irrelevant} genes, others like support vector machines and random forests are less so \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-319}{(Statnikov 2008)}.
+
+
+Each array contains probes of 75,523 functional and non-functional RNAs. Either ncRNA, mRNA, and non annotated genes. More than 53.32\% of the probes are non-coding. For interpretation purpose, ncRNAs profiles were discarded before fitting the expressions. In addition, the variation from the mean of each transcript was assessed and the spread of expression were all used to discard top and bottom variants. Individual genes that vary widely from the mean of the array were removed thus reducing the spread of the expression across profiles. Transcripts with potential biased high expressions were thus flagged and discarded thus improving correlation of other transcripts.
 Subsetting was done after normalization of all datasets, all arrays. This would reduce technical errors appearing significant when comparing arrays between each others. Data was transformed (standardization protocol) before calculating means and variances. This helps a better signal recovery from a large dataset with potential expression bias.
 \marginnote{\small\color{blue}$\Lsh$ Each array correspond to a DLBCL patient's case}[0cm]
 
@@ -253,7 +421,7 @@ Subsetting was done after normalization of all datasets, all arrays. This would 
 Full probe list accounting for 75,523 genes ({\color{red} red horizontal line}). The full line represents the variance after being adjusted by iteratively discarding top/low variant expression profiles. The dotted line represent the original variance before discarding genes.
 \marginnote{\small\color{blue}$\Lsh$ The smaller the variance, the better}[0.5cm]
 
-The graph below shows that by discarding highly variant expressions and subsetting the dataset to 1613 genes for example, the mean variance of the whole array is higher (0.27) than a dataset of 10,811 with a mean variance of 0.09. Ideally, is to reduce the dataset based on the whole array mean variance and mean standard deviation.
+The graph below shows that by discarding highly variant expressions and selecting only the top 1613 genes for example, the mean variance of the whole array (0.27) is higher than a ranked subset of 10,811 (0.09). Ideally, the reduction of the data is on both, the mean variance and mean standard deviation of the whole array.
 <<variance_w_ncrna_subsetting>>=
 read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
     select(dimension, meanVariance, adj.meanVariance) %>%
@@ -315,7 +483,7 @@ read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>
 \subsubsection{Standard deviation optimization for each array }
 \label{subsec:deviation}
 The spread of the gene expression scores is dependent on their variance, their deviation from each array's mean (population mean). By removing potentially noisy expressions we are reducing the spread of the arrays numbers, hence improving recognition of rare gene regulations.
-Below shows how the standard deviation, \textbf{spread} of the data, is getting smaller, more we discard genes with high/low variance.
+Below, the plot shows how the standard deviation, \textbf{spread} of the data is getting smaller the more we discard genes with high and low variance.
 \marginnote{\small\color{blue}$\Lsh$ Best if small spread between 2 SDs}[0cm]
 
 All array probes with all RNAs.
@@ -1177,6 +1345,128 @@ read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
     geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
 
 @ 
+
+
+
+\section{Machine Learning}
+\label{sec:machinelearning}
+Machine learning models were used for classification of patients cases into systemic relapse of DLBCL, CNS relapse or no relapse. Data are gene expression from Affymetrix arrays of 240 patients with a form of DLBCL. Subsets of the whole number of microarray probes will be used for classification.
+
+\subsection{Regularization}
+\label{subsec:regularization}
+Least absolute shrinkage and selection operator (LASSO) was used for dimension reduction. Gene expression profiles were extracted from networks with significant connectivity. Subset selection using lasso, penalizes genes based on coefficient estimates, to increase accuracy of classification.
+
+\subsubsection{Uncertainty estimation for selected genes from expression networks}
+\label{subsec:uncertainty}
+Plot showing, across a range of iterations, the mean probabilities of a subset of genes to correctly predict a patient case, or the certainty of a subset to estimate a correct classification. Briefly, cases are assigned to either diagnosis category, systemic relapse (SYST), CNS relapse (CNS), and no relapse (NOREL). During each iteration, a prediction is made to assign a category. Then a probability is calculated for having an accuracy performance for that iteration. A single iteration has a different random seed, which generates a different set of lambda coefficients for adjusting the lasso penalty. The best lambda across a grid of coefficients with the best accuracy classification is then selected based on accuracy. Adjusting the lambda score also adjusts the subset of genes used for the classification. For one best lambda there is one subset of significantly expressed genes and each gene has a different probability. For one best lambda there is one mean probability registered for that subset of genes.
+\marginnote{\small\color{blue}$\Lsh$If a subset has 50 genes, the reported probabilities are the mean of each gene individual probability to predict all patient cases}[0cm]
+<<boxplot_probabilities_lambda>>=
+read.table("./data/summary.lambda.iterations20.multinomial.probabilities.txt", 
+           row.names = 1, header = T) %>%
+    ggplot(aes(x = class,
+               y = probabilityScore,
+               fill = class)) +
+    theme_bw() +
+    geom_boxplot() +
+    geom_jitter(width = .2)
+@ 
+
+Plot showing the accuracy of assigning a patient to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
+<<boxplot_accuracies_lambda,out.width='4in',out.height='2in'>>=
+df <- read.table("./data/summary.lambda.iterations20.multinomial.accuracies.txt", 
+                 row.names = 1, header = T)
+mir <- min(df$regNgenes)
+mar <- max(df$regNgenes)
+q1 <- floor((mir+mar)/2.5)
+q2 <- floor((mir+mar)/1.75)
+df$grouped <- cut(df$regNgenes, c(0, q1, q2, mar))
+levels(df$grouped) <- c(paste0(0,"-",q1), 
+                        paste0(q1+1,"-",q2), 
+                        paste0(q2+1,"-",mar))
+df %>%
+    ggplot(aes(x = group,
+               y = accuracy,
+               fill = group)) +
+    geom_violin(trim = FALSE) +
+    geom_jitter(shape=16, position=position_jitter(0.2)) +
+    scale_fill_brewer(palette = "Dark2") +
+    theme_bw() +
+    labs(x = "Different diagnosis for patients with DLBCL",
+         y = "Accuracy scores for multiple iterations of classification") +
+    facet_wrap( ~ grouped,
+               ncol = 3,
+               scales = "free") + 
+    theme(legend.position = "top")
+
+
+@ 
+
+\subsection{Models selected for classification}
+\label{subsec:models}
+
+\begin{table}[!h]
+  % \captionsetup{format=plain,justification=centerlast}
+  \caption{\bf Machine learning models}
+  \renewcommand{\arraystretch}{0.8}
+   \small\addtolength{\tabcolsep}{-1pt}
+  \begin{tabular}{p{.75cm} p{6cm} l p{4cm} l}
+    \toprule
+    
+    # & Model & R package$^*$ & Parameters & Abbreviation \\
+    
+    \midrule
+
+    1 & Naive bayes & naivebayes & laplace, usekernel, adjust & naive\_bayes \\
+    2 & k-Nearest Neighbors & kknn & kmax, distance, kernel & kknn \\
+    3 & Penalized multinomial regression & nnet & decay & multinom \\
+    4 & Random forest & randomForest & mtry & rf \\
+    5 & Regularized random forest & RRF & mtry, coefReg, coefImp & RRF \\
+    6 & Linear discriminant analysis (LDA) & MASS & dimen & lda2 \\
+    7 & Localized LDA & klaR & k & loclda \\
+    8 & Flexible discriminant analysis (FDA) & mda & degree, nprune & fda \\
+    9 & Bagged FDA & mda & degree, nprune & bagFDA \\
+    10 & Bagged FDA using gCV pruning & earth & degree & bagFDAGCV \\
+    11 & Penalized discriminant analysis & mda & lambda & pda \\
+    12 & Partial least squares & pls & ncomp & pls \\
+    13 & Partial least squares & pls & ncomp & kernelpls \\
+    14 & Bagged cart & e1071 & & treebag \\
+    15 & Support vector machines (SVM) with linear kernel & kernlab & C & svmLinear \\
+    16 & SVM with polynomial kernel & kernlab & degree, scale, C & svmPoly \\
+    17 & SVM with radial basis function kernel & kernlab & sigma, C & svmRadialSigma \\
+    18 & L2 regularized SVM (dual) with linear kernel & LiblineaR & cost, loss & svmLinear3 \\
+    19 & Neural network (NN) & nnet & size, decay & nnet \\
+    20 & Monotone multi-layer perceptron NN & monmlp & hidden1, n.ensemble & monmlp \\
+    21 & Stacked autoencoder deep NN & deepnet & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    22 & C5.0 & C50 & trials, model, winnow & C5.0 \\
+    23 & Boosted logistic regression & caTools & nlter & LogitBoost \\
+    24 & Regularized logistic regression & LiblineaR & cost, loss, epsilon & regLogistic \\
+    25 & Stochastic gradient boosting & gbm & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+
+    \bottomrule
+  \end{tabular}
+  \vspace{-10pt}
+  \caption*{$^*$ The version of each package is shared at section \ref{subsec:version}.}
+  \label{tab:models}
+\end{table}
+
+
+\subsection{Machine learning performance benchmarks}
+\label{subsec:benchmarks}
+For this type of nominal data, classification models (not regression) are used, see Section /ref{subsec:models}. The performance metrics for this type of models are an accuracy score and kappa (relative to R$^2$).
+<<histogram_performance_ml_metrics>>=
+accuracy <- read.table("./data/accuracy.performance.metrics.multianalysis.ml.txt", 
+                       row.names = 1)
+kappa <- read.table("./data/kappa.performance.metrics.multianalysis.ml.txt", 
+                    row.names = 1)
+
+
+
+@ 
+
+\subsection{Version of machine learning models}
+\label{subsec:version}
+\marginnote{\small\color{blue}$\Lsh$ Version of R packages used for their algorithmic implementation of machine learning models}[0cm]
+
 
 
 
