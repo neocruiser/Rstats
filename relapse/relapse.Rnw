@@ -50,7 +50,8 @@ Loaded packages.
 <<packages,results='hide'>>=
 pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
-          'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit')
+          'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit',
+          'plyr')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -276,7 +277,7 @@ metadata %>%
 
 
 Distribution of samples with different treatments.
-<<treatmens_bar>>=
+<<treatments_bar>>=
 metadata %>% 
     select(GROUP) %>%
     ggplot(aes(x = GROUP)) +
@@ -402,7 +403,11 @@ expression %>%
                                           fill = "white"),
           panel.border = element_rect(linetype = "blank", 
                                       fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
+          panel.grid.major = element_line(linetype = "blank")) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
 
 @ 
 
@@ -1404,43 +1409,43 @@ df %>%
 \subsection{Models selected for classification}
 \label{subsec:models}
 
+\marginnote{\small\color{blue}$\Lsh$ Parameters are crucial to optimize for accuracy. Similar models have different parameters}[0cm]
+
 \begin{table}[!h]
   % \captionsetup{format=plain,justification=centerlast}
   \caption{\bf Machine learning models}
   \renewcommand{\arraystretch}{0.8}
-   \small\addtolength{\tabcolsep}{-1pt}
-  \begin{tabular}{p{.75cm} p{6cm} l p{4cm} l}
+   \small\addtolength{\tabcolsep}{-2pt}
+  \begin{tabular}{p{.45cm} p{6.5cm} l p{4cm} l}
     \toprule
     
-    # & Model & R package$^*$ & Parameters & Abbreviation \\
+    \# & Model & R package$^*$ & Parameters & Abbreviation \\
     
     \midrule
 
     1 & Naive bayes & naivebayes & laplace, usekernel, adjust & naive\_bayes \\
-    2 & k-Nearest Neighbors & kknn & kmax, distance, kernel & kknn \\
+    2 & Weighted k-Nearest Neighbors & kknn & kmax, distance, kernel & kknn \\
     3 & Penalized multinomial regression & nnet & decay & multinom \\
-    4 & Random forest & randomForest & mtry & rf \\
-    5 & Regularized random forest & RRF & mtry, coefReg, coefImp & RRF \\
-    6 & Linear discriminant analysis (LDA) & MASS & dimen & lda2 \\
-    7 & Localized LDA & klaR & k & loclda \\
-    8 & Flexible discriminant analysis (FDA) & mda & degree, nprune & fda \\
-    9 & Bagged FDA & mda & degree, nprune & bagFDA \\
-    10 & Bagged FDA using gCV pruning & earth & degree & bagFDAGCV \\
-    11 & Penalized discriminant analysis & mda & lambda & pda \\
-    12 & Partial least squares & pls & ncomp & pls \\
+    4 & C5.0 & C50 & trials, model, winnow & C5.0 \\
+    5 & Random forest & randomForest & mtry & rf \\
+    6 & Regularized random forest & RRF & mtry, coefReg, coefImp & RRF \\
+    7 & Linear discriminant analysis (LDA) & MASS & dimen & lda2 \\
+    8 & Localized LDA & klaR & k & loclda \\
+    9 & Flexible discriminant analysis (FDA) & mda & degree, nprune & fda \\
+    10 & Bagged FDA & mda & degree, nprune & bagFDA \\
+    11 & Bagged FDA using gCV pruning & earth & degree & bagFDAGCV \\
+    12 & Penalized discriminant analysis & mda & lambda & pda \\
     13 & Partial least squares & pls & ncomp & kernelpls \\
-    14 & Bagged cart & e1071 & & treebag \\
-    15 & Support vector machines (SVM) with linear kernel & kernlab & C & svmLinear \\
+    14 & Support vector machines (SVM) with linear kernel & kernlab & C & svmLinear \\
+    15 & L2 regularized SVM (dual) with linear kernel & LiblineaR & cost, loss & svmLinear3 \\
     16 & SVM with polynomial kernel & kernlab & degree, scale, C & svmPoly \\
     17 & SVM with radial basis function kernel & kernlab & sigma, C & svmRadialSigma \\
-    18 & L2 regularized SVM (dual) with linear kernel & LiblineaR & cost, loss & svmLinear3 \\
-    19 & Neural network (NN) & nnet & size, decay & nnet \\
-    20 & Monotone multi-layer perceptron NN & monmlp & hidden1, n.ensemble & monmlp \\
-    21 & Stacked autoencoder deep NN & deepnet & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    22 & C5.0 & C50 & trials, model, winnow & C5.0 \\
-    23 & Boosted logistic regression & caTools & nlter & LogitBoost \\
-    24 & Regularized logistic regression & LiblineaR & cost, loss, epsilon & regLogistic \\
-    25 & Stochastic gradient boosting & gbm & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    18 & Neural network (NN) & nnet & size, decay & nnet \\
+    19 & Monotone multi-layer perceptron NN & monmlp & hidden1, n.ensemble & monmlp \\
+    20 & Stacked autoencoder deep NN & deepnet & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    21 & Boosted logistic regression & caTools & nlter & LogitBoost \\
+    22 & Regularized logistic regression & LiblineaR & cost, loss, epsilon & regLogistic \\
+    23 & Stochastic gradient boosting & gbm & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
 
     \bottomrule
   \end{tabular}
@@ -1452,16 +1457,267 @@ df %>%
 
 \subsection{Machine learning performance benchmarks}
 \label{subsec:benchmarks}
-For this type of nominal data, classification models (not regression) are used, see Section /ref{subsec:models}. The performance metrics for this type of models are an accuracy score and kappa (relative to R$^2$).
-<<histogram_performance_ml_metrics>>=
-accuracy <- read.table("./data/accuracy.performance.metrics.multianalysis.ml.txt", 
-                       row.names = 1)
-kappa <- read.table("./data/kappa.performance.metrics.multianalysis.ml.txt", 
-                    row.names = 1)
+Please follow up on performance metrics for classification problem by reading \href{http://rali.iro.umontreal.ca/rali/sites/default/files/publis/SokolovaLapalme-JIPM09.pdf}{Sokolova 2009}.
+\marginnote{\small\color{blue}$\Lsh$ \href{https://scaryscientist.blogspot.com/2016/03/confusion-matrix.html}{Link} to metrics definitions}[0cm]
+\begin{itemize}
+\item \textbf{Sensitivity}, is how many true cases are correctly classified to their expected class. Or \textbf{recall} (math), is the fraction of events where we correctly declared \textit{i} form all cases where the true of state of the world is \textit{i}. $TP / (TP + FN)$
+\item \textbf{Specificity}, is how many wrong cases are correctly classified elsewhere. $TN / (TN + FP)$
+\item \textbf{Precision} (math), is the fraction of events where we correctly declared \textit{i} out of all instances where the algorithm declared \textit{i}. $TP / (TP + FP)$
+\item \textbf{Accuracy}, is an overall measure that assesses the predictive model by comparing predicted classes to observed expected classes. $(TN + TP) / (TP + TN + FP + FN)$
+  \end{itemize}
+
+\subsubsection{Creating the baseline of models performance}
+\label{subsec:baseline}
+\marginnote{\small\color{blue}$\Lsh$ Precision and recall are best for multi class learning}[0cm]
+Machine learning models were trained only without tuning for hyperparameter optimization. Metrics generated show the raw performance of each model.\\
+
+For this type of nominal data, classification models (not regression) are used, see Section /ref{subsec:models}. The performance metrics for this type of models are an accuracy score and kappa, which takes into account the possibility of the agreement occurring by chance (the kappa score however reflects the adequate agreement). Standard error ({\color{red}SE in red}) bars for the kappa significance per model reproducible across 10 cross-validation each repeated 5 times. Minimum and maximum accuracy thresholds are held at 95\% confidence intervals.\\
+\marginnote{\small\color{blue}$\Lsh$ Kappa is Cohen’s (unweighted) Kappa statistic averaged across the resampling results}[0cm]
 
 
+Load standard error and deviation equations.
+<<summary_function>>=
+summary_SE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
+                      conf.interval=.95, .drop=TRUE) {
+
+    length2 <- function (x, na.rm=FALSE) {
+        if (na.rm) sum(!is.na(x))
+        else       length(x)
+    }
+    datac <- ddply(data, groupvars, .drop=.drop,
+                   .fun= function(xx, col, na.rm) {
+                       c( N    = length2(xx[,col], na.rm=na.rm),
+                         mean = mean   (xx[,col], na.rm=na.rm),
+                         sd   = sd     (xx[,col], na.rm=na.rm)
+                         )
+                   },
+                   measurevar,
+                   na.rm
+                   )
+    datac <- rename(datac, c("mean"=measurevar))
+    # Calculate standard error of the mean
+    datac$se <- datac$sd / sqrt(datac$N) 
+    # Confidence interval multiplier for standard error
+    # Calculate t-statistic for confidence interval:
+    ciMult <- qt(conf.interval/2 + .5, datac$N-1)
+    datac$ci <- datac$se * ciMult
+    return(datac)
+}
 
 @ 
+
+Metrics for classification performance without tuning for hyperparameter optimization. Quick comparison of statistical learning on the DLBCL data.
+\marginnote{\small\color{blue}$\Lsh$ Accuracy is the true prediction rate averaged over cross-validation iterations}[0cm]
+<<bar_performance_ml_metrics,out.width='5in'>>=
+accuracy <- read.table("./data/Accuracy.metrics.txt", header = TRUE)
+kappa <- read.table("./data/Kappa.metrics.txt", header = TRUE)
+
+accuracy.se <- summary_SE(accuracy, measurevar = "Mean", groupvars = "model")
+kappa.se <- summary_SE(kappa, measurevar = "Mean", groupvars = "model")
+
+accuracy.se %>% 
+    ggplot(aes(x = model,
+               y = Mean)) +
+    geom_bar(position=position_dodge(), 
+             stat="identity") +
+    geom_errorbar(data = accuracy.se,
+                  aes(ymin=Mean-se, 
+                      ymax=Mean+se),
+                  width=.3,
+                  position=position_dodge(.9)) +
+    geom_line(data = kappa.se,
+              aes(x = as.numeric(model),
+                  y = Mean),
+              color = "red") +
+    geom_point(data = kappa.se,
+               size=2, shape=21, fill="red") +
+    geom_errorbar(data = kappa.se,
+                  aes(ymin=Mean-se, 
+                      ymax=Mean+se),
+                  width=.25,
+                  position=position_dodge(.9),
+                  color = "white") +
+    theme_minimal() +
+    ylab("Mean of accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
+    xlab("Machine Learning models iterated for 10 rounds") +
+    theme(legend.position = "top") + 
+    guides(fill=guide_legend(title="Number of parameters per model")) +
+    scale_fill_brewer(palette = "Dark2") +        
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@ 
+
+Kappa (vertical axis) and accuracy (horizontal axis) calculated from the performance tests of machine learning models. The higher kappa is the stronger agreement for a prediction and classification.
+<<scatterplot_performance_ml_metrics>>=
+data.frame(accuracy, kappa) %>% 
+    ggplot(aes(x = Mean,
+               y = Mean.1,
+               fill = model)) + 
+    geom_point(size=2, shape=21) +
+    theme_minimal() +
+    ylab("Mean of Kappa with adequate probability agreement") +
+    xlab("Mean of accuracy with overall perdiction certainty") +
+    theme(legend.position = "top")
+@ 
+
+Maximum accuracy registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
+<<boxplot_maximum_performance_ml_metrics,out.width='5in'>>=
+read.table("./data/Accuracy.metrics.txt", header = TRUE) %>% 
+    ggplot(aes(x = reorder(model, Max.),
+               y = Max.,
+               fill = as.character(parameters))) +
+    geom_boxplot() +
+    geom_jitter(shape=16, position=position_jitter(0.2), cex = 1.5) +
+    coord_flip() +
+    scale_fill_brewer(palette = "Dark2") +
+    theme_minimal() +
+    ylab("Maximum accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
+    xlab("Machine Learning models iterated 10 rounds") +
+    theme(legend.position = "top") + 
+    guides(fill=guide_legend(title="Number of parameters per model"))
+
+@ 
+
+
+
+\subsubsection{Models performance with hyperparameter tuning}
+\label{subsec:tuning}
+Compared to the baseline, the parameters available for each learner should increase its performance at predicting each expected outcome. Tuning these hyperparameters will leverage the results with increased accuracy.\\
+
+\subsubsection{Classifiers accuracy at optimal parameters}
+\label{subsec:optimal}
+Final report of the actual accuracy for each machine learning model from comparing predicted values and expected outcomes.\\
+\marginnote{\small\color{blue}$\Lsh$ Data are retrieved from Confusion Matrix}[0cm]
+
+How long (seconds) a statistical learner requires to optimize the hyperparameters and gets the highest significant accuracy on expected data.
+<<bar_duration_performance>>=
+df <- read.table("./data/log.performance3.full.hyperTuning.seed9793582.txt", header=T)
+df$group <- gsub("[0-9]", "", df$group)
+
+df %>%
+    ggplot(aes(x = reorder(model, durationSeconds),
+               y = durationSeconds)) +
+    geom_bar(position = position_dodge(),
+             stat = "identity") +
+    coord_flip() +
+    theme_minimal() +
+    ylab("Machine learners") +
+    xlab("Time (seconds) for tuning and optimizing precision/recall")
+
+@ 
+
+How is time training a model deliver on the significance of its accuracy? The p-value evaluates whether the overall accuracy rate is greater than the rate of the largest class. Proportions between classes (if one group of samples is larger than an other) is also considered in the hypothesis testing.
+
+\marginnote{\small\color{blue}$\Lsh$ \href{https://topepo.github.io/caret/measuring-performance.html}{Link} documentation Section 17.2}[0cm]
+
+<<scatterplot_duration_performance>>=
+df %>%
+    ggplot(aes(y = accuracyPval,
+               x= durationSeconds,
+               fill = as.character(model))) +
+    geom_point(size = 2,
+               shape = 21) +
+    theme_minimal() +
+    xlab("Time (seconds) for tuning and optimizing precision/recall") +
+    ylab("P-value between correct prediction and no-information classification") +
+    theme(legend.position = "top")    
+               
+@ 
+
+Precision versus recall across all sample groups for a multi-class classification.
+\marginnote{\small\color{blue}$\Lsh$True/False Positives/Negatives}[0cm]
+<<scatterplot_precisionRecall_performance>>=
+df %>%
+    ggplot(aes(x = Precision,
+               y = Recall,
+               group = as.character(group),
+               na.rm = T)) +
+    geom_point(aes(size = 2,
+               shape = group,
+               color = model)) +
+    theme_minimal() +
+    xlab("Precision of how many correct classes were called") +
+    ylab("Recall/Sensitivity") +
+    scale_color_brewer(palette = "Dark2") +
+    theme(legend.position = "top")               
+
+@ 
+
+
+Specificity and sensitivity across all sample groups.
+<<scatterplot_sepecificitySensitivity_performance>>=
+
+df %>%
+    ggplot(aes(x = Sensitivity,
+               y = Specificity,
+               group = as.character(group))) +
+    geom_point(aes(size = 2,
+               shape = group,
+               color = model)) +
+    theme_minimal() +
+    xlab("Sensitivity or true positive rate") +
+    ylab("Specificity or true negative rate") +
+    scale_color_brewer(palette = "Dark2") +
+    theme(legend.position = "top")               
+
+@ 
+
+
+Accuracy and Kappa across all sample groups.
+<<scatterplot_accuracyKappa_performance>>=
+
+df %>%
+    ggplot(aes(x = accuracy,
+               y = kappa)) +
+    geom_point(aes(size = 2,
+               color = model)) +
+    theme_minimal() +
+    xlab("Accuracy") +
+    ylab("Kappa on how well the classifier performed compared to chance") +
+    theme(legend.position = "top")               
+
+@ 
+
+
+Accuracy versus the p-value of each classification. The p-value is a hypothesis test between predicting expected samples and the probability that the classification is biased by disproportionate class sizes (one group of samples is larger than an other).
+<<scatterplot_doubleaccuracyPval_performance>>=
+
+df %>%
+    ggplot(aes(x = accuracy,
+               y = accuracyPval)) +
+    geom_point(aes(size = 2,
+               color = model)) +
+    theme_minimal() +
+    xlab("Accuracy") +
+    ylab("P-value between correct prediction and false no-information classification") +
+    theme(legend.position = "top")               
+
+@ 
+
+
+Prevalence of cases for each classifier. Were the classes perfectly balanced? A positive predictive score is similar to precision while accounting for disproportionality of the classes.
+<<bar_prevalence_performance>>=
+df %>%
+    ggplot(aes(x = Balanced.Accuracy,
+               y = Detection.Prevalence,
+               group = as.character(group))) +
+    geom_point(aes(size = 2,
+               color = model,
+               shape = group)) +
+    theme_minimal() +
+    xlab("Accuracy") +
+    ylab("Prevalence") +
+    theme(legend.position = "top")               
+    
+@ 
+
+
+
+
+
+
 
 \subsection{Version of machine learning models}
 \label{subsec:version}
