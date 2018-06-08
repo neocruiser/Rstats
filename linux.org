@@ -121,6 +121,8 @@ git --version
 #+CAPTION: emacs normal settings
 | keybinding     | command                           | plugin      |
 |----------------+-----------------------------------+-------------|
+| C-x r k        | kill column                       | emacs       |
+| C-x r y        | yank column                       | emacs       |
 | C-=            | expand selection                  | emacs       |
 | C-M-:          | jump by letter inside buffer      | emacs       |
 | Cx-Mb          | switch bookmarks                  | emacs       |
@@ -229,6 +231,15 @@ git --version
 | Cc-t           | tidy code                         | perl        |
 | C-;            | comment line                      | perl        |
 | Cu-C;          | delete comment                    | perl        |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
+|                |                                   |             |
 * R
 ** Revolution R
 [[http://mran.revolutionanalytics.com/documents/rro/installation/#sysreq][Tutorial]]
@@ -332,6 +343,8 @@ Plotly tutorials [[https://plot.ly/online-graphing/][free online graphing]].
 #+BEGIN_SRC shell
 locate Rprofile.site
 #+END_SRC
+
+
 either vanilla R at /usr/lib/R/etc/Rprofile.site
 or RRO at /usr/lib64/RRO-8.0/R-3.1.1/lib/R/etc/Rprofile.site
 #+BEGIN_SRC shell
@@ -368,22 +381,6 @@ Then add the lsos() function
 lsos <- function(..., n=100) {
     # shorthand
     .ls.objects(..., decreasing=TRUE, head=TRUE, n=n)   # order.by="Size"
-}
-
-## sweave function for knitr
-.ess_weave <- function(command, file, encoding = NULL) 
-{
-    cmd_symb <- substitute(command)
-    if (grepl("knit|purl", deparse(cmd_symb))) 
-        require(knitr)
-    od <- getwd()
-    on.exit(setwd(od))
-    setwd(dirname(file))
-    frame <- parent.frame()
-    if (is.null(encoding)) 
-        eval(bquote(.(cmd_symb)(.(file))), envir = frame)
-    else eval(bquote(.(cmd_symb)(.(file), encoding = .(encoding))), 
-        envir = frame)
 }
 
 #+END_SRC
