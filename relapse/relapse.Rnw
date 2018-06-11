@@ -1409,48 +1409,47 @@ df %>%
 \subsection{Models selected for classification}
 \label{subsec:models}
 
-\marginnote{\small\color{blue}$\Lsh$ Parameters are crucial to optimize for accuracy. Similar models have different parameters}[0cm]
+
 
 \begin{table}[!h]
   % \captionsetup{format=plain,justification=centerlast}
   \caption{\bf Machine learning models}
   \renewcommand{\arraystretch}{0.8}
    \small\addtolength{\tabcolsep}{-2pt}
-  \begin{tabular}{p{.45cm} p{6.5cm} l p{4cm} l}
+  \begin{tabular}{p{.4cm} p{6.5cm} l p{4cm} l}
     \toprule
     
-    \# & Model & R package$^*$ & Parameters & Abbreviation \\
+    \# & Classifiers trained & R package$^*$ & Parameters$^{\dagger}$ tuned & Abbreviation \\
     
     \midrule
 
-    1 & Naive bayes & naivebayes & laplace, usekernel, adjust & naive\_bayes \\
-    2 & Weighted k-Nearest Neighbors & kknn & kmax, distance, kernel & kknn \\
-    3 & Penalized multinomial regression & nnet & decay & multinom \\
-    4 & C5.0 & C50 & trials, model, winnow & C5.0 \\
-    5 & Random forest & randomForest & mtry & rf \\
-    6 & Regularized random forest & RRF & mtry, coefReg, coefImp & RRF \\
-    7 & Linear discriminant analysis (LDA) & MASS & dimen & lda2 \\
-    8 & Localized LDA & klaR & k & loclda \\
-    9 & Flexible discriminant analysis (FDA) & mda & degree, nprune & fda \\
-    10 & Bagged FDA & mda & degree, nprune & bagFDA \\
-    11 & Bagged FDA using gCV pruning & earth & degree & bagFDAGCV \\
-    12 & Penalized discriminant analysis & mda & lambda & pda \\
-    13 & Partial least squares & pls & ncomp & kernelpls \\
-    14 & Support vector machines (SVM) with linear kernel & kernlab & C & svmLinear \\
-    15 & L2 regularized SVM (dual) with linear kernel & LiblineaR & cost, loss & svmLinear3 \\
-    16 & SVM with polynomial kernel & kernlab & degree, scale, C & svmPoly \\
-    17 & SVM with radial basis function kernel & kernlab & sigma, C & svmRadialSigma \\
-    18 & Neural network (NN) & nnet & size, decay & nnet \\
-    19 & Monotone multi-layer perceptron NN & monmlp & hidden1, n.ensemble & monmlp \\
-    20 & Stacked autoencoder deep NN & deepnet & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    21 & Boosted logistic regression & caTools & nlter & LogitBoost \\
-    22 & Regularized logistic regression & LiblineaR & cost, loss, epsilon & regLogistic \\
-    23 & Stochastic gradient boosting & gbm & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    1 & Naive bayes & \href{https://cran.r-project.org/web/packages/naivebayes/index.html}{naivebayes} & laplace, usekernel, adjust & naive\_bayes \\
+    2 & Weighted k-Nearest Neighbors & \href{https://cran.r-project.org/web/packages/kknn/index.html}{kknn} & kmax, distance, kernel & kknn \\
+    3 & Penalized multinomial regression & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & decay & multinom \\
+    4 & C5.0 & \href{https://cran.r-project.org/web/packages/C50/index.html}{C50} & trials, model, winnow & C5.0 \\
+    5 & Random forest & \href{https://cran.r-project.org/web/packages/randomForest/index.html}{randomForest} & mtry & rf \\
+    6 & Regularized random forest & \href{https://cran.r-project.org/web/packages/RRF/index.html}{RRF} & mtry, coefReg, coefImp & RRF \\
+    7 & Linear discriminant analysis (LDA) & \href{https://cran.r-project.org/web/packages/MASS/index.html}{MASS} & dimen & lda2 \\
+    8 & Localized LDA & \href{https://cran.r-project.org/web/packages/klaR/index.html}{klaR} & k & loclda \\
+    9 & Flexible discriminant analysis (FDA) & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & fda \\
+    10 & Bagged FDA & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & bagFDA \\
+    11 & Bagged FDA using gCV pruning & \href{https://cran.r-project.org/web/packages/earth/index.html}{earth} & degree & bagFDAGCV \\
+    12 & Penalized discriminant analysis & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & lambda & pda \\
+    13 & Partial least squares & \href{https://cran.r-project.org/web/packages/pls/index.html}{pls} & ncomp & kernelpls \\
+    14 & Support vector machines (SVM) with linear kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & C & svmLinear \\
+    15 & L2 regularized SVM (dual) with linear kernel & \href{https://cran.r-project.org/web/packages/LiblineaR/}{LiblineaR} & cost, loss & svmLinear3 \\
+    16 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
+    17 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
+    18 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
+    19 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
+    20 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    21 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
+    22 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
 
     \bottomrule
   \end{tabular}
   \vspace{-10pt}
-  \caption*{$^*$ The version of each package is shared at section \ref{subsec:version}.}
+  \caption*{$^*$ The version of each package is shared at section \ref{subsec:version}. Links are forwarded to the CRAN page of each package for assessment of version, vignettes, advanced functionality, and description. $^{\dagger}$Parameters are crucial to optimize for accuracy. Similar models have different parameters}
   \label{tab:models}
 \end{table}
 
@@ -1460,9 +1459,9 @@ df %>%
 Please follow up on performance metrics for classification problem by reading \href{http://rali.iro.umontreal.ca/rali/sites/default/files/publis/SokolovaLapalme-JIPM09.pdf}{Sokolova 2009}.
 \marginnote{\small\color{blue}$\Lsh$ \href{https://scaryscientist.blogspot.com/2016/03/confusion-matrix.html}{Link} to metrics definitions}[0cm]
 \begin{itemize}
-\item \textbf{Sensitivity}, is how many true cases are correctly classified to their expected class. Or \textbf{recall} (math), is the fraction of events where we correctly declared \textit{i} form all cases where the true of state of the world is \textit{i}. $TP / (TP + FN)$
+\item \textbf{Sensitivity}, is how many true cases are correctly classified to their expected class. Or \textbf{recall}, is the fraction of events where we correctly declared $i$ form all cases where the true of state of the world is $i$. $TP / (TP + FN)$
 \item \textbf{Specificity}, is how many wrong cases are correctly classified elsewhere. $TN / (TN + FP)$
-\item \textbf{Precision} (math), is the fraction of events where we correctly declared \textit{i} out of all instances where the algorithm declared \textit{i}. $TP / (TP + FP)$
+\item \textbf{Precision}, is the fraction of events where we correctly declared $i$ out of all instances where the algorithm declared $i$. $TP / (TP + FP)$
 \item \textbf{Accuracy}, is an overall measure that assesses the predictive model by comparing predicted classes to observed expected classes. $(TN + TP) / (TP + TN + FP + FN)$
   \end{itemize}
 
@@ -1508,7 +1507,7 @@ summary_SE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 
 Metrics for classification performance without tuning for hyperparameter optimization. Quick comparison of statistical learning on the DLBCL data.
 \marginnote{\small\color{blue}$\Lsh$ Accuracy is the true prediction rate averaged over cross-validation iterations}[0cm]
-<<bar_performance_ml_metrics,out.width='5in'>>=
+<<bar_performance_ml_metrics,out.width='4in'>>=
 accuracy <- read.table("./data/Accuracy.metrics.txt", header = TRUE)
 kappa <- read.table("./data/Kappa.metrics.txt", header = TRUE)
 
@@ -1593,7 +1592,7 @@ Final report of the actual accuracy for each machine learning model from compari
 
 How long (seconds) a statistical learner requires to optimize the hyperparameters and gets the highest significant accuracy on expected data.
 <<bar_duration_performance>>=
-df <- read.table("./data/log.performance3.full.hyperTuning.seed9793582.txt", header=T)
+df <- read.table("./data/performance3.full.hyperTuning.seed14826796.txt", header=T)
 df$group <- gsub("[0-9]", "", df$group)
 
 df %>%
@@ -1603,8 +1602,8 @@ df %>%
              stat = "identity") +
     coord_flip() +
     theme_minimal() +
-    ylab("Machine learners") +
-    xlab("Time (seconds) for tuning and optimizing precision/recall")
+    xlab("Machine learners") +
+    ylab("Time (minutes) for tuning and optimizing precision/recall")
 
 @ 
 
@@ -1620,7 +1619,7 @@ df %>%
     geom_point(size = 2,
                shape = 21) +
     theme_minimal() +
-    xlab("Time (seconds) for tuning and optimizing precision/recall") +
+    xlab("Time (minutes) for tuning and optimizing precision/recall") +
     ylab("P-value between correct prediction and no-information classification") +
     theme(legend.position = "top")    
                
