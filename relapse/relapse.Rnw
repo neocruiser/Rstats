@@ -1360,25 +1360,33 @@ Machine learning models were used for classification of patients cases into syst
 \subsection{Regularization}
 \label{subsec:regularization}
 Least absolute shrinkage and selection operator (LASSO) was used for dimension reduction. Gene expression profiles were extracted from networks with significant connectivity. Subset selection using lasso, penalizes genes based on coefficient estimates, to increase accuracy of classification.
+Briefly, cases are assigned to either diagnosis category, systemic relapse (SYST), CNS relapse (CNS), and no relapse (NOREL). During each iteration, a prediction is made to assign a category. Then a probability is calculated for having an accuracy performance for that iteration. A single iteration has a different random seed, which generates a different set of lambda coefficients for adjusting the lasso penalty. The best lambda across a grid of coefficients with the best accuracy classification is then selected based on accuracy. Adjusting the lambda score also adjusts the subset of genes used for the classification. For one best lambda there is one subset of significantly expressed genes and each gene has a different probability. For one best lambda there is one mean probability registered for that subset of genes.
+\marginnote{\small\color{blue}$\Lsh$If a subset has 50 genes, the reported probabilities are the mean of each gene individual probability to predict all patient cases}[0cm]
 
 \subsubsection{Uncertainty estimation for selected genes from expression networks}
 \label{subsec:uncertainty}
-Plot showing, across a range of iterations, the mean probabilities of a subset of genes to correctly predict a patient case, or the certainty of a subset to estimate a correct classification. Briefly, cases are assigned to either diagnosis category, systemic relapse (SYST), CNS relapse (CNS), and no relapse (NOREL). During each iteration, a prediction is made to assign a category. Then a probability is calculated for having an accuracy performance for that iteration. A single iteration has a different random seed, which generates a different set of lambda coefficients for adjusting the lasso penalty. The best lambda across a grid of coefficients with the best accuracy classification is then selected based on accuracy. Adjusting the lambda score also adjusts the subset of genes used for the classification. For one best lambda there is one subset of significantly expressed genes and each gene has a different probability. For one best lambda there is one mean probability registered for that subset of genes.
-\marginnote{\small\color{blue}$\Lsh$If a subset has 50 genes, the reported probabilities are the mean of each gene individual probability to predict all patient cases}[0cm]
-<<boxplot_probabilities_lambda>>=
-read.table("./data/summary.lambda.iterations20.multinomial.probabilities.txt", 
+The chart below shows how many iterations (dots) were executed for each sample group before selecting a subset of genes through regularization.
+
+The probabilities are the fitted values of either a multinomial or binomial model at the best lambda ($\lambda$), shrinking parameter determined by tuning and cross-validation resampling. When predictions were made with lasso, the least squares were penalized. Lasso zero out coefficient estimates thus reducing the data. The fitted values are compared to the outcome to follow the proportion of variance "explained" by the model and the proportion of variance "not explained".\\
+
+Peaks in density represents variance fitted at best $\lambda$ between sample groups. Probabilities are compared to the residuals of the data, the outcome is the fitted values. As long as the peaks differ between groups, then the prediction is possible between samples. There is an overlay between CNS and SYST groups, which indicates the presence of some bias in differentiating between them.
+<<density_probabilities_lambda>>=
+read.table("./data/logSummary.lambda.iterations20.multinomial.probabilities.txt", 
            row.names = 1, header = T) %>%
-    ggplot(aes(x = class,
-               y = probabilityScore,
+    ggplot(aes(x = probabilityScore,
                fill = class)) +
-    theme_bw() +
-    geom_boxplot() +
-    geom_jitter(width = .2)
+    geom_density() +
+    theme_minimal() +
+    facet_grid(class ~ .) +
+    theme(legend.position = "none") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "Fitted values of a subset of genes",
+         y = "Density (fitted probabilities with lambda = 0)")
 @ 
 
 Plot showing the accuracy of assigning a patient to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
 <<boxplot_accuracies_lambda,out.width='4in',out.height='2in'>>=
-df <- read.table("./data/summary.lambda.iterations20.multinomial.accuracies.txt", 
+df <- read.table("./data/logSummary.lambda.iterations20.multinomial.accuracies.txt", 
                  row.names = 1, header = T)
 mir <- min(df$regNgenes)
 mar <- max(df$regNgenes)
@@ -1406,17 +1414,18 @@ df %>%
 
 @ 
 
-\subsection{Models selected for classification}
+
+
+\subsection{Machine learning classifiers selected}
 \label{subsec:models}
+Selection of learners was based on historical efficiency of such algorithms. Also, the training of classifiers starts from simple logistic regression, naive bayes, nearest neighbors, going to more flexible models, such as trees and deep neural nets that require more hyperparameter tuning. This strategy lets assess with less bias the overfitting issues that may arise.
 
-
-
-\begin{table}[!h]
+\begin{table}[h]
   % \captionsetup{format=plain,justification=centerlast}
   \caption{\bf Machine learning models}
   \renewcommand{\arraystretch}{0.8}
-   \small\addtolength{\tabcolsep}{-2pt}
-  \begin{tabular}{p{.4cm} p{6.5cm} l p{4cm} l}
+   \small\addtolength{\tabcolsep}{-3.5pt}
+  \begin{tabular}{l p{6.2cm} l p{4.5cm} l}
     \toprule
     
     \# & Classifiers trained & R package$^*$ & Parameters$^{\dagger}$ tuned & Abbreviation \\
@@ -1441,17 +1450,30 @@ df %>%
     16 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
     17 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
     18 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
-    19 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
-    20 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    21 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
-    22 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    19 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
+    20 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
+    21 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
+    22 & Deep NN with \href{https://arxiv.org/pdf/1412.6980.pdf}{Adam} optimization & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, dropout, beta1, beta2, learningrate, activation & mxnetAdam \\
+    23 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    24 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
+    25 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    26 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
+    
 
     \bottomrule
   \end{tabular}
   \vspace{-10pt}
-  \caption*{$^*$ The version of each package is shared at section \ref{subsec:version}. Links are forwarded to the CRAN page of each package for assessment of version, vignettes, advanced functionality, and description. $^{\dagger}$Parameters are crucial to optimize for accuracy. Similar models have different parameters}
+  \caption*{
+    $^*$ The version of each package is shared under section \ref{subsec:version}.
+    Links are forwarded to the CRAN page (except those imported from \href{https://www.tensorflow.org/}{Tensorflow} and \href{https://www.h2o.ai/}{H2O}) of each package for assessment of version, vignettes, advanced functionality, and description. 
+    $^{\dagger}$Parameters are crucial to optimize for accuracy. Similar models have different parameters. 
+    The mxnet package has an activation function, read more \href{https://stats.stackexchange.com/questions/126238/what-are-the-advantages-of-relu-over-sigmoid-function-in-deep-neural-networks}{here}.
+    Multi-layered neural networks are used for deep learning. In some instances, only the layer 1 is used. For such instances the classifier is considered a neural network.
+  }
   \label{tab:models}
 \end{table}
+
+
 
 
 \subsection{Machine learning performance benchmarks}
@@ -1508,8 +1530,8 @@ summary_SE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 Metrics for classification performance without tuning for hyperparameter optimization. Quick comparison of statistical learning on the DLBCL data.
 \marginnote{\small\color{blue}$\Lsh$ Accuracy is the true prediction rate averaged over cross-validation iterations}[0cm]
 <<bar_performance_ml_metrics,out.width='4in'>>=
-accuracy <- read.table("./data/Accuracy.metrics.txt", header = TRUE)
-kappa <- read.table("./data/Kappa.metrics.txt", header = TRUE)
+accuracy <- read.table("./data/log.Accuracy.performance1.multianalysis.seed1719586.294135.txt", header = TRUE)
+kappa <- read.table("./data/log.Kappa.performance1.multianalysis.seed1719586.294135.txt", header = TRUE)
 
 accuracy.se <- summary_SE(accuracy, measurevar = "Mean", groupvars = "model")
 kappa.se <- summary_SE(kappa, measurevar = "Mean", groupvars = "model")
@@ -1518,7 +1540,8 @@ accuracy.se %>%
     ggplot(aes(x = model,
                y = Mean)) +
     geom_bar(position=position_dodge(), 
-             stat="identity") +
+             stat="identity",
+             fill = "steelblue") +
     geom_errorbar(data = accuracy.se,
                   aes(ymin=Mean-se, 
                       ymax=Mean+se),
@@ -1537,11 +1560,10 @@ accuracy.se %>%
                   position=position_dodge(.9),
                   color = "white") +
     theme_minimal() +
-    ylab("Mean of accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
+    ylab("Mean of accuracy across 10 CV resampled 10 times/iteration (10 iterations)") +
     xlab("Machine Learning models iterated for 10 rounds") +
     theme(legend.position = "top") + 
     guides(fill=guide_legend(title="Number of parameters per model")) +
-    scale_fill_brewer(palette = "Dark2") +        
     theme(axis.text.x = element_text(vjust = .5,
                                      angle = 45,
                                      size = 8))
@@ -1549,21 +1571,26 @@ accuracy.se %>%
 @ 
 
 Kappa (vertical axis) and accuracy (horizontal axis) calculated from the performance tests of machine learning models. The higher kappa is the stronger agreement for a prediction and classification.
-<<scatterplot_performance_ml_metrics>>=
+<<scatterplot_performance_ml_metrics,out.width='5in'>>=
 data.frame(accuracy, kappa) %>% 
     ggplot(aes(x = Mean,
                y = Mean.1,
                fill = model)) + 
-    geom_point(size=2, shape=21) +
+    geom_point(aes(size=parameters), shape=21) +
+    geom_rug(aes(stat = "identity", 
+                 color = as.character(model)), 
+             sides = "tr",
+             show.legend = F) +
     theme_minimal() +
     ylab("Mean of Kappa with adequate probability agreement") +
     xlab("Mean of accuracy with overall perdiction certainty") +
     theme(legend.position = "top")
+
 @ 
 
 Maximum accuracy registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
-<<boxplot_maximum_performance_ml_metrics,out.width='5in'>>=
-read.table("./data/Accuracy.metrics.txt", header = TRUE) %>% 
+<<boxplot_maximum_performance_ml_metrics,out.width='4in'>>=
+accuracy %>% 
     ggplot(aes(x = reorder(model, Max.),
                y = Max.,
                fill = as.character(parameters))) +
@@ -1598,12 +1625,15 @@ df$group <- gsub("[0-9]", "", df$group)
 df %>%
     ggplot(aes(x = reorder(model, durationSeconds),
                y = durationSeconds)) +
-    geom_bar(position = position_dodge(),
-             stat = "identity") +
-    coord_flip() +
+    geom_point(position = position_dodge(),
+               stat = "identity",
+               size=4, shape=16) +
     theme_minimal() +
     xlab("Machine learners") +
-    ylab("Time (minutes) for tuning and optimizing precision/recall")
+    ylab("Time (minutes) for tuning and optimizing precision/recall") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
 
 @ 
 
@@ -1616,7 +1646,7 @@ df %>%
     ggplot(aes(y = accuracyPval,
                x= durationSeconds,
                fill = as.character(model))) +
-    geom_point(size = 2,
+    geom_point(size = 4,
                shape = 21) +
     theme_minimal() +
     xlab("Time (minutes) for tuning and optimizing precision/recall") +
@@ -1633,7 +1663,7 @@ df %>%
                y = Recall,
                group = as.character(group),
                na.rm = T)) +
-    geom_point(aes(size = 2,
+    geom_point(aes(size = 4,
                shape = group,
                color = model)) +
     theme_minimal() +
@@ -1652,7 +1682,7 @@ df %>%
     ggplot(aes(x = Sensitivity,
                y = Specificity,
                group = as.character(group))) +
-    geom_point(aes(size = 2,
+    geom_point(aes(size = 4,
                shape = group,
                color = model)) +
     theme_minimal() +
@@ -1670,7 +1700,7 @@ Accuracy and Kappa across all sample groups.
 df %>%
     ggplot(aes(x = accuracy,
                y = kappa)) +
-    geom_point(aes(size = 2,
+    geom_point(aes(size = 4,
                color = model)) +
     theme_minimal() +
     xlab("Accuracy") +
@@ -1686,7 +1716,7 @@ Accuracy versus the p-value of each classification. The p-value is a hypothesis 
 df %>%
     ggplot(aes(x = accuracy,
                y = accuracyPval)) +
-    geom_point(aes(size = 2,
+    geom_point(aes(size = 4,
                color = model)) +
     theme_minimal() +
     xlab("Accuracy") +
@@ -1702,7 +1732,7 @@ df %>%
     ggplot(aes(x = Balanced.Accuracy,
                y = Detection.Prevalence,
                group = as.character(group))) +
-    geom_point(aes(size = 2,
+    geom_point(aes(size = 4,
                color = model,
                shape = group)) +
     theme_minimal() +
