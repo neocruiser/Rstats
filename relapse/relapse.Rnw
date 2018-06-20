@@ -169,6 +169,31 @@ print_summary_table(c("ABCScore", "ABClassify", "GROUP"), c("Nodes"), metadata, 
 \end{tabular}\end{center}
 \end{table}
 
+
+\subsubsection{On-array content of non-coding RNA}
+\label{subsec:ncrna}
+One microarray contains 70,524 probes, of which 12,969 genes do not contain any of the terms related to non-coding RNAs. The graph shows in red that the coding genes are categorized as mRNA or RNA. The non-coding RNAs are in blue and there is over 600 different mentions among the probes. Even though they are less mentioned in gene annotations (smaller bars) they do however encompass 70\% of the whole probes.
+\marginnote{\small\color{blue}$\Lsh$ Two or more mentions (patterns) can be recognized in one gene}[0cm]
+<<bar_ncrna>>=
+colors <- c(rep("blue",2), rep("red",18))
+read.table("./data/rna.patterns.annotated.array.txt", header = F) %>%
+    mutate(percent = (V1/5 / (sum(V1)/5)) * 100) %>%
+    slice(1:20) %>%
+    ggplot(aes(x = reorder(V2, percent),
+               y = V1,
+               fill = colors)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    theme_minimal() +
+    labs(x = "Amount of mentions from 75,524 microarray",
+         y = "Top 20 mentioned RNA types")
+
+@ 
+
+
+
+
 \subsubsection{Regression analyses to quantify diagnosis connections}
 \label{subsec:regression}
 Logistic regression of binomial factoring between nodal/extranodal diagnosis and patients labels for cell-of-origin classification and CNS relapse or systemic relapse.
@@ -1444,20 +1469,19 @@ Selection of learners was based on historical efficiency of such algorithms. Als
     10 & Bagged FDA & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & bagFDA \\
     11 & Bagged FDA using gCV pruning & \href{https://cran.r-project.org/web/packages/earth/index.html}{earth} & degree & bagFDAGCV \\
     12 & Penalized discriminant analysis & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & lambda & pda \\
-    13 & Partial least squares & \href{https://cran.r-project.org/web/packages/pls/index.html}{pls} & ncomp & kernelpls \\
-    14 & Support vector machines (SVM) with linear kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & C & svmLinear \\
-    15 & L2 regularized SVM (dual) with linear kernel & \href{https://cran.r-project.org/web/packages/LiblineaR/}{LiblineaR} & cost, loss & svmLinear3 \\
-    16 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
-    17 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
-    18 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
-    19 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
-    20 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
-    21 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
-    22 & Deep NN with \href{https://arxiv.org/pdf/1412.6980.pdf}{Adam} optimization & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, dropout, beta1, beta2, learningrate, activation & mxnetAdam \\
-    23 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    24 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
-    25 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
-    26 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
+%    13 & Partial least squares & \href{https://cran.r-project.org/web/packages/pls/index.html}{pls} & ncomp & kernelpls \\
+    13 & Support vector machines (SVM) with linear kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & C & svmLinear \\
+    14 & L2 regularized SVM (dual) with linear kernel & \href{https://cran.r-project.org/web/packages/LiblineaR/}{LiblineaR} & cost, loss & svmLinear3 \\
+    15 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
+    16 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
+    17 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
+    18 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
+    19 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
+    20 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
+    21 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    22 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
+    23 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    24 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
     
 
     \bottomrule

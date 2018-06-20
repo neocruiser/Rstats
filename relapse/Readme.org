@@ -28,7 +28,7 @@ PDF]] of the compiled R file, and the scripts for data pre-processing (detailed 
 Licence: MIT Licence
 
 
-* Pipelines in interpreted languages (~2000 lines)
+* Pipelines in interpreted languages (~3000 lines)
 Below are the scripts that make the pipeline to analyze 236 DLBCL
 Affymetrix arrays. Array and metadata are not provided. It is
 recommended to run the scripts sequentially. The intermediate files
@@ -45,7 +45,8 @@ contact me and I will provide you with the data.
 6. [[https://github.com/neocruiser/pipelines/blob/master/r/heatmaps.3.0.R][Clustering automation with different expression aggregation methods
    and bootstrapping]] in R
 7. [[https://github.com/neocruiser/pipelines/blob/master/r/classification.R][Machine learning to classify by bagging and ensemble learning for
-   risk factor predictions]] in R
+   risk factor predictions]] in R and [[https://github.com/neocruiser/pipelines/blob/master/r/classification.h4h.pbs][high performance cluster execution]]
+   in bash
 
 * Background
 ** Significance and impact on the field
