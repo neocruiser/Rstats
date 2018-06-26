@@ -172,7 +172,7 @@ print_summary_table(c("ABCScore", "ABClassify", "GROUP"), c("Nodes"), metadata, 
 
 \subsubsection{On-array content of non-coding RNA}
 \label{subsec:ncrna}
-One microarray contains 70,524 probes, of which 12,969 genes do not contain any of the terms related to non-coding RNAs. The graph shows in red that the coding genes are categorized as mRNA or RNA. The non-coding RNAs are in blue and there is over 600 different mentions among the probes. Even though they are less mentioned in gene annotations (smaller bars) they do however encompass 70\% of the whole probes.
+One microarray contains 70,524 probes, of which 12,969 genes do not contain any of the terms related to non-coding RNAs. The graph shows in red that the coding genes are categorized as mRNA or RNA. The non-coding RNAs are in blue and there is over 600 different mentions among the probes (large intergenic non-coding RNAs, lincRNAs make up most of the long ncRNAs). Even though they are less \textit{mentioned} in gene annotations (smaller bars) they do however cover 70\% of the annotated probes.
 \marginnote{\small\color{blue}$\Lsh$ Two or more mentions (patterns) can be recognized in one gene}[0cm]
 <<bar_ncrna>>=
 colors <- c(rep("blue",2), rep("red",18))
@@ -1409,7 +1409,7 @@ read.table("./data/logSummary.lambda.iterations20.multinomial.probabilities.txt"
          y = "Density (fitted probabilities with lambda = 0)")
 @ 
 
-Plot showing the accuracy of assigning a patient to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
+Plot showing the accuracy (AUROC, Area under the receiver operator curve) of assigning a patient to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
 <<boxplot_accuracies_lambda,out.width='4in',out.height='2in'>>=
 df <- read.table("./data/logSummary.lambda.iterations20.multinomial.accuracies.txt", 
                  row.names = 1, header = T)
@@ -1430,7 +1430,7 @@ df %>%
     scale_fill_brewer(palette = "Dark2") +
     theme_bw() +
     labs(x = "Different diagnosis for patients with DLBCL",
-         y = "Accuracy scores for multiple iterations of classification") +
+         y = "AUROC Accuracy scores for multiple iterations of classification (95% CI)") +
     facet_wrap( ~ grouped,
                ncol = 3,
                scales = "free") + 
@@ -1441,7 +1441,7 @@ df %>%
 
 
 
-\subsection{Machine learning classifiers selected}
+\subsection{Selected machine and deep learning models}
 \label{subsec:models}
 Selection of learners was based on historical efficiency of such algorithms. Also, the training of classifiers starts from simple logistic regression, naive bayes, nearest neighbors, going to more flexible models, such as trees and deep neural nets that require more hyperparameter tuning. This strategy lets assess with less bias the overfitting issues that may arise.
 
@@ -1460,28 +1460,29 @@ Selection of learners was based on historical efficiency of such algorithms. Als
     1 & Naive bayes & \href{https://cran.r-project.org/web/packages/naivebayes/index.html}{naivebayes} & laplace, usekernel, adjust & naive\_bayes \\
     2 & Weighted k-Nearest Neighbors & \href{https://cran.r-project.org/web/packages/kknn/index.html}{kknn} & kmax, distance, kernel & kknn \\
     3 & Penalized multinomial regression & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & decay & multinom \\
-    4 & C5.0 & \href{https://cran.r-project.org/web/packages/C50/index.html}{C50} & trials, model, winnow & C5.0 \\
-    5 & Random forest & \href{https://cran.r-project.org/web/packages/randomForest/index.html}{randomForest} & mtry & rf \\
-    6 & Regularized random forest & \href{https://cran.r-project.org/web/packages/RRF/index.html}{RRF} & mtry, coefReg, coefImp & RRF \\
+    4 & Random forest & \href{https://cran.r-project.org/web/packages/randomForest/index.html}{randomForest} & mtry & rf \\
+    5 & Regularized random forest & \href{https://cran.r-project.org/web/packages/RRF/index.html}{RRF} & mtry, coefReg, coefImp & RRF \\
+
     7 & Linear discriminant analysis (LDA) & \href{https://cran.r-project.org/web/packages/MASS/index.html}{MASS} & dimen & lda2 \\
     8 & Localized LDA & \href{https://cran.r-project.org/web/packages/klaR/index.html}{klaR} & k & loclda \\
     9 & Flexible discriminant analysis (FDA) & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & fda \\
     10 & Bagged FDA & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & bagFDA \\
     11 & Bagged FDA using gCV pruning & \href{https://cran.r-project.org/web/packages/earth/index.html}{earth} & degree & bagFDAGCV \\
     12 & Penalized discriminant analysis & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & lambda & pda \\
-%    13 & Partial least squares & \href{https://cran.r-project.org/web/packages/pls/index.html}{pls} & ncomp & kernelpls \\
-    13 & Support vector machines (SVM) with linear kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & C & svmLinear \\
-    14 & L2 regularized SVM (dual) with linear kernel & \href{https://cran.r-project.org/web/packages/LiblineaR/}{LiblineaR} & cost, loss & svmLinear3 \\
-    15 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
-    16 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
-    17 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
-    18 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
-    19 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
-    20 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
-    21 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    22 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
-    23 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
-    24 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
+    13 & Partial least squares & \href{https://cran.r-project.org/web/packages/pls/index.html}{pls} & ncomp & kernelpls \\
+    14 & Support vector machines (SVM) with linear kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & C & svmLinear \\
+    15 & L2 regularized SVM (dual) with linear kernel & \href{https://cran.r-project.org/web/packages/LiblineaR/}{LiblineaR} & cost, loss & svmLinear3 \\
+    16 & SVM with polynomial kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & degree, scale, C & svmPoly \\
+    17 & SVM with radial basis function kernel & \href{https://cran.r-project.org/web/packages/kernlab/index.html}{kernlab} & sigma, C & svmRadialSigma \\
+    18 & Neural network (NN) & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & nnet \\
+    19 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
+    20 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
+    21 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
+    22 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
+    23 & Regularized logistic regression & \href{https://cran.r-project.org/web/packages/LiblineaR}{LiblineaR} & cost, loss, epsilon & regLogistic \\    
+    24 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
+    25 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+    26 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
     
 
     \bottomrule
@@ -1490,12 +1491,105 @@ Selection of learners was based on historical efficiency of such algorithms. Als
   \caption*{
     $^*$ The version of each package is shared under section \ref{subsec:version}.
     Links are forwarded to the CRAN page (except those imported from \href{https://www.tensorflow.org/}{Tensorflow} and \href{https://www.h2o.ai/}{H2O}) of each package for assessment of version, vignettes, advanced functionality, and description. 
-    $^{\dagger}$Parameters are crucial to optimize for accuracy. Similar models have different parameters. 
+    $^{\dagger}$Parameters are crucial to optimize for accuracy (AUROC, area under the receiver operator curve, 95\% CI). Similar models have different parameters. 
     The mxnet package has an activation function, read more \href{https://stats.stackexchange.com/questions/126238/what-are-the-advantages-of-relu-over-sigmoid-function-in-deep-neural-networks}{here}.
     Multi-layered neural networks are used for deep learning. In some instances, only the layer 1 is used. For such instances the classifier is considered a neural network.
   }
   \label{tab:models}
 \end{table}
+
+
+\subsection{Available and tuned hyperparameters for each model}
+\label{subsec:tuned}
+
+{\scriptsize
+\begin{table}
+  \renewcommand{\arraystretch}{.8}
+ \small\addtolength{\tabcolsep}{-3pt}
+  \caption{\bf Hyperparameters for each classifier.}
+  \begin{tabular}{ p{6.5cm} | l c c c }
+    \toprule
+    Classifier trained & Hyperparameter & Scenario A$^*$ & Scenario B$^{**}$ & Scenario C$^{***}$ \\
+    \midrule
+    \multirow{3}{*}{Naive bayes} & laplace & & & \\
+                       & usekernel & & & \\
+                       & adjust & & & \\ \cline{2-5}
+    \multirow{3}{*}{Weighted k-Nearest Neighbors} & kmax & & & \\
+                       & distance & & & \\
+                       & kernel & & & \\ \cline{2-5}
+    \multirow{1}{*}{Penalized multinomial regression} & decay & & & \\
+    \multirow{1}{*}{Random forest} & mtry & & & \\ \cline{2-5}
+    \multirow{3}{*}{Regularized random forest} & mtry & & & \\
+                       & coefReg & & & \\
+                       & coefImp & & & \\ \cline{2-5}
+    \multirow{1}{*}{Linear discriminant analysis (LDA)} & dimen & & & \\ \cline{2-5}
+    \multirow{1}{*}{Localized LDA} & k & & & \\ \cline{2-5}
+    \multirow{2}{*}{Flexible discriminant analysis (FDA)} & degree & & & \\
+                       & nprune & & & \\ \cline{2-5}
+    \multirow{2}{*}{Bagged FDA} & degree & & & \\
+                       & nprune & & & \\ \cline{2-5}
+    \multirow{1}{*}{Bagged FDA using gCV pruning} & degree & & & \\ \cline{2-5}
+    \multirow{1}{*}{Penalized discriminant analysis} & lambda & & & \\ \cline{2-5}
+    \multirow{1}{*}{Partial least squares} & ncomp & & & \\ \cline{2-5}
+    \multirow{1}{*}{Support vector machines (SVM) with linear kernel} & C & 0.1 & & \\ \cline{2-5}
+    \multirow{2}{*}{L2 regularized SVM (dual) with linear kernel} & cost & & & \\
+                       & loss & & & \\ \cline{2-5}
+    \multirow{3}{*}{SVM with polynomial kernel} & degree & & & \\
+                       & scale & & & \\
+                       & C & & & \\ \cline{2-5}
+    \multirow{2}{*}{SVM with radial basis function kernel} & sigma & & & \\
+                       & C & & & \\ \cline{2-5}
+    \multirow{2}{*}{Neural network (NN)} & size & & & \\
+                       & decay & & & \\ \cline{2-5}
+    \multirow{2}{*}{NN with feature extraction} & size & & & \\
+                       & decay & & & \\ \cline{2-5}
+    \multirow{2}{*}{Monotone multi-layer perceptron NN} & hidden1 & & & \\
+                       & n.ensemble & & & \\ \cline{2-5}
+    \multirow{7}{*}{Deep NN} & layer1 & & & \\
+                       & layer2 & & & \\
+                       & layer3 & & & \\
+                       & learning.rate & & & \\
+                       & momentum & & & \\
+                       & dropout & & & \\
+                       & activation & & & \\ \cline{2-5}
+    \multirow{5}{*}{Stacked autoencoder deep NN} & layer1 & & & \\
+                       & layer2 & & & \\
+                       & layer3 & & & \\
+                       & hidden\_dropout & & & \\
+                       & visible\_dropout & & & \\ \cline{2-5}
+    \multirow{3}{*}{Regularized logistic regression} & cost & & & \\
+                       & loss & & & \\
+                       & epsilon & & & \\ \cline{2-5}
+    \multirow{1}{*}{Boosted logistic regression} & nlter & & & \\ \cline{2-5}
+    \multirow{4}{*}{Stochastic gradient boosting} & n.trees & & & \\
+                       & interaction.depth & & & \\
+                       & shrinkage & & & \\
+                       & n.minobsinnode & & & \\ \cline{2-5}
+    \multirow{8}{*}{Multilayer perceptron network} & size & & & \\
+                       & l2reg & & & \\
+                       & lambda & & & \\
+                       & learn\_rate & & & \\
+    by stochastic gradient descent & momentum & & & \\
+                       & gamma & & & \\
+                       & minibatchsz & & & \\
+                       & repeats & & & \\
+    \bottomrule
+  \end{tabular}
+  \vspace{-10pt}
+  \caption*{ 
+    $^*$Comparing samples with patients grouped by either having a central nervous system relapse (CNS), systemic relapse (SYST), no relapse (NOREL) or controls.
+    $^{**}$Comparing samples with patients grouped by either having an activated B-cell (ABC) or germinal center B-cell (GCB) diagnosis.
+    $^{***}$Comparing samples with patients grouped by either having an tumor occurrence in lymphnodes (LN) in contrast to extra-nodal (EN) presence.
+    The tuning parameters were iterated across a random selection grid for best tuning. Grid configuration is found \href{https://github.com/neocruiser/pipelines/blob/master/r/classification.R#L32}{on Github}.
+  }
+  \label{tab:hyperparameters}
+\end{table}
+}
+
+
+
+
+
 
 
 
@@ -1508,7 +1602,7 @@ Please follow up on performance metrics for classification problem by reading \h
 \item \textbf{Sensitivity}, is how many true cases are correctly classified to their expected class. Or \textbf{recall}, is the fraction of events where we correctly declared $i$ form all cases where the true of state of the world is $i$. $TP / (TP + FN)$
 \item \textbf{Specificity}, is how many wrong cases are correctly classified elsewhere. $TN / (TN + FP)$
 \item \textbf{Precision}, is the fraction of events where we correctly declared $i$ out of all instances where the algorithm declared $i$. $TP / (TP + FP)$
-\item \textbf{Accuracy}, is an overall measure that assesses the predictive model by comparing predicted classes to observed expected classes. $(TN + TP) / (TP + TN + FP + FN)$
+\item \textbf{Accuracy}, is an overall measure that assesses the predictive model by comparing predicted classes to observed expected classes. Scores are the area under the receiver operator curve (AUROC, 95% CI). $(TN + TP) / (TP + TN + FP + FN)$
   \end{itemize}
 
 \subsubsection{Creating the baseline of models performance}
@@ -1516,7 +1610,7 @@ Please follow up on performance metrics for classification problem by reading \h
 \marginnote{\small\color{blue}$\Lsh$ Precision and recall are best for multi class learning}[0cm]
 Machine learning models were trained only without tuning for hyperparameter optimization. Metrics generated show the raw performance of each model.\\
 
-For this type of nominal data, classification models (not regression) are used, see Section /ref{subsec:models}. The performance metrics for this type of models are an accuracy score and kappa, which takes into account the possibility of the agreement occurring by chance (the kappa score however reflects the adequate agreement). Standard error ({\color{red}SE in red}) bars for the kappa significance per model reproducible across 10 cross-validation each repeated 5 times. Minimum and maximum accuracy thresholds are held at 95\% confidence intervals.\\
+For this type of nominal data, classification models (not regression) are used, see Section /ref{subsec:models}. The performance metrics for this type of models are an accuracy score (AUROC) and kappa, which takes into account the possibility of the agreement occurring by chance (the kappa score however reflects the adequate agreement). Standard error ({\color{red}SE in red}) bars for the kappa significance per model reproducible across 10 cross-validation each repeated 5 times. Minimum and maximum accuracy thresholds are held at 95\% confidence intervals.\\
 \marginnote{\small\color{blue}$\Lsh$ Kappa is Cohen’s (unweighted) Kappa statistic averaged across the resampling results}[0cm]
 
 
@@ -1552,7 +1646,7 @@ summary_SE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 @ 
 
 Metrics for classification performance without tuning for hyperparameter optimization. Quick comparison of statistical learning on the DLBCL data.
-\marginnote{\small\color{blue}$\Lsh$ Accuracy is the true prediction rate averaged over cross-validation iterations}[0cm]
+\marginnote{\small\color{blue}$\Lsh$ Accuracy, AUROC is the true prediction rate averaged over cross-validation iterations}[0cm]
 <<bar_performance_ml_metrics,out.width='4in'>>=
 accuracy <- read.table("./data/log.Accuracy.performance1.multianalysis.seed1719586.294135.txt", header = TRUE)
 kappa <- read.table("./data/log.Kappa.performance1.multianalysis.seed1719586.294135.txt", header = TRUE)
@@ -1594,7 +1688,7 @@ accuracy.se %>%
 
 @ 
 
-Kappa (vertical axis) and accuracy (horizontal axis) calculated from the performance tests of machine learning models. The higher kappa is the stronger agreement for a prediction and classification.
+Kappa (vertical axis) and accuracy (horizontal axis) calculated from the performance tests of machine learning models. The higher kappa is the stronger agreement for a prediction and classification. Although, this chart shows little correlation between prediction accuracy and outcome of each model, its important to highlight the number of parameters tune for each classifier. Because, based on a recent paper from Google in Nature, \href{https://www.nature.com/articles/s41746-018-0029-1}{Rajkomar 2018}, deep learning models with many layers and hyperparameters perform well enough as a regularized logistic regression model (Supplementary text). In the paper however, little was mentioned about this discrepancy in the published results. Lastly, it remains important to address the value of the parameters that are manipulated and the amount of time spent training the model based on the tuning process.
 <<scatterplot_performance_ml_metrics,out.width='5in'>>=
 data.frame(accuracy, kappa) %>% 
     ggplot(aes(x = Mean,
@@ -1612,7 +1706,7 @@ data.frame(accuracy, kappa) %>%
 
 @ 
 
-Maximum accuracy registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
+Maximum accuracy (AUROC, 95\% CI) registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
 <<boxplot_maximum_performance_ml_metrics,out.width='4in'>>=
 accuracy %>% 
     ggplot(aes(x = reorder(model, Max.),
@@ -1636,9 +1730,9 @@ accuracy %>%
 \label{subsec:tuning}
 Compared to the baseline, the parameters available for each learner should increase its performance at predicting each expected outcome. Tuning these hyperparameters will leverage the results with increased accuracy.\\
 
-\subsubsection{Classifiers accuracy at optimal parameters}
+\subsubsection{Prediction accuracy of each classifier at optimal parameters}
 \label{subsec:optimal}
-Final report of the actual accuracy for each machine learning model from comparing predicted values and expected outcomes.\\
+Final report of the actual accuracy (AUROC, area under the receiver operator curve at 95\% CI) for each machine learning model from comparing predicted values and expected outcomes.\\
 \marginnote{\small\color{blue}$\Lsh$ Data are retrieved from Confusion Matrix}[0cm]
 
 How long (seconds) a statistical learner requires to optimize the hyperparameters and gets the highest significant accuracy on expected data.
@@ -1727,14 +1821,14 @@ df %>%
     geom_point(aes(size = 4,
                color = model)) +
     theme_minimal() +
-    xlab("Accuracy") +
+    xlab("AUROC (Accuracy, 95% CI)") +
     ylab("Kappa on how well the classifier performed compared to chance") +
     theme(legend.position = "top")               
 
 @ 
 
 
-Accuracy versus the p-value of each classification. The p-value is a hypothesis test between predicting expected samples and the probability that the classification is biased by disproportionate class sizes (one group of samples is larger than an other).
+Accuracy (AUROC) versus the p-value of each classification. The p-value is a hypothesis test between predicting expected samples and the probability that the classification is biased by disproportionate class sizes (one group of samples is larger than an other).
 <<scatterplot_doubleaccuracyPval_performance>>=
 
 df %>%
