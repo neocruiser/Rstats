@@ -56,7 +56,7 @@ lapply(pkgs, require, character.only = TRUE)
 @
 
 
-\section{Data structure}
+\section{Exploratory Data Analysis}
 \label{sec:structure}
 Data is from patients with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some patients show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
 \marginnote{\small\color{blue}$\Lsh$OR: Odds ratio. HR: Hazard ratio}[0cm]
@@ -381,7 +381,7 @@ Genes have been fitted in a model that is based on an Empirical Bayes approach. 
 \end{itemize}
 
 <<summary_expression>>=
-expression <- read.table("data/summary.full.90800.txt", sep = "\t", header = T) %>%
+expression <- read.table("data/summary.full.322403.txt", sep = "\t", header = T) %>%
     select(Design, Model, Bthreshold, adjPval, Category, Parameter, Transcripts) %>%
     filter(Category == "total")
 summary(expression)
@@ -518,8 +518,7 @@ Below, the plot shows how the standard deviation, \textbf{spread} of the data is
 
 All array probes with all RNAs.
 <<deviation_w_ncrna_subsetting>>=
-
-read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
+pvals <- read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
     select(discarded, meanSD, adj.meanSD) %>%
     gather("sd", "count", 2:3) %>%
     ggplot(aes(x = count,
@@ -563,6 +562,127 @@ read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>
           panel.border = element_rect(linetype = "blank", 
                                       fill = NA),
           panel.grid.major = element_line(linetype = "blank"))
+
+@ 
+
+
+\subsection{Distribution of p-values in pairwise comparisons}
+\label{subsec:pvals}
+
+Distribution of p-values in pairwise comparisons between patients recognized as CNS relapse, systemic, and did not relapse.
+<<pval_density_relapse>>=
+pvals <- read.table("./data/summary.lmfit.fdrAdjpval.txt", header = TRUE, fill = TRUE)
+pvals %>%
+    filter(Contrast == "systemicRelapse") %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_density() +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+Distribution of p-values in pairwise comparisons between patients recognized as CNS relapse, systemic, and did not relapse.
+<<pval_histograms_relapse>>=
+pvals %>%
+    filter(Contrast == "systemicRelapse") %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_histogram(binwidth = 0.001,
+                   col=I("white")) +
+    theme_minimal() +
+    facet_wrap( ~ Comparison,
+               ncol = 1) +
+    theme(legend.position = "none") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+
+Distribution of p-values in pairwise comparisons between patients recognized with lymph nodes and extranodal implication.
+<<pval_density_nodal>>=
+pvals %>%
+    filter(Contrast == c("systemicRelapseNodes")) %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_density() +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+Distribution of p-values in pairwise comparisons between patients recognized with lymph nodes and extranodal implication.
+<<pval_histograms_nodal>>=
+pvals %>%
+    filter(Contrast == "systemicRelapseNodes") %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_histogram(binwidth = 0.001) +
+    theme_minimal() +
+    facet_wrap( ~ Comparison,
+               ncol = 2, scales = "free") +
+    theme(legend.position = "none") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+Distribution of p-values in pairwise comparisons between patients recognized with cell-of-origin based on ABC or GCB.
+<<pval_density_coo>>=
+pvals %>%
+    filter(Contrast == c("systemicRelapseCOOprediction")) %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_density() +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Paired") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+Distribution of p-values in pairwise comparisons between patients recognized with cell-of-origin based on ABC or GCB.
+<<pval_histograms_coo>>=
+pvals %>%
+    filter(Contrast == "systemicRelapseCOOprediction") %>% 
+    ggplot(aes(x = FDRadjPval,
+               fill = Comparison)) +
+    geom_histogram(binwidth = 0.001) +
+    theme_minimal() +
+    facet_wrap( ~ Comparison,
+               ncol = 2, scales = "free") +
+    theme(legend.position = "none") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "False discovery rate adjusted P-values",
+         y = "Density")
+
+@ 
+
+
+<<pval_density>>=
+read.table("./data/summary.lmfit.bval.txt", header = TRUE, fill = TRUE) %>% 
+    filter(Model == c("systemicRelapse","systemicRelapseNodes","systemicRelapseCOOprediction")) %>% 
+    ggplot(aes(x = reorder(Design, Transcripts),
+               y = Transcripts,
+               fill = Model)) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(y = "Number of differentially expressed genes at a maximum of 0.049 FDR adjusted p-value",
+         x = "Model design for fitting an empirical Bayes")
 
 @ 
 
@@ -648,7 +768,7 @@ read.table("./data/modules.summary.104795.txt", header = TRUE) %>%
 
 \subsection{Network analysis for Spearman-related correlations (relaxed)}
 \label{subsec:spearman}
-Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed. Limma implementation.
+Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed by shrinking the sample variance \href{http://www.statsci.org/smyth/pubs/ebayes.pdf}{Smyth 2004}. Limma implementation. 
 \begin{itemize}
 \item \textbf{Average Expression}: 5
 \item \textbf{Adjusted P-value}: equal or less than 0.045
@@ -1502,10 +1622,9 @@ Selection of learners was based on historical efficiency of such algorithms. Als
 \subsection{Available and tuned hyperparameters for each model}
 \label{subsec:tuned}
 
-{\scriptsize
 \begin{table}
-  \renewcommand{\arraystretch}{.8}
- \small\addtolength{\tabcolsep}{-3pt}
+  \renewcommand{\arraystretch}{1}
+ \small\addtolength{\tabcolsep}{-4pt}
   \caption{\bf Hyperparameters for each classifier.}
   \begin{tabular}{ p{6.5cm} | l c c c }
     \toprule
@@ -1569,25 +1688,17 @@ Selection of learners was based on historical efficiency of such algorithms. Als
                        & l2reg & & & \\
                        & lambda & & & \\
                        & learn\_rate & & & \\
-    by stochastic gradient descent & momentum & & & \\
-                       & gamma & & & \\
+                       & momentum & & & \\
+    by stochastic gradient descent & gamma & & & \\
                        & minibatchsz & & & \\
                        & repeats & & & \\
     \bottomrule
   \end{tabular}
   \vspace{-10pt}
   \caption*{ 
-    $^*$Comparing samples with patients grouped by either having a central nervous system relapse (CNS), systemic relapse (SYST), no relapse (NOREL) or controls.
-    $^{**}$Comparing samples with patients grouped by either having an activated B-cell (ABC) or germinal center B-cell (GCB) diagnosis.
-    $^{***}$Comparing samples with patients grouped by either having an tumor occurrence in lymphnodes (LN) in contrast to extra-nodal (EN) presence.
-    The tuning parameters were iterated across a random selection grid for best tuning. Grid configuration is found \href{https://github.com/neocruiser/pipelines/blob/master/r/classification.R#L32}{on Github}.
-  }
+    $^{*}$Comparing samples with patients grouped by either having a central nervous system relapse (CNS), systemic relapse (SYST), no relapse (NOREL) or controls. $^{**}$Comparing samples with patients grouped by either having an activated B-cell (ABC) or germinal center B-cell (GCB) diagnosis. $^{***}$Comparing samples with patients grouped by either having an tumor occurrence in lymph nodes (LN) in contrast to extra-nodal (EN) presence. The tuning parameters were iterated across a random selection grid for best tuning. Grid configurations are found \href{https://github.com/neocruiser/pipelines/blob/master/r/classification.R}{on Github}.}
   \label{tab:hyperparameters}
 \end{table}
-}
-
-
-
 
 
 
