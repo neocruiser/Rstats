@@ -28,7 +28,7 @@ PDF]] of the compiled R file, and the scripts for data pre-processing (detailed 
 Licence: MIT Licence
 
 
-* Pipelines in interpreted languages (~3000 lines)
+* Pipelines in interpreted languages (~5000 lines)
 Below are the scripts that make the pipeline to analyze 236 DLBCL
 Affymetrix arrays. Array and metadata are not provided. It is
 recommended to run the scripts sequentially. The intermediate files
@@ -36,13 +36,17 @@ are big and numerous. The pipeline uses iterative testing to
 interrogate several methods and compare output between them. If the
 user wishes to skip steps, they will require previous output. Please
 contact me and I will provide you with the data.
-1. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.h4h.pbs][Affymetrix preprocessing and sample automation]] in bash
+1. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.h4h.pbs][Affymetrix preprocessing and automation]] in bash
    - Automated gene reduction based on gene annotation
 2. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.2.0.R][Affymetrix normalization and expression analyses]] in R
-3. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.summary.h4h.sh][Automation to create summary report of all expression analyses]] in bash
+3. [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.summary.h4h.sh][Summary automation of all analyses]] and [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.extract.genes.sh][gene selection]] in
+   bash and [[https://github.com/neocruiser/pipelines/blob/master/r/affymetrix.pval.distribution.R][feature visualizations]] in R
    - Logging of variance, means, adjusted p-values
    - Dimension reduction based on performance metrics
    - Linear regression with Bayes metric estimations
+   - Cleaning and restructuring genes annotations
+   - Loggs of all performance metrics
+   - Charts and analyses of preferential genes
 4. [[https://github.com/neocruiser/pipelines/blob/master/r/weighted.nets.h4h.pbs][Clustering and network automation]] in bash
 5. [[https://github.com/neocruiser/pipelines/blob/master/r/weighted.nets.affymetrix.R][Network inference based on weighted scoring and different
    correlation and data transformation methods]] in R
