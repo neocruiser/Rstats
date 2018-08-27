@@ -51,14 +51,15 @@ Loaded packages.
 pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
           'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit',
-          'plyr', 'paletteer')
+          'plyr', 'paletteer', 'ggrepel', 'ggExtra', 'ggpubr',
+          'cowplot', 'ggridges')
 lapply(pkgs, require, character.only = TRUE)
 @
 
 
 \section{Exploratory Data Analysis}
 \label{sec:structure}
-Data is from patients with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some patients show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
+Data is from individuals with Lymphoma tumors, either undergone or not a Rituximab CHOP treatment. Some individuals show relapse after treatment. Tumors migrate though nodal (lymphnodes) or extranodal tissues. Tumors involve two different subtypes of cells of origin, ABC or GCB. \textbf{The first aim is to find correlation genes that respond differently to treatment, nodal transmission, and cell subtypes.}
 \marginnote{\small\color{blue}$\Lsh$OR: Odds ratio. HR: Hazard ratio}[0cm]
 <<summary_full>>=
 #read.table("data/phenodata", sep = "\t", header = T) %>%
@@ -196,8 +197,8 @@ read.table("./data/rna.patterns.annotated.array.txt", header = F) %>%
 
 \subsubsection{Regression analyses to quantify diagnosis connections}
 \label{subsec:regression}
-Logistic regression of binomial factoring between nodal/extranodal diagnosis and patients labels for cell-of-origin classification and CNS relapse or systemic relapse.
-Regression model summary with odds ratio with 95\% confidence interval to quantify how much nodal and extranodal diagnosis is associated with the cell-of-origin ABC or GCB nature in DLBCL patients with CNS, systemic or no relapse.
+Logistic regression of binomial factoring between nodal/extranodal diagnosis and individuals labels for cell-of-origin classification and CNS relapse or systemic relapse.
+Regression model summary with odds ratio with 95\% confidence interval to quantify how much nodal and extranodal diagnosis is associated with the cell-of-origin ABC or GCB nature in DLBCL individuals with CNS, systemic or no relapse.
 <<tabulated_summary_logistic>>=
 fit_summary_table <- function(features, dependent, df, method, execute = TRUE) {
     if ( execute == TRUE ) {
@@ -254,7 +255,7 @@ fit_summary_table(features= c("ABCScore", "ABClassify", "GROUP"),
 
 
 
-Mixed effects multilevel logistic regression model fit to find connections between patients (CNS relapse, systemic, and no relapse) and cell-of-origin predictions (ABC, GCB likelihoods), while considering nodal and extranodal involvement in the relapse (diagnosed tissue sites with cancer invasion).
+Mixed effects multilevel logistic regression model fit to find connections between individuals (CNS relapse, systemic, and no relapse) and cell-of-origin predictions (ABC, GCB likelihoods), while considering nodal and extranodal involvement in the relapse (diagnosed tissue sites with cancer invasion).
 <<tabulated_summary_mixed>>=
 mixed = c("GROUP")
 random_effect = c("SITE")
@@ -381,7 +382,7 @@ Genes have been fitted in a model that is based on an Empirical Bayes approach. 
 \end{itemize}
 
 <<summary_expression>>=
-expression <- read.table("data/summary.full.390387.txt", sep = "\t", header = T) %>%
+expression <- read.table("data/summary.full.409794.txt", sep = "\t", header = T) %>%
     select(Design, Model, Bthreshold, adjPval, Category, Parameter, Transcripts) %>%
     filter(Category == "total")
 summary(expression)
@@ -406,21 +407,21 @@ aggregate( Transcripts ~ Design, data=expression, FUN=range)
 
 
 Number of genes that respond to treatment, cell subtypes, and nodal transmission.
+\marginnote{\small\color{blue}$\Lsh$ Min adjusted p-value of 0.1}[0cm]
 <<expression_bval,out.width='5in'>>=
-
-expression %>%
+expression %>% 
     ggplot(aes(
         x = Design,
         y = Transcripts,
         fill = factor(Bthreshold))) +
     theme_bw() +
     geom_bar(stat = "identity",
-             position = "dodge") +
+             position = "stack") +
     coord_flip() +
     facet_wrap( ~ Model,
               ncol = 1,
                scales = "free") + 
-    scale_fill_brewer(type = "qual", palette = 6) +
+    scale_fill_brewer(palette = "Dark2") +
     labs(x = "",
          y = "Differentially expressed genes after multiple linear model") +
     theme(legend.position = "top",
@@ -429,11 +430,7 @@ expression %>%
           panel.border = element_rect(linetype = "blank", 
                                       fill = NA),
           panel.grid.major = element_line(linetype = "blank")) +
-    scale_y_continuous(breaks = pretty(expression$Transcripts, n = 10)) +
-    theme(axis.text.x = element_text(vjust = .5,
-                                     angle = 45,
-                                     size = 8))
-
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10))
 
 @ 
 
@@ -445,7 +442,7 @@ Subsetting the data by reducing the number of gene profiles improves interpretat
 
 Each array contains probes of 75,523 functional and non-functional RNAs. Either ncRNA, mRNA, and non annotated genes. More than 53.32\% of the probes are non-coding. For interpretation purpose, ncRNAs profiles were discarded before fitting the expressions. In addition, the variation from the mean of each transcript was assessed and the spread of expression were all used to discard top and bottom variants. Individual genes that vary widely from the mean of the array were removed thus reducing the spread of the expression across profiles. Transcripts with potential biased high expressions were thus flagged and discarded thus improving correlation of other transcripts.
 Subsetting was done after normalization of all datasets, all arrays. This would reduce technical errors appearing significant when comparing arrays between each others. Data was transformed (standardization protocol) before calculating means and variances. This helps a better signal recovery from a large dataset with potential expression bias.
-\marginnote{\small\color{blue}$\Lsh$ Each array correspond to a DLBCL patient's case}[0cm]
+\marginnote{\small\color{blue}$\Lsh$ Each array correspond to a DLBCL case}[0cm]
 
 \subsubsection{Variance optimization for each array}
 \label{subsec:variance}
@@ -570,7 +567,7 @@ read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>
 \subsection{Distribution of p-values in pairwise comparisons}
 \label{subsec:pvals}
 
-Distribution of p-values in pairwise comparisons between patients recognized as CNS relapse, systemic, and did not relapse.
+Distribution of p-values in pairwise comparisons between individuals recognized as CNS relapse, systemic, and did not relapse.
 <<pval_density_relapse>>=
 pvals <- read.table("./data/summary.lmfit.fdrAdjpval.txt", header = TRUE, fill = TRUE)
 pvals %>%
@@ -586,7 +583,7 @@ pvals %>%
 
 @ 
 
-Distribution of p-values in pairwise comparisons between patients recognized as CNS relapse, systemic, and did not relapse.
+Distribution of p-values in pairwise comparisons between individuals recognized as CNS relapse, systemic, and did not relapse.
 <<pval_histograms_relapse>>=
 pvals %>%
     filter(Contrast == "systemicRelapse") %>% 
@@ -605,7 +602,7 @@ pvals %>%
 @ 
 
 
-Distribution of p-values in pairwise comparisons between patients recognized with lymph nodes and extranodal implication.
+Distribution of p-values in pairwise comparisons between individuals recognized with lymph nodes and extranodal implication.
 <<pval_density_nodal>>=
 pvals %>%
     filter(Contrast == c("systemicRelapseNodes")) %>% 
@@ -620,7 +617,7 @@ pvals %>%
 
 @ 
 
-Distribution of p-values in pairwise comparisons between patients recognized with lymph nodes and extranodal implication.
+Distribution of p-values in pairwise comparisons between individuals recognized with lymph nodes and extranodal implication.
 <<pval_histograms_nodal>>=
 pvals %>%
     filter(Contrast == "systemicRelapseNodes") %>% 
@@ -637,7 +634,7 @@ pvals %>%
 
 @ 
 
-Distribution of p-values in pairwise comparisons between patients recognized with cell-of-origin based on ABC or GCB.
+Distribution of p-values in pairwise comparisons between individuals recognized with cell-of-origin based on ABC or GCB.
 <<pval_density_coo>>=
 pvals %>%
     filter(Contrast == c("systemicRelapseCOOprediction")) %>% 
@@ -652,7 +649,7 @@ pvals %>%
 
 @ 
 
-Distribution of p-values in pairwise comparisons between patients recognized with cell-of-origin based on ABC or GCB.
+Distribution of p-values in pairwise comparisons between individuals recognized with cell-of-origin based on ABC or GCB.
 <<pval_histograms_coo>>=
 pvals %>%
     filter(Contrast == "systemicRelapseCOOprediction") %>% 
@@ -690,7 +687,7 @@ read.table("./data/summary.lmfit.bval.txt", header = TRUE, fill = TRUE) %>%
 
 \section{Clustering and network analyses}
 \label{sec:networks}
-The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse patient cases).
+The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse individual cases).
 An adjacency matrix is then constructed by weighting the previously inferred measures.
 The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).
 
@@ -1501,13 +1498,13 @@ read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
 
 \section{Machine Learning}
 \label{sec:machinelearning}
-Machine learning models were used for classification of patients cases into systemic relapse of DLBCL, CNS relapse or no relapse. Data are gene expression from Affymetrix arrays of 240 patients with a form of DLBCL. Subsets of the whole number of microarray probes will be used for classification.
+Machine learning models were used for classification of cases into systemic relapse of DLBCL, CNS relapse or no relapse. Data are gene expression from Affymetrix arrays of 240 individuals with a form of DLBCL. Subsets of the whole number of microarray probes will be used for classification.
 
 \subsection{Regularization}
 \label{subsec:regularization}
 Least absolute shrinkage and selection operator (LASSO) was used for dimension reduction. Gene expression profiles were extracted from networks with significant connectivity. Subset selection using lasso, penalizes genes based on coefficient estimates, to increase accuracy of classification.
 Briefly, cases are assigned to either diagnosis category, systemic relapse (SYST), CNS relapse (CNS), and no relapse (NOREL). During each iteration, a prediction is made to assign a category. Then a probability is calculated for having an accuracy performance for that iteration. A single iteration has a different random seed, which generates a different set of lambda coefficients for adjusting the lasso penalty. The best lambda across a grid of coefficients with the best accuracy classification is then selected based on accuracy. Adjusting the lambda score also adjusts the subset of genes used for the classification. For one best lambda there is one subset of significantly expressed genes and each gene has a different probability. For one best lambda there is one mean probability registered for that subset of genes.
-\marginnote{\small\color{blue}$\Lsh$If a subset has 50 genes, the reported probabilities are the mean of each gene individual probability to predict all patient cases}[0cm]
+\marginnote{\small\color{blue}$\Lsh$If a subset has 50 genes, the reported probabilities are the mean of each gene individual probability to predict all individual cases}[0cm]
 
 \subsubsection{Uncertainty estimation for selected genes from expression networks}
 \label{subsec:uncertainty}
@@ -1531,7 +1528,7 @@ read.table("./data/logSummary.lambda.iterations30.multinomial.probabilities.txt"
 @ 
 
 
-Density plot summarizing the distribution of how many times the CNS/NOREL/SYST sample classes were correctly predicted against other classes using the list of genes that supposedly represent patients with each type of prognosis.
+Density plot summarizing the distribution of how many times the CNS/NOREL/SYST sample classes were correctly predicted against other classes using the list of genes that supposedly represent individuals with each type of prognosis.
 <<density_probabilities>>=
 read.table("./data/logSummary.lambda.iterations30.multinomial.densities.txt", 
            row.names = 1, header = T) %>% 
@@ -1550,7 +1547,7 @@ read.table("./data/logSummary.lambda.iterations30.multinomial.densities.txt",
 @ 
 
 
-Plot showing the accuracy of assigning a patient to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
+Plot showing the accuracy of assigning an individual to its correct class (or diagnosis) based on lambda calculation for lasso regularization. Each facet represents an accuracy for multiple iterations with a specific number of genes.
 <<boxplot_accuracies_lambda,out.width='6in',out.height='2in'>>=
 df <- read.table("./data/logSummary.lambda.iterations30.multinomial.accuracies.txt", 
                  row.names = 1, header = T)
@@ -1604,7 +1601,7 @@ Selection of learners was based on historical efficiency of such algorithms. Als
     4 & Random forest & \href{https://cran.r-project.org/web/packages/randomForest/index.html}{randomForest} & mtry & rf \\
     5 & Regularized random forest & \href{https://cran.r-project.org/web/packages/RRF/index.html}{RRF} & mtry, coefReg, coefImp & RRF \\
     6 & Linear discriminant analysis (LDA) & \href{https://cran.r-project.org/web/packages/MASS/index.html}{MASS} & dimen & lda2 \\
-    7 & Localized LDA & \href{https://cran.r-project.org/web/packages/klaR/index.html}{klaR} & k & loclda \\
+    7 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
     8 & Flexible discriminant analysis (FDA) & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & fda \\
     9 & Bagged FDA & \href{https://cran.r-project.org/web/packages/mda/index.html}{mda} & degree, nprune & bagFDA \\
     10 & Bagged FDA using gCV pruning & \href{https://cran.r-project.org/web/packages/earth/index.html}{earth} & degree & bagFDAGCV \\
@@ -1618,11 +1615,11 @@ Selection of learners was based on historical efficiency of such algorithms. Als
     18 & NN with feature extraction & \href{https://cran.r-project.org/web/packages/nnet/index.html}{nnet} & size, decay & pcaNNet \\    
     19 & Monotone multi-layer perceptron NN & \href{https://cran.r-project.org/web/packages/monmlp/}{monmlp} & hidden1, n.ensemble & monmlp \\
     20 & Stacked autoencoder deep NN & \href{https://cran.r-project.org/web/packages/deepnet/}{deepnet} & layer1, layer2, layer3, hidden\_dropout, visible\_dropout & dnn \\
-    21 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
-    22 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
-    23 & Multilayer perceptron network by stochastic gradient descent & \href{https://cran.r-project.org/web/packages/FCNN4R/index.html}{FCNN4R} & size, l2reg, lambda, learn\_rate, momentum, gamma, minibatchsz, repeats & mlpSGD \\
-%    21 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
+    21 & Stochastic gradient boosting & \href{https://cran.r-project.org/web/packages/gbm/}{gbm} & n.trees, interaction.depth, shrinkage, n.minobsinnode & gbm \\
+%%    21 & Deep NN & \href{https://mxnet.incubator.apache.org/}{mxnet} & layer1, layer2, layer3, learning.rate, momentum, dropout, activation & mxnet \\    
 %%    23 & Regularized logistic regression & \href{https://cran.r-project.org/web/packages/LiblineaR}{LiblineaR} & cost, loss, epsilon & regLogistic \\    
+%%    7 & Localized LDA & \href{https://cran.r-project.org/web/packages/klaR/index.html}{klaR} & k & loclda \\
+%%    21 & Boosted logistic regression & \href{https://cran.r-project.org/web/packages/caTools/}{caTools} & nlter & LogitBoost \\
     
 
     \bottomrule
@@ -1716,7 +1713,7 @@ Selection of learners was based on historical efficiency of such algorithms. Als
   \end{tabular}
   \vspace{-10pt}
   \caption*{ 
-    $^{*}$Comparing samples with patients grouped by either having a central nervous system relapse (CNS), systemic relapse (SYST), no relapse (NOREL) or controls. $^{**}$Comparing samples with patients grouped by either having an activated B-cell (ABC) or germinal center B-cell (GCB) diagnosis. $^{***}$Comparing samples with patients grouped by either having an tumor occurrence in lymph nodes (LN) in contrast to extra-nodal (EN) presence. The tuning parameters were iterated across a random selection grid for best tuning. Grid configurations are found \href{https://github.com/neocruiser/pipelines/blob/master/r/classification.R}{on Github}.}
+    $^{*}$Comparing samples with individuals grouped by either having a central nervous system relapse (CNS), systemic relapse (SYST), no relapse (NOREL) or controls. $^{**}$Comparing samples with individuals grouped by either having an activated B-cell (ABC) or germinal center B-cell (GCB) diagnosis. $^{***}$Comparing samples with individuals grouped by either having an tumor occurrence in lymph nodes (LN) in contrast to extra-nodal (EN) presence. The tuning parameters were iterated across a random selection grid for best tuning. Grid configurations are found \href{https://github.com/neocruiser/pipelines/blob/master/r/classification.R}{on Github}.}
   \label{tab:hyperparameters}
 \end{table}
 
@@ -1778,17 +1775,21 @@ summary_SE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 
 Metrics for classification performance without tuning for hyperparameter optimization. Quick comparison of statistical learning on the DLBCL data.
 \marginnote{\small\color{blue}$\Lsh$ Accuracy, is the true prediction rate averaged over cross-validation iterations}[0cm]
-<<bar_performance_ml_metrics,out.width='4in'>>=
-accuracy <- read.table("./data/log.Accuracy.performance1.multianalysis.seed14899815.409567.txt", header = TRUE)
-kappa <- read.table("./data/log.Kappa.performance1.multianalysis.seed14899815.409567.txt", header = TRUE)
+<<bar_performance_ml_metrics,out.width='3in'>>=
+accuracy.pre <- read.table("./data/reports.437017/log.Accuracy.performance1.multianalysis.seed5437259.437017.txt", header = TRUE)
+kappa <- read.table("./data/reports.437017/log.Kappa.performance1.multianalysis.seed5437259.437017.txt", header = TRUE)
 
-accuracy.se <- summary_SE(accuracy, measurevar = "Mean", groupvars = "model")
-kappa.se <- summary_SE(kappa, measurevar = "Mean", groupvars = "model")
+accuracy.se <- summary_SE(accuracy.pre, measurevar = "Mean", groupvars = "model")
+kappa.se <- summary_SE(kappa, measurevar = "Mean", groupvars = "model") %>%
+    arrange(Mean) %>%
+    mutate(model = factor(model, unique(model)))
 
-accuracy.se %>% 
+accuracy.se %>%  
+    arrange(Mean) %>% 
+    mutate(model = factor(model, unique(model))) %>%
     ggplot(aes(x = model,
                y = Mean)) +
-    geom_bar(position=position_dodge(), 
+    geom_bar(position="dodge",
              stat="identity",
              fill = "steelblue") +
     geom_errorbar(data = accuracy.se,
@@ -1797,7 +1798,7 @@ accuracy.se %>%
                   width=.3,
                   position=position_dodge(.9)) +
     geom_line(data = kappa.se,
-              aes(x = as.numeric(model),
+              aes(x = as.integer(model),
                   y = Mean),
               color = "red") +
     geom_point(data = kappa.se,
@@ -1816,50 +1817,172 @@ accuracy.se %>%
     theme(axis.text.x = element_text(vjust = .5,
                                      angle = 45,
                                      size = 8))
-
 @ 
 
 Kappa (vertical axis) and accuracy (horizontal axis) calculated from the performance tests of machine learning models. The higher kappa is the stronger agreement for a prediction and classification. Although, this chart shows little correlation between prediction accuracy and outcome of each model, its important to highlight the number of parameters tune for each classifier. Because, based on a recent paper from Google in Nature, \href{https://www.nature.com/articles/s41746-018-0029-1}{Rajkomar 2018}, deep learning models with many layers and hyperparameters perform well enough as a regularized logistic regression model (Supplementary text). In the paper however, little was mentioned about this discrepancy in the published results. Lastly, it remains important to address the value of the parameters that are manipulated and the amount of time spent training the model based on the tuning process.
 <<scatterplot_performance_ml_metrics,out.width='5in'>>=
-data.frame(accuracy, kappa) %>% 
+## get single instance label names
+model.names <- data.frame(accuracy.pre, kappa) %>%
+    select(model, iteration, Mean, Mean.1) %>%
+    filter(iteration == 1)
+
+data.frame(accuracy.pre, kappa) %>% 
     ggplot(aes(x = Mean,
                y = Mean.1,
-               fill = model)) + 
-    geom_point(aes(size=parameters), shape=21) +
-    geom_rug(aes(stat = "identity", 
-                 color = as.character(model)), 
+               color = model,
+               label = model)) + 
+    geom_point(aes(size=parameters, fill = model), shape=21) +
+    geom_rug(aes(color = as.character(model)), 
              sides = "tr",
              show.legend = F) +
+    geom_label_repel(data = subset(model.names, Mean >= .6),
+                    nudge_x = -.2,
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
+    geom_label_repel(data = subset(model.names, Mean < .6),
+                    nudge_x = .1,
+                    force = 8,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
     theme_minimal() +
     ylab("Mean of Kappa with adequate probability agreement") +
     xlab("Mean of accuracy with overall perdiction certainty") +
-    theme(legend.position = "top")
-
+    theme(legend.position = "none")
 @ 
 
-Maximum accuracy (95\% CI) registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
+Mean accuracy (95\% CI) registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
 <<boxplot_maximum_performance_ml_metrics,out.width='4in'>>=
-accuracy %>% 
-    ggplot(aes(x = reorder(model, Max.),
-               y = Max.,
+accuracy.pre %>% 
+    ggplot(aes(x = reorder(model, Mean),
+               y = Mean,
                fill = as.character(parameters))) +
     geom_boxplot() +
     geom_jitter(shape=16, position=position_jitter(0.2), cex = 1.5) +
     coord_flip() +
     scale_fill_brewer(palette = "Dark2") +
     theme_minimal() +
-    ylab("Maximum accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
-    xlab("Machine Learning models iterated 10 rounds") +
+    ylab("Mean accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
+    xlab("") +
     theme(legend.position = "top") + 
     guides(fill=guide_legend(title="Number of parameters per model"))
-
 @ 
-
 
 
 \subsubsection{Models performance with hyperparameter tuning}
 \label{subsec:tuning}
 Compared to the baseline, the parameters available for each learner should increase its performance at predicting each expected outcome. Tuning these hyperparameters will leverage the results with increased accuracy.\\
+
+Mean accuracy (95\% CI) registered for machine learning fitting for all classification groups. Iterations for reproducibility were executed 10 times.
+<<boxplot_TunedMaximum_performance_ml_metrics,out.width='4in'>>=
+accuracy.pst <- read.table("./data/reports.437017/log.Accuracy.performance2.hyperTuning.seed5437259.437017.txt", header = TRUE)
+accuracy.pst %>% 
+    arrange(Mean) %>%
+    mutate(model = factor(model, unique(model))) %>%
+    ggplot(aes(x = model,
+               y = Mean)) +
+    geom_point(size = 3, shape = 21, fill = "red") +
+    geom_line(aes(x = as.integer(model),
+                  y = Mean)) +
+    scale_fill_brewer(palette = "Dark2") +
+    theme_minimal() +
+    ylab("Mean accuracy across 10 CV resampled 10 times/iteration (Total 10 iterations)") +
+    xlab("Machine Learning models iterated 10 rounds") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+@ 
+
+
+Showing the mean accuracy of each model across its maximum predictive performance.
+<<scatterplot_Tunedperformance_ml_metrics,out.width='5in'>>=
+accuracy.pst %>%
+    ggplot(aes(x = Mean,
+               y = Max.,
+               fill = model,
+               label = as.factor(model))) + 
+    geom_point(aes(size=parameters), shape=21) +
+    geom_label_repel(data = subset(accuracy.pst, Mean >= .65),
+                     nudge_x = -.1,
+                    force = 10,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
+    theme_minimal() +
+    ylab("Max accuracy with adequate probability agreement") +
+    xlab("Mean accuracy with overall perdiction certainty") +
+    theme(legend.position = "none")
+@ 
+
+
+Comparing the performance of each model during baseline testing versus optimization, both during the training process.
+<<line_accuracy_baseline_optimized>>=
+pre.tune <- accuracy.se %>% 
+    select(model, Mean)
+post.tune <- accuracy.pst %>%
+    select(model, Mean)
+
+full_join(pre.tune, post.tune, by = "model") %>% 
+    gather("condition", "Mean", 2:3) %>%
+    arrange(Mean) %>%
+    mutate(model = factor(model, post.tune$model)) %>%
+    ggplot(aes(x = reorder(model, Mean),
+           y = Mean,
+           fill = condition)) +
+    geom_point(shape = 21, size = 2) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8),
+          legend.position = "none")
+
+@ 
+
+
+\subsubsection{Genomic representation of selected genes}
+\label{subsec:genome}
+Distribution of all the genes that were selected after differential expression and network analysis.
+<<distribution_chromosome_networks>>=
+read.table("./data/log.gene.names_allnetworks.txt", header = T) %>% 
+    mutate(order = gsub("chr", "", chromosome)) %>% 
+    mutate(order = gsub("X", "24", order)) %>% 
+    mutate(order = gsub("Y", "25", order)) %>%
+    arrange(as.numeric(order)) %>% 
+    ggplot(aes(x = reorder(chromosome, as.numeric(order)))) +
+    geom_histogram(stat = "count", fill = "firebrick") +
+    theme_minimal() +
+    labs(x = "Chromosomes",
+         y = "Number of genes per chromosome") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@ 
+
+
+Distribution of the genes with preferential transcriptional characteristics to predict individuals who are at risk or not of CNS relapse after diagnosis and DLBCL treatment.
+<<distribution_chromosome_bestLambda>>=
+read.table("./data/log.gene.names_bestLambda.txt", header = T) %>%
+    mutate(order = gsub("chr", "", chromosome)) %>% 
+    mutate(order = gsub("X", "24", order)) %>% 
+    mutate(order = gsub("Y", "25", order)) %>%
+    arrange(as.numeric(order)) %>%
+    ggplot(aes(x = reorder(chromosome, as.numeric(order)))) +
+    geom_histogram(stat = "count", fill = "steelblue") +
+    theme_minimal() +
+    labs(x = "Chromosomes",
+         y = "Number of genes per chromosome") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8))
+
+@ 
+
 
 \subsubsection{Prediction accuracy of each classifier at optimal parameters}
 \label{subsec:optimal}
@@ -1867,147 +1990,575 @@ Final report of the actual accuracy (95\% CI) for each machine learning model fr
 \marginnote{\small\color{blue}$\Lsh$ Data are retrieved from Confusion Matrix}[0cm]
 
 How long (seconds) a statistical learner requires to optimize the hyperparameters and gets the highest significant accuracy on expected data.
-<<bar_duration_performance>>=
-df <- read.table("./data/log.performance3.full.hyperTuning.seed14899815.409567.txt", header=T)
+<<bar_duration_tuned_performance>>=
+df <- read.table("./data/reports.437017/log.performance3.full.hyperTuning.seed5437259.437017.txt", header=T)
 df$group <- gsub("[0-9]", "", df$group)
 
-df %>%
-    ggplot(aes(x = reorder(model, durationMinutes),
+df %>% 
+    arrange(durationMinutes) %>% 
+    mutate(model = factor(model, unique(model))) %>% 
+    ggplot(aes(x = model,
                y = durationMinutes)) +
-    geom_point(position = position_dodge(),
-               stat = "identity",
-               size=4, shape=16) +
+    geom_point(stat = "identity",
+               size=3, shape=21,
+               fill = "red") +
+    geom_line(aes(x = as.integer(model))) +
     theme_minimal() +
     xlab("Machine learners") +
     ylab("Time (minutes) for tuning and optimizing precision/recall") +
     theme(axis.text.x = element_text(vjust = .5,
                                      angle = 45,
                                      size = 8))
+@ 
+
+
+Showing the mean accuracy of each model in contrast to their specificity for predicting individuals classes.
+<<scatterplot_specificity_tuned_accuracymean>>=
+specificity.mean <- df %>% 
+    select(model, Specificity) %>%
+    summary_SE(measurevar = "Specificity", groupvars = "model") %>%
+    select(model, Specificity)
+
+accuracy.mean <- accuracy.pst %>% 
+    select(model, Mean)
+
+p <- full_join(specificity.mean, accuracy.mean, by = "model") %>% 
+        ggplot(aes(x = Mean,
+               y = Specificity,
+               fill = as.factor(model))) +
+    geom_point(shape=21, size = 3) +
+    geom_text(aes(x = Mean,
+                  y = Specificity,
+                  label = model,
+                  hjust = 1.3,
+                  vjust = 1), size = 3) + 
+    theme_minimal() +
+    ylab("Max accuracy with adequate probability agreement") +
+    xlab("Mean accuracy with overall perdiction certainty") +
+    theme(legend.position = "none")
+
+    ggMarginal(p, type = "histogram", fill="transparent")
 
 @ 
 
+
 How is time training a model deliver on the significance of its accuracy? The p-value evaluates whether the overall accuracy rate is greater than the rate of the largest class. Proportions between classes (if one group of samples is larger than an other) is also considered in the hypothesis testing.
-
 \marginnote{\small\color{blue}$\Lsh$ \href{https://topepo.github.io/caret/measuring-performance.html}{Link} documentation Section 17.2}[0cm]
+<<scatterplot_duration_tuned_performance>>=
+unique.acc <- df %>% 
+    select(model, accuracyPval, durationMinutes) %>%
+    unique()
 
-<<scatterplot_duration_performance>>=
-df %>%
+df %>% 
     ggplot(aes(y = accuracyPval,
                x= durationMinutes,
-               fill = as.character(model))) +
+               fill = as.character(model),
+               label = as.factor(model))) +
     geom_point(size = 4,
                shape = 21) +
+    geom_label_repel(data = subset(unique.acc, accuracyPval <= .01),
+                    nudge_y = -1,
+                    nudge_x = 250,
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
     theme_minimal() +
     xlab("Time (minutes) for tuning and optimizing precision/recall") +
     ylab("P-value between correct prediction and no-information classification") +
-    theme(legend.position = "top")    
-               
+    theme(legend.position = "none")    
 @ 
 
 Precision versus recall across all sample groups for a multi-class classification.
 \marginnote{\small\color{blue}$\Lsh$True/False Positives/Negatives}[0cm]
-<<scatterplot_precisionRecall_performance>>=
-df %>%
+<<scatterplot_tuned_precision_recall_performance,out.width='5in'>>=
+prec.rec <- df %>% 
+    select(group, model, Precision, Recall)
+
+df %>% 
     ggplot(aes(x = Precision,
                y = Recall,
-               group = as.character(group),
+               fill = model,
+               label = as.factor(model),
                na.rm = T)) +
-    geom_point(aes(size = 4,
-               shape = group,
-               color = model)) +
+    geom_point(aes(shape = group, color = model), 
+               size = 2) +
+    geom_label_repel(data = subset(prec.rec, Recall >= .75),
+                    nudge_y = -1,
+                    nudge_x = -.1,
+                    force = 1,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    facet_wrap(~ group, ncol = 1) +
     theme_minimal() +
     xlab("Precision of how many correct classes were called") +
     ylab("Recall/Sensitivity") +
-    scale_color_brewer(palette = "Dark2") +
-    theme(legend.position = "top")               
-
+    theme(legend.position = "none")               
 @ 
 
 
 Specificity and sensitivity across all sample groups.
-<<scatterplot_sepecificitySensitivity_performance>>=
+<<scatterplot_tuned_sepecificity_Sensitivity_performance>>=
+spec.sens <- df %>% 
+    select(group, model, Sensitivity, Specificity)
 
 df %>%
     ggplot(aes(x = Sensitivity,
                y = Specificity,
-               group = as.character(group))) +
-    geom_point(aes(size = 4,
-               shape = group,
-               color = model)) +
+               fill = model,
+               label = as.factor(model))) +
+    geom_point(aes(shape = group,
+                   color = model),
+               size = 2) +
+    geom_label_repel(data = subset(spec.sens, Specificity >= .7 & Sensitivity >= .7),
+                    nudge_y = -1,
+                    nudge_x = .1,
+                    force = 1,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    facet_wrap(~ group, ncol = 1) +
     theme_minimal() +
     xlab("Sensitivity or true positive rate") +
     ylab("Specificity or true negative rate") +
-    scale_color_brewer(palette = "Dark2") +
-    theme(legend.position = "top")               
-
+    theme(legend.position = "none")               
 @ 
 
 
-Accuracy and Kappa across all sample groups.
-<<scatterplot_accuracyKappa_performance>>=
-
+Accuracy and Kappa of each of the optimized model across all sample groups after grid tuning search.
+\marginnote{\small\color{blue}$\Lsh$ Optimized model}[0cm]
+<<scatterplot_tuned_accuracyKappa_performance>>=
+pak <- df %>%
+    select(model, accuracy, kappa) %>%
+    unique
 df %>%
     ggplot(aes(x = accuracy,
-               y = kappa)) +
+               y = kappa,
+               fill = model,
+               label = as.factor(model))) +
     geom_point(aes(size = 4,
                color = model)) +
+    geom_label_repel(data = subset(pak, accuracy >= .6 & kappa >= .4),
+                    nudge_x = -.2,
+                    force = 1,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
     theme_minimal() +
-    xlab("Accuracy, 95% CI") +
+    xlab("Accuracy of the trained model (testing)") +
     ylab("Kappa on how well the classifier performed compared to chance") +
-    theme(legend.position = "top")               
-
+    theme(legend.position = "none")               
 @ 
 
 
 Accuracy versus the p-value of each classification. The p-value is a hypothesis test between predicting expected samples and the probability that the classification is biased by disproportionate class sizes (one group of samples is larger than an other).
-<<scatterplot_doubleaccuracyPval_performance>>=
-
-df %>%
-    ggplot(aes(x = accuracy,
-               y = accuracyPval)) +
-    geom_point(aes(size = 4,
-               color = model)) +
+<<scatterplot_tuned_accuracyPval_performance>>=
+paap <- df %>%
+    select(model, accuracy, accuracyPval) %>%
+    unique
+p <- df %>% 
+    ggplot(aes(x = accuracyPval,
+               y = accuracy,
+               label = as.factor(model),
+               fill = model)) +
+    geom_point(aes(size = 3,
+               fill = model),
+               shape = 21,
+               position=position_jitter(width=.01,height=.01)) +
+    geom_label_repel(data = subset(paap, accuracy >= .65 & accuracyPval <= .01),
+                    nudge_x = .2,
+                    force = 1,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 3) +
+##    scale_x_reverse(limits = rev(levels(df$accuracyPval))) +
     theme_minimal() +
-    xlab("Accuracy") +
-    ylab("P-value between correct prediction and false no-information classification") +
-    theme(legend.position = "top")               
+    ylab("Accuracy") +
+    xlab("P-value between correct prediction and false no-information classification") +
+    theme(legend.position = "none")               
+
+    ggMarginal(p, type = "histogram", fill="transparent")
+
 
 @ 
 
 
 Prevalence of cases for each classifier. Were the classes perfectly balanced? A positive predictive score is similar to precision while accounting for disproportionality of the classes.
-<<bar_prevalence_performance>>=
-df %>%
+<<scatterplot_tuned_prevalence_performance>>=
+pbd <- df %>%
+    select(group, model, Balanced.Accuracy, Detection.Prevalence)
+df %>% 
     ggplot(aes(x = Balanced.Accuracy,
                y = Detection.Prevalence,
-               group = as.character(group))) +
-    geom_point(aes(size = 4,
+               label = as.factor(model),
+               fill = model)) +
+    geom_point(aes(size = 2,
                color = model,
-               shape = group)) +
+               shape = as.factor(group))) +
+    geom_label_repel(data = subset(pbd, Balanced.Accuracy >= .72),
+                    nudge_x = -.1,
+                    nudge_y = .5,                   
+                    force = 15,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    facet_wrap(~ group, ncol = 1) +
     theme_minimal() +
-    xlab("Accuracy") +
+    xlab("Balanced accuracy by sample classes") +
     ylab("Prevalence") +
-    theme(legend.position = "top")               
+    theme(legend.position = "none")               
     
 @ 
 
 
 
+\subsubsection{Probability to classify samples with the best model}
+\label{subsec:bestmod}
+
+Using the best model, support vector machines with a polynomial kernel, gets the cleanest predictions of individuals with of CNS and systemic relapse.
+<<density_stacked_bestmod_probabilities>>=
+dfp <- read.table("./data/reports.437017/log.performance6.class_probabilities.seed5437259.437017.txt", row.names = 1, header = T)
+
+dfm = NULL
+classes.s <- c("CNS", "NOREL", "SYST")
+for (cp in 1:3) {
+    dfmx <- dfp %>% 
+        select(one_of("original", classes.s[[cp]])) %>%
+        filter(original == classes.s[[cp]])
+    dfm <- rbind(dfm, data.frame(original = classes.s[[cp]],
+                                 grp.mean = mean(dfmx[,2])))
+}
+
+dfp %>% 
+    gather("class", "prob", 3:5) %>%
+    ggplot(aes(x = prob,
+               fill = class)) +
+##    geom_density(alpha = 0.3) +
+    geom_density(position = "stack") +    
+##    geom_area(aes(fill = class), stat ="bin", alpha=0.6) +
+    geom_vline(data = dfm, mapping = aes(xintercept=grp.mean), linetype = "dashed") +
+    scale_x_continuous(breaks = pretty(dfp$CNS, n = 10)) +    
+    theme_minimal() +
+    facet_wrap( ~ original,
+               ncol = 1,
+               scales = "free") +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Density (fitted probabilities with lambda = 1)")
+@ 
+
+Similar to the above but non stacked densities.
+\marginnote{\small\color{blue}$\Lsh$ similar \& optional representation}[0cm]
+<<density_bestmod_probabilities>>=
+dfp %>% 
+    gather("class", "prob", 3:5) %>%
+    ggplot(aes(x = prob,
+               fill = class)) +
+    geom_density() +    
+    geom_vline(data = dfm, mapping = aes(xintercept=grp.mean), linetype = "dashed") +
+    scale_x_continuous(breaks = pretty(dfp$CNS, n = 10)) +    
+    theme_minimal() +
+    facet_wrap( ~ original,
+               ncol = 1,
+               scales = "free") +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Density (fitted probabilities with lambda = 1)")
+@ 
+
+Bars showing concentration of good predictions by individual for each outcome class.
+\marginnote{\small\color{blue}$\Lsh$ similar \& optional representation}[0cm]
+<<histogram_bestmod_probabilities>>=
+dfp %>%  
+    gather("class", "prob", 3:5) %>%
+    ggplot(aes(x = prob,
+               fill = original)) +
+    geom_histogram(binwidth = 0.01, col = "black", size = .1) +
+    theme_minimal() +
+    facet_wrap( ~ class,
+               ncol = 1,
+               scales = "free") +
+    theme(legend.position = "top") +
+    scale_fill_brewer(palette = "Dark2") +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Fitted probabilities with lambda = 1")
+@ 
+
+Distribution of probabilities for individuals identified with risk of central nervous system relapse.
+<<bar_cns_Distribution_bestmod_probabilities>>=
+dfp %>% 
+    select(original, CNS) %>%
+    filter(original == "CNS") %>%
+    ggplot(aes(x=CNS)) +
+    geom_histogram(binwidth = 0.045, color = "white", fill = "steelblue") +
+    theme_minimal() +
+    scale_x_continuous(breaks = pretty(dfp$CNS, n = 10)) +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Fitted probabilities with lambda = 1")
+@ 
+
+Distribution of probabilities for individuals identified with risk of a systemic relapse.
+<<bar_syst_Distribution_bestmod_probabilities>>=
+dfp %>% 
+    select(original, SYST) %>%
+    filter(original == "SYST") %>%
+    ggplot(aes(x=SYST)) +
+    geom_histogram(binwidth = 0.045, color = "white", fill = "steelblue") +
+    theme_minimal() +
+    scale_x_continuous(breaks = pretty(dfp$SYST, n = 10)) +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Fitted probabilities with lambda = 1")
+@ 
+
+Distribution of probabilities for individuals identified with a no risk of relapse after treatment, at the time of diagnosis.
+<<bar_norel_Distribution_bestmod_probabilities>>=
+dfp %>% 
+    select(original, NOREL) %>%
+    filter(original == "NOREL") %>%
+    ggplot(aes(x=NOREL)) +
+    geom_histogram(binwidth = 0.045, color = "white", fill = "steelblue") +
+    theme_minimal() +
+    scale_x_continuous(breaks = pretty(dfp$NOREL, n = 10)) +
+    labs(x = "Probability of selected genes to predict different patient classes",
+         y = "Fitted probabilities with lambda = 1")
+@ 
 
 
+\subsection{Importance score}
+\label{subsec:importance}
+Importance scores of each gene is calculated based on that variable significance to the model performance. The score is thus model-based therefore taking into account the estimated correlation between predictors. 
+For each class, a gene is attributed an importance. All counts are scaled to 100. 
+A trapezoid rule is used to approximate an integral with linear guidelines. This helps estimate an area under the ROC curve. The area is used to measure the variable importance.
+\marginnote{\small\color{blue}$\Lsh$Multiclass pairwise decomposition AUROC}[0cm]
+<<importance_metrics_svmpoly, out.width='5in'>>=
+imp.model <- read.table("./data/reports.437017/log.performance5.importance.seed5437259.437017.txt", header = T)
+imp.model %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>%         
+    filter(model == "svmPoly") %>%
+    gather("groups", "importance", 3:5) %>% 
+    ggplot(aes(x = reorder(genes, importance),
+               y = importance,
+               fill = as.character(groups))) +
+    geom_point(shape=21) +
+    geom_segment(aes(y = 50, 
+                   x = genes,
+                   yend = importance,
+                   xend = genes), 
+               color = "black") +
+    facet_wrap(~ groups, ncol = 3) +
+    theme_minimal() +
+    coord_flip() +
+    ylab("Importance metric based on AUROC") +
+    xlab("") +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(legend.position = "none")
+
+@ 
+
+Genes ranked by importance across all classes. The bigger the bubble, the more models were to rely on that one gene.
+<<importance_bestgenes_models, out.width='5in'>>=
+imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    gather("groups", "importance", 3:5) %>%
+    filter(importance >= 80) %>%
+    ggplot(aes(x = reorder(genes, importance),
+               y = importance,
+               color = groups)) +
+    geom_count(col="tomato3", show.legend=F) +
+    theme_minimal() +
+    ylab("Genes with importance over 80 across all classes") +
+    xlab("") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 8)) +
+    theme(legend.position = "top")
+
+@ 
 
 
-\subsection{Version of machine learning models}
+Comparing the importance of genes across all model trained and optimized, annotated by genes, only for the SVM model with a polynomial kernel. Model comparison between individuals diagnosed with CNS relapse or no relapse.
+<<importance_metrics_all_cnsNOREL>>=
+model.names <- imp.model %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>%     
+    select(genes, CNS, NOREL, model) %>%
+    filter(model == "svmPoly")
+
+p <- imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>%     
+    ggplot(aes(x = CNS,
+               y = NOREL,
+               label = genes)) +
+    geom_smooth(method = 'loess', alpha=1) +
+    geom_point(aes(fill = model), shape=21) +
+    theme_minimal() +
+    geom_text_repel(data = subset(model.names, CNS >= 50),
+                    nudge_x = 20,
+                    nudge_y = -20,                    
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    xlab("CNS importance metrics") +
+    ylab("NOREL importance metrics") +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(legend.position = "none")
+
+    ggMarginal(p, type = "histogram", fill="transparent")
+@ 
+
+Comparing the importance of genes across all model trained and optimized, annotated by genes, only for the SVM model with a polynomial kernel. Model comparison between individuals diagnosed with CNS relapse or systemic.
+<<importance_metrics_all_cnsSYST>>=
+model.names <- imp.model %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    select(genes, CNS, SYST, model) %>%
+    filter(model == "svmPoly")
+
+p <- imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    ggplot(aes(x = CNS,
+               y = SYST,
+               label = genes)) +
+    geom_smooth(method = 'loess', alpha=1) +
+    geom_point(aes(fill = model), shape=21) +
+    theme_minimal() +
+    geom_text_repel(data = subset(model.names, CNS >= 50),
+                    nudge_x = 20,
+                    nudge_y = -20,                    
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    xlab("CNS importance metrics") +
+    ylab("SYST importance metrics") +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(legend.position = "none")
+
+    ggMarginal(p, type = "histogram", fill="transparent")
+@ 
+
+
+Comparing the importance of genes across all model trained and optimized, annotated by genes, only for the SVM model with a polynomial kernel. Model comparison between individuals diagnosed with systemic or no relapse.
+<<importance_metrics_all_systNOREL>>=
+model.names <- imp.model %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    select(genes, SYST, NOREL, model) %>%
+    filter(model == "svmPoly")
+
+p <- imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    ggplot(aes(x = SYST,
+               y = NOREL,
+               label = genes)) +
+    geom_smooth(method = 'loess', alpha=1) +
+    geom_point(aes(fill = model), shape=21) +
+    theme_minimal() +
+    geom_text_repel(data = subset(model.names, SYST >= 50),
+                    nudge_x = 20,
+                    nudge_y = -20,                    
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    xlab("SYST importance metrics") +
+    ylab("NOREL importance metrics") +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(legend.position = "none")
+
+    ggMarginal(p, type = "histogram", fill="transparent")
+@ 
+
+
+\subsection{Version of machine learning models on high performance clusters}
 \label{subsec:version}
-\marginnote{\small\color{blue}$\Lsh$ Version of R packages used for their algorithmic implementation of machine learning models}[0cm]
+\marginnote{\small\color{blue}$\Lsh$ Version of R packages used in the machine learning pipeline}[0cm]
+
+<<>>=
+#######################################################################################
+## R version 3.5.0 (2018-04-23)                                                      ##
+## Platform: x86_64-pc-linux-gnu (64-bit)                                            ##
+## Running under: Ubuntu 16.04.4 LTS                                                 ##
+##                                                                                   ##
+## Matrix products: default                                                          ##
+## BLAS: /usr/lib/openblas-base/libblas.so.3                                         ##
+## LAPACK: /usr/lib/libopenblasp-r0.2.18.so                                          ##
+##                                                                                   ##
+## locale:                                                                           ##
+##  [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C                                      ##
+##  [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8                            ##
+##  [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8                           ##
+##  [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                                         ##
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C                                    ##
+## [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C                               ##
+##                                                                                   ##
+## attached base packages:                                                           ##
+## [1] stats     graphics  grDevices utils     datasets  methods   base              ##
+##                                                                                   ##
+## other attached packages:                                                          ##
+##  [1] pls_2.6-0          bindrcpp_0.2.2     plot3D_1.1.1       plyr_1.8.4          ##
+##  [5] tidyr_0.8.1        reshape2_1.4.3     vegan_2.5-2        permute_0.9-4       ##
+##  [9] earth_4.6.3        plotmo_3.4.0       TeachingDemos_2.10 plotrix_3.7-2       ##
+## [13] ROCR_1.0-7         doSNOW_1.0.16      snow_0.4-2         iterators_1.0.9     ##
+## [17] caret_6.0-80       ggplot2_3.0.0      lattice_0.20-35    glmnet_2.0-16       ##
+## [21] foreach_1.4.4      Matrix_1.2-14      dplyr_0.7.6        gplots_3.0.1        ##
+## [25] pvclust_2.0-0      RColorBrewer_1.1-2                                        ##
+#######################################################################################
+@ 
+
+
+
+<<>>=
+#######################################################################
+##  [1] minqa_1.2.4         colorspace_1.3-2    class_7.3-14         ##
+##  [4] DRR_0.0.3           svUnit_0.7-12       prodlim_2018.04.18   ##
+##  [7] lubridate_1.7.4     codetools_0.2-15    splines_3.5.0        ##
+## [10] mnormt_1.5-5        robustbase_0.93-0   RcppRoll_0.2.2       ##
+## [13] mda_0.4-10          broom_0.4.4         ddalpha_1.3.3        ##
+## [16] cluster_2.0.7-1     kernlab_0.9-26      sfsmisc_1.1-2        ##
+## [19] compiler_3.5.0      assertthat_0.2.0    lazyeval_0.2.1       ##
+## [22] FCNN4R_0.6.2        Rcgmin_2013-2.21    optextras_2016-8.8   ##
+## [25] tools_3.5.0         igraph_1.2.1        misc3d_0.8-4         ##
+## [28] gtable_0.2.0        glue_1.2.0          LiblineaR_2.10-8     ##
+## [31] naivebayes_0.9.2    Rcpp_0.12.18        gdata_2.18.0         ##
+## [34] nlme_3.1-137        setRNG_2013.9-1     psych_1.8.4          ##
+## [37] timeDate_3043.102   gower_0.1.2         stringr_1.3.1        ##
+## [40] kknn_1.3.1          gtools_3.5.0        DEoptimR_1.0-8       ##
+## [43] Rvmmin_2018-4.17    MASS_7.3-50         scales_1.0.0         ##
+## [46] ipred_0.9-6         parallel_3.5.0      monmlp_1.1.5         ##
+## [49] rpart_4.1-13        stringi_1.2.2       ucminf_1.1-4         ##
+## [52] randomForest_4.6-14 deepnet_0.2         e1071_1.6-8          ##
+## [55] BB_2014.10-1        caTools_1.17.1      optimx_2013.8.7      ##
+## [58] lava_1.6.1          geometry_0.3-6      rlang_0.2.1          ##
+## [61] pkgconfig_2.0.1     bitops_1.0-6        purrr_0.2.5          ##
+## [64] bindr_0.1.1         recipes_0.1.2       labeling_0.3         ##
+## [67] CVST_0.2-2          tidyselect_0.2.4    gbm_2.1.3            ##
+## [70] magrittr_1.5        R6_2.2.2            dimRed_0.1.0         ##
+## [73] pillar_1.2.3        foreign_0.8-70      withr_2.1.2          ##
+## [76] mgcv_1.8-23         survival_2.42-3     abind_1.4-5          ##
+## [79] nnet_7.3-12         tibble_1.4.2        KernSmooth_2.23-15   ##
+## [82] RRF_1.7             grid_3.5.0          ModelMetrics_1.1.0   ##
+## [85] digest_0.6.15       dfoptim_2018.2-1    numDeriv_2016.8-1    ##
+## [88] stats4_3.5.0        munsell_0.5.0       magic_1.5-8          ##
+## [91] quadprog_1.5-5                                               ##
+#######################################################################
+
+@
 
 
 
 
-
-
-
-\section{System Information}
+\section{System information for this report}
 \label{sec:sys_info}
 \noindent
 The version number of R and packages loaded for generating the vignette were:

@@ -83,10 +83,12 @@ rm -rf ~/.synergy/
 * INSTALL EMACS 24 and 25
 This is a snapshot of developmental version for the latest Emacs25. =working=
 #+BEGIN_SRC shell
-sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:ubuntu-elisp/ppa
-sudo apt-get update
-sudo apt-get install emacs-snapshot
+sudo add-apt-repository ppa:kelleyk/emacs
+sudo apt update
+### reboot
+sudo apt install emacs25
+### remove in case of buggs
+sudo apt remove emacs25 emacs25-nox && sudo apt autoremove
 #+END_SRC
 
 For Emacs24
@@ -771,10 +773,8 @@ sudo dpkg -i Downloads/dropbox_1.6.2_amd64.deb
 Add to System Settings Startup the command =dropbox start -i=
 * INSTALL JAVA
 #+BEGIN_SRC shell
-
-sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
+sudo apt-get install default-jre
+sudo apt-get install default-jdk
 java -version
 #+END_SRC
 
