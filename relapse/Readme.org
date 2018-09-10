@@ -59,7 +59,7 @@ contact me and I will provide you with the data.
 7. [[https://github.com/neocruiser/pipelines/blob/master/r/classification.R][Machine learning to classify samples for
    risk factor predictions]] in R and [[https://github.com/neocruiser/pipelines/blob/master/r/classification.h4h.pbs][high performance cluster execution]]
    in bash
-   - Subsampling and spliting (binomial and multiclass)
+   - Subsampling and splitting (binomial and multiclass)
    - Feature selection (lasso, ridge, elastic)
    - Nested cross validation
    - Redundancy and descriptive analyses
@@ -79,8 +79,8 @@ Non-Hodgkin lymphoma with more than 4000 new cases a year in
 Canada. Majority of patients are cured using modern chemotherapeutic
 regimens. Except for a certain 5% developing on average 5 months from
 diagnosis, a central nervous system (CNS) relapse. This pathology is
-quickly and always fatal. At present, CNS prophilaxis exists and
-consists of agents with high CNS penetration. Treatement however is
+quickly and always fatal. At present, CNS prophylaxis exists and
+consists of agents with high CNS penetration. Treatment however is
 highly toxic to be administered early on. While most people with
 lymphoma do not require this type of therapeutic intervention, risk
 factors for predicting CNS relapse and its progression are a
@@ -96,7 +96,7 @@ relapse patients ([[http://ascopubs.org/doi/full/10.1200/JCO.2015.65.6520][Schmi
 produces divergent relapse estimates when considering cell-of-origin
 or Myc and Bcl-2 gene expressions. In contrast, since most CNS relapse
 cases occurred early during therapy, a subclinical or hidden genetic
-involvment at diagnosis was suggested. As such, the index have to be
+involvement at diagnosis was suggested. As such, the index have to be
 improved with more markers to raise sensitivity for high-risk
 patients. 
 
@@ -111,7 +111,7 @@ improve upon the accuracy obtained from previous studies and build a
 scalable test that will be used with clinical data of DLBCL patients
 to find those with high-risk of CNS relapse at first diagnosis.  
 
-** Feasability and innovation
+** Feasibility and innovation
 Our available data cover 240 whole-genome microarrays from newly
 diagnosed patients, presenting several forms of CNS relapse. The
 expression profiles of selected 500-1000 genes will be inferred into
@@ -310,5 +310,27 @@ penetrate routine clinical practices.
   - [ ] Pipeline documentation
 
 ** Clonal evolution
-- [[https://github.com/Illumina/strelka][Strelka]] or GATK for variant calling
+- [[https://github.com/Illumina/strelka][Strelka]], VarScan2, GATK or bcftools for variant calling
+- [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5490163/][ISOWN]] caller that doesnt requires controls
+- External databases required for training and removing somatic mutations
+  + COSMIC (v69)
+  + dbSNP (v142)
+  + ExAC (release 2)
+  + PolyPhen WHESS (released in 2015)
+  + Mutation Assessor (released in 2013)
+- [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
+- Pleiotropy and epistasis (Modifier genes)
+- Explore variant calls on GEMINI
+- PyClone for clonal evolution [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4864026/][Bayesian clustering]]
+- [[https://github.com/UMCUGenetics/targetclone][TargetClone]] construct subclonal evolution trees of tumors from allele frequency and somatic SNV
+- Mutation signatures comaprison to COSMIC signatures with [[https://bioconductor.org/packages/release/bioc/html/MutationalPatterns.html][MutationalPatterns]]
+- iFuse for gene fusions from structural variants
+- [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5429826/][ExomeCQA]] gets metrics from bam exon/gene comparison [[http://exomecqa.sourceforge.net/manual.html][manual]]
+- [[https://sequencing.qcfail.com/articles/mapq-values-are-really-useful-but-their-implementation-is-a-mess/][mapQ]] implementation under many aligners (mention of bamQC)
+- Germline versus somatic variants are affected mostly by
+  - Admixture healthy in tumor, lowers variant allele frequency
+  - Admixture tumor in healthy
+  - Subclonal variants, allele frequency might be anywhere from 50% down to sub-1% (architecture and sensitivity of the caller)
+  - Copy number variants
+
 

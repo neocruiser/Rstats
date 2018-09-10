@@ -52,7 +52,7 @@ pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
           'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit',
           'plyr', 'paletteer', 'ggrepel', 'ggExtra', 'ggpubr',
-          'cowplot', 'ggridges')
+          'cowplot', 'ggridges', 'reshape')
 lapply(pkgs, require, character.only = TRUE)
 @
 
@@ -122,6 +122,7 @@ metadata <- read.table("data/phenodata", sep = "\t", header = T) %>%
                                GROUP %in% c("TESTICULAR_NO_CNS_RELAPSE", "NO_RELAPSE") ~ "NOREL",
                                GROUP == "SYTEMIC_RELAPSE_NO_CNS" ~ "SYST",
                                TRUE ~ "CTRL")) %>%
+    filter(Groups != "CTRL") %>%
     mutate(ABClassify = case_when(ABClikelihood >= .9 ~ "ABC",
                                   ABClikelihood <= .1 ~ "GCB",
                                   TRUE ~ "U")) %>%
@@ -135,14 +136,23 @@ metadata <- read.table("data/phenodata", sep = "\t", header = T) %>%
                              TRUE ~ "EN")) %>%
     mutate(Lymphnodes = case_when(Nodes == "LN" ~ 1, TRUE ~ 0))
 
-# make sure all samples preserve their ID
+# factorize
 metadata$Groups <- as.factor(metadata$Groups)
 metadata$ABClassify <- as.factor(metadata$ABClassify)
 metadata$ABCScore <- as.factor(metadata$ABCScore)
 metadata$Nodes <- as.factor(metadata$Nodes)
 metadata$Lymphnodes <- as.factor(metadata$Lymphnodes)
+
+## reorder sample names
+ids <- read.table("data/sampleIDs")
+metadata <- arrange(metadata, factor(SAMPLE_ID, levels = ids$V1))
+meta.selected <- metadata %>%
+    mutate(Contrast1 = as.factor(paste0(Groups, ".", Prediction))) %>%
+    mutate(Contrast2 = as.factor(paste0(Groups, ".", Nodes)))
+
 #brotools::describe(metadata)
-print_summary_table(c("ABCScore", "ABClassify", "GROUP"), c("Nodes"), metadata, execute = F)
+print_summary_table(c("ABCScore", "ABClassify", "GROUP", 
+                      "Contrast1", "Contrast2"), c("Nodes"), meta.selected, execute = F)
 @ 
 
 \begin{table}[!h]
@@ -504,7 +514,6 @@ read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>
                                       fill = NA),
           panel.grid.major = element_line(linetype = "blank"))
 
-
 @ 
 
 
@@ -516,9 +525,9 @@ Below, the plot shows how the standard deviation, \textbf{spread} of the data is
 
 All array probes with all RNAs.
 <<deviation_w_ncrna_subsetting>>=
-pvals <- read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
+read.table("./data/summary.139102.adjusted.means.subsetting.txt", header = T) %>%
     select(discarded, meanSD, adj.meanSD) %>%
-    gather("sd", "count", 2:3) %>%
+    gather("sd", "count", 2:3) %>% 
     ggplot(aes(x = count,
                y = discarded)) +
     theme_bw() +
@@ -538,7 +547,7 @@ pvals <- read.table("./data/summary.139102.adjusted.means.subsetting.txt", heade
 
 @ 
 
-Without the ncRNAs. {\color{blue} Blue horizontal line} is the threshold that was selected for later analysis.
+Without the ncRNAs. {\color{blue} Blue horizontal line} is the number of genes discarded when variance shrinking was used to eliminate biased genes.
 <<deviation_wo_ncrna_subsetting>>=
 read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>%
     select(discarded, meanSD, adj.meanSD) %>%
@@ -548,7 +557,7 @@ read.table("./data/summary.149317.adjusted.means.subsetting.txt", header = T) %>
     theme_bw() +
     geom_line(aes(linetype = as.factor(sd))) +
     geom_point() +
-    geom_hline(aes(yintercept = 1198), colour = "blue") +
+    geom_hline(aes(yintercept = 1175), colour = "blue") +
     scale_x_continuous(trans = "reverse",
                        breaks = scales::pretty_breaks(n = 8)) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
@@ -572,9 +581,9 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 pvals <- read.table("./data/summary.lmfit.fdrAdjpval.txt", header = TRUE, fill = TRUE)
 pvals %>%
     filter(Contrast == "systemicRelapse") %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval,
                fill = Comparison)) +
-    geom_density() +
+    geom_density(position = "stack") +
     theme_minimal() +
     theme(legend.position = "top") +
     scale_fill_brewer(palette = "Dark2") +
@@ -587,9 +596,9 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 <<pval_histograms_relapse>>=
 pvals %>%
     filter(Contrast == "systemicRelapse") %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval,
                fill = Comparison)) +
-    geom_histogram(binwidth = 0.001,
+    geom_histogram(binwidth = 10^-5,
                    col=I("white")) +
     theme_minimal() +
     facet_wrap( ~ Comparison,
@@ -606,9 +615,9 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 <<pval_density_nodal>>=
 pvals %>%
     filter(Contrast == c("systemicRelapseNodes")) %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval,
                fill = Comparison)) +
-    geom_density() +
+    geom_density(position = "stack") +
     theme_minimal() +
     theme(legend.position = "top") +
     scale_fill_brewer(palette = "Dark2") +
@@ -621,9 +630,9 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 <<pval_histograms_nodal>>=
 pvals %>%
     filter(Contrast == "systemicRelapseNodes") %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval,
                fill = Comparison)) +
-    geom_histogram(binwidth = 0.001) +
+    geom_histogram(binwidth = 10^-5) +
     theme_minimal() +
     facet_wrap( ~ Comparison,
                ncol = 2, scales = "free") +
@@ -638,9 +647,9 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 <<pval_density_coo>>=
 pvals %>%
     filter(Contrast == c("systemicRelapseCOOprediction")) %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval,
                fill = Comparison)) +
-    geom_density() +
+    geom_density(position = "stack") +
     theme_minimal() +
     theme(legend.position = "top") +
     scale_fill_brewer(palette = "Paired") +
@@ -653,20 +662,20 @@ Distribution of p-values in pairwise comparisons between individuals recognized 
 <<pval_histograms_coo>>=
 pvals %>%
     filter(Contrast == "systemicRelapseCOOprediction") %>% 
-    ggplot(aes(x = FDRadjPval,
+    ggplot(aes(x = Pval, 
                fill = Comparison)) +
-    geom_histogram(binwidth = 0.001) +
+    geom_histogram(binwidth = 10^-5) +
     theme_minimal() +
     facet_wrap( ~ Comparison,
                ncol = 2, scales = "free") +
     theme(legend.position = "none") +
-    scale_fill_brewer(palette = "Dark2") +
+    scale_fill_brewer(palette = "Paired") +
     labs(x = "False discovery rate adjusted P-values",
          y = "Density")
 
 @ 
 
-
+Across all contrasts class comparison, the number of genes significantly expressed at FDR multi test corrections.
 <<pval_density>>=
 read.table("./data/summary.lmfit.bval.txt", header = TRUE, fill = TRUE) %>% 
     filter(Model == c("systemicRelapse","systemicRelapseNodes","systemicRelapseCOOprediction")) %>% 
@@ -689,7 +698,11 @@ read.table("./data/summary.lmfit.bval.txt", header = TRUE, fill = TRUE) %>%
 \label{sec:networks}
 The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse individual cases).
 An adjacency matrix is then constructed by weighting the previously inferred measures.
-The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).
+The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).\\
+
+The final methods selected were best according to our output. Convergence and reproducibility of each trend in gene number per module or scale of module per network helped narrow down our selection criteria for which method to incorporate in our clustering technique. 
+The best configuration involve a Pearson correlation at stringent thresholds. Hellinger expression data standardization was better than other methods in helping to estimate similarity between genes. 
+The correlation power was set to 6 at an overall threshold of recall of 0.5 and a complete clustering distribution to improve estimating adjacency distribution.
 
   \marginnote{\small\color{blue}$\Lsh$Overfitting is a source of bias.}[0cm]
 \begin{itemize}
@@ -705,20 +718,21 @@ The data is transformed to increase the correlation coefficient therefore improv
 \end{itemize}
 \marginnote{\small\color{blue}$\Lsh$Effect of correlation methods is seen on module content}[0cm]
 <<networks_summary>>=
-ns <- read.table("./data/networks.summary.104795.txt", header = T)
+ns <- read.table("./data/networks.summary.437006.txt", header = T)
 summary(ns)
 @ 
 
-\marginnote{\small\color{blue}$\Lsh$Test graphs}[0cm]
+\marginnote{\small\color{blue}$\Lsh$ Definitive graphs}[0cm]
 Difference between methods used for network inference. Are we able to generate convergence of the output of all iterations across all methods?
+After many trials the below two graphs (in this section) represent the number of networks, genes, clustered, and modules for the selected configuration (between normalization, clustering, and data transformation).
 <<nodes_networks_summary_steps,out.width='5in'>>=
-
-ns %>%
+networks.comparison <- function(data = ns){
+    data %>%
     ggplot(aes(
         x = MaxEdgesPerGene,
         y = NbNodes,
         fill = Standardization)) +
-    theme_bw() +
+    theme_minimal() +
     geom_step(aes(color = Standardization),
               stat = "identity") +
     facet_wrap( ~ CorrelationPower,
@@ -732,15 +746,20 @@ ns %>%
                                           fill = "white"),
           panel.border = element_rect(linetype = "blank", 
                                       fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
+          panel.grid.major = element_line(linetype = "blank"),
+          axis.text.x = element_text(size = 8),
+          axis.text.y = element_text(size = 8))
+}
 
+networks.comparison(data = ns)
 @ 
 
 Showing the number of modules per network and the number of genes per module. Each module contains differing number of nodes based on their correlation strength. Each cluster contains at least one module. Each network contains at least one cluster. One module can be assigned to nodes that belong to more than one cluster. The Lowess curves show if the trend in the data is linear or not. The wave around Lowess curves represents the level of confidence of the data points (the narrower the interval the better, less variability = more accuracy).
 \marginnote{\small\color{blue}$\Lsh$Points=iterations. With less iterations comes high variability of the curve}[0cm]
 <<nodes_modules_summary>>=
-
-read.table("./data/modules.summary.104795.txt", header = TRUE) %>%
+ms <- read.table("./data/modules.summary.437006.txt", header = TRUE)
+modules.comparison <- function(data = ms){
+data %>%
     ggplot(aes(
         x = NbModules,
         y = MaxGenesPerModule,
@@ -753,19 +772,25 @@ read.table("./data/modules.summary.104795.txt", header = TRUE) %>%
     facet_wrap( ~ Standardization,
                ncol = 2,
                scales = "free") + 
-    theme(legend.position = "top",
+    theme(legend.position = "none",
           strip.background = element_rect(linetype = "blank", 
                                           fill = "white"),
           panel.border = element_rect(linetype = "blank", 
                                       fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
+          panel.grid.major = element_line(linetype = "blank"),
+          axis.text.x = element_text(size = 8),
+          axis.text.y = element_text(size = 8)) +
+    geom_smooth(method = 'loess', alpha = 1)
+}
+
+modules.comparison(data = ms)
 
 
 @ 
 
 \subsection{Network analysis for Spearman-related correlations (relaxed)}
 \label{subsec:spearman}
+\marginnote{\small\color{blue}$\Lsh$ Different iterations to test which normalization \& clustering are best}[0cm]
 Thresholds based on the Empirical Bayes approach to rank genes and determine if a gene is significantly expressed by shrinking the sample variance \href{http://www.statsci.org/smyth/pubs/ebayes.pdf}{Smyth 2004}. Limma implementation. 
 \begin{itemize}
 \item \textbf{Average Expression}: 5
@@ -779,55 +804,15 @@ Thresholds based on the Empirical Bayes approach to rank genes and determine if 
 \label{subsec:nodal}
 
 Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
-<<nodes_networks_summary_spearman,out.width='5in'>>=
-
-read.table("./data/networks.summary.104859.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<nodes_networks_summary_spearman>>=
+ns <- read.table("./data/networks.summary.104859.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 Showing the number of modules per network and the number of genes per module. 
 <<nodes_modules_summary_spearman>>=
-
-read.table("./data/modules.summary.104859.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.104859.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -835,112 +820,32 @@ read.table("./data/modules.summary.104859.txt", header = TRUE) %>%
 \subsubsection{Relapsed versus no CNS relapsed cases}
 \label{subsec:relapsespearman}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<relapse_networks_summary_spearman,out.width='5in'>>=
-
-read.table("./data/networks.summary.114018.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<relapse_networks_summary_spearman>>=
+ns <- read.table("./data/networks.summary.114018.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<relapse_modules_summary_spearman>>=
-
-read.table("./data/modules.summary.114018.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.114018.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
 \subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
 \label{subsec:coospearmanstringent}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<coo_prediction_networks_summary_spearman,out.width='5in'>>=
-
-read.table("./data/networks.summary.114017.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<coo_prediction_networks_summary_spearman>>=
+ns <- read.table("./data/networks.summary.114017.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<coo_prediction_modules_summary_spearman>>=
-
-read.table("./data/modules.summary.114017.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.114017.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -961,170 +866,47 @@ Thresholds based on the Empirical Bayes approach to rank genes and determine if 
 \label{subsec:nodal}
 
 Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
-<<nodes_networks_summary_pearson,out.width='5in'>>=
-
-read.table("./data/networks.summary.104862.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<nodes_networks_summary_pearson>>=
+ns <- read.table("./data/networks.summary.104862.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 \marginnote{\small\color{blue}$\Lsh$Since Lowess ranks by confidence, Log transformation seems the best, ie, low variability. For this, Log is removed from further tests.}[0cm]
 Showing the number of modules per network and the number of genes per module. 
 <<nodes_modules_summary_pearson>>=
-
-read.table("./data/modules.summary.104862.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.104862.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 \subsubsection{Relapsed versus no CNS relapsed cases}
 \label{subsec:relapse}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<relapse_networks_summary_pearson,out.width='5in'>>=
-
-read.table("./data/networks.summary.104863.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<relapse_networks_summary_pearson>>=
+ns <- read.table("./data/networks.summary.104863.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<relapse_modules_summary_pearson>>=
-
-read.table("./data/modules.summary.104863.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.104863.txt", header = TRUE)
+modules.comparison(ms)    
 @ 
 
 \subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
 \label{subsec:coo}
 Genetic networks from differentially expressed genes selected by comparing sample cases with cell of origin classification based on ABC or GCB subtypes.
-<<coo_prediction_networks_summary_pearson,out.width='5in'>>=
-
-read.table("./data/networks.summary.104864.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<coo_prediction_networks_summary_pearson>>=
+ns <- read.table("./data/networks.summary.104864.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<coo_prediction_modules_summary_pearson>>=
-
-read.table("./data/modules.summary.104864.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.104864.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -1146,55 +928,15 @@ Thresholds based on the Empirical Bayes approach to rank genes and determine if 
 \subsubsection{Nodal versus extra-nodal lymphoma}
 \label{subsec:nodal}
 Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
-<<nodes_networks_summary_spearman_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119759.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<nodes_networks_summary_spearman_stringent>>=
+ns <- read.table("./data/networks.summary.119759.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 Showing the number of modules per network and the number of genes per module. 
 <<nodes_modules_summary_spearman_stringent>>=
-
-read.table("./data/modules.summary.119759.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119759.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -1202,56 +944,16 @@ read.table("./data/modules.summary.119759.txt", header = TRUE) %>%
 \subsubsection{Relapsed versus no CNS relapsed cases}
 \label{subsec:relapsespearman}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<relapse_networks_summary_spearman_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119760.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<relapse_networks_summary_spearman_stringent>>=
+ns <- read.table("./data/networks.summary.119760.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<relapse_modules_summary_spearman_stringent>>=
-
-read.table("./data/modules.summary.119760.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119760.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -1259,56 +961,16 @@ read.table("./data/modules.summary.119760.txt", header = TRUE) %>%
 \subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
 \label{subsec:relapsespearman}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<coo_prediction_networks_summary_spearman_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119758.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
+<<coo_prediction_networks_summary_spearman_stringent>>=
+ns <- read.table("./data/networks.summary.119758.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<coo_prediction_modules_summary_spearman_stringent>>=
-
-read.table("./data/modules.summary.119758.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119758.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -1329,169 +991,46 @@ Thresholds based on the Empirical Bayes approach to rank genes and determine if 
 \label{subsec:nodal}
 
 Genetic networks from differentially expressed genes selected by comparing sample cases with nodal and extranodal lymphoma.
-<<nodes_networks_summary_pearson_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119755.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<nodes_networks_summary_pearson_stringent>>=
+ns <- read.table("./data/networks.summary.119755.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 Showing the number of modules per network and the number of genes per module. 
 <<nodes_modules_summary_pearson_stringent>>=
-
-read.table("./data/modules.summary.119755.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119755.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 \subsubsection{Relapsed versus no CNS relapsed cases}
 \label{subsec:relapse}
 Genetic networks from differentially expressed genes selected by comparing sample cases with systemic or no CNS relapse lymphoma.
-<<relapse_networks_summary_pearson_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119754.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<relapse_networks_summary_pearson_stringent>>=
+ns <- read.table("./data/networks.summary.119754.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<relapse_modules_summary_pearson_stringent>>=
-
-read.table("./data/modules.summary.119754.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119754.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 \subsubsection{Lymphoma cases classified by Cell-of-origin subtypes}
 \label{subsec:coo}
 Genetic networks from differentially expressed genes selected by comparing sample cases with cell of origin classification based on ABC or GCB subtypes.
-<<coo_prediction_networks_summary_pearson_stringent,out.width='5in'>>=
-
-read.table("./data/networks.summary.119757.txt", header = TRUE) %>% 
-    ggplot(aes(
-        x = MaxEdgesPerGene,
-        y = NbNodes,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_step(aes(color = Standardization),
-              stat = "identity") +
-    facet_wrap( ~ CorrelationPower,
-               ncol = 2,
-               scales = "free") + 
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of potential connections per gene",
-         y = "Number of genes per Network") +
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank"))
-
-
+<<coo_prediction_networks_summary_pearson_stringent>>=
+ns <- read.table("./data/networks.summary.119757.txt", header = TRUE)
+networks.comparison(ns)
 @ 
 
 
 
 Showing the number of modules per network and the number of genes per module. 
 <<coo_prediction_modules_summary_pearson_stringent>>=
-
-read.table("./data/modules.summary.119757.txt", header = TRUE) %>%
-    ggplot(aes(
-        x = NbModules,
-        y = MaxGenesPerModule,
-        fill = Standardization)) +
-    theme_bw() +
-    geom_point(aes(shape = Standardization)) +
-    scale_color_brewer(type = "qual", palette = 6) +
-    labs(x = "Number of modules per network",
-         y = "Number of genes per module") +
-    facet_wrap( ~ Standardization,
-               ncol = 2,
-               scales = "free") + 
-    theme(legend.position = "top",
-          strip.background = element_rect(linetype = "blank", 
-                                          fill = "white"),
-          panel.border = element_rect(linetype = "blank", 
-                                      fill = NA),
-          panel.grid.major = element_line(linetype = "blank")) +
-    geom_smooth(method = 'loess', size = .5, level = 0.5, alpha=1)
-
+ms <- read.table("./data/modules.summary.119757.txt", header = TRUE)
+modules.comparison(ms)
 @ 
 
 
@@ -1835,15 +1374,15 @@ data.frame(accuracy.pre, kappa) %>%
     geom_rug(aes(color = as.character(model)), 
              sides = "tr",
              show.legend = F) +
-    geom_label_repel(data = subset(model.names, Mean >= .6),
-                    nudge_x = -.2,
-                    force = 5,
+    geom_text_repel(data = subset(model.names, Mean >= .6),
+                    nudge_x = .04,
+                    nudge_y = -.03,
                     segment.color = "grey50",
                     direction = "y",
                     segment.size = 0.1,
                     size = 3) +
-    geom_label_repel(data = subset(model.names, Mean < .6),
-                    nudge_x = .1,
+    geom_text_repel(data = subset(model.names, Mean < .6),
+                    nudge_x = -.1,
                     force = 8,
                     segment.color = "grey50",
                     direction = "y",
@@ -2333,7 +1872,7 @@ dfp %>%
 @ 
 
 
-\subsection{Importance score}
+\subsection{Importance scope of gene contribution}
 \label{subsec:importance}
 Importance scores of each gene is calculated based on that variable significance to the model performance. The score is thus model-based therefore taking into account the estimated correlation between predictors. 
 For each class, a gene is attributed an importance. All counts are scaled to 100. 
@@ -2398,7 +1937,8 @@ p <- imp.model %>%
                y = NOREL,
                label = genes)) +
     geom_smooth(method = 'loess', alpha=1) +
-    geom_point(aes(fill = model), shape=21) +
+    geom_point(aes(fill = model), shape=21,
+               position=position_jitter(width=1.5,height=1.5)) +
     theme_minimal() +
     geom_text_repel(data = subset(model.names, CNS >= 50),
                     nudge_x = 20,
@@ -2408,7 +1948,7 @@ p <- imp.model %>%
                     direction = "y",
                     segment.size = 0.1,
                     size = 2) +
-    xlab("CNS importance metrics") +
+    xlab("CNS importance metrics for SVM polynomial") +
     ylab("NOREL importance metrics") +
     theme(axis.text.y = element_text(size = 6)) +
     theme(legend.position = "none")
@@ -2429,7 +1969,8 @@ p <- imp.model %>%
                y = SYST,
                label = genes)) +
     geom_smooth(method = 'loess', alpha=1) +
-    geom_point(aes(fill = model), shape=21) +
+    geom_point(aes(fill = model), shape=21,
+               position=position_jitter(width=1.5,height=1.5)) +
     theme_minimal() +
     geom_text_repel(data = subset(model.names, CNS >= 50),
                     nudge_x = 20,
@@ -2439,7 +1980,7 @@ p <- imp.model %>%
                     direction = "y",
                     segment.size = 0.1,
                     size = 2) +
-    xlab("CNS importance metrics") +
+    xlab("CNS importance metrics for SVM polynomial") +
     ylab("SYST importance metrics") +
     theme(axis.text.y = element_text(size = 6)) +
     theme(legend.position = "none")
@@ -2461,7 +2002,8 @@ p <- imp.model %>%
                y = NOREL,
                label = genes)) +
     geom_smooth(method = 'loess', alpha=1) +
-    geom_point(aes(fill = model), shape=21) +
+    geom_point(aes(fill = model), shape=21,
+               position=position_jitter(width=1.5,height=1.5)) +
     theme_minimal() +
     geom_text_repel(data = subset(model.names, SYST >= 50),
                     nudge_x = 20,
@@ -2471,12 +2013,402 @@ p <- imp.model %>%
                     direction = "y",
                     segment.size = 0.1,
                     size = 2) +
-    xlab("SYST importance metrics") +
+    xlab("SYST importance metrics for SVM polynomial") +
     ylab("NOREL importance metrics") +
     theme(axis.text.y = element_text(size = 6)) +
     theme(legend.position = "none")
 
     ggMarginal(p, type = "histogram", fill="transparent")
+@ 
+
+
+\subsection{Accuracy measured across pipelines}
+\label{subsec:pipes}
+Different strategies for gene filtering can be used, either at different thresholds for some methods and implementing or not a method can produce a different accuracy. 
+The performance was measured for SVM model with a polynomial kernel.
+Metrics were registered manually after the execution of the whole pipeline (from gene expression, to networks, and finally classification).
+\marginnote{\small\color{blue}$\Lsh$ Final model is wo variance shrinking, wo ctrl, w nets, w L1}[0cm]
+<<accuracy_across_pipelines>>=
+pipelines <- c("variance shrinking +",
+               "Low variance -",
+               "variance shrinking -",
+               "Clusters +",
+               "Clusters -", 
+               "L1 -",
+               "Ctrl -",
+               "Final model")
+perf.estimated <- c(.61, .59, .59, .65, .62, .67, .71, .78)
+dfpe <- data.frame(pipelines = as.factor(pipelines), accuracy = perf.estimated)
+dfpe %>%
+    arrange(accuracy) %>%
+    mutate(pipelines = factor(pipelines, pipelines)) %>%
+    ggplot(aes(x = reorder(pipelines, accuracy),
+               y = accuracy)) +
+    geom_point(stat = "identity",
+               size=3, shape=21,
+               fill = "red") +
+    geom_line(aes(x = as.integer(pipelines))) +
+    xlab("Pipelines tested at different thresholds") +
+    ylab("Performance of model accuracy after multi-class optimization") +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+    
+@ 
+
+
+\subsection{Expression of important genes summarized by RMA scores}
+\label{subsec:expression}
+The expression is based on RMA normalized likelihoods for 230 individuals.
+Genes with importance score above 90.
+<<important_genes>>=
+imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    gather("groups", "importance", 3:5) %>%
+    filter(importance >= 90) %>% 
+    select(genes) %>%
+    unique
+
+@ 
+
+Define function that combines samples, RMA-normalized log2 fold changes, and prognosis classes. Generates plots.
+<<expression_rma>>=
+rma.genes <- read.table("./data/expressions.epochs50", header = TRUE)
+
+gene.by.class <- function(data = rma.genes, y = meta.selected$Groups, geneSel = 1, implev = 90){
+    y.samples <- y
+    dat <- data.frame(y.samples, t(rma.genes))
+
+    sel.genes <- imp.model %>% 
+        mutate(genes = gsub(".TC.*$","",genes)) %>% 
+        gather("groups", "importance", 3:5) %>%
+        filter(importance >= implev) %>% 
+        select(genes) %>%
+        unique
+
+    sel.box <- dat %>%
+        select(contains(sel.genes$genes[geneSel])) %>%
+        mutate(groups = y.samples)
+    colnames(sel.box) <- c("gene", "groups")
+
+    sel.box %>%
+        arrange(gene) %>%
+        ggplot(aes(x = reorder(groups, gene),
+                   y = gene,
+                   color = groups)) +
+        geom_boxplot(outlier.colour = NA, lwd = .4) +
+        geom_jitter(aes(color = factor(groups)),
+                    shape=16,
+                    position=position_jitterdodge(dodge.width=.8),
+                    cex = 2) +
+        scale_color_brewer(palette="Paired") +
+        theme_minimal() +
+        theme(legend.position = "none") +
+        xlab("") + ylab(paste0(sel.genes$genes[geneSel])) +
+        theme(axis.text.x = element_text(vjust = .5,
+                                         angle = 45,
+                                         size = 10))
+}
+@ 
+
+We choose the genes with the top important score, above than 90.
+CXRC4
+<<expression_cxcr4>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 1, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 1, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 1, implev = 90)
+@ 
+
+NFMA1 
+<<expression_nfam1>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 2, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 2, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 2, implev = 90)
+@ 
+
+AC006547.8
+<<expression_ac006547>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 3, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 3, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 3, implev = 90)
+@ 
+
+ALDH1A3
+<<expression_aldh1a3>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 4, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 4, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 4, implev = 90)
+@ 
+
+ITGAE
+<<expression_itgae>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 5, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 5, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 5, implev = 90)
+@ 
+
+TRDJ1
+<<expression_trdj1>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 6, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 6, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 6, implev = 90)
+@ 
+
+ASB7
+<<expression_asb7>>=
+gene.by.class(data = rma.genes, y = meta.selected$Groups, geneSel = 7, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast1, geneSel = 7, implev = 90)
+gene.by.class(data = rma.genes, y = meta.selected$Contrast2, geneSel = 7, implev = 90)
+@ 
+
+
+\subsection{Expression of important genes summarized by limma scores}
+\label{subsec:expression}
+Expression based on log2 fold change for individuals compared based on a relapse contrast.
+<<expression_stacked_relapse>>=
+pvals <- read.table("./data/pvals.lmfit", header = TRUE)
+
+pvals %>% 
+    filter(Contrast == "systemicRelapse") %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    ggplot(aes(x = reorder(genes, LogFC),
+               y = LogFC,
+               fill = factor(Comparison))) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    scale_fill_brewer(palette="Paired") +
+    facet_wrap(~ Comparison, ncol = 1) +
+    theme_minimal() +
+    theme(legend.position = "none") +
+    xlab("") +
+    ylab("Log2 ratios of fold change after RMA quantile normalization (2 is 4-fold up)")
+
+@ 
+
+Expression based on log2 fold change for individuals compared based on involvement of lymphnodes or extra nodal sites.
+<<expression_stacked_nodes>>=
+pvals %>%
+    filter(Contrast == "systemicRelapseNodes") %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    ggplot(aes(x = reorder(genes, LogFC),
+               y = LogFC,
+               fill = factor(Comparison))) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    scale_fill_brewer(palette="Paired") +
+    facet_wrap(~ Comparison, ncol = 2) +
+    theme_minimal() +
+    theme(legend.position = "none") +
+    xlab("") +
+    ylab("Log2 ratios of fold change after RMA quantile normalization (2 is 4-fold up)")
+
+@ 
+
+Expression based on log2 fold change for individuals compared based on involvement of cell-of-origin.
+<<expression_stacked_coo>>=
+pvals %>%
+    filter(Contrast == "systemicRelapseCOOprediction") %>%
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    ggplot(aes(x = reorder(genes, LogFC),
+               y = LogFC,
+               fill = factor(Comparison))) +
+    geom_bar(stat = "identity",
+             position = "dodge") +
+    coord_flip() +
+    scale_fill_brewer(palette="Paired") +
+    facet_wrap(~ Comparison, ncol = 2) +
+    theme_minimal() +
+    theme(legend.position = "none") +
+    xlab("") +
+    ylab("Log2 ratios of fold change after RMA quantile normalization (2 is 4-fold up)")
+
+@ 
+
+Expression based on log2fold and adjusted p-values. Labeled genes have a minimum of 0.1 adjusted p-value. Duplication in gene names is possible, because each contrast uses different comparisons between the groups of individuals.
+<<expresion_scatterplot_fdr>>=
+model.names <- pvals %>%
+    filter(FDRadjPval <= .1)
+
+pvals %>% 
+    ggplot(aes(x = FDRadjPval,
+               y = LogFC,
+               color = Contrast,
+               label = Symbol)) +
+    geom_point(aes(color = Contrast),
+#               shape = as.factor(Contrast)),
+               size = 2) +
+    geom_text_repel(data = subset(model.names, FDRadjPval <= .1),
+                    nudge_x = -.5,
+                    nudge_y = -.1,                    
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2.5) +
+    scale_fill_brewer(palette="Paired") +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    xlab("False discovery rate adjusted p-value") +
+    ylab("Log2 scaling of expression after RMA quantile normalization (2 is 4-fold up)")
+
+@ 
+
+Expression based on log2fold and B-statistics. Labeled genes have a minimum of 0 B-statistic score (ie., 53\% probability of being significant). Duplication in gene names is possible, because each contrast uses different comparisons between the groups of individuals.
+<<expresion_scatterplot_bval>>=
+model.names <- pvals %>%
+    filter(B >= 0)
+
+pvals %>%
+    ggplot(aes(x = B,
+               y = LogFC,
+               color = Contrast,
+               label = Symbol)) +
+    geom_point(aes(color = Contrast),
+#               shape = as.factor(Contrast)),
+               size = 2) +
+    geom_text_repel(data = subset(model.names, B >= 0),
+                    nudge_x = 1.5,
+                    nudge_y = -.1,
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2.5) +
+    scale_fill_brewer(palette="Dark2") +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    xlab("B-statistic at 53% chance of being significant") +
+    ylab("Log2 scaling of expression after RMA quantile normalization (2 is 4-fold up)")
+
+@ 
+
+\subsection{All classifying genes visualized by prognosis classes}
+\label{subsec:heatmaps}
+Without clustering, visualizing the expression of all selected genes used for classification. Log2 FC was scaled to 0-1 for better interpretability.\\
+
+\subsubsection{Top classifier genes}
+\label{subsec:topclass}
+Gene log2 ratios for individuals when grouped according to CNS or systemic relapse, or no relapse.
+<<heatmap_no_clustering_relapse>>=
+data.frame(y=meta.selected$Groups, t(rma.genes)) %>%
+    melt() %>% 
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>% 
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "white", high = "#fdc086") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
+@ 
+
+Gene log2 ratios for individuals when grouped according to lymphnodes or extranodal involvement.
+<<heatmap_no_clustering_nodes>>=
+data.frame(y=meta.selected$Contrast2, t(rma.genes)) %>%
+    melt() %>% 
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>% 
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "white", high = "#beaed4") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
+@ 
+
+Gene log2 ratios for individuals when grouped according to cell-of-origin.
+<<heatmap_no_clustering_coo>>=
+data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
+    melt() %>%
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>%
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "white", high = "#7fc97f") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
+@ 
+
+\subsubsection{Top importance genes}
+\label{subsec:topimportance}
+The selected genes with highest importance score across models, showing log2 ratios for individuals when grouped according to relapse classes.
+<<heatmap_no_clustering_importance_relapse>>=
+sel.genes <- imp.model %>% 
+    mutate(genes = gsub(".TC.*$","",genes)) %>% 
+    gather("groups", "importance", 3:5) %>%
+    filter(importance >= 90) %>% 
+    select(genes) %>%
+    unique
+
+data.frame(y=meta.selected$Groups, t(rma.genes)) %>%
+    melt() %>%
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>%
+    filter(genes == sel.genes$genes) %>% 
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "#ffffcc", high = "#1f78b4") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
+@ 
+
+The selected genes with highest importance score across models, showing log2 ratios for individuals when grouped according to nodal classes.
+<<heatmap_no_clustering_importance_nodes>>=
+data.frame(y=meta.selected$Contrast2, t(rma.genes)) %>%
+    melt() %>%
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>%
+    filter(genes == sel.genes$genes) %>% 
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "#ffffcc", high = "#1f78b4") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
+@ 
+
+
+The selected genes with highest importance score across models, showing log2 ratios for individuals when grouped according to cell-of-origin.
+<<heatmap_no_clustering_importance_coo>>=
+data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
+    melt() %>%
+    ddply( .(variable), transform, rescale = rescale(value)) %>% 
+    mutate(genes = gsub(".TC.*$","",variable)) %>%
+    filter(genes == sel.genes$genes) %>% 
+    ggplot(aes(y, genes)) +
+    geom_tile(aes(fill = rescale), colour = "white") +
+    scale_fill_gradient(low = "#ffffcc", high = "#1f78b4") +
+    xlab("") + ylab("") +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 6)) +
+    theme(axis.text.x = element_text(vjust = .5,
+                                     angle = 45,
+                                     size = 9))
+
 @ 
 
 

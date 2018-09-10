@@ -20,10 +20,25 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
+* Ruby for Jekyll
+Install ruby locally. [[https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/][Github troubleshooting]]
+#+BEGIN_SRC shell
+sudo apt-get install ruby ruby-dev rubygems nodejs
+sudo gem install jekyll jekyll-paginate bundler
+ruby --version
+bundle install
 
+git rm -r --cached vendor/
+#+END_SRC
+
+Use Jekyll
+#+BEGIN_SRC shell
+cd <site>
+bundle exec jekyll serve
+#+END_SRC
 * AMD drivers om Ubuntu 16.04 installation
 [[http://support.amd.com/en-us/kb-articles/Pages/Installation-Instructions-for-amdgpu-Graphics-Stacks.aspx][Download ]]and Install [[https://help.ubuntu.com/community/RadeonDriver#Testing_the_driver][AMD drivers]]. [[https://askubuntu.com/questions/850281/opencl-on-ubuntu-16-04-intel-sandy-bridge-cpu][check]] and [[http://laanwj.github.io/2016/05/06/opencl-ubuntu1604.html][test]]
-drivers. [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][Troubleshooting]] and [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][test]]. 
+drivers. [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][Troubleshooting]] and [[https://www.linkedin.com/pulse/using-newer-amdgpu-driver-ubuntu-1604lts-dennis-mungai/][test]].
 #+BEGIN_SRC shell
 sudo apt update
 sudo apt dist-upgrade
@@ -38,7 +53,7 @@ sudo apt install clinfo
 clinfo
 
 # after installing AMD SDK from https://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
-# in case error occurs of "No rule to make target" 
+# in case error occurs of "No rule to make target"
 cd $AMDAPPSDKROOT/lib/x86_64
 sudo ln -sf sdk/libOpenCL.so.1 libOpenCL.so
 export LD_LIBRARY_PATH=/opt/AMDAPPSDK-3.0/lib/x86_64
@@ -52,7 +67,7 @@ wget https://www2.ati.com/drivers/linux/ubuntu/amdgpu-pro-17.50-511655.tar.xz
 
 # test opencl
 wget http://laanwj.github.io/assets/2016/05/06/opencl-ubuntu1604/devices.c
-gcc devices.c -o test -O2 /usr/lib/x86_64-linux-gnu/libOpenCL.so.1 
+gcc devices.c -o test -O2 /usr/lib/x86_64-linux-gnu/libOpenCL.so.1
 ./test
 
 export GPU_FORCE_64BIT_PTR=1
@@ -114,7 +129,7 @@ git --version
 - in emacs Mx customize-mode RET
 - add in Markdown command: ~/Markdown_1.0.1/Markdown.pl
 ** Themes
-[[http://pawelbx.github.io/emacs-theme-gallery/][gallery]] 
+[[http://pawelbx.github.io/emacs-theme-gallery/][gallery]]
 * EMACS keybindings                              :SYSADMIN:LATEX:EMACS:TABLE:
 :PROPERTIES:
 :ID:       2b013ae7-a2c8-4972-a0e8-b7258eece7dd
@@ -285,7 +300,7 @@ Some useful packages for data manipulation and wrangling, [[http://www.computerw
 # only to install rJava and import excel sheets
 # an alternative is to use gdata package
 sudo R CMD javareconf
-sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev 
+sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
 install.packages('rJava')
 
 pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
@@ -389,12 +404,12 @@ lsos <- function(..., n=100) {
 
 Add also the snippet to disable workspace savings.
 #+BEGIN_SRC R
-utils::assignInNamespace("q", 
+utils::assignInNamespace("q",
    function(save = "no", status = 0, runLast = TRUE) {
      .Internal(quit(save, status, runLast))
-   }, "base")    
+   }, "base")
 
-utils::assignInNamespace("quit", 
+utils::assignInNamespace("quit",
    function(save = "no", status = 0, runLast = TRUE) {
      .Internal(quit(save, status, runLast))
    }, "base")
@@ -417,24 +432,24 @@ update.packages(checkBuilt=TRUE, ask=FALSE)
 update.packages(lib.loc = "/usr/local/lib/R/site-library")
 update.packages(lib.loc = "/usr/lib64/RRO-3.2.1/R-3.2.1/lib/R/site-library")
 #+END_SRC
-*old* 
+*old*
 #+BEGIN_SRC shell
 sudo apt-get install xorg-dev; libX11-dev; r-base-dev; libreadline-dev; g++
 #+END_SRC
 ** ess_weave
 #+BEGIN_SRC R
-.ess_weave <- function(command, file, encoding = NULL) 
+.ess_weave <- function(command, file, encoding = NULL)
 {
     cmd_symb <- substitute(command)
-    if (grepl("knit|purl", deparse(cmd_symb))) 
+    if (grepl("knit|purl", deparse(cmd_symb)))
         require(knitr)
     od <- getwd()
     on.exit(setwd(od))
     setwd(dirname(file))
     frame <- parent.frame()
-    if (is.null(encoding)) 
+    if (is.null(encoding))
         eval(bquote(.(cmd_symb)(.(file))), envir = frame)
-    else eval(bquote(.(cmd_symb)(.(file), encoding = .(encoding))), 
+    else eval(bquote(.(cmd_symb)(.(file), encoding = .(encoding))),
         envir = frame)
 }
 #+END_SRC
@@ -478,7 +493,7 @@ sudo apt-get install r-base r-base-dev
 - If I have a problem installing it update the r-base-dev
 ** R guide for code writing
 [[http://google-styleguide.googlecode.com/svn/trunk/Rguide.xml][GOOGLE
-instructions]] 
+instructions]]
 ** installed packages
 #+BEGIN_SRC R
 ip = installed.packages(priority = "high")
@@ -577,10 +592,10 @@ ip[, 2]
 |                                                             |                                            |
 * Statistical learning (Summary)
 A subfield of statistics. It refers to a set of approaches for estimating
-f(X)+E=Y. (E=error of the residuals of the least squares) 
+f(X)+E=Y. (E=error of the residuals of the least squares)
 ** Supervised and unsupervised modeling and prediction
 Unsupervised learning (ch10) == clustering of groups in order to identify
-possible property of interest with respect to each group 
+possible property of interest with respect to each group
 *** semi supervised learning paradigm
 the predictors are easily collected. however the response are hard to collect
 *** degrees of freedom
@@ -601,8 +616,8 @@ when the model is picking on patterns caused by random chance rather than by tru
 + RSS is small when the the predicted responses are closer to the true response (MSE= 1/n * RSS ; RSS= y°-y hat)
 + is an estimate of the standard error of the deviation of e (from Y=f(x)+e). MSE=RSS/n. RSS= Somme(observed-predicted)responses
 + R2 = provides an absolute measure of lack of fit of the model. R2=1-RSS/TSS
-+ TSS = sum(yi - y)^2 ; where yi= i reposne and y = average response  
-+ r=cor(X,Y) ; R2=r2 ; correlation r quantifies the association between a single pair of variables, R2 is better suited for multiple variables. 
++ TSS = sum(yi - y)^2 ; where yi= i reposne and y = average response
++ r=cor(X,Y) ; R2=r2 ; correlation r quantifies the association between a single pair of variables, R2 is better suited for multiple variables.
 + A high R2 indicates that the model explains a large portion of the variance in the response variable.
 + More variables are added to the model, bigger R2 will get, even if those variables are weakly associated. by adding another variable to the least squares equations we more accurately fit the training data not necessary the testing data.
 *** The F statistics
@@ -633,7 +648,7 @@ smaller bias + higher variance (high number of n)
 less variance than LOOCV
 *** Bootstrap
 + the block bootstrap (in a timeseries scenario where the observations are correlated through time) where blocks are independent
-+ in general, the observartions are independant 
++ in general, the observartions are independant
 ** Model selection
 *** Subset selection
 + or feature selection, variable selection
@@ -685,7 +700,7 @@ The goal is to reduce the variance (trade-off w/ bias) for better prediction
 + same as ridge regression but can do variable selection == which generates sparse models
 + estimated coefficients can be shrunk toward zero when lambda is sufficienty high
 + produces simple and interpretable models (than ridge regression due to feature extraction)
-+ Find sparse models (subsets) to explain the response variable	
++ Find sparse models (subsets) to explain the response variable
 *** Dimension reduction
 + The goal is to reduce the variance too
 + a class of approached that transform the predictions (linear combinations of the original features) and then fit a least squares model using these new transformed variabes
@@ -791,8 +806,8 @@ perl install-tl
 - configure size, follow the instructions
 - Add to ~/.profile
 #+BEGIN_SRC shell
-PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH; export PATH 
-MANPATH=/usr/local/texlive/2014/texmf-dist/doc/man:$MANPATH; export MANPATH 
+PATH=/usr/local/texlive/2014/bin/x86_64-linux:$PATH; export PATH
+MANPATH=/usr/local/texlive/2014/texmf-dist/doc/man:$MANPATH; export MANPATH
 INFOPATH=/usr/local/texlive/2014/texmf-dist/doc/info:$INFOPATH; export INFOPATH
 #+END_SRC
 ** Create a dvi file
@@ -818,9 +833,9 @@ xdvi fileName.dvi
 sudo texhash	refresh/rebuild the list of file name database after missing *.sty
 latex sample.tex
 latex sampleref.bib
-#+END_SRC    
+#+END_SRC
 * ADDITIONAL LINUX APPS                                          :Table:HOLD:
-#+CAPTION: Theming linux 
+#+CAPTION: Theming linux
 | Function              | Command                                                 | Notes                                      |
 |-----------------------+---------------------------------------------------------+--------------------------------------------|
 | datascience soft      |                                                         | Mega Imagemagick clustalX2 Cytoscape       |
@@ -1071,7 +1086,7 @@ Declaring classes inside attributes.
 |                   | "rotate"                      |
 |                   |                               |
 
-  
+
 ** CSS
 Create a hover effect (coloring) on any element object.
 #+BEGIN_SRC javascript
@@ -1082,7 +1097,7 @@ Create a hover effect (coloring) on any element object.
             -webkit-transition: all 0.3s;
             transition: all 0.3s;
         }
-        
+
         rect:hover {
             fill: orange;
         }
@@ -1154,7 +1169,7 @@ Install all of Apache, PHP, PHPmyadmin, MySQL, and Wordpress on localhost and ac
 13. Add MySQL user
     - in console =CREATE USER 'jeffrey'@'localhost' IDENTIFIED BY 'mypass';=
     - Better to add user with all priviliges from PHPmyadmin
-14. 
+14.
 
 
 
@@ -1216,7 +1231,7 @@ emacs -nw ~/.config.d/mc/ini
 #+END_SRC
 Then copy =elite_commander.ini= to
 #+BEGIN_SRC shell
-sudo mv ~/Downloads/elite_commander.ini /usr/share/mc/skins/ 
+sudo mv ~/Downloads/elite_commander.ini /usr/share/mc/skins/
 #+END_SRC
 * INSTALL FLASH AND MP3 PLUGINS
 #+BEGIN_SRC shell
@@ -1247,7 +1262,7 @@ sudo sed -i 's/NoDisplay=true/NoDisplay=false/g' /etc/xdg/autostart/*.desktop
 wget ftp://ftp.ncbi.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.6.0+-x64-linux.tar.gz
 #+END_SRC
 
-Follow these instructions [[http://www.ncbi.nlm.nih.gov/books/NBK52640/][here]]. Write the export lines in $HOME .profile 
+Follow these instructions [[http://www.ncbi.nlm.nih.gov/books/NBK52640/][here]]. Write the export lines in $HOME .profile
 #+BEGIN_SRC shell
 PATH=/home/neo/data/blast/bin:$PATH; export PATH
 BLASTDB=/home/neo/data/blast/db:$BLASTDB; export BLASTDB
@@ -1334,7 +1349,7 @@ $ blastn -query XX.fa -db XX.00 -task blastn -dust no -outfmt "7 qseqid sseqid e
 ** Example 3
 >> download the relevant databases automatically using a keyword
 $ update_blastdb.pl nr
->> download the taxonomy database 
+>> download the taxonomy database
 $ update_blastdb.pl taxdb
 ** Sequence filtering [[http://www.ncbi.nlm.nih.gov/books/NBK1763/#CmdLineAppsManual.Sequence_filtering_app][applications]]
 >> segmasker (mask low complexity regions of protein)
@@ -1358,7 +1373,7 @@ $ blast_formatter -rid XXX -out XXX.tab outfmt 7
 >> format into XML
 $ blast_formatter -rid XXX -out XXX.xml outfmt5
 
-#+CAPTION: Search tasks http://goo.gl/4fF45 
+#+CAPTION: Search tasks http://goo.gl/4fF45
 | program | task name    | description                                   |
 |---------+--------------+-----------------------------------------------|
 | blastp  | blastp       | traditional                                   |
@@ -1398,7 +1413,7 @@ sudo dpkg -i google-chrome-stable_current_amd64.deb
 dpkg --get-selections
 dpkg --get-selections > /backup/installed-software.log
 #+END_SRC
-Restore installed software 
+Restore installed software
 #+BEGIN_SRC shell
 dpkg --set-selections < /backup/finstalled-software.log
 dselect
@@ -1709,7 +1724,7 @@ reboot
 
 To get access to root after creating a user, type =root= as a username.
 #+BEGIN_SRC shell
-exit 
+exit
 root
 #+END_SRC
 
@@ -1732,7 +1747,7 @@ pacman -U yaourt*
 #+END_SRC
 
 If installing arch on a SSD drive, see these recommendations for improving the
-performance of the machine [[https://wiki.archlinux.org/index.php/Solid_State_Drives#Tips_for_Maximizing_SSD_Performance][here]] 
+performance of the machine [[https://wiki.archlinux.org/index.php/Solid_State_Drives#Tips_for_Maximizing_SSD_Performance][here]]
 
 #+CAPTION: Postinstallation ([[https://wiki.archlinux.org/index.php/General_recommendations][Recommendations]])
 | Function        | Application                                                      | Command                            | Link                           |
@@ -1786,13 +1801,13 @@ mkdir -p ~/.config/awesome/
     cp /etc/xdg/awesome/rc.lua ~/.config/awesome/
 #+END_SRC
 autorun at startup
-add to rc.lua 
+add to rc.lua
 #+BEGIN_SRC shell
 function run_once(prg)
       awful.util.spawn_with_shell("pgrep -u $USER -x " .. prg .. " || (" .. prg .. ")")
     end
     run_once("urxvt")
-#+END_SRC    
+#+END_SRC
 
 * CHANGE BACKGROUND
 Install =feh= and set it up for an autostart. There is also =--bg-center= and
@@ -1815,7 +1830,7 @@ If I have to uninstall and older version of npm
 sudo apt-get purge nodejs npm
 #+END_SRC
 
-Then install an up to date version of npm 
+Then install an up to date version of npm
 #+BEGIN_SRC shell
 curl -sL https://deb.nodesource.com/setup | sudo bash -
 sudo apt-get install -y nodejs
