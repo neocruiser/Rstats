@@ -2,10 +2,17 @@
 \include{canevas_config}
 
 \begin{document}
-\author{Sleiman Bassim, PhD}
-\title{Descriptive analysis}
-\maketitle
-\begin{linenumbers}
+{
+  \centering
+  {\bf \large Summary statistics: Lymphoma predictive modeling\\}
+  {\bf Sleiman Bassim, PhD\\}
+  \medskip
+  {Project started in December 2017\\}
+  {Original version published in August 2018\\}
+  {Last updated on \today}
+
+}
+%\maketitle
 <<setup, include=FALSE, cache=FALSE>>=
 # set global chunk options
 opts_chunk$set(dev="postscript",
@@ -29,24 +36,14 @@ options(formatR.arrow=TRUE,
 @ 
 
 
-\maketitle
+%\maketitle
 \tableofcontents
 \pagebreak
 
-
+\begin{linenumbers}
 \noindent
-\marginnote{\small\color{blue}$\Lsh$ Project started Dec 10 2017, updated \today}[.1cm]
-Loaded functions.
-<<loading,results='hide'>>=
-#source("/media/Data/Dropbox/humanR/01funcs.R")
-rm(list=ls())
-#setwd("/media/Data/Dropbox/humanR/PD/")
-#setwd("~/Dropbox/humanR/PD/")
-###load("PD.Rdata", .GlobalEnv)
-#lsos(pat="")
-@ 
 
-Loaded packages.
+Loading packages.
 <<packages,results='hide'>>=
 pkgs <- c('gdata','lattice','latticeExtra',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
