@@ -20,6 +20,30 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
+
+* Python and anaconda
+Installation and virtual environment
+#+BEGIN_SRC shell
+## python 2.7
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+## python 3.7
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+bash $Miniconda.sh
+source .bashrc
+
+conda create --name $virt_env python=3
+source activate $virt_env
+conda install $packages - $user
+source deactivate
+
+## find matplotlib configuration file
+python
+>>> import matplotlib as mpl
+>>> mpl.get_configdir()
+## get a sample config file https://matplotlib.org/_static/matplotlibrc
+wget https://matplotlib.org/_static/matplotlibrc
+#+END_SRC
 * Ruby for Jekyll
 Install ruby locally. [[https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/][Github troubleshooting]]
 #+BEGIN_SRC shell
@@ -328,6 +352,16 @@ devtools::install_github("timelyportfolio/d3r")
 devtools::install_github("timelyportfolio/sunburstR")
 #+END_SRC
 
+Use gganimate, for gif and animation. First install GIF maker
+#+BEGIN_SRC shell
+sudo apt-get install cargo
+#+END_SRC
+Install then gifski and gganimate
+#+BEGIN_SRC R
+install.packages("gifski")
+devtools::install_github('thomasp85/gganimate')
+#+END_SRC
+
 Github packages
 #+BEGIN_SRC R
 devtools::install_github("vqv/ggbiplot")
@@ -340,6 +374,8 @@ biocLite('GenABEL')
 biocLite("topGO")
 biocLite("clusterProfiler")
 #+END_SRC
+
+#+RESULTS:
 
 Install packages for adjacency matrix (co-expression analysis) [[https://github.com/iscb-dc-rsg/2016-summer-workshop/blob/master/3B-Hughitt-RNASeq-Coex-Network-Analysis/tutorial/README.md#construct-adjacency-matrix][GitHub]]
 #+BEGIN_SRC R

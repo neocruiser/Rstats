@@ -71,6 +71,16 @@ contact me and I will provide you with the data.
    - Hyperparameter tuning
    - Over 20 machine learning models
    - Deep learning (Mxnet, DNN, Keras)
+8. [[https://github.com/neocruiser/pipelines/blob/master/calling/exome_calling.v2.pyclone.h4h.pbs][Variant calling & classification]] for tumor heterogeneity analysis in bash and python
+   - Exome QC (hg19)
+   - Copy number calling (CNVs)
+   - Variant calling (SNVs, indels) and quality recalibration (Bcftools, Varscan2, GATK)
+   - Variant annotation (ClinVar, dbSNP, Exac, Cosmic)
+   - Data reformatting for pattern recognition procedures
+   - Variant multi-selection based on scaled-down filters
+   - Variant thresholding (mutli-metrics, function)
+   - Data mining and multi-metric summary reporting
+   - Clonal evolution ([[https://bitbucket.org/aroth85/pyclone/][PyClone]])
 
 * Background
 ** Significance and impact on the field

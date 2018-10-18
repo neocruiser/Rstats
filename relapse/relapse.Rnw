@@ -2059,23 +2059,77 @@ dfpe %>%
 The expression is based on RMA normalized likelihoods for 230 individuals.
 Genes with importance score above 90.
 <<important_genes>>=
-imp.model %>% 
+rma.genes <- read.table("./data/expressions.epochs50", header = TRUE)
+sel.genes <- imp.model %>% 
     mutate(genes = gsub(".TC.*$","",genes)) %>% 
     gather("groups", "importance", 3:5) %>%
     filter(importance >= 90) %>% 
     select(genes) %>%
     unique
 
+sel.genes
+@ 
+
+
+Create a forest plot of all important genes
+<<forestplot_function>>=
+gene.by.forest <- function(datx = rma.genes, y = meta.selected$Groups){
+  dat <- data.frame(y, t(datx))
+  selx <- NULL
+  for(i in 1:nrow(sel.genes) ){
+    sels <- dat %>%
+    select(contains(sel.genes$genes[i])) %>%
+    mutate(gene = sel.genes$genes[i]) %>%
+    mutate(groups = y)
+    colnames(sels) <- c("expression", "gene", "groups")
+
+    selx <- rbind(selx, sels)
+  }
+  sel.se <- summary_SE(selx, measurevar = "expression", groupvars = c("gene","groups"))
+
+  sel.se %>%
+      ggplot(aes(x = reorder(gene, expression),
+                 y = expression, 
+                 ymin = c(expression-se), 
+                 ymax=c(expression+se))) +
+      xlab("") + 
+      ylab("Normalized gene expression (RMA)")+
+      geom_errorbar(aes(ymin=expression-se,
+                        ymax=expression+se),
+                    width=0,
+                    position=position_dodge(.9)) +
+      geom_pointrange(aes(col=groups), 
+                      size = 0.5, shape = 15)+
+      coord_flip() +
+      theme_minimal() +
+      theme(legend.position = "top")
+  
+}
+@ 
+
+
+Comparing important genes by patient relapse prognosis.
+<<forestplot_cns_important_genes>>=
+gene.by.forest(datx = rma.genes, y = meta.selected$Groups)
+@ 
+
+Comparing important genes by patient cell-of-origin prognosis.
+<<forestplot_coo_important_genes>>=
+gene.by.forest(datx = rma.genes, y = meta.selected$Contrast1)
+@ 
+
+Comparing important genes by patient nodal involvement prognosis.
+<<forestplot_nodes_important_genes>>=
+gene.by.forest(datx = rma.genes, y = meta.selected$Contrast2)
 @ 
 
 Define function that combines samples, RMA-normalized log2 fold changes, and prognosis classes. Generates plots.
 <<expression_rma>>=
-rma.genes <- read.table("./data/expressions.epochs50", header = TRUE)
-
 gene.by.class <- function(data = rma.genes, y = meta.selected$Groups, geneSel = 1, implev = 90){
     y.samples <- y
-    dat <- data.frame(y.samples, t(rma.genes))
+    dat <- data.frame(y.samples, t(data))
 
+    ## get top genes
     sel.genes <- imp.model %>% 
         mutate(genes = gsub(".TC.*$","",genes)) %>% 
         gather("groups", "importance", 3:5) %>%
@@ -2083,6 +2137,7 @@ gene.by.class <- function(data = rma.genes, y = meta.selected$Groups, geneSel = 
         select(genes) %>%
         unique
 
+    ## get expression of each gene for each class
     sel.box <- dat %>%
         select(contains(sel.genes$genes[geneSel])) %>%
         mutate(groups = y.samples)
@@ -2409,6 +2464,11 @@ data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
 @ 
 
 
+
+
+
+
+
 \subsection{Version of machine learning models on high performance clusters}
 \label{subsec:version}
 \marginnote{\small\color{blue}$\Lsh$ Version of R packages used in the machine learning pipeline}[0cm]
@@ -2485,6 +2545,62 @@ data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
 @
 
 
+\section{Clonal evolution}
+\label{sec:clonal}
+\subsection{Distribution of allele frequency of variants}
+\label{subsec:vaf}
+Exome sequencing of tumor samples generated several libraries of reads.
+Allele frequency distribution was measured by calling variants on the reads files.
+These variants were thresholded with P-value at 10e-25, depth of coverage by point mutation at 50, variant allele frequency at 1\% (discard below 1\%), and pyclone normal-minor-major copy numbers at 2-0-2 with major-copy-number sets. 
+Also, some variants were removed based on their known locations from VarScan annotations.
+<<vaf_pval, out.width='5in'>>=
+snv.post.filter <- read.table("./data/output.10_bash.summary.snv.postFilter_VAFpval.txt", header = T, fill = TRUE)
+
+model.names <- snv.post.filter %>%
+    mutate(pval = -log10(pval)) %>%    
+    filter(vaf >= 35) %>%
+    filter(vaf <= 85)
+
+p <- snv.post.filter %>%
+    mutate(pval = -log10(pval)) %>%
+    ggplot(aes(x = vaf,
+               y = pval,
+               label = snv,
+               fill = sample)) + 
+    geom_point(size = 1, shape = 21) +
+    geom_label_repel(data = subset(model.names, pval <= 0),
+                    nudge_x = 1.5,
+                    nudge_y = 200,
+                    force = 10,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2) +
+    scale_fill_brewer(palette="Dark2") +
+    theme_minimal() +
+    xlab("Variant allele frequency (varscan2)") +
+    ylab("-log10(P-value)") +
+    theme(legend.position = "top")
+ggMarginal(p, type = "histogram", fill="transparent")
+
+@ 
+
+Variants and their distribution based on their known locations obtained from VarScan annotations.
+<<variant_varscan_functions, out.width='5in'>>=
+read.table("./data/output.8_bash.summary.snv_functions.txt", header = TRUE) %>% 
+    mutate(fct = gsub("_variant","",fct)) %>%
+    mutate(fct = gsub("_"," ",fct)) %>%    
+    ggplot(aes(x = reorder(fct, count),
+               y = count,
+               color = factor(sample))) +
+    geom_point(size = 3, shape = "|") +
+    coord_flip() +
+    scale_color_brewer(palette="Dark2") +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    xlab("") +
+    ylab("Variant function allocation (ClinVar 2018)")
+@ 
 
 
 \section{System information for this report}
