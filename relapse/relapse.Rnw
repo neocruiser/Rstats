@@ -45,7 +45,7 @@ options(formatR.arrow=TRUE,
 
 Loading packages.
 <<packages,results='hide'>>=
-pkgs <- c('gdata','lattice','latticeExtra',
+pkgs <- c('gdata','lattice','latticeExtra', 'gplots',
           'ggplot2', 'dplyr', 'tidyr', 'RColorBrewer','igraph',
           'DescTools', 'scales', 'brotools', 'Hmisc', 'finalfit',
           'plyr', 'paletteer', 'ggrepel', 'ggExtra', 'ggpubr',
@@ -2474,35 +2474,35 @@ data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
 \marginnote{\small\color{blue}$\Lsh$ Version of R packages used in the machine learning pipeline}[0cm]
 
 <<>>=
-#######################################################################################
-## R version 3.5.0 (2018-04-23)                                                      ##
-## Platform: x86_64-pc-linux-gnu (64-bit)                                            ##
-## Running under: Ubuntu 16.04.4 LTS                                                 ##
-##                                                                                   ##
-## Matrix products: default                                                          ##
-## BLAS: /usr/lib/openblas-base/libblas.so.3                                         ##
-## LAPACK: /usr/lib/libopenblasp-r0.2.18.so                                          ##
-##                                                                                   ##
-## locale:                                                                           ##
-##  [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C                                      ##
-##  [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8                            ##
-##  [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8                           ##
-##  [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                                         ##
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C                                    ##
-## [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C                               ##
-##                                                                                   ##
-## attached base packages:                                                           ##
-## [1] stats     graphics  grDevices utils     datasets  methods   base              ##
-##                                                                                   ##
-## other attached packages:                                                          ##
-##  [1] pls_2.6-0          bindrcpp_0.2.2     plot3D_1.1.1       plyr_1.8.4          ##
-##  [5] tidyr_0.8.1        reshape2_1.4.3     vegan_2.5-2        permute_0.9-4       ##
-##  [9] earth_4.6.3        plotmo_3.4.0       TeachingDemos_2.10 plotrix_3.7-2       ##
-## [13] ROCR_1.0-7         doSNOW_1.0.16      snow_0.4-2         iterators_1.0.9     ##
-## [17] caret_6.0-80       ggplot2_3.0.0      lattice_0.20-35    glmnet_2.0-16       ##
-## [21] foreach_1.4.4      Matrix_1.2-14      dplyr_0.7.6        gplots_3.0.1        ##
-## [25] pvclust_2.0-0      RColorBrewer_1.1-2                                        ##
-#######################################################################################
+################################################################################
+## R version 3.5.0 (2018-04-23)                                                 
+## Platform: x86_64-pc-linux-gnu (64-bit)                                       
+## Running under: Ubuntu 16.04.4 LTS                                            
+##                                                                              
+## Matrix products: default                                                     
+## BLAS: /usr/lib/openblas-base/libblas.so.3                                    
+## LAPACK: /usr/lib/libopenblasp-r0.2.18.so                                     
+##                                                                              
+## locale:                                                                      
+##  [1] LC_CTYPE=en_CA.UTF-8       LC_NUMERIC=C                                 
+##  [3] LC_TIME=en_CA.UTF-8        LC_COLLATE=en_CA.UTF-8                       
+##  [5] LC_MONETARY=en_CA.UTF-8    LC_MESSAGES=en_CA.UTF-8                      
+##  [7] LC_PAPER=en_CA.UTF-8       LC_NAME=C                                    
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C                               
+## [11] LC_MEASUREMENT=en_CA.UTF-8 LC_IDENTIFICATION=C                          
+##                                                                              
+## attached base packages:                                                      
+## [1] stats     graphics  grDevices utils     datasets  methods   base         
+##                                                                              
+## other attached packages:                                                     
+##  [1] pls_2.6-0          bindrcpp_0.2.2     plot3D_1.1.1       plyr_1.8.4     
+##  [5] tidyr_0.8.1        reshape2_1.4.3     vegan_2.5-2        permute_0.9-4  
+##  [9] earth_4.6.3        plotmo_3.4.0       TeachingDemos_2.10 plotrix_3.7-2  
+## [13] ROCR_1.0-7         doSNOW_1.0.16      snow_0.4-2         iterators_1.0.9
+## [17] caret_6.0-80       ggplot2_3.0.0      lattice_0.20-35    glmnet_2.0-16  
+## [21] foreach_1.4.4      Matrix_1.2-14      dplyr_0.7.6        gplots_3.0.1   
+## [25] pvclust_2.0-0      RColorBrewer_1.1-2                                   
+################################################################################
 @ 
 
 
@@ -2547,14 +2547,30 @@ data.frame(y=meta.selected$Contrast1, t(rma.genes)) %>%
 
 \section{Clonal evolution}
 \label{sec:clonal}
-\subsection{Distribution of allele frequency of variants}
+The allele frequency can be indicative if the mutation called, whether it is of germline or somatic origin.
+Worth investigating if the call is either 100\% or 50\%.
+That is all reads show the variant (100\%), it's very likely a germline call. 
+Unless the sample is 100\% tumor cells and all tumor cells have the mutation.
+If it is a somatic mutation and the samples are of clinical nature, then a normal cell infiltration is inevitable.
+The allele frequency for these mutations will be at 30-40\% (\href{https://www.sciencedirect.com/science/article/pii/S0092867412005272}{Zainal 2012}).
+\begin{itemize}
+\item Flag known somatic mutations using the COSMIC database
+\item Flag known germline mutations using the dbSNP database
+\item Filtering by allele frequency
+\item Distribution of read mismatches (using bamtools XM:O and XT:U, as in unique)
+\item \href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3290792/table/T1/}{Koboldt 2012} authors of Varscan2 recommended passed somatic mutations
+\item Use the \href{http://www.internationalgenome.org/data}{1000 Genomes project}
+\end{itemize}
+
+\subsection{Distribution of variants by estimated allele frequency}
 \label{subsec:vaf}
 Exome sequencing of tumor samples generated several libraries of reads.
 Allele frequency distribution was measured by calling variants on the reads files.
 These variants were thresholded with P-value at 10e-25, depth of coverage by point mutation at 50, variant allele frequency at 1\% (discard below 1\%), and pyclone normal-minor-major copy numbers at 2-0-2 with major-copy-number sets. 
 Also, some variants were removed based on their known locations from VarScan annotations.
 <<vaf_pval, out.width='5in'>>=
-snv.post.filter <- read.table("./data/output.10_bash.summary.snv.postFilter_VAFpval.txt", header = T, fill = TRUE)
+snv.post.filter <- read.table("./data/pyclone/output.10_bash.summary.snv.postFilter_VAFpval.varscan2.txt", 
+                              header = T, fill = TRUE)
 
 model.names <- snv.post.filter %>%
     mutate(pval = -log10(pval)) %>%    
@@ -2578,14 +2594,479 @@ p <- snv.post.filter %>%
                     size = 2) +
     scale_fill_brewer(palette="Dark2") +
     theme_minimal() +
+    scale_x_continuous(breaks = pretty(snv.post.filter$vaf, n = 10)) +
     xlab("Variant allele frequency (varscan2)") +
     ylab("-log10(P-value)") +
     theme(legend.position = "top")
-ggMarginal(p, type = "histogram", fill="transparent")
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = 1, fill = "grey"),
+           yparams = list(binwidth = 6, fill = "grey"))
 
 @ 
 
-Variants and their distribution based on their known locations obtained from VarScan annotations.
+
+
+
+\subsection{Allele frequencies and variants using different callers}
+\label{subsec:freq}
+\subsubsection{Individual 1}
+\label{subsec:ind1}
+
+Varscan was used to call for variants against the hg19 GRCh37 human genome. 
+The amount of variants was reduced based on read depth per site called. 
+Stringency was relaxed and the depth was set between 40 and 400 for all individuals.
+<<vaf_ind1_varscan>>=
+varscan_af <- read.table("./data/pyclone/reduced_variants/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_1.61960-61961.txt", header = T, fill = TRUE)
+
+plot.af <- function(df, pval){
+    p <- df %>%
+    filter(s1_pval <= pval) %>%
+    filter(s2_pval <= pval) %>%
+    ggplot(aes(x = s1_freq,
+               y = s2_freq)) + 
+    geom_point(size = 1.5, fill = "chocolate", shape = 21) +
+    xlab("Variant allele frequency (T1) for a total of 2000 variants") +
+    ylab("Variant allele frequency (T2) for a total of 2000 variants") +
+    theme(legend.position = "top") +
+    theme_minimal()
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = 1, fill = "grey"),
+           yparams = list(binwidth = 2, fill = "grey"))
+}
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+
+Same as above and with logarithmic scaling.
+<<vaf_logged_ind1_varscan>>=
+plot.af.logged <- function(df, pval){
+    p <- df %>%
+    filter(s1_pval <= pval) %>%
+    filter(s2_pval <= pval) %>%
+    ggplot(aes(x = s1_freq,
+               y = s2_freq)) + 
+    geom_point(size = 1.5, fill = "chocolate", shape = 21) +
+    xlab("Variant allele frequency (T1, N=2000 variants)") +
+    ylab("Variant allele frequency (T2, N=2000 variants)") +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x))) +
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x))) +
+    theme(legend.position = "top") +
+    theme_minimal()
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = .01, fill = "grey"),
+           yparams = list(binwidth = .02, fill = "grey"))
+}
+
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind1_t1_varscan>>=
+plot.pval.t1 <- function(df){
+    p <- varscan_af %>%
+        mutate(s1_pval = -log10(s1_pval)) %>%
+        ggplot(aes(x = s1_freq,
+                   y = s1_pval)) + 
+        geom_point(size = 2, fill = "forestgreen", shape = 21) +
+        xlab("Variant allele frequency (T1, N=2000 variants)") +
+        ylab("Allele p-value (-log10)") +
+        theme(legend.position = "top") +
+        theme_minimal()
+    ggMarginal(p, type = "histogram", fill="transparent",
+               color = "white",
+               xparams = list(binwidth = 1, fill = "grey"),
+               yparams = list(binwidth = 1.5, fill = "grey"))
+}
+
+plot.pval.t1(df = varscan_af)
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind1_t2_varscan>>=
+plot.pval.t2 <- function(df){
+    p <- varscan_af %>%
+        mutate(s2_pval = -log10(s2_pval)) %>%        
+        ggplot(aes(x = s2_freq,
+                   y = s2_pval)) + 
+        geom_point(size = 2, fill = "forestgreen", shape = 21) +
+        xlab("Variant allele frequency (T2, N=2000 variants)") +
+        ylab("Allele p-value (-log10)") +
+        theme(legend.position = "top") +
+        theme_minimal()
+    ggMarginal(p, type = "histogram", fill="transparent",
+               color = "white",
+               xparams = list(binwidth = 1, fill = "grey"),
+               yparams = list(binwidth = 1.5, fill = "grey"))
+}
+plot.pval.t2(df = varscan_af)
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind1_varscan>>=
+varscan_af <- read.table("./data/pyclone/stringent/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_1.61960-61961.txt", header = T, fill = TRUE)
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind1_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+
+
+Bcftools was also used to call for variants against the hg19 GRCh37 human genome.
+\marginnote{\small\color{blue}$\Lsh$ Varscan and bcftools calls for a total of 2000 variants}[0cm]
+<<vaf_ind1_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_1.61960-61961.txt", header = T, fill = T)
+
+plot.baf <- function(df){
+    p <- bcftools_af %>%
+    mutate(af1 = c(s1_ad/dp)) %>%
+    mutate(af2 = c(s2_ad/dp)) %>% 
+    ggplot(aes(x = af1,
+               y = af2)) + 
+    geom_point(size = 2, fill = "chocolate", shape = 21) +
+    scale_y_continuous(limits = c(0,1)) +    
+    scale_x_continuous(limits = c(0,1)) +
+    xlab("Variant allele frequency (T1, N=2000 variants)") +
+    ylab("Variant allele frequency (T2, N=2000 variants)") +
+    theme(legend.position = "top") +
+    theme_minimal()
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = .01, fill = "grey"),
+           yparams = list(binwidth = .02, fill = "grey"))
+}
+
+plot.baf(df = bcftools_af)
+
+@ 
+
+Same as above with logarithmic scaling.
+<<vaf_logged_ind1_bcftools>>=
+plot.baf.logged <- function(df){
+    p <- bcftools_af %>%
+    mutate(af1 = c(s1_ad/dp)) %>%
+    mutate(af2 = c(s2_ad/dp)) %>% 
+    ggplot(aes(x = af1,
+               y = af2)) + 
+    geom_point(size = 1.5, fill = "chocolate", shape = 21) +
+    scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x))) +
+    scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
+                  labels = trans_format("log10", math_format(10^.x))) +
+    xlab("Variant allele frequency (T1, N=2000 variants)") +
+    ylab("Variant allele frequency (T2, N=2000 variants)") +
+    theme(legend.position = "top") +
+    theme_minimal()
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = .01, fill = "grey"),
+           yparams = list(binwidth = .02, fill = "grey"))
+}
+
+plot.baf.logged(df = bcftools_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind1_bcftools>>=
+bcftools_af <- read.table("./data/pyclone/stringent/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_1.61960-61961.txt", header = T, fill = TRUE)
+plot.baf(df = bcftools_af)
+@ 
+
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind1_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+@ 
+
+
+\subsubsection{Individual 2}
+\label{subsec:ind2}
+Varscan was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind2_varscan>>=
+varscan_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_2.61962-61963.txt", header = T, fill = NA)
+plot.af(df = varscan_af, pval = 1)
+
+@ 
+
+Logarithmic
+<<vaf_logarithmic_ind2_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind2_t1_varscan>>=
+plot.pval.t1(df = varscan_af)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind2_t2_varscan>>=
+plot.pval.t2(df = varscan_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind2_varscan>>=
+varscan_af <- read.table("./data/pyclone/stringent/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_2.61962-61963.txt", header = T, fill = TRUE)
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind2_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+Bcftools was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind2_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_2.61962-61963.txt", header = T, fill = NA)
+plot.baf(df = bcftools_af)
+
+@ 
+
+Bcftools was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_log_ind2_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_2.61962-61963.txt", header = T, fill = NA)
+plot.baf.logged(df = bcftools_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind2_bcftools>>=
+bcftools_af <- read.table("./data/pyclone/stringent/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_2.61962-61963.txt", header = T, fill = TRUE)
+plot.baf(df = bcftools_af)
+@ 
+
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind2_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+@ 
+
+
+\subsubsection{Individual 3}
+\label{subsec:ind3}
+Varscan was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind3_varscan>>=
+varscan_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_3.61964-61965.txt", header = T, fill = NA)
+plot.af(df = varscan_af, pval = 1)
+
+@ 
+
+Logarithmic
+<<vaf_log_ind3_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind3_t1_varscan>>=
+plot.pval.t1(df = varscan_af)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind3_t2_varscan>>=
+plot.pval.t2(df = varscan_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind3_varscan>>=
+varscan_af <- read.table("./data/pyclone/stringent/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_3.61964-61965.txt", header = T, fill = TRUE)
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind3_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+
+Bcftools was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind3_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_3.61964-61965.txt", header = T, fill = T)
+
+plot.baf(df = bcftools_af)
+
+@ 
+
+Logarithmic
+<<vaf_log_ind3_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind3_bcftools>>=
+bcftools_af <- read.table("./data/pyclone/stringent/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_3.61964-61965.txt", header = T, fill = TRUE)
+plot.baf(df = bcftools_af)
+@ 
+
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind3_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+@ 
+
+
+\subsubsection{Individual 4}
+\label{subsec:ind4}
+Varscan was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind4_varscan>>=
+varscan_af <- read.table("./data/pyclone/reduced_variants/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_4.95615-95616.txt", header = T, fill = NA)
+plot.af(df = varscan_af, pval = 1)
+
+@ 
+
+Logarithmic
+<<vaf_log_ind4_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind4_t1_varscan>>=
+plot.pval.t1(df = varscan_af)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind4_t2_varscan>>=
+plot.pval.t2(df = varscan_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind4_varscan>>=
+varscan_af <- read.table("./data/pyclone/stringent/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_4.95615-95616.txt", header = T, fill = TRUE)
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind4_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+
+Bcftools was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind4_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_4.95615-95616.txt", header = T, fill = T)
+
+plot.baf(df = bcftools_af)
+
+@ 
+
+Logarithmic
+<<vaf_log_ind4_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind4_bcftools>>=
+bcftools_af <- read.table("./data/pyclone/stringent/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_4.95615-95616.txt", header = T, fill = TRUE)
+plot.baf(df = bcftools_af)
+@ 
+
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind4_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+@ 
+
+\subsubsection{Individual 5}
+\label{subsec:ind5}
+Varscan was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind5_varscan>>=
+varscan_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_5.95617-95618.txt", header = T, fill = NA)
+plot.af(df = varscan_af, pval = 1)
+
+@ 
+
+
+Logarithmic
+<<vaf_log_ind5_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind5_t1_varscan>>=
+plot.pval.t1(df = varscan_af)
+
+@ 
+
+Allele frequency versus p-value of called variants. For each timepoint.
+<<vaf_pval_ind5_t2_varscan>>=
+plot.pval.t2(df = varscan_af)
+
+@ 
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind5_varscan>>=
+varscan_af <- read.table("./data/pyclone/stringent/output.4_mined.varscan2.snpeff_annot_genome.clinvar.dbsnp.exac.individual_5.95617-95618.txt", header = T, fill = TRUE)
+
+plot.af(df = varscan_af, pval = 1)
+@ 
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind5_varscan>>=
+plot.af.logged(df = varscan_af, pval = 1)
+@ 
+
+Bcftools was used to call for variants against the hg19 GRCh37 human genome.
+<<vaf_ind5_bcftools>>=
+bcftools_af<- read.table("./data/pyclone/reduced_variants/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_5.95617-95618.txt", header = T, fill = T)
+
+plot.baf(df = bcftools_af)
+
+@ 
+
+Logarithmic
+<<vaf_log_ind5_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+
+@ 
+
+
+
+Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_300total_ind5_bcftools>>=
+bcftools_af <- read.table("./data/pyclone/stringent/output.4_mined.bcftools.snpeff_annot_genome.clinvar.dbsnp.exac.individual_5.95617-95618.txt", header = T, fill = TRUE)
+plot.baf(df = bcftools_af)
+@ 
+
+
+(Logarithmic) Stringency increased to eliminate above 85\% of variants, keeping a total of 300 sites called.
+<<vaf_logged_300total_ind5_bcftools>>=
+plot.baf.logged(df = bcftools_af)
+@ 
+
+
+
+
+
+
+
+
+\subsection{Location of called variants}
+\label{subsec:location}
+Variants and their distribution based on their known locations obtained from annotations with different data banks, dbSnp, clinVar, and exac.
 <<variant_varscan_functions, out.width='5in'>>=
 read.table("./data/output.8_bash.summary.snv_functions.txt", header = TRUE) %>% 
     mutate(fct = gsub("_variant","",fct)) %>%
@@ -2600,6 +3081,350 @@ read.table("./data/output.8_bash.summary.snv_functions.txt", header = TRUE) %>%
     theme(legend.position = "top") +
     xlab("") +
     ylab("Variant function allocation (ClinVar 2018)")
+@ 
+
+
+
+
+
+
+\subsection{Cellular prevalence and clustering of tumor clones}
+\label{subsec:prevalence}
+PyClone was loaded with metrics that relay the number of reads specific for each allele (allele depth for reference and alternative alleles), copy numbers (ie., normal, minor, major counts, eg., 2-0-2), and position of each called variant.
+The output is then inferred from these metrics and cellular prevalence, clonal clusters, and allele frequency are then reported.
+Seed of 124565 was used with disconnected density clustering at 10,000 MCMC iterations with a major copy number prior and binomial distribution analysis.
+
+
+\subsubsection{Variant allele frequency by individual using Varscan2}
+\label{subsec:vafInd}
+
+Number and allocation of called single point mutations between all three exome sequenced individuals.
+Distribution below include the position of the SNV, the chromosome, and the name of the gene.
+<<venn_varscan2_clonal>>=
+ind.1 <- read.table("./data/pyclone/stringent/loci.ind1.562853.txt", header = T) %>% 
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))
+ind.2 <- read.table("./data/pyclone/stringent/loci.ind2.563282.txt", header = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))     
+ind.3 <- read.table("./data/pyclone/stringent/loci.ind3.563283.txt", header = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))    
+ind.4 <- read.table("./data/pyclone/stringent/loci.ind4.563284.txt", header = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))     
+ind.5 <- read.table("./data/pyclone/stringent/loci.ind5.563285.txt", header = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))    
+
+ind.list <- list(unique(ind.1$mutation_id), unique(ind.2$mutation_id), 
+                 unique(ind.3$mutation_id), unique(ind.4$mutation_id), 
+                 unique(ind.4$mutation_id))
+names(ind.list) <- c("Ind 1-CNR1002",
+                     "Ind 2-CNR2008",
+                     "Ind 3-CNR3008",
+                     "Ind 4",
+                     "Ind 5")
+
+venn(ind.list)
+
+@ 
+
+Variant allele frequency (VAF) for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+<<vaf_varscan2_ind1_clonal>>=
+plot_frequencies <- function(df, t1 = 0.9, t2 = 0.9) {
+    subdf <- df %>% 
+        select(mutation_id, cluster_id, sample_id, variant_allele_frequency) %>%
+        spread(sample_id, variant_allele_frequency)
+
+    p <- subdf %>%
+        ggplot(aes(x = subdf[,3],
+                   y = subdf[,4],
+                   label = mutation_id,
+                   fill = as.character(cluster_id))) +
+        geom_point(aes(size = cluster_id), shape = 21) +
+        theme_minimal() +
+        theme(legend.position = "top") +
+        expand_limits(x = c(0,1), y = c(0,1)) +
+        scale_y_continuous(breaks = pretty(c(0,1), n = 10)) +
+        scale_x_continuous(breaks = pretty(c(0,1), n = 10)) +
+        xlab(paste0("Allele frequency at T1 diagnosis (Clustered at 10K MCMC)")) +
+        ylab(paste0("Allele frequency after T2 treatment (Clustered at 10k MCMC)"))
+    ggMarginal(p, type = "histogram", fill="transparent",
+               color = "white",
+               xparams = list(binwidth = .01, fill = "grey"),
+               yparams = list(binwidth = .02, fill = "grey"))
+}
+
+plot_frequencies(df = ind.1)
+
+@ 
+
+VAF for the individual anonymously labeled \textbf{CNR2008} for Time 1 (T1) and 2 (T2).
+<<vaf_varscan2_ind2_clonal>>=
+plot_frequencies(df = ind.2)
+    
+@ 
+
+VAF for the individual anonymously labeled \textbf{CNR3008} for Time 1 (T1) and 2 (T2).
+<<vaf_varscan2_ind3_clonal>>=
+plot_frequencies(df = ind.3)
+    
+@ 
+
+
+VAF for the individual \textbf{LY\_CNSrel\_001} for Time 1 (T1) and 2 (T2).
+<<vaf_varscan2_ind4_clonal>>=
+plot_frequencies(df = ind.4)
+    
+@ 
+
+VAF for the individual \textbf{LY\_CNSrel\_003} for Time 1 (T1) and 2 (T2).
+<<vaf_varscan2_ind5_clonal>>=
+plot_frequencies(df = ind.5)
+    
+@ 
+
+
+\subsubsection{Cellular prevalence by individual using Varscan2}
+\label{subsec:prevalenceInd}
+Cellular prevalence for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+\marginnote{\small\color{blue}$\Lsh$Prevalence and VAF were generated by pyclone}[0cm]
+<<prevalence_varscan2_ind1_clonal>>=
+plot_prevalence <- function(df, t1 = 0.9, t2 = 0.9) {
+    subdf <- df %>% 
+        select(mutation_id, cluster_id, sample_id, cellular_prevalence) %>%
+        spread(sample_id, cellular_prevalence)
+    
+    p <- subdf %>%
+        ggplot(aes(x = subdf[,3],
+                   y = subdf[,4],
+                   label = mutation_id,
+                   fill = as.character(cluster_id))) +
+        geom_point(aes(size = cluster_id), shape = 21) +
+        theme_minimal() +
+        theme(legend.position = "top") +
+        expand_limits(x = c(0,1), y = c(0,1)) +
+        scale_y_continuous(breaks = pretty(c(0,1), n = 10)) +
+        scale_x_continuous(breaks = pretty(c(0,1), n = 10)) +
+        xlab(paste0("Cellular prevalence at T1 diagnosis (Clustered at 10K MCMC)")) +
+        ylab(paste0("Cellular prevalence after T2 treatment (Clustered at 10k MCMC)"))
+    ggMarginal(p, type = "histogram", fill="transparent",
+               color = "white",
+               xparams = list(binwidth = .01, fill = "grey"),
+               yparams = list(binwidth = .02, fill = "grey"))
+
+}
+
+plot_prevalence(df = ind.1)
+
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{CNR2008} for Time 1 (T1) and 2 (T2).
+<<prevalence_varscan2_ind2_clonal>>=
+plot_prevalence(df = ind.2)
+    
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{CNR3008} for Time 1 (T1) and 2 (T2).
+<<prevalence_varscan2_ind3_clonal>>=
+plot_prevalence(df = ind.3)
+
+@ 
+
+
+Cellular prevalence for the individual anonymously labeled \textbf{LY\_CNSrel\_001} for Time 1 (T1) and 2 (T2).
+<<prevalence_varscan2_ind4_clonal>>=
+plot_prevalence(df = ind.4)
+
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{LY\_CNSrel\_003} for Time 1 (T1) and 2 (T2).
+<<prevalence_varscan2_ind5_clonal>>=
+plot_prevalence(df = ind.5)
+
+@ 
+
+
+
+
+\subsubsection{Variant allele frequency by individual using Bcftools}
+Number and allocation of called single point mutations between all three exome sequenced individuals.
+Distribution below include the position of the SNV, the chromosome, and the name of the gene.
+<<venn_bcftools_clonal>>=
+## without functions
+ind.1 <- read.table("./data/pyclone/stringent/loci.ind1.563505.bcftools.txt", header = T, fill = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))
+ind.2 <- read.table("./data/pyclone/stringent/loci.ind2.563506.bcftools.txt", header = T, fill = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))     
+ind.3 <- read.table("./data/pyclone/stringent/loci.ind3.563507.bcftools.txt", header = T, fill = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))    
+ind.4 <- read.table("./data/pyclone/stringent/loci.ind4.563508.bcftools.txt", header = T, fill = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))     
+ind.5 <- read.table("./data/pyclone/stringent/loci.ind5.563509.bcftools.txt", header = T, fill = T) %>%
+        mutate(sample_id = gsub("^.*ind","ind", sample_id))
+
+
+ind.list <- list(unique(ind.1$mutation_id), unique(ind.2$mutation_id), 
+                 unique(ind.3$mutation_id), unique(ind.4$mutation_id), 
+                 unique(ind.4$mutation_id))
+names(ind.list) <- c("Ind 1-CNR1002",
+                     "Ind 2-CNR2008",
+                     "Ind 3-CNR3008",
+                     "Ind 4",
+                     "Ind 5")
+venn(ind.list)
+
+@ 
+
+
+
+Variant allele frequency (VAF) for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+<<vaf_bcftools_ind1_clonal>>=
+plot_frequency <- function(df, t1 = 0.9, t2 = 0.9) {
+    subdf <- df %>% 
+        select(mutation_id, cluster_id, sample_id, variant_allele_frequency) %>%
+        spread(sample_id, variant_allele_frequency)
+#        filter(cluster_id > 1)
+
+    p <- subdf %>%
+        ggplot(aes(x = subdf[,3],
+                   y = subdf[,4],
+                   label = mutation_id,
+                   fill = as.character(cluster_id))) +
+        geom_point(shape = 21, size = 3) +
+        ## geom_text_repel(data = subdf,
+        ##             nudge_x = -0.1,
+        ##             nudge_y = -0.1,
+        ##             force = 5,
+        ##             segment.color = "grey50",
+        ##             direction = "y",
+        ##             segment.size = 0.1,
+        ##             size = 2) +
+        theme_minimal() +
+        theme(legend.position = "top") +
+        expand_limits(x = c(0,1), y = c(0,1)) +
+        scale_y_continuous(breaks = pretty(c(0,1), n = 10)) +
+        scale_x_continuous(breaks = pretty(c(0,1), n = 10)) +
+        xlab(paste0("Allele frequency at T1 diagnosis (Clustered at 10K MCMC)")) +
+        ylab(paste0("Allele frequency after T2 treatment (Clustered at 10k MCMC)"))
+    ggMarginal(p, type = "histogram", fill="transparent",
+               color = "white",
+               xparams = list(binwidth = .01, fill = "grey"),
+               yparams = list(binwidth = .02, fill = "grey"))
+}
+
+
+
+plot_frequency(df = ind.1)
+
+@ 
+
+
+
+
+VAF for the individual anonymously labeled \textbf{CNR2008} for Time 1 (T1) and 2 (T2).
+<<vaf_bcftools_ind2_clonal>>=
+plot_frequencies(df = ind.2)
+@ 
+
+VAF for the individual anonymously labeled \textbf{CNR3008} for Time 1 (T1) and 2 (T2).
+<<vaf_bcftools_ind3_clonal>>=
+plot_frequencies(ind.3)
+@ 
+
+
+VAF for the individual anonymously labeled \textbf{LY\_CNSrel\_001} for Time 1 (T1) and 2 (T2).
+<<vaf_bcftools_ind4_clonal>>=
+plot_frequencies(ind.4)
+@ 
+
+
+VAF for the individual anonymously labeled \textbf{LY\_CNSrel\_003} for Time 1 (T1) and 2 (T2).
+<<vaf_bcftools_ind5_clonal>>=
+plot_frequencies(ind.5)
+@ 
+
+
+
+\subsubsection{Cellular prevalence by individual using Bcftools}
+Cellular prevalence for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+\marginnote{\small\color{blue}$\Lsh$Prevalence and VAF were generated by pyclone}[0cm]
+<<prevalence_bcftools_ind1_clonal>>=
+plot_prevalence(ind.1)
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{CNR2008} for Time 1 (T1) and 2 (T2).
+<<prevalence_bcftools_ind2_clonal>>=
+plot_prevalence(ind.2)
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{CNR3008} for Time 1 (T1) and 2 (T2).
+<<prevalence_bcftools_ind3_clonal>>=
+plot_prevalence(ind.3)
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{LY\_CNSrel\_001} for Time 1 (T1) and 2 (T2).
+<<prevalence_bcftools_ind4_clonal>>=
+plot_prevalence(ind.4)
+@ 
+
+Cellular prevalence for the individual anonymously labeled \textbf{LY\_CNSrel\_003} for Time 1 (T1) and 2 (T2).
+<<prevalence_bcftools_ind5_clonal>>=
+plot_prevalence(ind.5)
+@ 
+
+
+
+\subsubsection{Variant allele frequency by individual using GATK}
+\marginnote{\small\color{blue}$\Lsh$ OLD!! Deprecated}[0cm]
+Number and allocation of called single point mutations between all three exome sequenced individuals.
+Distribution below include the position of the SNV, the chromosome, and the name of the gene.
+<<venn_gatk_clonal>>=
+ind.1 <- read.table("./data/pyclone/loci.520917.gatk.tsv", header = T) %>%
+        mutate(sample_id = gsub("^.*A61","A61", sample_id))
+@ 
+
+
+
+Variant allele frequency (VAF) for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+<<vaf_gatk_ind1_clonal>>=
+plot_frequencies(ind.1)
+@ 
+
+\subsubsection{Cellular prevalence by individual using GATK}
+Cellular prevalence for the individual anonymously labeled \textbf{CNR1002} for Time 1 (T1) and 2 (T2).
+\marginnote{\small\color{blue}$\Lsh$Prevalence and VAF were generated by pyclone}[0cm]
+<<prevalence_gatk_ind1_clonal>>=
+model.names <- ind.1 %>%
+    select(mutation_id, cluster_id, sample_id, cellular_prevalence) %>%
+    spread(sample_id, cellular_prevalence)
+
+t1 = 0.7
+t2 = 0.6
+
+p <- ind.1 %>% 
+    select(mutation_id, cluster_id, sample_id, cellular_prevalence) %>%
+    spread(sample_id, cellular_prevalence) %>%
+    ggplot(aes(x = A61960,
+               y = A61961,
+               label = mutation_id,
+               fill = as.character(cluster_id))) +
+    geom_point(aes(size = cluster_id), shape = 21) +
+    geom_text_repel(data = subset(model.names, A61961 >= t2 & A61960 >= t1),
+                    nudge_x = -.02,
+                    force = 5,
+                    segment.color = "grey50",
+                    direction = "y",
+                    segment.size = 0.1,
+                    size = 2.5) +
+    theme_minimal() +
+    theme(legend.position = "top") +
+    expand_limits(x = c(0,1), y = c(0,1)) +
+    scale_y_continuous(breaks = pretty(c(0,1), n = 10)) +
+    scale_x_continuous(breaks = pretty(c(0,1), n = 10)) +
+    xlab(paste0("Cellular prevalence at T1 diagnosis (Clustered at 10K MCMC)")) +
+    ylab(paste0("Cellular prevalence after T2 treatment (Clustered at 10k MCMC)"))
+ggMarginal(p, type = "histogram", fill="transparent",
+           color = "white",
+           xparams = list(binwidth = .01, fill = "grey"),
+           yparams = list(binwidth = .02, fill = "grey"))
+
 @ 
 
 
