@@ -20,7 +20,17 @@
 #+LATEX_HEADER: \setlength{\parskip}{0pt}
 #+LATEX_HEADER: \setlength{\parsep}{-5pt}
 
-
+* Airflow
+#+BEGIN_SRC shell
+export AIRFLOW_GPL_UNIDECODE=yes
+export AIRFLOW_HOME=~/airflow
+sudo apt-get install pip
+sudo -H pip install --upgrade pip
+sudo pip install apache-airflow
+sudo pip install kubernetes
+airflow initdb
+airflow webserver -p 8080
+#+END_SRC
 * Python and anaconda
 Installation and virtual environment
 #+BEGIN_SRC shell
@@ -784,6 +794,8 @@ search for similarity between variables
 *** spectral clustering
 * GITHUB                                                              :TABLE:
 
+[[https://www.tutorialdocs.com/article/git-basic-command-list.html][Comprehensive list]] of most common GITHUB commands
+
 #+CAPTION: Most used commands
 | Command                        | Alias | Description          |
 |--------------------------------+-------+----------------------|
@@ -1001,6 +1013,15 @@ latex sampleref.bib
 | gifsicle              |                                                         | Lossy Gif compressor [[https://kornel.ski/lossygif][LINK]]                  |
 | TermRecord            | sudo pip install TermRecord                             | [[http://xmodulo.com/record-replay-terminal-session-linux.html][tutorial]]                                   |
 | dfc                   | sudo apt-get install dfc                                | Similar to df but with better visuals      |
+| *ripgrep*             |                                                         | [[https://github.com/BurntSushi/ripgrep#installation][github]]                                     |
+| sublime-merge         | sudo apt-get install sublime-merge                      | github GUI                                 |
+| Lepton                |                                                         | [[https://github.com/hackjutsu/Lepton/releases][github]]                                     |
+| haxor-news            | sudo pip install haxor-news                             | [[https://github.com/donnemartin/haxor-news][github]] CLI for hacker news                 |
+| tmux-manager          |                                                         | [[https://github.com/tmux-plugins/tpm][github]] CTRL+B+I (fetch plugin)             |
+| tmux-resurrect        |                                                         | [[https://github.com/tmux-plugins/tmux-resurrect][github]]                                     |
+| tmux-contnuum         |                                                         | [[https://github.com/tmux-plugins/tmux-continuum][github]]                                     |
+| ranger                |                                                         | [[https://github.com/ranger/ranger][github]] file manager                        |
+| nteract               |                                                         | [[https://nteract.io/kernels/r][website]] notebook reader                    |
 |                       |                                                         |                                            |
 
 * G3.js: data.viz
