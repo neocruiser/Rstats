@@ -1,4 +1,4 @@
-#+TITLE: New biomarkers for prediction of central nervous system relapse in lymphoma patients
+#+TITLE: Supervised multi-label classification
 #+AUTHOR: Sleiman Bassim, PhD
 #+EMAIL: slei.bass@gmail.com
 
@@ -29,7 +29,7 @@ Licence: MIT Licence
 
 
 * Pipelines in interpreted languages (~5000 lines)
-Below are the scripts that make the pipeline to analyze 236 DLBCL
+Below is the analytical pipeline of 240 DLBCL
 Affymetrix arrays. Array and metadata are not provided. It is
 recommended to run the scripts sequentially. The intermediate files
 are big and numerous. The pipeline uses iterative testing to
@@ -122,7 +122,7 @@ scalable test that will be used with clinical data of DLBCL patients
 to find those with high-risk of CNS relapse at first diagnosis.  
 
 ** Feasibility and innovation
-Our available data cover 240 whole-genome microarrays from newly
+The data cover 240 whole-genome microarrays from newly
 diagnosed patients, presenting several forms of CNS relapse. The
 expression profiles of selected 500-1000 genes will be inferred into
 genetic networks by including clinical patients profiles, for example
@@ -161,7 +161,6 @@ penetrate routine clinical practices.
 
 * Analytical pipeline
 + Pipeline automation
-  + [[http://blog.byronjsmith.com/snakemake-analysis.html][Snakewake]] pipeline design with different scripts and different languages.
 + [[http://archive.broadinstitute.org/cancer/cga/mutsig][MutSigCov]] calculates significance of mutations based on gene expression
 + Pleiotropy and epistasis
   + Modifier genes

@@ -695,7 +695,7 @@ read.table("./data/summary.lmfit.bval.txt", header = TRUE, fill = TRUE) %>%
 \label{sec:networks}
 The number of clusters and modules per networks are assigned by designing first a similarity matrix between differentially expressed gene for any two conditions (eg., relapse vs no relapse individual cases).
 An adjacency matrix is then constructed by weighting the previously inferred measures.
-The data is transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).\\
+The data were transformed to increase the correlation coefficient therefore improving detection of strong correlated patterns. (Example of the strength of data transformation and correlation, visit the following \href{https://blog.majestic.com/case-studies/correlation-data-transformations/}{online page}).\\
 
 The final methods selected were best according to our output. Convergence and reproducibility of each trend in gene number per module or scale of module per network helped narrow down our selection criteria for which method to incorporate in our clustering technique. 
 The best configuration involve a Pearson correlation at stringent thresholds. Hellinger expression data standardization was better than other methods in helping to estimate similarity between genes. 

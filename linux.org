@@ -40,12 +40,20 @@ wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 bash $Miniconda.sh
-source .bashrc
+exec bash
 
+conda update conda
 conda create --name $virt_env python=3
-source activate $virt_env
+conda activate $virt_env
 conda install $packages - $user
+conda install -c bioconda numpy=1.7.1 scipy=0.12.0 scikit-learn=0.13.1 matplotlib=1.2.1
 source deactivate
+conda env remove --name $virt_env
+
+## or use virtualenv
+virtualenv -p python3 $myproject
+cd myproject/bin
+source activate
 
 ## find matplotlib configuration file
 python
@@ -53,6 +61,59 @@ python
 >>> mpl.get_configdir()
 ## get a sample config file https://matplotlib.org/_static/matplotlibrc
 wget https://matplotlib.org/_static/matplotlibrc
+#+END_SRC
+* Docker
+Setup docker on Arch. Initialize the docker daemon. 
+Create a group called docker. Add current user to the group.
+#+BEGIN_SRC shell
+pamac install docker
+docker --version
+sudo gpasswd -a $USER docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo systemctl restart docker.service
+sudo netstat -lntp | grep dockerd
+## [LogOUT]
+docker info
+## push/pull containers
+docker run hello-world
+docker image ls
+docker container ls --all
+docker build -t=$test:v0.0.1 .
+docker run -p 4000:80 $test
+docker run -d -p 4000:80 $test
+docker container stop $ID_test
+docker login
+docker tag $test neocruiser/$test:v0.0.1
+docker push neocruiser/$test:v0.0.1
+docker run -d -p 4000:80 neocruiser/$test:v0.0.1
+## create a swarm service
+cat > docker-compose.yml
+docker swarm init
+docker swarm join
+docker stack deploy -c <composefile> $tasks
+docker service ls
+docker service ps $tasks
+docker stack rm $tasks
+docker swarm leave -f
+## create a swarms
+pamac install virtualbox
+docker run -p 80:80 username/repo:tag
+dockr-machine create --driver virtualbox dev
+docker-machine env dev
+eval $(docker-machine env -u)
+docker-machine ssh dev free -m
+docker-machine ssh dev df -h
+docker-machine ssh dev "docker swarm init --advertise-addr <myvm1_IP>"
+docker node ls
+docker-machine ls
+docker stack deploy <compose> $app
+docker service ps $app
+docker stack rm $app
+docker-machine stop $(docker-machine ls -q)
+## if private repo
+docker login <registry>
+docker stack deploy --with-registry-auth -c <compose> $app
 #+END_SRC
 * Ruby for Jekyll
 Install ruby locally. [[https://help.github.com/articles/setting-up-your-github-pages-site-locally-with-jekyll/][Github troubleshooting]]
@@ -282,10 +343,10 @@ git --version
 | Cc-t           | tidy code                         | perl        |
 | C-;            | comment line                      | perl        |
 | Cu-C;          | delete comment                    | perl        |
-|                |                                   |             |
-|                |                                   |             |
-|                |                                   |             |
-|                |                                   |             |
+| Cx-n-s         | org focus                         |             |
+| Cx-n-w         | org wide                          |             |
+| Cu 2 M-i       | helm swoop multiline              |             |
+| M-i            | helm swoop                        |             |
 |                |                                   |             |
 |                |                                   |             |
 |                |                                   |             |
@@ -333,8 +394,9 @@ Some useful packages for data manipulation and wrangling, [[http://www.computerw
 #+BEGIN_SRC R
 # only to install rJava and import excel sheets
 # an alternative is to use gdata package
-sudo R CMD javareconf
 sudo apt-get install libcurl4-gnutls-dev g++ gfortran libxml2-dev libicu-dev libglu1-mesa-dev freeglut3-dev mesa-common-dev
+sudo pacman -S tk
+sudo R CMD javareconf
 install.packages('rJava')
 
 pkgs = c('RCurl', 'XML','httr','knitr','devtools','rgl')
@@ -882,147 +944,161 @@ sudo texhash	refresh/rebuild the list of file name database after missing *.sty
 latex sample.tex
 latex sampleref.bib
 #+END_SRC
-* ADDITIONAL LINUX APPS                                          :Table:HOLD:
+* ADDITIONAL LINUX APPS
 #+CAPTION: Theming linux
-| Function              | Command                                                 | Notes                                      |
-|-----------------------+---------------------------------------------------------+--------------------------------------------|
-| datascience soft      |                                                         | Mega Imagemagick clustalX2 Cytoscape       |
-| *bioconductor*        |                                                         | and R                                      |
-| *MEGA*                | "install Alien then download rpm package"               | [[http://megasoftware.net/][website]]                                    |
-| gimp                  |                                                         |                                            |
-| *inkscape*            |                                                         |                                            |
-| *evince*              |                                                         |                                            |
-| *shotwell*            | sudo apt-get install shotwell shotwell-common           |                                            |
-| *gv*                  |                                                         |                                            |
-| gparted               |                                                         |                                            |
-| *vlc*                 |                                                         |                                            |
-| glipper               |                                                         |                                            |
-| *hamster*             |                                                         | and hamster indicator                      |
-| *htop*                |                                                         |                                            |
-| *locate*              |                                                         |                                            |
-| Run in a terminal     | screenfetch                                             | Get a summary of the PC credentials        |
-|                       | archinfo                                                |                                            |
-|                       | archey                                                  |                                            |
-| xmodmap               | ~/.xsession                                             | [[http://www.emacswiki.org/emacs/MovingTheCtrlKey#toc5][reconfigure key bindings]]                   |
-|                       | ~/.xinitrc                                              | .xsession has the role of .xinitrc         |
-|                       | ~/.profile                                              | and .profile combined                      |
-| *urxvt/rxvt-unicode*  | sudo apt-get install rxvt-unicode xclip                 | [[https://wiki.archlinux.org/index.php/Urxvt#][archlinux configs]]                          |
-|                       | git clone [[https://github.com/muennich/urxvt-perls][urxt-perls]]                                    | put git content in ~/.urxvt/ext            |
-|                       | https://github.com/muennich/urxvt-perls.git             |                                            |
-|                       | yaourt -S urxvt-perls                                   | to activate copy/pasting                   |
-|                       | xclip -sel clip < file.txt                              | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
-| liquidprompt          |                                                         | [[https://github.com/nojhan/liquidprompt][easy install]]                               |
-| bash                  | chsh -s /bin/bash                                       | use bash                                   |
-| *zsh*                 | chsh -s /bin/zsh ## logout then login                   | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
-|                       | echo $SHELL                                             | see what shell used                        |
-|                       | bash                                                    | switch between shells, write only the name |
-| *Fish*                | [[https://github.com/zsh-users/zsh-syntax-highlighting#with-oh-my-zsh][install from here]]                                       | Shell highlighting                         |
-| *oh-my-zsh*           |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/themes][themes]]                                     |
-|                       |                                                         | [[https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins][plugins]]                                    |
-|                       |                                                         | [[https://github.com/zsh-users/zsh-syntax-highlighting][Fish-highlighting]]                          |
-|                       | ~/.oh-my/custom/alias                                   | create alias [[http://alias.sh/most-popular/usage][URL1]] [[http://www.commandlinefu.com/commands/browse][URL2]]                     |
-| PKGBUILD (arch)       | tar xzvf                                                | untar the tarball                          |
-|                       | makepkg                                                 | copy PKGBUILD in the untared dir           |
-|                       | makepkg -s --asroot                                     | build dependecies and install              |
-|                       | pacman -U tar.gz                                        |                                            |
-| i3                    | dmenu                                                   | install it                                 |
-| bpswm                 |                                                         | [[https://www.reddit.com/r/unixporn/comments/2ldfmw/bspwm_beginner_panel_bar_question/][reddit comment 1]]                           |
-| *ncdu*                |                                                         | disk usage display                         |
-| centerim              |                                                         | chat app                                   |
-| gpicview              |                                                         | picture                                    |
-| *p7zip* & *unrar*     | $ 7z x *.zip <folder>                                   | zip                                        |
-|                       | sudo apt-get install p7zip-full p7zip-rar               |                                            |
-|                       | sudo apt-get install unrar-free  ($ unrar e *.rar)      |                                            |
-| alpine + aspell (C-t) |                                                         | [[http://blog.binarymist.net/2011/11/27/centerim-irssi-alpine-on-screen/][email client]]                               |
-| Sendmail              |                                                         | email for alpine                           |
-| irssi                 | /channel list                                           | [[https://pthree.org/2010/02/02/irssis-channel-network-server-and-connect-what-it-means/][irc commands]]                               |
-|                       | mv .pl ~/.irssi/scripts                                 | [[http://scripts.irssi.org/][irc perl plugins]]                           |
-|                       | /save                                                   |                                            |
-|                       | /layout save                                            | [[http://quadpoint.org/articles/irssi/][Beginner guide]]                             |
-|                       | <add freenode>                                          | [[https://freenode.net/certfp/makecert.shtml][guide]]                                      |
-|                       | <SSL connection>>                                       | [[https://freenode.net/certfp/certfp-irssi.shtml][guide]]                                      |
-|                       |                                                         |                                            |
-| elinks                |                                                         | browser in console                         |
-| rogue                 |                                                         | [[http://www.rots.net/rogue/guide.txt][game]]                                       |
-| nethack               |                                                         | [[http://www.nethack.org/][game]]                                       |
-| *perldoc*             | perl-doc                                                | documentation for perl                     |
-| *ttytter*             | $ wget                                                  | [[http://www.floodgap.com/software/ttytter/ttytter.txt][get it from here]]                           |
-|                       | $ chmod +x ~/ttytter.txt                                | make it executable [[http://www.floodgap.com/software/ttytter/][website]]                 |
-|                       | $ mv ttytter.txt ttytter                                | remove .txt                                |
-|                       | /set ansi 1, /set notimeline 1                          | enable colors                              |
-|                       | /trends or                                              |                                            |
-|                       |                                                         | [[http://www.floodgap.com/software/ttytter/copts.html][command line options]]                       |
-| *tmux*                | tmux new -s <name>                                      | [[http://xmodulo.com/improve-productivity-terminal-environment-tmux.html][tutorial]]                                   |
-|                       | tmux attach-session -t ...                              |                                            |
-| scrot                 |                                                         | [[http://xmodulo.com/take-screenshot-command-line-linux.html][tutorial]]                                   |
-| *cheat sheet*         | cheat -e emacs &                                        | [[http://xmodulo.com/access-linux-command-cheat-sheets-command-line.html][tutorial]]                                   |
-| *pip*                 | sudo apt-get install python-pip                         | Python package installer                   |
-| ack                   | community/ack (arch)                                    | [[http://xmodulo.com/search-text-files-patterns-efficiently.html][tutorial]] or [[http://beyondgrep.com/install/][official site]]                  |
-| *ag* Silver Searcher  | pacman -S the_silver_searcher                           | [[https://github.com/ggreer/the_silver_searcher][git official site]]                          |
-| *acpi*                |                                                         | [[http://calummacrae.blogspot.fr/2012/12/dropping-status-bars-for-tmux-as-im.html][battery]]                                    |
-| *transmission-cli*    | sudo apt-get install transmission-cli                   | [[http://xmodulo.com/download-iso-image-bittorrent-command-line.html][tutorial]] or [[http://go.kblog.us/2011/03/using-transmission-cli-to-download.html][this]]                           |
-| ruby                  |                                                         | to use with style-check                    |
-| style-check.rb        | $style-check.rb *.tex                                   | [[http://www.cs.umd.edu/~nspring/software/style-check-readme.html][official site]]                              |
-| *diction*             | $ diction -sbq *.txt                                    |                                            |
-| pdftk                 |                                                         | [[http://xmodulo.com/how-to-edit-pdf-file-for-free.html][description]]                                |
-| cpanm                 |                                                         | [[https://metacpan.org/pod/App::cpanminus#INSTALLATION][here]] module installer                      |
-| *firefox*             | $ mkdir ~/.fonts                                        | [[https://github.com/lucy/tewi-font][tewi-font]]                                  |
-|                       | $ ~/.mozilla/firefox/<>default/chrome/.css              | [[http://1drv.ms/1ubbEIi][userChrome.css]]                             |
-|                       | file:///home/neocruiser/startpage/index.html            | startpage                                  |
-|                       | :mkvimrc                                                | vimpirator save customization              |
-| *FONTS*               | $ pacman -S                                             | [[https://wiki.archlinux.org/index.php/Infinality#Installation_2][Try these]] don't set xorg-fonts             |
-| *gzip*                |                                                         | *vcf.gz files need an index *gz.tbi        |
-| *tabix*               | $ tabix -p vcf file.vcf.gz                              | generate an index file                     |
-|                       | $ bgzip -c file.vcf > file.vcf.gz                       | compress                                   |
-|                       | $ bgzip -d file.vcf.gz                                  | decompress                                 |
-| *mu4e*                |                                                         | [[http://wenshanren.org/?p%3D111][tutorial for gmail]]  [[http://www.djcbsoftware.nl/code/mu/mu4e/index.html][*official tutorial*]]    |
-|                       |                                                         | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][different setup tutorial]]                   |
-|                       | $ install offlineimap                                   | offlineimap & .offlineimaprc               |
-|                       |                                                         | *maybe* mbsync instead of offlineimap      |
-|                       |                                                         | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][Multiple accounts]]                          |
-|                       | $ install if necessary                                  | html2text view html emails                 |
-|                       | setup smtp                                              | [[http://email.about.com/od/accessinggmail/f/Gmail_SMTP_Settings.htm][tutorial for gmail]]                         |
-| pem                   | $ pem name $$                                           | [[http://xmodulo.com/manage-personal-expenses-command-line.html][tutorial]]                                   |
-| feednix               |                                                         | Read Feedly in terminal [[http://xmodulo.com/feedly-rss-feed-command-line-linux.html][tutorial]]           |
-| *Alien* & *dpkg*      | sudo apt-get install alien                              | Alien for npm packages                     |
-|                       | sudo apt-get install dpkg-dev debhelper build-essential |                                            |
-|                       | alien <PACKAGENAME>.rpm                                 |                                            |
-|                       | sudo dpkg -i package.deb                                |                                            |
-| *VirtualBox*          | sudo apt-get install libqt4-opengl                      |                                            |
-|                       | dpkg -i <pkg>                                           | [[https://www.virtualbox.org/wiki/Linux_Downloads][Download]]                                   |
-|                       | sudo apt-get install dkms                               |                                            |
-|                       | mount /dev/cdrom /mnt/                                  | Get full screen                            |
-|                       | cd /mnt/                                                |                                            |
-|                       | ./VBoxLinuxAdditions.run                                | reboot                                     |
-| pipes.sh              | git clone then make install                             | [[https://github.com/pipeseroni/pipes.sh][here (screensaver)]]                         |
-| ttystudio             | npm install -g ttystudio                                | [[https://github.com/chjj/ttystudio][here]] (gif maker)                           |
-| yank                  | make install                                            | [[https://github.com/mptre/yank][Github -- get stdin CLi]]                    |
-| *parallel*            | ./configure && make                                     | [[https://www.gnu.org/software/parallel/][Home page GNU]]                              |
-|                       | sudo make install                                       |                                            |
-| *fzf*                 | clone from [[https://github.com/junegunn/fzf#using-git][github]]                                       | CLI fuzzifier search encgine               |
-| *haste*               | sudo gem install haste                                  | [[https://hastebin.com/about.md][Link]] create and share a CLI output         |
-| *xsel*                | sudo apt-get install xsel                               | copy std output                            |
-| *json*                | sudo apt-get install nodejs npm                         |                                            |
-|                       | ln -s /usr/bin/nodejs /usr/bin/node                     |                                            |
-|                       | sudo npm install -g json                                | [[https://github.com/trentm/json#readme][github website]]                             |
-| *gupg*                | sudo apt-get install gupg                               |                                            |
-|                       | gpg -c encrypt.file                                     |                                            |
-|                       | gpg -d decrypt.file                                     |                                            |
-| *nmap*                | nmap $ip_address                                        |                                            |
-| zcash wallet          | sudo apt-get install zcash                              | [[https://z.cash/download.html][instructions]] and [[https://github.com/zcash/zcash/wiki/1.0-User-Guide][CLI guide]]                 |
-| gifsicle              |                                                         | Lossy Gif compressor [[https://kornel.ski/lossygif][LINK]]                  |
-| TermRecord            | sudo pip install TermRecord                             | [[http://xmodulo.com/record-replay-terminal-session-linux.html][tutorial]]                                   |
-| dfc                   | sudo apt-get install dfc                                | Similar to df but with better visuals      |
-| *ripgrep*             |                                                         | [[https://github.com/BurntSushi/ripgrep#installation][github]]                                     |
-| sublime-merge         | sudo apt-get install sublime-merge                      | github GUI                                 |
-| Lepton                |                                                         | [[https://github.com/hackjutsu/Lepton/releases][github]]                                     |
-| haxor-news            | sudo pip install haxor-news                             | [[https://github.com/donnemartin/haxor-news][github]] CLI for hacker news                 |
-| tmux-manager          |                                                         | [[https://github.com/tmux-plugins/tpm][github]] CTRL+B+I (fetch plugin)             |
-| tmux-resurrect        |                                                         | [[https://github.com/tmux-plugins/tmux-resurrect][github]]                                     |
-| tmux-contnuum         |                                                         | [[https://github.com/tmux-plugins/tmux-continuum][github]]                                     |
-| ranger                |                                                         | [[https://github.com/ranger/ranger][github]] file manager                        |
-| nteract               |                                                         | [[https://nteract.io/kernels/r][website]] notebook reader                    |
-|                       |                                                         |                                            |
+| Function              | Command                                                      | Notes                                      |
+|-----------------------+--------------------------------------------------------------+--------------------------------------------|
+| datascience soft      |                                                              | Mega Imagemagick clustalX2 Cytoscape       |
+| *bioconductor*        |                                                              | and R                                      |
+| *MEGA*                | "install Alien then download rpm package"                    | [[http://megasoftware.net/][website]]                                    |
+| gimp                  |                                                              |                                            |
+| *inkscape*            |                                                              |                                            |
+| *evince*              |                                                              |                                            |
+| *shotwell*            | sudo apt-get install shotwell shotwell-common                |                                            |
+| *gv*                  |                                                              |                                            |
+| gparted               |                                                              |                                            |
+| *vlc*                 |                                                              |                                            |
+| glipper               |                                                              |                                            |
+| *hamster*             |                                                              | and hamster indicator                      |
+| *htop*                |                                                              |                                            |
+| *locate*              |                                                              |                                            |
+| Run in a terminal     | screenfetch                                                  | Get a summary of the PC credentials        |
+|                       | archinfo                                                     |                                            |
+|                       | archey                                                       |                                            |
+| xmodmap               | ~/.xsession                                                  | [[http://www.emacswiki.org/emacs/MovingTheCtrlKey#toc5][reconfigure key bindings]]                   |
+|                       | ~/.xinitrc                                                   | .xsession has the role of .xinitrc         |
+|                       | ~/.profile                                                   | and .profile combined                      |
+| *urxvt/rxvt-unicode*  | sudo apt-get install rxvt-unicode xclip                      | [[https://wiki.archlinux.org/index.php/Urxvt#][archlinux configs]]                          |
+|                       | git clone [[https://github.com/muennich/urxvt-perls][urxt-perls]]                                         | put git content in ~/.urxvt/ext            |
+|                       | https://github.com/muennich/urxvt-perls.git                  |                                            |
+|                       | yaourt -S urxvt-perls                                        | to activate copy/pasting                   |
+|                       | xclip -sel clip < file.txt                                   | [[https://github.com/muennich/urxvt-perls][copy/paste]] +                               |
+| liquidprompt          |                                                              | [[https://github.com/nojhan/liquidprompt][easy install]]                               |
+| bash                  | chsh -s /bin/bash                                            | use bash                                   |
+| *zsh*                 | chsh -s /bin/zsh ## logout then login                        | use zsh + [[http://zsh.sourceforge.net/Guide/][userguide]]                        |
+|                       | echo $SHELL                                                  | see what shell used                        |
+|                       | bash                                                         | switch between shells, write only the name |
+| *Fish*                | [[https://github.com/zsh-users/zsh-syntax-highlighting#with-oh-my-zsh][install from here]]                                            | Shell highlighting                         |
+| *oh-my-zsh*           |                                                              | [[https://github.com/robbyrussell/oh-my-zsh/wiki/themes][themes]]                                     |
+|                       |                                                              | [[https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins][plugins]]                                    |
+|                       |                                                              | [[https://github.com/zsh-users/zsh-syntax-highlighting][Fish-highlighting]]                          |
+|                       | ~/.oh-my/custom/alias                                        | create alias [[http://alias.sh/most-popular/usage][URL1]] [[http://www.commandlinefu.com/commands/browse][URL2]]                     |
+| PKGBUILD (arch)       | tar xzvf                                                     | untar the tarball                          |
+|                       | makepkg                                                      | copy PKGBUILD in the untared dir           |
+|                       | makepkg -s --asroot                                          | build dependecies and install              |
+|                       | pacman -U tar.gz                                             |                                            |
+| i3                    | dmenu                                                        | install it                                 |
+| bpswm                 |                                                              | [[https://www.reddit.com/r/unixporn/comments/2ldfmw/bspwm_beginner_panel_bar_question/][reddit comment 1]]                           |
+| *ncdu*                |                                                              | disk usage display                         |
+| centerim              |                                                              | chat app                                   |
+| gpicview              |                                                              | picture                                    |
+| *p7zip* & *unrar*     | $ 7z x *.zip <folder>                                        | zip                                        |
+|                       | sudo apt-get install p7zip-full p7zip-rar                    |                                            |
+|                       | sudo apt-get install unrar-free  ($ unrar e *.rar)           |                                            |
+| alpine + aspell (C-t) |                                                              | [[http://blog.binarymist.net/2011/11/27/centerim-irssi-alpine-on-screen/][email client]]                               |
+| Sendmail              |                                                              | email for alpine                           |
+| irssi                 | /channel list                                                | [[https://pthree.org/2010/02/02/irssis-channel-network-server-and-connect-what-it-means/][irc commands]]                               |
+|                       | mv .pl ~/.irssi/scripts                                      | [[http://scripts.irssi.org/][irc perl plugins]]                           |
+|                       | /save                                                        |                                            |
+|                       | /layout save                                                 | [[http://quadpoint.org/articles/irssi/][Beginner guide]]                             |
+|                       | <add freenode>                                               | [[https://freenode.net/certfp/makecert.shtml][guide]]                                      |
+|                       | <SSL connection>>                                            | [[https://freenode.net/certfp/certfp-irssi.shtml][guide]]                                      |
+|                       |                                                              |                                            |
+| elinks                |                                                              | browser in console                         |
+| rogue                 |                                                              | [[http://www.rots.net/rogue/guide.txt][game]]                                       |
+| nethack               |                                                              | [[http://www.nethack.org/][game]]                                       |
+| *perldoc*             | perl-doc                                                     | documentation for perl                     |
+| *ttytter*             | $ wget                                                       | [[http://www.floodgap.com/software/ttytter/ttytter.txt][get it from here]]                           |
+|                       | $ chmod +x ~/ttytter.txt                                     | make it executable [[http://www.floodgap.com/software/ttytter/][website]]                 |
+|                       | $ mv ttytter.txt ttytter                                     | remove .txt                                |
+|                       | /set ansi 1, /set notimeline 1                               | enable colors                              |
+|                       | /trends or                                                   |                                            |
+|                       |                                                              | [[http://www.floodgap.com/software/ttytter/copts.html][command line options]]                       |
+| *tmux*                | tmux new -s <name>                                           | [[http://xmodulo.com/improve-productivity-terminal-environment-tmux.html][tutorial]]                                   |
+|                       | tmux attach-session -t ...                                   |                                            |
+| scrot                 |                                                              | [[http://xmodulo.com/take-screenshot-command-line-linux.html][tutorial]]                                   |
+| *cheat sheet*         | cheat -e emacs &                                             | [[http://xmodulo.com/access-linux-command-cheat-sheets-command-line.html][tutorial]]                                   |
+| *pip*                 | sudo apt-get install python-pip                              | Python package installer                   |
+| ack                   | community/ack (arch)                                         | [[http://xmodulo.com/search-text-files-patterns-efficiently.html][tutorial]] or [[http://beyondgrep.com/install/][official site]]                  |
+| *ag* Silver Searcher  | pacman -S the_silver_searcher                                | [[https://github.com/ggreer/the_silver_searcher][git official site]]                          |
+| *acpi*                |                                                              | [[http://calummacrae.blogspot.fr/2012/12/dropping-status-bars-for-tmux-as-im.html][battery]]                                    |
+| *transmission-cli*    | sudo apt-get install transmission-cli                        | [[http://xmodulo.com/download-iso-image-bittorrent-command-line.html][tutorial]] or [[http://go.kblog.us/2011/03/using-transmission-cli-to-download.html][this]]                           |
+| ruby                  |                                                              | to use with style-check                    |
+| style-check.rb        | $style-check.rb *.tex                                        | [[http://www.cs.umd.edu/~nspring/software/style-check-readme.html][official site]]                              |
+| *diction*             | $ diction -sbq *.txt                                         |                                            |
+| pdftk                 |                                                              | [[http://xmodulo.com/how-to-edit-pdf-file-for-free.html][description]]                                |
+| cpanm                 |                                                              | [[https://metacpan.org/pod/App::cpanminus#INSTALLATION][here]] module installer                      |
+| *firefox*             | $ mkdir ~/.fonts                                             | [[https://github.com/lucy/tewi-font][tewi-font]]                                  |
+|                       | $ ~/.mozilla/firefox/<>default/chrome/.css                   | [[http://1drv.ms/1ubbEIi][userChrome.css]]                             |
+|                       | file:///home/neocruiser/startpage/index.html                 | startpage                                  |
+|                       | :mkvimrc                                                     | vimpirator save customization              |
+| *FONTS*               | $ pacman -S                                                  | [[https://wiki.archlinux.org/index.php/Infinality#Installation_2][Try these]] don't set xorg-fonts             |
+| *gzip*                |                                                              | *vcf.gz files need an index *gz.tbi        |
+| *tabix*               | $ tabix -p vcf file.vcf.gz                                   | generate an index file                     |
+|                       | $ bgzip -c file.vcf > file.vcf.gz                            | compress                                   |
+|                       | $ bgzip -d file.vcf.gz                                       | decompress                                 |
+| *mu4e*                |                                                              | [[http://wenshanren.org/?p%3D111][tutorial for gmail]]  [[http://www.djcbsoftware.nl/code/mu/mu4e/index.html][*official tutorial*]]    |
+|                       |                                                              | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][different setup tutorial]]                   |
+|                       | $ install offlineimap                                        | offlineimap & .offlineimaprc               |
+|                       |                                                              | *maybe* mbsync instead of offlineimap      |
+|                       |                                                              | [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html#Multiple-accounts][Multiple accounts]]                          |
+|                       | $ install if necessary                                       | html2text view html emails                 |
+|                       | setup smtp                                                   | [[http://email.about.com/od/accessinggmail/f/Gmail_SMTP_Settings.htm][tutorial for gmail]]                         |
+| pem                   | $ pem name $$                                                | [[http://xmodulo.com/manage-personal-expenses-command-line.html][tutorial]]                                   |
+| feednix               |                                                              | Read Feedly in terminal [[http://xmodulo.com/feedly-rss-feed-command-line-linux.html][tutorial]]           |
+| *Alien* & *dpkg*      | sudo apt-get install alien                                   | Alien for npm packages                     |
+|                       | sudo apt-get install dpkg-dev debhelper build-essential      |                                            |
+|                       | alien <PACKAGENAME>.rpm                                      |                                            |
+|                       | sudo dpkg -i package.deb                                     |                                            |
+| *VirtualBox*          | sudo apt-get install libqt4-opengl                           |                                            |
+|                       | dpkg -i <pkg>                                                | [[https://www.virtualbox.org/wiki/Linux_Downloads][Download]]                                   |
+|                       | sudo apt-get install dkms                                    |                                            |
+|                       | mount /dev/cdrom /mnt/                                       | Get full screen                            |
+|                       | cd /mnt/                                                     |                                            |
+|                       | ./VBoxLinuxAdditions.run                                     | reboot                                     |
+| pipes.sh              | git clone then make install                                  | [[https://github.com/pipeseroni/pipes.sh][here (screensaver)]]                         |
+| ttystudio             | npm install -g ttystudio                                     | [[https://github.com/chjj/ttystudio][here]] (gif maker)                           |
+| yank                  | make install                                                 | [[https://github.com/mptre/yank][Github -- get stdin CLi]]                    |
+| *parallel*            | ./configure && make                                          | [[https://www.gnu.org/software/parallel/][Home page GNU]]                              |
+|                       | sudo make install                                            |                                            |
+| *fzf*                 | clone from [[https://github.com/junegunn/fzf#using-git][github]]                                            | CLI fuzzifier search encgine               |
+| *haste*               | sudo gem install haste                                       | [[https://hastebin.com/about.md][Link]] create and share a CLI output         |
+| *xsel*                | sudo apt-get install xsel                                    | copy std output                            |
+| *json*                | sudo apt-get install nodejs npm                              |                                            |
+|                       | ln -s /usr/bin/nodejs /usr/bin/node                          |                                            |
+|                       | sudo npm install -g json                                     | [[https://github.com/trentm/json#readme][github website]]                             |
+| *gupg*                | sudo apt-get install gupg                                    |                                            |
+|                       | gpg -c encrypt.file                                          |                                            |
+|                       | gpg -d decrypt.file                                          |                                            |
+| *nmap*                | nmap $ip_address                                             |                                            |
+| zcash wallet          | sudo apt-get install zcash                                   | [[https://z.cash/download.html][instructions]] and [[https://github.com/zcash/zcash/wiki/1.0-User-Guide][CLI guide]]                 |
+| gifsicle              |                                                              | Lossy Gif compressor [[https://kornel.ski/lossygif][LINK]]                  |
+| TermRecord            | sudo pip install TermRecord                                  | [[http://xmodulo.com/record-replay-terminal-session-linux.html][tutorial]]                                   |
+| dfc                   | sudo apt-get install dfc                                     | Similar to df but with better visuals      |
+| *ripgrep*             |                                                              | [[https://github.com/BurntSushi/ripgrep#installation][github]]                                     |
+| sublime-merge         | sudo apt-get install sublime-merge                           | github GUI                                 |
+| Lepton                |                                                              | [[https://github.com/hackjutsu/Lepton/releases][github]]                                     |
+| haxor-news            | sudo pip install haxor-news                                  | [[https://github.com/donnemartin/haxor-news][github]] CLI for hacker news                 |
+| tmux-manager          |                                                              | [[https://github.com/tmux-plugins/tpm][github]] CTRL+B+I (fetch plugin)             |
+| tmux-resurrect        |                                                              | [[https://github.com/tmux-plugins/tmux-resurrect][github]]                                     |
+| tmux-contnuum         |                                                              | [[https://github.com/tmux-plugins/tmux-continuum][github]]                                     |
+| ranger                |                                                              | [[https://github.com/ranger/ranger][github]] file manager                        |
+| nteract               |                                                              | [[https://nteract.io/kernels/r][website]] notebook reader                    |
+| jq                    |                                                              | [[https://stedolan.github.io/jq/][CLI for JSON]]                               |
+| rq                    |                                                              | [[https://github.com/dflemstr/rq][CLI for JSON]]                               |
+| retext                |                                                              | [[https://github.com/retext-project/retext][github]] for markdown WYSWYG                 |
+| rofi                  |                                                              | [[https://github.com/DaveDavenport/rofi][github]] window switcher                     |
+| NZBget                | wget https://nzbget.net/download/nzbget-latest-bin-linux.run | [[https://nzbget.net/][Home]]                                       |
+|                       | sh nzbget-latest-bin-linux.run                               | [[https://nzbget.net/][Home]]                                       |
+|                       | ./nzbget -D                                                  |                                            |
+| jsonsmash (JSON)      |                                                              | [[https://www.npmjs.com/package/jsonsmash][Link]]                                       |
+| catj (JSON)           |                                                              | [[https://github.com/soheilpro/catj][Link]]                                       |
+| fzf                   | pamac install fzf                                            | fuzzy searcher                             |
+| fd                    | pamac install fd                                             | replaces find                              |
+| zsh-autosuggestions   | pamac install zsh-autosuggestions                            | [[https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#arch-linux][Github]]                                     |
+| nmon                  | pamac install nmon                                           | Alternative to htop                        |
+| zplug                 |                                                              | [[https://github.com/zplug/zplug][Github]]                                     |
+|                       |                                                              |                                            |
 
 * G3.js: data.viz
 ** Setup a HTTP localhost =serving=
@@ -1637,7 +1713,9 @@ path of the iso image and /dev/*sdx* to the usb drive name.
 md5sum image.iso
 lsblk
 sudo su
-dd bs=4M if=/path/to/archlinux.iso of=/dev/sdc && sync
+
+## device (e.g. /dev/sdb), and not the partition number (e.g. /dev/sdb1)
+dd bs=4M if=/path/to/archlinux.iso of=/dev/sdb status=progress && sync
 #+END_SRC
 
 Restore the usb key after installation. If this wasn't enough use GParted to format and create primary partition. Restore to =NTFS= only.
@@ -1864,6 +1942,27 @@ function run_once(prg)
       awful.util.spawn_with_shell("pgrep -u $USER -x " .. prg .. " || (" .. prg .. ")")
     end
     run_once("urxvt")
+#+END_SRC
+
+* Manjaro Linux
+Installing yaourt on Manjaro
+#+BEGIN_SRC shell
+sudo pacman -S --needed base-devel git wget yajl
+cd /tmp
+git clone https://aur.archlinux.org/package-query.git
+cd package-query/
+makepkg -si && cd /tmp/
+git clone https://aur.archlinux.org/yaourt.git
+cd yaourt/
+makepkg -si
+#+END_SRC
+
+Enable Trim for SSD
+#+BEGIN_SRC shell
+## if 0=SSD or 1=HDD
+cat /sys/block/sda/queue/rotational 
+0
+sudo systemctl enable fstrim.timer
 #+END_SRC
 
 * CHANGE BACKGROUND
