@@ -32,8 +32,7 @@ Shell/bash, Python, R, MySQL, D3.js
 * Genetic analyses and published projects
 1. [[https://github.com/neocruiser/pipelines][Repository of automated sequence analyses, statistics, and machine
    learning on high performance clusters]] (Bassim 2013-2018)
-2. [[https://github.com/neocruiser/Rstats/tree/master/relapse][Central nervous system relapse in lymphoma patients with Affymetrix
-   microarrays]] at the University Health Network (Bassim 2018) [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][PDF]]
+2. [[https://github.com/neocruiser/Rstats/tree/master/relapse][Supervised learning with gene expression data]] including multiclustering and genetic networks at the University Health Network (Bassim 2018) [[https://github.com/neocruiser/Rstats/blob/master/relapse/relapse.pdf][PDF]]
 3. [[https://github.com/neocruiser/Rstats/tree/master/nodule][Networks of a cross-talk between host and pathogenic parasite with
    dual RNA-seq]] at the New York University (Bassim 2017) [[https://github.com/neocruiser/Rstats/blob/master/nodule/nodule.pdf][PDF]]
 4. [[https://github.com/neocruiser/Rstats/tree/master/ganglia][Difference in networks between neural and respiratory cells with
